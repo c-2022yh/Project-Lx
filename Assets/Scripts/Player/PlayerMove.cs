@@ -7,7 +7,7 @@ public class PlayerController : MonoBehaviour
     public float jumpForce = 15f; //점프력
     [Range(0, 1)] public float airControlMin = 0.8f; //공중에서 좌우로 움직이는 비율
 
-    [Header("가감속 (핵심)")]
+    [Header("가감속")]
     //감속 계수
     [Range(0f, 0.3f)] public float groundDecel = 0.01f;
     [Range(0f, 0.5f)] public float airDecel = 0.1f;
@@ -38,7 +38,7 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    void FixedUpdate() // 물리 계산은 여기서 해야 쫀득함이 살아납니다.
+    void FixedUpdate() //물리 계산
     {
         //이동
         float targetSpeedX = xInput * moveSpeed;
