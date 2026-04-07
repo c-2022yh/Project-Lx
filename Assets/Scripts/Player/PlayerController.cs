@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.InputSystem;
 using System.Collections;
 
 public class PlayerController : MonoBehaviour
@@ -6,6 +7,8 @@ public class PlayerController : MonoBehaviour
     [Header("이동 설정")]
     public float moveSpeed = 10f; //이동속도
     public float jumpForce = 15f; //점프력
+
+
     [Range(0, 1)] public float airControlMin = 0.8f; //공중에서 이동속도 보정값 (이 값이 1이면 비행기처럼 움직임)
 
     [Header("가감속")]
@@ -17,37 +20,43 @@ public class PlayerController : MonoBehaviour
     public float checkRadius = 0.2f; //체크할 범위
     public LayerMask groundLayer; //인스펙터에서 레이어 지정해야함
 
-    Rigidbody2D rb;
-    float xInput;
-    float yInput;
-    bool isGrounded;
 
-    void Start()
+    // 내부 변수
+    private Rigidbody2D rb;
+    private Vector2 moveInput; //xInput, yInput을 하나로 관리
+    private bool isGrounded;
+
+    void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
-        rb.freezeRotation = true; //사각형 모양 고정
+        rb.freezeRotation = true;
+    }
 
+
+    public void OnMove(InputValue value) //이동 (Move 액션과 연결)
+    {
+        moveInput = value.Get<Vector2>();
+    }
+    
+    public void OnJump(InputValue value) //점프 (Jump 액션과 연결)
+    {
+        //버튼을 눌렀을 때(isPressed) + 바닥일 때 + 낙하 중이 아닐 때
+        if (value.isPressed && isGrounded && rb.linearVelocity.y <= 0.01f)
+        {
+            rb.linearVelocity = new Vector2(rb.linearVelocity.x, jumpForce);
+        }
     }
 
     void Update()
     {
-        xInput = Input.GetAxisRaw("Horizontal");    //좌우 입력
-        yInput = Input.GetAxisRaw("Vertical");      //상하 입력
-
         //땅에 닿아 있는지 확인하는 변수
         isGrounded = Physics2D.OverlapCircle(groundCheck.position, checkRadius, groundLayer);
-
-        //점프 조건 1.바닥에 닿아 있고, 2.위로 올라가는 중이 아닐 때만(y 속도가 0 이하)
-        if (Input.GetKey(KeyCode.C) && isGrounded && rb.linearVelocity.y <= 0.01f)
-        {
-            rb.linearVelocity = new Vector2(rb.linearVelocity.x, jumpForce);
-        }
-
+       
     }
 
     void FixedUpdate()
     {
-        float targetSpeedX = xInput * moveSpeed;
+        float targetSpeedX = moveInput.x * moveSpeed;
         if (!isGrounded) targetSpeedX *= airControlMin;
 
 
@@ -57,7 +66,7 @@ public class PlayerController : MonoBehaviour
         float newSpeedX = Mathf.Lerp(rb.linearVelocity.x, targetSpeedX, 1f - decelVar);
 
         //일정량의 작은 미끄러짐은 0으로 보정
-        if (xInput == 0 && Mathf.Abs(newSpeedX) < 0.1f) newSpeedX = 0f;
+        if (moveInput.x == 0 && Mathf.Abs(newSpeedX) < 0.1f) newSpeedX = 0f;
 
         rb.linearVelocity = new Vector2(newSpeedX, rb.linearVelocity.y);
     }
