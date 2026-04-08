@@ -2983,9 +2983,9 @@ GameObject:
   - component: {fileID: 2085880630}
   - component: {fileID: 2085880629}
   - component: {fileID: 2085880628}
-  - component: {fileID: 2085880632}
-  - component: {fileID: 2085880634}
+  - component: {fileID: 2085880635}
   - component: {fileID: 2085880633}
+  - component: {fileID: 2085880636}
   m_Layer: 7
   m_Name: Player
   m_TagString: Untagged
@@ -3000,7 +3000,7 @@ BoxCollider2D:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2085880627}
-  m_Enabled: 1
+  m_Enabled: 0
   serializedVersion: 3
   m_Density: 1
   m_Material: {fileID: 6200000, guid: 0591758bb78d2db41a5f64a9342e6a8b, type: 2}
@@ -3062,10 +3062,10 @@ Rigidbody2D:
   m_ExcludeLayers:
     serializedVersion: 2
     m_Bits: 0
-  m_Interpolate: 0
+  m_Interpolate: 1
   m_SleepingMode: 1
   m_CollisionDetection: 1
-  m_Constraints: 0
+  m_Constraints: 4
 --- !u!212 &2085880630
 SpriteRenderer:
   serializedVersion: 2
@@ -3141,28 +3141,6 @@ Transform:
   - {fileID: 1986439829}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &2085880632
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2085880627}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8e0b342dd5ccedd4687e9fb95faf2d3f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PlayerMove
-  moveSpeed: 15
-  jumpForce: 18
-  airControlMin: 0.8
-  groundDecel: 0.02
-  airDecel: 0.1
-  groundCheck: {fileID: 1986439829}
-  checkRadius: 0.2
-  groundLayer:
-    serializedVersion: 2
-    m_Bits: 64
 --- !u!114 &2085880633
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3190,10 +3168,10 @@ MonoBehaviour:
   m_ActionEvents: []
   m_NeverAutoSwitchControlSchemes: 0
   m_DefaultControlScheme: 
-  m_DefaultActionMap: 
+  m_DefaultActionMap: Player
   m_SplitScreenIndex: -1
   m_Camera: {fileID: 0}
---- !u!114 &2085880634
+--- !u!114 &2085880635
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -3202,14 +3180,70 @@ MonoBehaviour:
   m_GameObject: {fileID: 2085880627}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4c2b2b461dc9e1843841bfc457edfe41, type: 3}
+  m_Script: {fileID: 11500000, guid: 6e5c063169e1f474f9563a73bd3ce282, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PlayerTransformation
-  currentState: 0
-  normalColor: {r: 0, g: 1, b: 0, a: 1}
-  colorT1: {r: 1, g: 0, b: 0, a: 1}
-  colorT2: {r: 0, g: 0, b: 1, a: 1}
-  scaleT2: {x: 1.4, y: 0.7, z: 1}
+  m_EditorClassIdentifier: Assembly-CSharp::Player
+  rb: {fileID: 2085880629}
+  spriteRenderer: {fileID: 2085880630}
+  moveSpeed: 10
+  jumpForce: 15
+  superSpeedMultiplier: 1.5
+  superJumpMultiplier: 1.3
+  dashForce: 20
+  dashCooldown: 0.5
+  lastDashTime: 0
+  lastTapTime: 0
+  lastInput: {x: 0, y: 0}
+  lastDirection: {x: 0, y: 0}
+  airControlMin: 0.8
+  groundDecel: 0.01
+  airDecel: 0.1
+  groundCheck: {fileID: 1986439829}
+  groundLayer:
+    serializedVersion: 2
+    m_Bits: 64
+  isGrounded: 0
+  isJumpPressed: 0
+  canDoubleJump: 0
+  moveInput: {x: 0, y: 0}
+  initialScale: {x: 0.8, y: 1.4, z: 1}
+--- !u!70 &2085880636
+CapsuleCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2085880627}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Density: 1
+  m_Material: {fileID: 6200000, guid: 0591758bb78d2db41a5f64a9342e6a8b, type: 2}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_ForceSendLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ForceReceiveLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ContactCaptureLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_CallbackLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_IsTrigger: 0
+  m_UsedByEffector: 0
+  m_CompositeOperation: 0
+  m_CompositeOrder: 0
+  m_Offset: {x: 0, y: 0}
+  m_Size: {x: 1, y: 1}
+  m_Direction: 0
 --- !u!1001 &3191093994511839910
 PrefabInstance:
   m_ObjectHideFlags: 0

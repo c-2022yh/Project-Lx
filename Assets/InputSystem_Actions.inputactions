@@ -57,8 +57,8 @@
                     "id": "f1ba0d36-48eb-4cd5-b651-1c94a6531f70",
                     "expectedControlType": "",
                     "processors": "",
-                    "interactions": "",
-                    "initialStateCheck": false
+                    "interactions": "Press(behavior=2)",
+                    "initialStateCheck": true
                 },
                 {
                     "name": "Previous",
@@ -97,7 +97,7 @@
                     "initialStateCheck": false
                 },
                 {
-                    "name": "Transform1",
+                    "name": "TransformSuper",
                     "type": "Button",
                     "id": "a7bb5135-2659-44fc-b99c-5fcc2bbf8eef",
                     "expectedControlType": "",
@@ -106,7 +106,7 @@
                     "initialStateCheck": false
                 },
                 {
-                    "name": "Transform2",
+                    "name": "TransformAnimal",
                     "type": "Button",
                     "id": "4ffee128-312f-46fc-924d-54efe04b7c53",
                     "expectedControlType": "",
@@ -406,7 +406,7 @@
                     "name": "",
                     "id": "eb40bb66-4559-4dfa-9a2f-820438abb426",
                     "path": "<Keyboard>/c",
-                    "interactions": "Hold(duration=0.1)",
+                    "interactions": "",
                     "processors": "",
                     "groups": "Keyboard&Mouse",
                     "action": "Jump",
@@ -519,7 +519,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "Transform1",
+                    "action": "TransformSuper",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
@@ -530,7 +530,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "Transform2",
+                    "action": "TransformAnimal",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }
