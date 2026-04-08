@@ -10,7 +10,11 @@ public class PlayerTransformation : MonoBehaviour
     public enum PlayerState { Normal, Transform1, Transform2 }
     public PlayerState currentState = PlayerState.Normal;
 
+    private Vector3 initialScale;
+
     [Header("변신 비주얼 설정")]
+    public Color normalColor = Color.green;
+
     public Color colorT1 = Color.red;
     public Color colorT2 = Color.blue;
     public Vector3 scaleT2 = new Vector3(1.4f, 0.7f, 1f); // 변신2 크기 설정
@@ -22,15 +26,7 @@ public class PlayerTransformation : MonoBehaviour
         spriteRenderer = GetComponent<SpriteRenderer>();
         // 시작 시 기본 색상 적용
         spriteRenderer.color = normalColor;
-    }
-
-    // Input System에서 버튼 입력을 받았을 때 호출될 함수
-    public void OnTransform(InputValue value)
-    {
-        if (value.isPressed)
-        {
-            ToggleTransformation();
-        }
+        initialScale = transform.localScale;
     }
 
     // 변신 1 키 (예: 1)와 연결될 함수
@@ -58,8 +54,8 @@ public class PlayerTransformation : MonoBehaviour
         currentState = newState;
 
         // 모든 상태를 기본으로 리셋 후 필요한 것만 변경 (초기화 로직)
-        _spriteRenderer.color = Color.white;
-        transform.localScale = _initialScale;
+        spriteRenderer.color = Color.green;
+        transform.localScale = initialScale;
 
         switch (currentState)
         {
@@ -68,24 +64,16 @@ public class PlayerTransformation : MonoBehaviour
                 break;
 
             case PlayerState.Transform1:
-                _spriteRenderer.color = colorT1;
+                spriteRenderer.color = colorT1;
                 UnityEngine.Debug.Log("변신 1 완료!");
                 break;
 
             case PlayerState.Transform2:
-                _spriteRenderer.color = colorT2;
-                transform.localScale = scaleT2; // 크기 변경 적용
+                spriteRenderer.color = colorT2;
+                transform.localScale = scaleT2;
                 UnityEngine.Debug.Log("변신 2 완료!");
                 break;
         }
     }
 
-    private void ToggleTransformation()
-    {
-        isTransformed = !isTransformed;
-
-        // 삼항 연산자로 색상 변경
-        spriteRenderer.color = isTransformed ? transformedColor : normalColor;
-
-    }
 }
