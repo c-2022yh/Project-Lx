@@ -3,7 +3,6 @@ using UnityEngine;
 
 public class NormalState : PlayerState
 {
-    // 생성자: Player 본체를 부모(PlayerState)에게 전달
     public NormalState(Player player) : base(player) { }
 
     public override void EnterTransform()
@@ -27,7 +26,6 @@ public class NormalState : PlayerState
 
     public override void DoJump()
     {
-        // 땅에 있을 때만 점프 실행
         if (player.isGrounded)
         {
             player.ExecuteJump();

@@ -3247,7 +3247,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Player
   rb: {fileID: 2085880629}
-  spriteRenderer: {fileID: 2085880630}
+  spriteRenderer: {fileID: 0}
   moveSpeed: 10
   jumpForce: 15
   superSpeedMultiplier: 1.5
@@ -3269,6 +3269,7 @@ MonoBehaviour:
   canDoubleJump: 0
   moveInput: {x: 0, y: 0}
   initialScale: {x: 0.8, y: 1.4, z: 1}
+  scaleAnimal: {x: 1.4, y: 0.7, z: 1}
   dashInputPressed: 0
   isDashing: 0
   orb: {fileID: 1219774428}
