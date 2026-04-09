@@ -12,6 +12,12 @@ public class NormalState : PlayerState
         player.transform.localScale = player.initialScale;
 
         player.canDoubleJump = false;
+        Physics2D.SyncTransforms();
+    }
+
+    public override void ExitTransform()
+    {
+        
     }
 
     public override void DoUpdate()
@@ -34,6 +40,6 @@ public class NormalState : PlayerState
     }
     public override void OnTransformAnimal()
     {
-        //player.ChangeState(new SuperState(player));
+        player.ChangeState(new AnimalState(player));
     }
 }

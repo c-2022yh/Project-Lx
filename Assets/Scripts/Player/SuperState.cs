@@ -3,7 +3,6 @@ using UnityEngine;
 
 public class SuperState : PlayerState
 {
-    // 생성자 (부모에게 player 전달)
     public SuperState(Player player) : base(player) { }
 
     public override void EnterTransform()
@@ -12,13 +11,22 @@ public class SuperState : PlayerState
         player.transform.localScale = player.initialScale;
 
         player.canDoubleJump = true;
+
+        Debug.Log("<color=red>각성!</color>");
+
+    }
+
+    public override void ExitTransform()
+    {
+        Debug.Log("<color=white>각성 해제</color>");
+
     }
 
     public override void DoUpdate()
     {
         if (!player.isDashing)
         {
-            player.DoMove(1.5f, 1.2f);
+            player.DoMove(player.superSpeedMultiplier, 1.2f);
         }
 
 
@@ -52,4 +60,21 @@ public class SuperState : PlayerState
     {
         player.ChangeState(new NormalState(player));
     }
+
+    /*
+     
+    public override void Enter()
+    {
+        base.Enter();
+        // 플레이어가 들고 있는 Follower 스크립트를 찾아 모드 변경
+        player.orb.SetSuperMode(true);
+        Debug.Log("각성: 팔로워 거대화!");
+    }
+
+    public override void Exit()
+    {
+ public override void Exit()       base.Exit();
+        player.orb.SetSuperMode(false);
+        Debug.Log("해제: 팔로워 축소");
+    }*/
 }
