@@ -1,4 +1,4 @@
-using System.Diagnostics;
+using System.Collections;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -18,7 +18,7 @@ public class Player : MonoBehaviour
     public float superJumpMultiplier = 1.1f;
 
     [Header("Dash Settings")]
-    public float dashForce = 20f;
+    public float dashForce = 50f;
     public float dashCooldown = 0.5f;
     public float lastDashTime; //쿨타임
 
@@ -45,6 +45,9 @@ public class Player : MonoBehaviour
     public Vector3 initialScale;
 
    private PlayerState currentState;
+
+    public bool dashInputPressed;
+    public bool isDashing;
 
 
     void awake()
@@ -87,6 +90,15 @@ public class Player : MonoBehaviour
         if (value.isPressed)
             currentState?.DoJump();
     }
+
+
+    public void OnDash(InputValue value)
+    {
+        // 버튼을 누른 순간 true, 떼면 false가 됨
+        dashInputPressed = value.isPressed;
+    }
+
+
 
     public void OnTransformSuper(InputValue value) // E 키
     {
@@ -137,15 +149,53 @@ public class Player : MonoBehaviour
         rb.linearVelocity = new Vector2(rb.linearVelocity.x, jumpForce * jumpMultiplier);
     }
 
-    public void ExecuteDash(Vector2 direction)
+    public void ExecuteDash()
     {
         if (Time.time < lastDashTime + dashCooldown) return;
 
-        // 대쉬 시 순간적으로 속도 고정 (Y축은 유지하거나 0으로)
-        rb.linearVelocity = new Vector2(direction.x * dashForce, rb.linearVelocity.y);
+
+        if (moveInput.x == 0)
+        {
+            Debug.Log("<color=yellow>[Dash]</color> 방향키 입력이 없어 대쉬를 취소합니다.");
+            return;
+        }
+        
+        float dashDir = moveInput.x > 0 ? 1f : -1f;
+
+        // 2. 물리 적용
+        // Y축 속도를 0으로 만들면 공중 대쉬 시 아래로 처지지 않고 일직선으로 쇄도함
+        rb.linearVelocity = new Vector2(dashDir * dashForce, 0f);
+
         lastDashTime = Time.time;
+
+        // 3. (선택 사항) 대쉬 중 중력 잠시 끄기
+        StartCoroutine(DashRoutine(dashDir));
     }
 
+    private IEnumerator DashRoutine(float dir)
+    {
+        isDashing = true;
+
+        float originalGravity = rb.gravityScale;
+        rb.gravityScale = 0f;
+
+        // 텔레포트 느낌: 폭발적인 속도 주입
+        // dashForce를 인스펙터에서 50~100 정도로 높게 잡아보세요.
+        rb.linearVelocity = new Vector2(dir * dashForce, 0f);
+
+        Debug.Log("<color=yellow>[Dash]</color> " + dir);
+        // 0.1초만 아주 짧게 '촥' 이동
+        yield return new WaitForSeconds(0.025f);
+
+        // 핵심: 여기서 속도를 0으로 빡 잡아줘야 '스르륵' 안 가고 텔레포트처럼 멈춤
+        rb.linearVelocity = Vector2.zero;
+
+        rb.gravityScale = originalGravity;
+
+        
+        isDashing = false;
+
+    }
 
 
 

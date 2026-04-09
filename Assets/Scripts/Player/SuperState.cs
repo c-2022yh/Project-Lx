@@ -16,10 +16,21 @@ public class SuperState : PlayerState
 
     public override void DoUpdate()
     {
-        player.DoMove(1.5f, 1.2f);
+        if (!player.isDashing)
+        {
+            player.DoMove(1.5f, 1.2f);
+        }
 
-        //더블탭 감지
-        CheckDoubleTapDash();
+
+
+        if (player.dashInputPressed)
+        {
+            player.ExecuteDash();
+
+            // 버튼을 꾹 누르고 있어도 한 번만 나가게 하려면 
+            // 호출 후 false로 꺼버리는 처리가 필요할 수 있습니다.
+            player.dashInputPressed = false;
+        }
     }
 
     public override void DoJump()
@@ -35,25 +46,6 @@ public class SuperState : PlayerState
             player.ExecuteJump(player.superJumpMultiplier);
         }
     }
-
-    private void CheckDoubleTapDash()
-    {
-        if (player.moveInput.x != 0 && player.lastInput.x == 0)
-        {
-            float timeSinceLastTap = Time.time - player.lastTapTime;
-            Debug.Log($"입력 감지! 이전 입력과의 간격: {timeSinceLastTap}");
-
-            if (timeSinceLastTap < 0.5f && player.moveInput.x == player.lastDirection.x)
-            {
-                Debug.Log("조건 일치! 대쉬 실행!");
-                player.ExecuteDash(player.moveInput);
-            }
-
-            player.lastTapTime = Time.time;
-            player.lastDirection = player.moveInput;
-        }
-    }
-
 
 
     public override void OnTransformSuper()
