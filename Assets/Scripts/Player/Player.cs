@@ -22,6 +22,8 @@ public class Player : MonoBehaviour
     [Header("Dash Settings")]
     public float dashForce = 50f;
     public float dashCooldown = 0.5f;
+    public float waitSecond = 0.01f;
+
     public float lastDashTime; //쿨타임
 
     [Header("Friction (Lerp)")]
@@ -39,6 +41,8 @@ public class Player : MonoBehaviour
     public bool isJumpPressed;
     public bool canDoubleJump;
     public Vector2 moveInput;
+    private bool isFacingRight = true;
+
     public Vector3 initialScale;
     public Vector3 scaleAnimal = new Vector3(1.4f, 1f, 1f); //환수폼 크기 설정
 
@@ -52,7 +56,9 @@ public class Player : MonoBehaviour
 
     public FollowingOrb orb;
 
-    void awake()
+    [SerializeField] private GameObject ghostPrefab; //잔상 프리펩
+
+    void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
         spriteRenderer = GetComponent<SpriteRenderer>();
@@ -82,6 +88,24 @@ public class Player : MonoBehaviour
     public void OnMove(InputValue value)
     {
         moveInput = value.Get<Vector2>();
+
+        //이동 입력에 따라 방향 반전 체크
+        if (moveInput.x > 0 && !isFacingRight)
+        {
+            Flip();
+        }
+        else if (moveInput.x < 0 && isFacingRight)
+        {
+            Flip();
+        }
+    }
+
+    void Flip()
+    {
+        isFacingRight = !isFacingRight;// 상태 변경
+        Vector3 newScale = transform.localScale;
+        newScale.x *= -1;
+        transform.localScale = newScale;
     }
 
     public void OnJump(InputValue value)
@@ -172,18 +196,41 @@ public class Player : MonoBehaviour
     {
         isDashing = true;
 
-        float originalGravity = rb.gravityScale;
-        rb.gravityScale = 0f;
+        float originalGravity = rb.gravityScale; //중력 값
+        float originalDrag = rb.linearDamping; //공기 저항(마찰)
 
-        //텔레포트 느낌: 폭발적인 속도 주입
-        rb.linearVelocity = new Vector2(dir * dashForce, 0f);
+        rb.gravityScale = 0f; //중력 0
+        rb.linearDamping = 0f; //공기저항 0
+        //대쉬 처음부터 끝까지 같은 속도로 날아가게 함
 
-        Debug.Log("<color=yellow>[Dash]</color> " + dir);
 
-        yield return new WaitForSeconds(0.025f);
+        // --- [수정] 대쉬 시작 지점에 잔상 딱 하나 생성 ---
+        GameObject ghost = GhostPooler.Instance.GetGhost();
+        if (ghost != null)
+        {
+            ghost.SetActive(true);
+            ghost.GetComponent<GhostEffect>().Init(
+                GetComponent<SpriteRenderer>().sprite,
+                transform.position,
+                transform.rotation,
+                transform.localScale
+            );
+        }
+
+        //고정 이동 루프
+        float timer = 0f;
+        while (timer < waitSecond)
+        {
+            rb.linearVelocity = new Vector2(dir * dashForce, 0f);
+            timer += Time.fixedDeltaTime;
+            yield return new WaitForFixedUpdate();
+        }
 
         rb.linearVelocity = Vector2.zero;
         rb.gravityScale = originalGravity;
+        rb.linearDamping = originalDrag; 
+        //변수 원래대로 정상화
+
 
         isDashing = false;
 

@@ -15,7 +15,6 @@ public class AnimalState : PlayerState
         var rb = player.GetComponent<Rigidbody2D>();
         Debug.Log("<color=orange>동물 변신!</color>");
 
-
     }
 
     public override void ExitTransform()
