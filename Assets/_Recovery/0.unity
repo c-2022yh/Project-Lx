@@ -211,8 +211,8 @@ Transform:
   m_GameObject: {fileID: 379651448}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.5, y: 0, z: 0}
-  m_LocalScale: {x: 1.5, y: 0.07, z: 1}
+  m_LocalPosition: {x: 0.7, y: 0, z: 0}
+  m_LocalScale: {x: 1.2, y: 0.1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 601717196}
@@ -26867,7 +26867,7 @@ Transform:
   m_GameObject: {fileID: 601717195}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.4, y: 0, z: -0.1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -27409,10 +27409,9 @@ GameObject:
   - component: {fileID: 2085880630}
   - component: {fileID: 2085880629}
   - component: {fileID: 2085880635}
-  - component: {fileID: 2085880637}
   - component: {fileID: 2085880633}
   - component: {fileID: 2085880636}
-  - component: {fileID: 2085880638}
+  - component: {fileID: 2085880637}
   m_Layer: 7
   m_Name: Player
   m_TagString: Untagged
@@ -27571,7 +27570,7 @@ MonoBehaviour:
   jumpForce: 15
   dashForce: 200
   dashCooldown: 1
-  waitSecond: 0.01
+  waitSecond: 0.015
   superSpeedMultiplier: 1.5
   superJumpMultiplier: 1.3
   animalSpeedMultiplier: 1.8
@@ -27644,24 +27643,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8def16102bf09594bb614bd9d75654a1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerAttack
-  weaponHandle: {fileID: 601717195}
-  swordCollider: {fileID: 379651450}
-  attackDuration: 0.2
-  defaultAngle: 20
-  startAngle: 150
-  endAngle: 200
---- !u!114 &2085880638
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2085880627}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: cd50175fd4cb20a4abae1a12963df7ea, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PlayerMove
+  swordObject: {fileID: 379651448}
+  attackDuration: 0.1
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
