@@ -7,6 +7,7 @@ public class NormalState : PlayerState
 
     public override void EnterTransform()
     {
+        SyncVisualDirection();
         player.spriteRenderer.color = Color.green;
         player.transform.localScale = player.initialScale;
 

@@ -2,60 +2,82 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using System.Collections;
 
+[System.Serializable]
+public class AttackPattern
+{
+    public string attackName; //인스펙터 확인용
+    public float startAngle; //시작 각도
+    public float endAngle; //종료 각도
+    public float duration; //공격 속도
+    public bool isThrust; //찌르기 모드 여부
+    public float thrustDistance;
+}
+
 public class PlayerAttack : MonoBehaviour
 {
+    //인스펙터에서 연결
     [SerializeField] private GameObject weaponHandle;
+    [SerializeField] private GameObject swordVisual;
     [SerializeField] private Collider2D swordCollider;
 
-    [Header("Settings")]
-    [SerializeField] private float attackDuration = 0.3f;
+    [Header("Attack Sequences")]
+    [SerializeField] private AttackPattern[] patterns;
     [SerializeField] private float defaultAngle = 20f;
-    [SerializeField] private float startAngle = -80f;
-    [SerializeField] private float endAngle = 40f;
 
-    private bool isAttacking = false;
+    private int attackCount = 0;
+    private Vector3 originLocalPos;
 
     void Awake()
     {
+        //콜라이더, 오브젝트 연결
         if (swordCollider != null) swordCollider.enabled = false;
-
+        if (swordVisual != null) originLocalPos = swordVisual.transform.localPosition;
         weaponHandle.transform.localRotation = Quaternion.Euler(0, 0, defaultAngle);
     }
 
-    public void OnAttack(InputValue value)
+    public void ExecuteAttack(Player p)
     {
-        if (value.isPressed && !isAttacking)
-        {
-            StartCoroutine(AttackRoutine());
-        }
+        if (patterns.Length == 0) return;
+        //0내려베기, 1올려배기, 2찌르기 순서대로 무한 반복
+        int index = attackCount % patterns.Length;
+        StartCoroutine(AttackRoutine(p, patterns[index]));
+        attackCount++;
     }
 
-    IEnumerator AttackRoutine()
-    {
-        isAttacking = true;
 
-        // 공격 시작: 판정 On
+    IEnumerator AttackRoutine(Player p, AttackPattern data)
+    {
+        p.isAttacking = true;
         if (swordCollider != null) swordCollider.enabled = true;
 
         float elapsed = 0f;
-
-        while (elapsed < attackDuration)
+        while (elapsed < data.duration)
         {
             elapsed += Time.deltaTime;
-            float progress = elapsed / attackDuration;
+            float progress = elapsed / data.duration;
 
-            // 회전값 계산
-            float currentAngle = Mathf.Lerp(startAngle, endAngle, progress);
-            weaponHandle.transform.localRotation = Quaternion.Euler(0, 0, currentAngle);
-
-            // 중요: 다음 프레임까지 대기 (이게 없으면 회전 애니메이션이 안 보임)
+            if (data.isThrust) //찌르기
+            {
+                float moveAmount = Mathf.Sin(progress * Mathf.PI) * data.thrustDistance;
+                swordVisual.transform.localPosition = originLocalPos + new Vector3(moveAmount, 0, 0);
+                weaponHandle.transform.localRotation = Quaternion.Euler(0, 0, data.startAngle);
+            }
+            else //베기
+            {
+                float currentAngle = Mathf.Lerp(data.startAngle, data.endAngle, progress);
+                weaponHandle.transform.localRotation = Quaternion.Euler(0, 0, currentAngle);
+            }
             yield return null;
         }
 
-        // 공격 종료: 판정 Off 및 각도 복구
         if (swordCollider != null) swordCollider.enabled = false;
         weaponHandle.transform.localRotation = Quaternion.Euler(0, 0, defaultAngle);
+        if (swordVisual != null) swordVisual.transform.localPosition = originLocalPos;
 
-        isAttacking = false;
+        p.isAttacking = false;
     }
+
+
+
+
 }

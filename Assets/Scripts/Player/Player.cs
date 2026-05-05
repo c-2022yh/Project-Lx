@@ -43,13 +43,17 @@ public class Player : MonoBehaviour
     public Vector2 moveInput;
     public bool dashInputPressed;
     public bool isDashing;
+    public bool isAttacking;
     public bool isFacingRight = true;
 
     public Vector3 initialScale;
     public Vector3 scaleAnimal = new Vector3(1.4f, 1f, 1f); //환수폼 크기 설정
 
+    //컴포넌트 참조
     private PlayerState currentState;
     private PlayerMove playerMove;
+    private PlayerAttack playerAttack;
+
     public FollowingOrb orb;
     [SerializeField] private GameObject ghostPrefab; //잔상 프리펩
 
@@ -60,6 +64,7 @@ public class Player : MonoBehaviour
         initialScale = transform.localScale;
         rb.freezeRotation = true;
         playerMove = GetComponent<PlayerMove>();
+        playerAttack = GetComponent<PlayerAttack>();
 
         ChangeState(new NormalState(this));
     }
@@ -81,11 +86,13 @@ public class Player : MonoBehaviour
     public void OnMove(InputValue value) { moveInput = value.Get<Vector2>(); }
     public void OnJump(InputValue value) { if (value.isPressed) currentState?.DoJump(); }
     public void OnDash(InputValue value) { dashInputPressed = value.isPressed; }
-    public void OnTransformSuper(InputValue value) { if (value.isPressed) currentState?.OnTransformSuper(); }
-    public void OnTransformAnimal(InputValue value) { if (value.isPressed) currentState?.OnTransformAnimal(); }
+    public void OnAttack(InputValue value) { if (value.isPressed && !isAttacking) playerAttack.ExecuteAttack(this); }
+    public void OnTransformSuper(InputValue value) { if (value.isPressed && !isAttacking) currentState?.OnTransformSuper(); }
+    public void OnTransformAnimal(InputValue value) { if (value.isPressed && !isAttacking) currentState?.OnTransformAnimal(); }
     
     public void ChangeState(PlayerState newState)
     {
+        currentState?.ExitTransform();
         currentState = newState;
         currentState.EnterTransform();
     }

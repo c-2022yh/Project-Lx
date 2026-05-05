@@ -9,6 +9,7 @@ public class SuperState : PlayerState
     {
         player.spriteRenderer.color = Color.red;
         player.transform.localScale = player.initialScale;
+        SyncVisualDirection();
 
         player.canDoubleJump = true;
 

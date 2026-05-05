@@ -27590,6 +27590,7 @@ MonoBehaviour:
   moveInput: {x: 0, y: 0}
   dashInputPressed: 0
   isDashing: 0
+  isAttacking: 0
   isFacingRight: 1
   initialScale: {x: 0.8, y: 1.4, z: 1}
   scaleAnimal: {x: 1.4, y: 1, z: 1}
@@ -27645,11 +27646,28 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerAttack
   weaponHandle: {fileID: 601717195}
+  swordVisual: {fileID: 379651448}
   swordCollider: {fileID: 379651450}
-  attackDuration: 0.2
+  patterns:
+  - attackName: "\uB0B4\uB824\uBCA0\uAE30"
+    startAngle: 240
+    endAngle: 130
+    duration: 0.3
+    isThrust: 0
+    thrustDistance: 0
+  - attackName: "\uC62C\uB824\uBCA0\uAE30"
+    startAngle: 150
+    endAngle: 200
+    duration: 0.2
+    isThrust: 0
+    thrustDistance: 0
+  - attackName: "\uCC0C\uB974\uAE30"
+    startAngle: 180
+    endAngle: 180
+    duration: 0.2
+    isThrust: 1
+    thrustDistance: 1.5
   defaultAngle: 20
-  startAngle: 150
-  endAngle: 200
 --- !u!114 &2085880638
 MonoBehaviour:
   m_ObjectHideFlags: 0

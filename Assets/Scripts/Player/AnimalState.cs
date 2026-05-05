@@ -9,7 +9,7 @@ public class AnimalState : PlayerState
     {
         player.spriteRenderer.color = Color.yellow;
         player.transform.localScale = player.scaleAnimal;
-        Physics2D.SyncTransforms();
+        SyncVisualDirection();
 
 
         var rb = player.GetComponent<Rigidbody2D>();

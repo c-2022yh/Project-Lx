@@ -6,6 +6,8 @@ public class PlayerMove : MonoBehaviour
 
     private void Flip(Player p)
     {
+        if (p.isAttacking) return; //공격중이면 방향전환x
+
         p.isFacingRight = !p.isFacingRight;
         Vector3 newScale = p.transform.localScale;
         newScale.x *= -1;
