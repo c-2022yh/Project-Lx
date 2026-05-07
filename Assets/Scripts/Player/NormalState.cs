@@ -3,14 +3,12 @@ using UnityEngine;
 
 public class NormalState : PlayerState
 {
-    public NormalState(Player player) : base(player) { }
+    public NormalState(Player p) : base(p) { }
 
     public override void EnterTransform()
     {
-        SyncVisualDirection();
+        SyncVisualDirection(player.initialScale);
         player.spriteRenderer.color = Color.green;
-        player.transform.localScale = player.initialScale;
-
         player.canDoubleJump = false;
         Physics2D.SyncTransforms();
     }

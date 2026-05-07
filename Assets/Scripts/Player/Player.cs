@@ -44,6 +44,7 @@ public class Player : MonoBehaviour
     public bool dashInputPressed;
     public bool isDashing;
     public bool isAttacking;
+    public AttackPattern currentAttackPattern; //현재 공격패턴 정보
     public bool isFacingRight = true;
 
     public Vector3 initialScale;
@@ -72,11 +73,8 @@ public class Player : MonoBehaviour
     void Update()
     {
         isGrounded = Physics2D.OverlapBox(groundCheck.position, boxSize, 0f, groundLayer);
-        
         if (isGrounded) canDoubleJump = true;
-        
-        //현재 상태의 Update()실행
-        currentState?.DoUpdate();
+        currentState?.DoUpdate(); //현재 상태의 Update()실행
     }
 
     public void DoMove(float sMult = 1f, float aMult = 1f) => playerMove.DoMove(this, sMult, aMult);

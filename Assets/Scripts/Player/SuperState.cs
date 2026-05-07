@@ -3,16 +3,13 @@ using UnityEngine;
 
 public class SuperState : PlayerState
 {
-    public SuperState(Player player) : base(player) { }
+    public SuperState(Player p) : base(p) { }
 
     public override void EnterTransform()
     {
+        SyncVisualDirection(player.initialScale);
         player.spriteRenderer.color = Color.red;
-        player.transform.localScale = player.initialScale;
-        SyncVisualDirection();
-
         player.canDoubleJump = true;
-
         Debug.Log("<color=red>°¢¼º!</color>");
 
     }

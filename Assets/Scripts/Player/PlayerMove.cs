@@ -20,8 +20,15 @@ public class PlayerMove : MonoBehaviour
         if (p.moveInput.x > 0 && !p.isFacingRight) Flip(p);
         else if (p.moveInput.x < 0 && p.isFacingRight) Flip(p);
 
+        //공격 중일 때의 추가 속도 보정값 계산
+        float attackSpeedFactor = 1f;
+        if (p.isAttacking && p.currentAttackPattern != null)
+        {
+            attackSpeedFactor = p.currentAttackPattern.moveSpeedMultiplier;
+        }
+
         //목표 속도 계산 (보정값 적용)
-        float targetSpeedX = p.moveInput.x * (p.moveSpeed * speedMultiplier);
+        float targetSpeedX = p.moveInput.x * (p.moveSpeed * speedMultiplier) * attackSpeedFactor;
 
         //공중 제어 보정
         if (!p.isGrounded) targetSpeedX *= p.airControlMin;

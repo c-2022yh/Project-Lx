@@ -3,16 +3,14 @@ using UnityEngine;
 
 public class AnimalState : PlayerState
 {
-    public AnimalState(Player player) : base(player) { }
+    public AnimalState(Player p) : base(p) { }
 
     public override void EnterTransform()
     {
         player.spriteRenderer.color = Color.yellow;
-        player.transform.localScale = player.scaleAnimal;
-        SyncVisualDirection();
-
-
+        SyncVisualDirection(player.initialScale);
         var rb = player.GetComponent<Rigidbody2D>();
+        Physics2D.SyncTransforms();
         Debug.Log("<color=orange>동물 변신!</color>");
 
     }

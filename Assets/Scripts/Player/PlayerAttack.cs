@@ -9,8 +9,9 @@ public class AttackPattern
     public float startAngle; //시작 각도
     public float endAngle; //종료 각도
     public float duration; //공격 속도
-    public bool isThrust; //찌르기 모드 여부
-    public float thrustDistance;
+    public bool isThrust; //찌르기 공격인가?
+    public float thrustDistance; //찌르기 거리
+    public float moveSpeedMultiplier = 0.2f; //공격시 이동속도 보정값
 }
 
 public class PlayerAttack : MonoBehaviour
@@ -47,6 +48,7 @@ public class PlayerAttack : MonoBehaviour
 
     IEnumerator AttackRoutine(Player p, AttackPattern data)
     {
+        p.currentAttackPattern = data;
         p.isAttacking = true;
         if (swordCollider != null) swordCollider.enabled = true;
 
@@ -72,8 +74,9 @@ public class PlayerAttack : MonoBehaviour
 
         if (swordCollider != null) swordCollider.enabled = false;
         weaponHandle.transform.localRotation = Quaternion.Euler(0, 0, defaultAngle);
-        if (swordVisual != null) swordVisual.transform.localPosition = originLocalPos;
-
+        if (swordVisual != null) swordVisual.transform.localPosition = originLocalPos; 
+        
+        p.currentAttackPattern = null;
         p.isAttacking = false;
     }
 
