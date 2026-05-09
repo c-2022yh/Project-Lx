@@ -76,12 +76,12 @@ public class Player : MonoBehaviour
 
     void Update()
     {
-        isGrounded = Physics2D.OverlapBox(groundCheck.position, boxSize, 0f, groundLayer);
         if (isGrounded) canDoubleJump = true;
         currentState?.DoUpdate(); //현재 상태의 Update()실행
     }
     void FixedUpdate()
     {
+        isGrounded = Physics2D.OverlapBox(groundCheck.position, boxSize, 0f, groundLayer);
         currentState?.DoFixedUpdate();
     }
 

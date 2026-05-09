@@ -14,10 +14,15 @@ public class SkillData : ScriptableObject
     public float duration;     //스킬 지속 시간 (돌진 및 베기 속도)
 
     [Header("Visual (Slash)")]
-    public float startAngle;   // 베기 시작 각도
-    public float endAngle;     // 베기 종료 각도
-    public GameObject effectPrefab; // 전용 이펙트 (필요 시)
+    public float startAngle;   //베기 시작 각도
+    public float endAngle;     //베기 종료 각도
+    public GameObject effectPrefab; //전용 이펙트 (필요 시)
 
     [Header("Combat")]
-    public float damageMultiplier = 1.0f; // 데미지 배율
+    public float damageMultiplier = 1.0f; //데미지 배율
+
+    [Header("Indicator Settings")]
+    public Vector2 hitBoxSize = new Vector2(1f, 1f);
+    public Color indicatorColor = new Color(1f, 0.5f, 0.5f, 0.4f);
+    public Vector3 indicatorOffset = new Vector3(1f, 0f, 0f);
 }

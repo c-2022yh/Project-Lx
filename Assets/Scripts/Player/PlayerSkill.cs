@@ -1,6 +1,5 @@
 using System.Collections;
 using UnityEngine;
-using UnityEngine.InputSystem;
 
 public class PlayerSkill : MonoBehaviour
 {
@@ -14,74 +13,84 @@ public class PlayerSkill : MonoBehaviour
     [SerializeField] private GameObject weaponHandle;
     [SerializeField] private GameObject swordVisual;
     [SerializeField] private Collider2D swordCollider;
+    [SerializeField] private SkillRangeIndicator rangeIndicator;
 
-    [Header("Skill Data")]
+    [Header("Settings")]
     [SerializeField] private float defaultAngle = 20f;
 
-    private Vector3 originLocalPos;
+    // 쿨타임 상태 관리
+    private bool isACooldown;
+    private bool isSCooldown;
+    private bool isDCooldown;
+    private bool isFCooldown;
 
+    #region Input Execution
+    // 여기서 어떤 키인지 "A", "S" 등을 같이 넘겨줍니다.
+    public void ExecuteSkillA(Player p) => UseSkill(p, skillA, isACooldown, (v) => isACooldown = v, "A");
+    public void ExecuteSkillS(Player p) => UseSkill(p, skillS, isSCooldown, (v) => isSCooldown = v, "S");
+    public void ExecuteSkillD(Player p) => UseSkill(p, skillD, isDCooldown, (v) => isDCooldown = v, "D");
+    public void ExecuteSkillF(Player p) => UseSkill(p, skillF, isFCooldown, (v) => isFCooldown = v, "F");
+    #endregion
 
-    // 각 스킬의 마지막 사용 시간 (쿨타임 체크용)
-    private bool isSkillACooldown = false;
-    private bool isSkillSCooldown = false;
-    private bool isSkillDCooldown = false;
-    private bool isSkillFCooldown = false;
+    private void UseSkill(Player p, SkillData data, bool isCooldown, System.Action<bool> setCooldown, string keyType)
+    {
+        if (data == null || isCooldown || p.isAttacking || p.isSkillActive) return;
 
-    public void ExecuteSkillA(Player p)
-    {
-        if (isSkillACooldown || p.isAttacking) return;
-        Debug.Log("SkillA 시전!");
-        StartCoroutine(SkillACooldownRoutine(p, skillA));
-    }
-    public void ExecuteSkillS(Player p)
-    {
-        Debug.Log("SkillS");
-        //StartCoroutine(SkillRoutine(p, skillS));
-    }
-    public void ExecuteSkillD(Player p)
-    {
-        Debug.Log("SkillD");
-        //StartCoroutine(SkillRoutine(p, skillD));
-    }
-    public void ExecuteSkillF(Player p)
-    {
-        Debug.Log("SkillF");
-        //StartCoroutine(SkillRoutine(p, skillF));
+        // SkillMasterRoutine에 keyType("A", "S" 등)을 전달합니다.
+        StartCoroutine(SkillMasterRoutine(p, data, setCooldown, keyType));
     }
 
-    //스킬 쿨타임 관리 코루틴
-    IEnumerator SkillACooldownRoutine(Player p, SkillData data)
+    private IEnumerator SkillMasterRoutine(Player p, SkillData data, System.Action<bool> setCooldown, string keyType)
     {
-        isSkillACooldown = true;
-        yield return StartCoroutine(DashSlashRoutine(p, data));
+        setCooldown(true);
+        if (keyType == "A")
+        {
+            Debug.Log("A 스킬 시전!");
+            yield return StartCoroutine(DashSlashRoutine(p, data));
+        }
+        else if (keyType == "S")
+        {
+            // S키에 맞는 새로운 루틴이 생기면 여기에 연결 (지금은 예시)
+            Debug.Log("S 스킬 시전!");
+            //yield return StartCoroutine(DashSlashRoutine(p, data));
+        }
+        else if (keyType == "D")
+        {
+            Debug.Log("D 스킬 시전!");
+            //yield return StartCoroutine(DashSlashRoutine(p, data));
+        }
+        else if (keyType == "F")
+        {
+            Debug.Log("F 스킬 시전!");
+            //yield return StartCoroutine(DashSlashRoutine(p, data));
+        }
+
         yield return new WaitForSeconds(data.cooldown);
-        isSkillACooldown = false;
+        setCooldown(false);
     }
 
-
-    //이동 돌진 베기 코루틴
-    IEnumerator DashSlashRoutine(Player p, SkillData data)
+    //스킬 물리 로직 (돌진 및 베기)
+    private IEnumerator DashSlashRoutine(Player p, SkillData data)
     {
         p.isSkillActive = true;
         if (swordCollider != null) swordCollider.enabled = true;
 
-        float originalGravity = p.rb.gravityScale; //중력 값
-        float originalDrag = p.rb.linearDamping; //공기 저항(마찰)
+        float originalGravity = p.rb.gravityScale;
+        float originalDrag = p.rb.linearDamping;
 
-        p.rb.gravityScale = 0f; //중력 0
-        p.rb.linearDamping = 0f; //공기저항 0
-        //대쉬 처음부터 끝까지 같은 속도로 날아가게 함
+        p.rb.gravityScale = 0f;
+        p.rb.linearDamping = 0f;
 
-        //입력이 없으면 보는 방향, 있으면 입력 방향
         float dir = Mathf.Sign(p.transform.localScale.x);
-
         float dashSpeed = data.dashDistance / data.duration;
 
-        //고정 이동 루프
+        //범위 표시
+        if (rangeIndicator != null)
+            rangeIndicator.SetAndShow(data.hitBoxSize, data.indicatorColor, data.indicatorOffset);
+
         float timer = 0f;
         while (timer < data.duration)
         {
-            //무기 회전 로직
             if (weaponHandle != null)
             {
                 float progress = timer / data.duration;
@@ -89,8 +98,8 @@ public class PlayerSkill : MonoBehaviour
                 weaponHandle.transform.localRotation = Quaternion.Euler(0, 0, currentAngle);
             }
 
-            // 물리 속도 고정
             p.rb.linearVelocity = new Vector2(dir * dashSpeed, 0f);
+
             timer += Time.fixedDeltaTime;
             yield return new WaitForFixedUpdate();
         }
@@ -102,8 +111,9 @@ public class PlayerSkill : MonoBehaviour
         if (swordCollider != null) swordCollider.enabled = false;
         if (weaponHandle != null)
             weaponHandle.transform.localRotation = Quaternion.Euler(0, 0, defaultAngle);
-        
+
+        if (rangeIndicator != null) rangeIndicator.Hide();
+
         p.isSkillActive = false;
     }
-
 }
