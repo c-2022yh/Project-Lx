@@ -20,6 +20,10 @@ public class NormalState : PlayerState
 
     public override void DoUpdate()
     {
+
+    }
+    public override void DoFixedUpdate()
+    {
         player.DoMove();
     }
 

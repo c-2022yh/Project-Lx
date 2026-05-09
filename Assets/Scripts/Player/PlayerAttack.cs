@@ -25,8 +25,13 @@ public class PlayerAttack : MonoBehaviour
     [SerializeField] private AttackPattern[] patterns;
     [SerializeField] private float defaultAngle = 20f;
 
+    [Header("Combo Settings")]
+    [SerializeField] private float comboResetTime = 0.5f; //이 시간이 지나면 콤보 초기화 
+    private float lastAttackTime; //마지막 공격이 종료된 시간
+
     private int attackCount = 0;
     private Vector3 originLocalPos;
+
 
     void Awake()
     {
@@ -39,7 +44,14 @@ public class PlayerAttack : MonoBehaviour
     public void ExecuteAttack(Player p)
     {
         if (patterns.Length == 0) return;
-        //0내려베기, 1올려배기, 2찌르기 순서대로 무한 반복
+
+        //마지막 공격 종료 후 일정 시간이 지났는지 체크
+        if (Time.time > lastAttackTime + comboResetTime)
+        {
+            attackCount = 0; //콤보 초기화
+        }
+
+        //인덱스 계산 0,1,2
         int index = attackCount % patterns.Length;
         StartCoroutine(AttackRoutine(p, patterns[index]));
         attackCount++;
@@ -78,6 +90,8 @@ public class PlayerAttack : MonoBehaviour
         
         p.currentAttackPattern = null;
         p.isAttacking = false;
+
+        lastAttackTime = Time.time;
     }
 
 

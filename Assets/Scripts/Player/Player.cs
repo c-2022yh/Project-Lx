@@ -14,7 +14,7 @@ public class Player : MonoBehaviour
     public float jumpForce = 15f;
 
     [Header("Dash Settings")]
-    public float dashForce = 200f;
+    public float dashForce = 2f;
     public float dashCooldown = 0.5f;
     public float waitSecond = 0.01f;
 
@@ -42,8 +42,9 @@ public class Player : MonoBehaviour
     public bool canDoubleJump;
     public Vector2 moveInput;
     public bool dashInputPressed;
-    public bool isDashing;
-    public bool isAttacking;
+    public bool isDashing = false;
+    public bool isAttacking = false;
+    public bool isSkillActive = false;
     public AttackPattern currentAttackPattern; //현재 공격패턴 정보
     public bool isFacingRight = true;
 
@@ -54,6 +55,8 @@ public class Player : MonoBehaviour
     private PlayerState currentState;
     private PlayerMove playerMove;
     private PlayerAttack playerAttack;
+    private PlayerSkill playerSkill;
+
 
     public FollowingOrb orb;
     [SerializeField] private GameObject ghostPrefab; //잔상 프리펩
@@ -66,6 +69,7 @@ public class Player : MonoBehaviour
         rb.freezeRotation = true;
         playerMove = GetComponent<PlayerMove>();
         playerAttack = GetComponent<PlayerAttack>();
+        playerSkill = GetComponent<PlayerSkill>();
 
         ChangeState(new NormalState(this));
     }
@@ -75,6 +79,10 @@ public class Player : MonoBehaviour
         isGrounded = Physics2D.OverlapBox(groundCheck.position, boxSize, 0f, groundLayer);
         if (isGrounded) canDoubleJump = true;
         currentState?.DoUpdate(); //현재 상태의 Update()실행
+    }
+    void FixedUpdate()
+    {
+        currentState?.DoFixedUpdate();
     }
 
     public void DoMove(float sMult = 1f, float aMult = 1f) => playerMove.DoMove(this, sMult, aMult);
@@ -87,7 +95,12 @@ public class Player : MonoBehaviour
     public void OnAttack(InputValue value) { if (value.isPressed && !isAttacking) playerAttack.ExecuteAttack(this); }
     public void OnTransformSuper(InputValue value) { if (value.isPressed && !isAttacking) currentState?.OnTransformSuper(); }
     public void OnTransformAnimal(InputValue value) { if (value.isPressed && !isAttacking) currentState?.OnTransformAnimal(); }
-    
+    public void OnSkillA(InputValue value) { if (value.isPressed) playerSkill.ExecuteSkillA(this); }
+    public void OnSkillS(InputValue value) { if (value.isPressed) playerSkill.ExecuteSkillS(this); }
+    public void OnSkillD(InputValue value) { if (value.isPressed) playerSkill.ExecuteSkillD(this); }
+    public void OnSkillF(InputValue value) { if (value.isPressed) playerSkill.ExecuteSkillF(this); }
+
+
     public void ChangeState(PlayerState newState)
     {
         currentState?.ExitTransform();

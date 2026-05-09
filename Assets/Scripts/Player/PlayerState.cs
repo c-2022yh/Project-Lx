@@ -8,7 +8,9 @@ public abstract class PlayerState
     }
     public abstract void EnterTransform(); //상태 진입 시 색상/크기 변경
     public abstract void ExitTransform(); //상태 탈출 시 색상/크기 변경
-    public abstract void DoUpdate(); //이동 가감속 로직
+    public abstract void DoUpdate(); //입력, 타이머, 애니메이션 체크용
+    public abstract void DoFixedUpdate(); //물리 업데이트
+
     public abstract void DoJump();  //점프(단일/더블) 로직
 
     protected void SyncVisualDirection(Vector3 targetScale) //변신 시 바라보는 방향 동기화

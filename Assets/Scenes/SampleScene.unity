@@ -27408,11 +27408,12 @@ GameObject:
   - component: {fileID: 2085880631}
   - component: {fileID: 2085880630}
   - component: {fileID: 2085880629}
+  - component: {fileID: 2085880636}
   - component: {fileID: 2085880635}
   - component: {fileID: 2085880637}
   - component: {fileID: 2085880633}
-  - component: {fileID: 2085880636}
   - component: {fileID: 2085880638}
+  - component: {fileID: 2085880639}
   m_Layer: 7
   m_Name: Player
   m_TagString: Untagged
@@ -27569,7 +27570,7 @@ MonoBehaviour:
   spriteRenderer: {fileID: 2085880630}
   moveSpeed: 10
   jumpForce: 15
-  dashForce: 200
+  dashForce: 2
   dashCooldown: 1
   waitSecond: 0.01
   superSpeedMultiplier: 1.5
@@ -27591,6 +27592,7 @@ MonoBehaviour:
   dashInputPressed: 0
   isDashing: 0
   isAttacking: 0
+  isSkillActive: 0
   currentAttackPattern:
     attackName: 
     startAngle: 0
@@ -27657,6 +27659,13 @@ MonoBehaviour:
   swordVisual: {fileID: 379651448}
   swordCollider: {fileID: 379651450}
   patterns:
+  - attackName: "\uC62C\uB824\uBCA0\uAE30"
+    startAngle: 150
+    endAngle: 200
+    duration: 0.2
+    isThrust: 0
+    thrustDistance: 0
+    moveSpeedMultiplier: 0.2
   - attackName: "\uB0B4\uB824\uBCA0\uAE30"
     startAngle: 240
     endAngle: 130
@@ -27664,21 +27673,15 @@ MonoBehaviour:
     isThrust: 0
     thrustDistance: 0
     moveSpeedMultiplier: 0.2
-  - attackName: "\uC62C\uB824\uBCA0\uAE30"
-    startAngle: 150
-    endAngle: 200
-    duration: 0.2
-    isThrust: 0
-    thrustDistance: 0
-    moveSpeedMultiplier: 0.3
   - attackName: "\uCC0C\uB974\uAE30"
     startAngle: 180
     endAngle: 180
     duration: 0.2
     isThrust: 1
-    thrustDistance: 1.5
+    thrustDistance: 2
     moveSpeedMultiplier: 0
   defaultAngle: 20
+  comboResetTime: 0.5
 --- !u!114 &2085880638
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -27691,6 +27694,26 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cd50175fd4cb20a4abae1a12963df7ea, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerMove
+--- !u!114 &2085880639
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2085880627}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ee194745dbaaa9f4586bebeff30783e6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerSkill
+  skillA: {fileID: 11400000, guid: 3a5ab567ab6580e4f9037a70163c7265, type: 2}
+  skillS: {fileID: 0}
+  skillD: {fileID: 0}
+  skillF: {fileID: 0}
+  weaponHandle: {fileID: 601717195}
+  swordVisual: {fileID: 379651448}
+  swordCollider: {fileID: 379651450}
+  defaultAngle: 20
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0

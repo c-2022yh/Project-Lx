@@ -22,18 +22,18 @@ public class SuperState : PlayerState
 
     public override void DoUpdate()
     {
-        if (!player.isDashing)
-        {
-            player.DoMove(player.superSpeedMultiplier, 1.2f);
-        }
-
-
-
         if (player.dashInputPressed)
         {
             player.ExecuteDash();
 
             player.dashInputPressed = false;
+        }
+    }
+    public override void DoFixedUpdate()
+    {
+        if (!player.isDashing && !player.isSkillActive)
+        {
+            player.DoMove(player.superSpeedMultiplier, 1.2f);
         }
     }
 

@@ -23,7 +23,14 @@ public class AnimalState : PlayerState
 
     public override void DoUpdate()
     {
-        player.DoMove(player.animalSpeedMultiplier, 2.0f);
+
+    }
+    public override void DoFixedUpdate()
+    {
+        if (!player.isDashing && !player.isSkillActive)
+        {
+            player.DoMove(player.superSpeedMultiplier, 2.0f);
+        }
     }
 
     public override void DoJump()

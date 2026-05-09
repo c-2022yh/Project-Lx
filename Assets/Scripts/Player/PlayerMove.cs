@@ -16,6 +16,11 @@ public class PlayerMove : MonoBehaviour
 
     public void DoMove(Player p, float speedMultiplier = 1f, float accelMultiplier = 1f)
     {
+        if (p.isSkillActive || p.isDashing)
+        {
+            // 이미 루틴에서 속도를 정해주고 있으니, 여기서 또 건드리면 안 됩니다.
+            return;
+        }
         //움직이는 방향 바라보기
         if (p.moveInput.x > 0 && !p.isFacingRight) Flip(p);
         else if (p.moveInput.x < 0 && p.isFacingRight) Flip(p);
@@ -95,7 +100,7 @@ public class PlayerMove : MonoBehaviour
         float timer = 0f;
         while (timer < p.waitSecond)
         {
-            p.rb.linearVelocity = new Vector2(dir * p.dashForce, 0f);
+            p.rb.linearVelocity = new Vector2(dir * p.dashForce / p.waitSecond, 0f);
             timer += Time.fixedDeltaTime;
             yield return new WaitForFixedUpdate();
         }
