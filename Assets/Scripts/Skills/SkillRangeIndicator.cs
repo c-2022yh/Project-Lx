@@ -2,24 +2,22 @@ using UnityEngine;
 
 public class SkillRangeIndicator : MonoBehaviour
 {
-    private SpriteRenderer sr;
+    [SerializeField] private SpriteRenderer spriteRenderer;
 
-    private void Awake()
+    void Awake()
     {
-        sr = GetComponent<SpriteRenderer>();
-        gameObject.SetActive(false);
+        Hide();
     }
 
-    //스킬 데이터로부터 설정을 받아오는 함수
-    public void SetAndShow(Vector2 size, Color color, Vector3 offset)
+    public void SetAndShow(Vector2 size, Color color, Vector3 startPos, float direction)
     {
         gameObject.SetActive(true);
+        transform.localScale = new Vector3(size.x, size.y, 1f);
 
-        transform.localScale = size;
+        float offsetX = (size.x / 2f) * direction;
+        transform.position = new Vector3(startPos.x + offsetX, startPos.y, startPos.z);
 
-        if (sr != null) sr.color = color;
-
-        transform.localPosition = offset;
+        if (spriteRenderer != null) spriteRenderer.color = color;
     }
 
     public void Hide()
