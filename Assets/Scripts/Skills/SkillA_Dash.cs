@@ -5,8 +5,16 @@ using System.Collections;
 
 public class SkillA_Dash : SkillData
 {
-    public override IEnumerator ProcessSkill(Player p, SkillRangeIndicator rangeindicator, Transform weaponHandle, Collider2D swordCollider)
+    public override IEnumerator ProcessSkill(
+       Player p,
+       SkillRangeIndicator indicator,
+       GameObject weaponHandle,
+       Collider2D swordCollider,
+       float defaultAngle)
     {
+        p.isSkillActive = true;
+        if (swordCollider != null) swordCollider.enabled = true;
+
         float dir = Mathf.Sign(p.transform.localScale.x);
 
         //벽 체크 및 거리 계산
@@ -14,10 +22,10 @@ public class SkillA_Dash : SkillData
         float actualDist = hit.collider ? hit.distance : dashDistance;
 
         //인디케이터 표시
-        if (rangeindicator != null)
+        if (indicator != null)
         {
-            rangeindicator.transform.SetParent(null);
-            rangeindicator.SetAndShow(new Vector2(actualDist, hitBoxSize.y), indicatorColor, p.transform.position, dir);
+            indicator.transform.SetParent(null);
+            indicator.SetAndShow(new Vector2(actualDist, hitBoxSize.y), indicatorColor, p.transform.position, dir);
         }
 
         if (swordCollider != null) swordCollider.enabled = true;
@@ -27,13 +35,13 @@ public class SkillA_Dash : SkillData
 
         // 3. 이동 및 회전 루프
         float timer = 0f;
-        float speed = actualDist / duration;
+        float speed = actualDist / duration * 0.5f;
         while (timer < duration)
         {
             if (weaponHandle != null)
             {
                 float angle = Mathf.Lerp(startAngle, endAngle, timer / duration);
-                weaponHandle.localRotation = Quaternion.Euler(0, 0, angle);
+                weaponHandle.transform.localRotation = Quaternion.Euler(0, 0, 1);
             }
             p.rb.linearVelocity = new Vector2(dir * speed, 0f);
             timer += Time.fixedDeltaTime;
@@ -47,5 +55,8 @@ public class SkillA_Dash : SkillData
 
         yield return new WaitForSeconds(0.1f);
         if (indicator != null) indicator.Hide();
+        
+        p.isSkillActive = false;
+
     }
 }

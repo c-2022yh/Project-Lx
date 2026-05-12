@@ -27792,7 +27792,6 @@ MonoBehaviour:
   skillD: {fileID: 11400000, guid: 9fd5bf915eefe4049a60f1fc326ad17e, type: 2}
   skillF: {fileID: 11400000, guid: 401216e17c71cb24f8ea92cee54f8709, type: 2}
   weaponHandle: {fileID: 601717195}
-  swordVisual: {fileID: 379651448}
   swordCollider: {fileID: 379651450}
   rangeIndicator: {fileID: 250930144}
   defaultAngle: 20

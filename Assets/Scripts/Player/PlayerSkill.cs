@@ -23,12 +23,14 @@ public class PlayerSkill : MonoBehaviour
     public void ExecuteSkillD(Player p) => StartCoroutine(HandleSkill(p, skillD, v => isDCooldown = v, isDCooldown, "D"));
     public void ExecuteSkillF(Player p) => StartCoroutine(HandleSkill(p, skillF, v => isFCooldown = v, isFCooldown, "F"));
 
+    // 2. 이 코루틴의 이름을 HandleSkill로 변경 (중복 회피)
     private IEnumerator HandleSkill(Player p, SkillData data, System.Action<bool> setCd, bool onCd, string key)
     {
+        // 공통 차단 조건
         if (data == null || onCd || p.isAttacking || p.isSkillActive) yield break;
-        if ((key == "D" || key == "S") && !p.isGrounded) yield break;
+        if (key == "D" && !p.isGrounded) yield break;
 
-        //F 스킬 특수 처리 (매니저가 그림자 객체를 들고 있어야 함)
+        // F 스킬 특수 로직
         if (key == "F")
         {
             if (currentShadow == null)
@@ -50,9 +52,11 @@ public class PlayerSkill : MonoBehaviour
             yield break;
         }
 
-        // 일반 스킬 실행
+        // 일반 스킬 실행 (데이터 안에 있는 ProcessSkill 호출)
         setCd(true);
+        // 여기서 data.ProcessSkill에 필요한 5개 인자를 정확히 전달합니다.
         yield return StartCoroutine(data.ProcessSkill(p, rangeIndicator, weaponHandle, swordCollider, defaultAngle));
+
         yield return new WaitForSeconds(data.cooldown);
         setCd(false);
     }

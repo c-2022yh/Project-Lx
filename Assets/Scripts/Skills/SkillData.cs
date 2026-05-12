@@ -4,9 +4,6 @@ using System.Collections;
 //프로젝트에서 스킬데이터 SO를 만들수 있도록 설정
 [CreateAssetMenu(fileName = "NewSkill", menuName = "ScriptableObjects/SkillData")]
 
-
-
-
 public abstract class SkillData : ScriptableObject
 {
     [Header("Basic Info")]
@@ -34,8 +31,10 @@ public abstract class SkillData : ScriptableObject
 
 
     //스킬 실행하는 가상 함수
-    public abstract IEnumerator ProcessSkill(Player p,
-                                            SkillRangeIndicator indicator,
-                                            Transform weaponHandle,
-                                            Collider2D swordCollider);
+    public abstract IEnumerator ProcessSkill(
+        Player p,
+        SkillRangeIndicator indicator,
+        GameObject weaponHandle,
+        Collider2D swordCollider,
+        float defaultAngle);
 }
