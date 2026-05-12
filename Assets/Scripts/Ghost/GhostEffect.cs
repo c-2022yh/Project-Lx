@@ -20,7 +20,7 @@ public class GhostEffect : MonoBehaviour
 
         // 알파값 조절
         alpha = 1f;
-        sr.color = new Color(1f, 0.2f, 0.2f, 1f); 
+        sr.color = new Color(1f, 1f, 0.8f, 0.5f); 
     }
     private void Update()
     {

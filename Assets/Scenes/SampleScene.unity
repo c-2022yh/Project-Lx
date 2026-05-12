@@ -546,7 +546,7 @@ Transform:
   m_GameObject: {fileID: 575089867}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: -1.3, y: 1, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -27399,11 +27399,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 9069123986871723739, guid: 356533b922e7b83449881f459722ecb1, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 2.39925
+      value: 300
       objectReference: {fileID: 0}
     - target: {fileID: 9069123986871723739, guid: 356533b922e7b83449881f459722ecb1, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 2.7511895
+      value: 300
       objectReference: {fileID: 0}
     - target: {fileID: 9069123986871723739, guid: 356533b922e7b83449881f459722ecb1, type: 3}
       propertyPath: m_LocalPosition.z
@@ -27651,7 +27651,7 @@ MonoBehaviour:
   spriteRenderer: {fileID: 2085880630}
   moveSpeed: 10
   jumpForce: 15
-  dashForce: 2
+  dashForce: 1.5
   dashCooldown: 1
   waitSecond: 0.01
   superSpeedMultiplier: 1.5
@@ -27811,11 +27811,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7640754167466337973, guid: 1aef8a43828f4a0478dceb36e864aa1f, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -10.1214
+      value: 300
       objectReference: {fileID: 0}
     - target: {fileID: 7640754167466337973, guid: 1aef8a43828f4a0478dceb36e864aa1f, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 17.3533
+      value: 300
       objectReference: {fileID: 0}
     - target: {fileID: 7640754167466337973, guid: 1aef8a43828f4a0478dceb36e864aa1f, type: 3}
       propertyPath: m_LocalPosition.z

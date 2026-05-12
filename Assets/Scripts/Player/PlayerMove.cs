@@ -16,11 +16,9 @@ public class PlayerMove : MonoBehaviour
 
     public void DoMove(Player p, float speedMultiplier = 1f, float accelMultiplier = 1f)
     {
-        if (p.isSkillActive || p.isDashing)
-        {
-            // 이미 루틴에서 속도를 정해주고 있으니, 여기서 또 건드리면 안 됩니다.
-            return;
-        }
+        if (p.isSkillActive || p.isDashing)  return;
+
+
         //움직이는 방향 바라보기
         if (p.moveInput.x > 0 && !p.isFacingRight) Flip(p);
         else if (p.moveInput.x < 0 && p.isFacingRight) Flip(p);
@@ -51,6 +49,7 @@ public class PlayerMove : MonoBehaviour
         p.rb.linearVelocity = new Vector2(newSpeedX, p.rb.linearVelocity.y);
     }
 
+    //점프 실행
     public void ExecuteJump(Player p, float jumpMultiplier = 1f)
     {
         p.rb.linearVelocity = new Vector2(p.rb.linearVelocity.x, p.jumpForce * jumpMultiplier);
@@ -59,13 +58,8 @@ public class PlayerMove : MonoBehaviour
     public void ExecuteDash(Player p)
     {
         if (Time.time < p.lastDashTime + p.dashCooldown) return;
-        if(p.moveInput.x == 0)
-        {
-            Debug.Log("<color=yellow>[Dash]</color> 방향키 입력 없어 대쉬 취소");
-            return;
-        }
 
-        float dashDir = p.moveInput.x > 0 ? 1f : -1f;
+        float dashDir = Mathf.Sign(p.transform.localScale.x);
         p.lastDashTime = Time.time;
 
         //대쉬 중 중력 잠시 끄기
@@ -76,12 +70,8 @@ public class PlayerMove : MonoBehaviour
     {
         p.isDashing = true;
 
-        float originalGravity = p.rb.gravityScale; //중력 값
-        float originalDrag = p.rb.linearDamping; //공기 저항(마찰)
-
-        p.rb.gravityScale = 0f; //중력 0
-        p.rb.linearDamping = 0f; //공기저항 0
-        //대쉬 처음부터 끝까지 같은 속도로 날아가게 함
+        //중력 제거
+        p.SetPhysicsFreeze(true);
 
         //대쉬 시작 지점에 잔상
         GameObject ghost = GhostPooler.Instance.GetGhost();
@@ -105,9 +95,8 @@ public class PlayerMove : MonoBehaviour
             yield return new WaitForFixedUpdate();
         }
 
-        p.rb.linearVelocity = Vector2.zero;
-        p.rb.gravityScale = originalGravity;
-        p.rb.linearDamping = originalDrag;
+        //중력 재가동
+        p.SetPhysicsFreeze(false);
 
         p.isDashing = false;
 
