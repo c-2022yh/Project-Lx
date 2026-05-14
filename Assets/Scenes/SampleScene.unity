@@ -161,7 +161,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EnemyPooler
   enemyPrefab: {fileID: 1525100744247835566, guid: 9327f6c6fb11400489f8551ee42588e9, type: 3}
-  poolSize: 10
+  poolSize: 100
 --- !u!4 &265026799
 Transform:
   m_ObjectHideFlags: 0
@@ -189,7 +189,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9085421495ad5254fbe948ebcc0d719a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EnemySpawner
-  spawnRate: 5
+  spawnRate: 2
   minX: -90
   maxX: 0
   minY: -1
@@ -27759,7 +27759,7 @@ MonoBehaviour:
     endAngle: 180
     duration: 0.2
     isThrust: 1
-    thrustDistance: 2
+    thrustDistance: -1
     moveSpeedMultiplier: 0
   defaultAngle: 20
   comboResetTime: 0.5
