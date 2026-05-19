@@ -27649,28 +27649,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Player
   rb: {fileID: 2085880629}
   spriteRenderer: {fileID: 2085880630}
-  moveSpeed: 10
-  jumpForce: 15
-  dashForce: 2
-  dashCooldown: 1
-  waitSecond: 0.01
-  superSpeedMultiplier: 1.5
-  superJumpMultiplier: 1.3
-  animalSpeedMultiplier: 1.8
-  animalJumpMultiplier: 1
-  lastDashTime: 0
-  airControlMin: 0.8
-  groundDecel: 0.01
-  airDecel: 0.1
-  groundCheck: {fileID: 1986439829}
-  groundLayer:
-    serializedVersion: 2
-    m_Bits: 64
   isGrounded: 0
-  isJumpPressed: 0
-  canDoubleJump: 0
   moveInput: {x: 0, y: 0}
-  dashInputPressed: 0
   isDashing: 0
   isAttacking: 0
   isSkillActive: 0
@@ -27683,6 +27663,14 @@ MonoBehaviour:
     thrustDistance: 0
     moveSpeedMultiplier: 0.2
   isFacingRight: 1
+  groundCheck: {fileID: 1986439829}
+  groundLayer:
+    serializedVersion: 2
+    m_Bits: 64
+  superSpeedMultiplier: 1.5
+  superJumpMultiplier: 1.3
+  animalSpeedMultiplier: 1.8
+  animalJumpMultiplier: 1
   initialScale: {x: 0.8, y: 1.4, z: 1}
   scaleAnimal: {x: 1.4, y: 1, z: 1}
   orb: {fileID: 1219774428}
@@ -27775,6 +27763,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cd50175fd4cb20a4abae1a12963df7ea, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerMove
+  moveSpeed: 10
+  jumpForce: 15
+  jumpCooldown: 0.4
+  dashForce: 2
+  dashCooldown: 0.5
+  waitSecond: 0.01
+  lastDashTime: 0
+  airControlMin: 0.8
+  groundDecel: 0.01
+  airDecel: 0.1
 --- !u!114 &2085880639
 MonoBehaviour:
   m_ObjectHideFlags: 0

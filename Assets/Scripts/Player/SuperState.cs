@@ -9,7 +9,6 @@ public class SuperState : PlayerState
     {
         SyncVisualDirection(player.initialScale);
         player.spriteRenderer.color = Color.red;
-        player.canDoubleJump = true;
         Debug.Log("<color=red>각성!</color>");
 
     }
@@ -22,34 +21,19 @@ public class SuperState : PlayerState
 
     public override void DoUpdate()
     {
-        if (player.dashInputPressed)
-        {
-            player.ExecuteDash();
 
-            player.dashInputPressed = false;
-        }
     }
     public override void DoFixedUpdate()
     {
-        if (!player.isDashing && !player.isSkillActive)
-        {
-            player.DoMove(player.superSpeedMultiplier, 1.2f);
-        }
+        player.ExecuteMove(player.superSpeedMultiplier, 1.2f);
+    }
+    public override void DoDoubleJump()
+    {
+
     }
 
-    public override void DoJump()
-    {
-        //땅에 있거나, 공중 점프가 가능할 때 실행
-        if (player.isGrounded) //첫 점프
-        {
-            player.ExecuteJump(player.superJumpMultiplier);
-        }
-        else if (player.canDoubleJump) //공중에서 더블 점프
-        {
-            player.canDoubleJump = false;
-            player.ExecuteJump(player.superJumpMultiplier);
-        }
-    }
+
+
 
 
     public override void OnTransformSuper()

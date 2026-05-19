@@ -6,12 +6,21 @@ public class PlayerMove : MonoBehaviour
     //이동속도 세팅
     [Header("Movement Settings")]
     public float moveSpeed = 10f;
-    public float jumpForce = 15f;
 
-    //점프 쿨타임 세팅
-    [Header("Jump Cooldown Settings")]
-    public float jumpCooldown = 0.5f;
+    //점프 세팅
+    [Header("Jump Settings")]
+    public float jumpForce = 15f;
+    public float jumpCooldown = 0.4f;
     private float lastJumpTime = -999f;
+    private bool canAirJump = true;
+
+    // ★ 복잡한 타이머 대신 딱 3개만 선언 (기록용 시간 변수)
+    [Header("Jump Juice")]
+    public float coyoteTime = 0.15f;
+    public float bufferTime = 0.15f;
+    private float lastGroundedTime = -999f;  // 마지막으로 땅에 있었던 시간
+    private float lastJumpPressTime = -999f; // 마지막으로 점프키를 누른 시간
+    
 
     //대쉬관련 세팅
     [Header("Dash Settings")]
@@ -26,12 +35,6 @@ public class PlayerMove : MonoBehaviour
     [Range(0f, 0.3f)] public float groundDecel = 0.01f;
     [Range(0f, 0.5f)] public float airDecel = 0.1f;
 
-
-    //임시 내부 계산용 변수
-    private float targetVelocityX;
-    private float targetVelocityY;
-
-
     private void Flip(Player p)
     {
         if (p.isAttacking || p.isDashing || p.isSkillActive) return; //공격중이면 방향전환x
@@ -42,15 +45,17 @@ public class PlayerMove : MonoBehaviour
         p.transform.localScale = newScale;
     }
 
-    // [PROCESS]
-
-    public void ProcessMove(Player p, float speedMultiplier = 1f, float accelMultiplier = 1f)
+    public void ResetAirJump()
     {
-        if (p.isSkillActive || p.isDashing)
-        {
-            // 이미 루틴에서 속도를 정해주고 있으니, 여기서 또 건드리면 안 됩니다.
-            return;
-        }
+        canAirJump = true;
+    }
+
+
+    ///이동 함수
+    public void ExecuteMove(Player p, float speedMultiplier = 1f, float accelMultiplier = 1f)
+    {
+        if (p.isSkillActive || p.isDashing) return;
+        
         //움직이는 방향 바라보기
         if (p.moveInput.x > 0 && !p.isFacingRight) Flip(p);
         else if (p.moveInput.x < 0 && p.isFacingRight) Flip(p);
@@ -76,20 +81,44 @@ public class PlayerMove : MonoBehaviour
         //일정량의 작은 미끄러짐은 0으로 보정
         if (p.moveInput.x == 0 && Mathf.Abs(calculatedX) < 0.1f) calculatedX = 0f;
 
-        targetVelocityX = calculatedX;
-        
         //움직임 실행
-        ExecuteMove(p);
+        p.rb.linearVelocity = new Vector2(calculatedX, p.rb.linearVelocity.y);
     }
 
+    ///점프 함수
     public void ExecuteJump(Player p, float jumpMultiplier = 1f)
     {
-        p.rb.linearVelocity = new Vector2(p.rb.linearVelocity.x, targetVelocityY);
+        if (p.isSkillActive || p.isDashing) return;
+
+        float calculatedY = jumpForce * jumpMultiplier;
+
+        lastJumpPressTime = Time.time;
+
+        //지상 점프
+        bool isCoyoteValid = (Time.time - lastGroundedTime <= coyoteTime);
+        if ((p.isGrounded || isCoyoteValid) && Time.time >= lastJumpTime + jumpCooldown)
+        {
+            lastJumpPressTime = -999f; // 지상 점프를 했으니 버퍼 초기화
+            lastGroundedTime = -999f;  // 코요테 타임 소모
+
+            lastJumpTime = Time.time;
+            p.rb.linearVelocity = new Vector2(p.rb.linearVelocity.x, calculatedY);
+        }
+        //공중 점프
+        else if (!p.isGrounded && canAirJump)
+        {
+            canAirJump = false; //발동 즉시 트리거 해제, 연속 공중점프 차단
+            lastJumpTime = Time.time;
+            p.rb.linearVelocity = new Vector2(p.rb.linearVelocity.x, calculatedY);
+        }
+
+
     }
+
 
     public void ExecuteDash(Player p)
     {
-        if (Time.time < p.lastDashTime + p.dashCooldown) return;
+        if (Time.time < lastDashTime + dashCooldown) return;
         if(p.moveInput.x == 0)
         {
             Debug.Log("<color=yellow>[Dash]</color> 방향키 입력 없어 대쉬 취소");
@@ -97,7 +126,7 @@ public class PlayerMove : MonoBehaviour
         }
 
         float dashDir = p.moveInput.x > 0 ? 1f : -1f;
-        p.lastDashTime = Time.time;
+        lastDashTime = Time.time;
 
         //대쉬 중 중력 잠시 끄기
         StartCoroutine(DashRoutine(p, dashDir));

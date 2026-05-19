@@ -27,8 +27,7 @@ public class AnimalState : PlayerState
     }
     public override void DoFixedUpdate()
     {
-        player.ProcessMove();
-        player.ProcessJump();
+
     }
 
     public override void DoDoubleJump()

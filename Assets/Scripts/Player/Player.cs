@@ -12,10 +12,8 @@ public class Player : MonoBehaviour
     //플레이어 상태 처리
     [Header("State Data")]
     public bool isGrounded;
-    public bool isJumpPressed;
-    public bool canDoubleJump;
     public Vector2 moveInput;
-    public bool dashInputPressed;
+
     public bool isDashing = false;
     public bool isAttacking = false;
     public bool isSkillActive = false;
@@ -39,8 +37,6 @@ public class Player : MonoBehaviour
     public Vector3 scaleAnimal = new Vector3(1.4f, 1f, 1f); //환수폼 크기 설정
 
     
-
-
     //중력 값을 저장하는 변수 freeze 함수 내부에서 사용
     private float originalGravity;
     private float originalDrag;
@@ -75,28 +71,25 @@ public class Player : MonoBehaviour
 
     void Update()
     {
-        if (isGrounded) canDoubleJump = true;
         currentState?.DoUpdate(); //현재 상태의 Update()실행
     }
     void FixedUpdate()
     {
         isGrounded = Physics2D.OverlapBox(groundCheck.position, boxSize, 0f, groundLayer);
+
+        if (isGrounded && rb.linearVelocity.y <= 0.01f)
+        {
+            playerMove.ResetAirJump();
+        }
         currentState?.DoFixedUpdate();
     }
 
 
-    /// ----------------------------------------------------
-    ///  [3단계 아키텍처로 함수 구현]
-    ///  On어쩌구        InputSystem연결
-    ///  Process어쩌구   로직과 동작 차단 if문
-    ///  Execute어쩌구   실제 velocity값 조절   
-    ///  ----------------------------------------------------
-
-    //On
+    //인풋시스템과 연결
     public void OnMove(InputValue value) { moveInput = value.Get<Vector2>(); } //방향값 설정
-    public void OnJump(InputValue value) { isJumpPressed = value.isPressed; } //Move와 같게 설정
-   
-    public void OnDash(InputValue value) { dashInputPressed = value.isPressed; }
+    
+    public void OnJump(InputValue value) { if (value.isPressed) playerMove.ExecuteJump(this); }
+    public void OnDash(InputValue value) { if (value.isPressed) playerMove.ExecuteDash(this); }
     public void OnAttack(InputValue value) { if (value.isPressed && !isAttacking) playerAttack.ExecuteAttack(this); }
     public void OnTransformSuper(InputValue value) { if (value.isPressed && !isAttacking) currentState?.OnTransformSuper(); }
     public void OnTransformAnimal(InputValue value) { if (value.isPressed && !isAttacking) currentState?.OnTransformAnimal(); }
@@ -104,18 +97,13 @@ public class Player : MonoBehaviour
     public void OnSkillS(InputValue value) { if (value.isPressed) playerSkill.ExecuteSkillS(this); }
     public void OnSkillD(InputValue value) { if (value.isPressed) playerSkill.ExecuteSkillD(this); }
     public void OnSkillF(InputValue value) { if (value.isPressed) playerSkill.ExecuteSkillF(this); }
-    
-    //Process
-    public void ProcessMove(float sMult = 1f, float aMult = 1f) => playerMove.ProcessMove(this, sMult, aMult);
-    public void ProcessJump(float jMult = 1f) => playerMove.ProcessJump(this, jMult);
 
-
-    //Execute
-    public void ExecuteDash() => playerMove.ExecuteDash(this);
+    //꾹 눌렀을때도 실행되어야 하니 따로 구현
+    public void ExecuteMove(float sMult = 1f, float aMult = 1f) => playerMove.ExecuteMove(this, sMult, aMult);
 
 
 
-    
+
 
     public void ChangeState(PlayerState newState)
     {
