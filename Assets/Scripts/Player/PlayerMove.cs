@@ -3,6 +3,34 @@ using UnityEngine;
 
 public class PlayerMove : MonoBehaviour
 {
+    //이동속도 세팅
+    [Header("Movement Settings")]
+    public float moveSpeed = 10f;
+    public float jumpForce = 15f;
+
+    //점프 쿨타임 세팅
+    [Header("Jump Cooldown Settings")]
+    public float jumpCooldown = 0.5f;
+    private float lastJumpTime = -999f;
+
+    //대쉬관련 세팅
+    [Header("Dash Settings")]
+    public float dashForce = 2f;
+    public float dashCooldown = 0.5f;
+    public float waitSecond = 0.01f;
+    public float lastDashTime; //대쉬 내부쿨 관련 변수
+
+    //공중에서 마찰계수 정하기
+    [Header("Friction (Lerp)")]
+    [Range(0, 1)] public float airControlMin = 0.8f;
+    [Range(0f, 0.3f)] public float groundDecel = 0.01f;
+    [Range(0f, 0.5f)] public float airDecel = 0.1f;
+
+
+    //임시 내부 계산용 변수
+    private float targetVelocityX;
+    private float targetVelocityY;
+
 
     private void Flip(Player p)
     {
@@ -10,11 +38,13 @@ public class PlayerMove : MonoBehaviour
 
         p.isFacingRight = !p.isFacingRight;
         Vector3 newScale = p.transform.localScale;
-        newScale.x *= -1;
+        newScale.x = Mathf.Abs(newScale.x) * (p.isFacingRight ? 1f : -1f);
         p.transform.localScale = newScale;
     }
 
-    public void DoMove(Player p, float speedMultiplier = 1f, float accelMultiplier = 1f)
+    // [PROCESS]
+
+    public void ProcessMove(Player p, float speedMultiplier = 1f, float accelMultiplier = 1f)
     {
         if (p.isSkillActive || p.isDashing)
         {
@@ -33,27 +63,28 @@ public class PlayerMove : MonoBehaviour
         }
 
         //목표 속도 계산 (보정값 적용)
-        float targetSpeedX = p.moveInput.x * (p.moveSpeed * speedMultiplier) * attackSpeedFactor;
-
+        float rawTargetSpeedX = p.moveInput.x * (moveSpeed * speedMultiplier) * attackSpeedFactor;
         //공중 제어 보정
-        if (!p.isGrounded) targetSpeedX *= p.airControlMin;
+        if (!p.isGrounded) rawTargetSpeedX *= airControlMin;
 
         //가속/감속 비율 계산
-        float decelVar = p.isGrounded ? p.groundDecel : p.airDecel;
+        float decelVar = p.isGrounded ? groundDecel : airDecel;
         //가속도에도 보정값이 필요하다면 적용 (1f - decelVar가 클수록 빠릿하게 반응)
         float lerpFactor = (1f - decelVar) * accelMultiplier;
         //플레이어가 부드럽게 움직이도록 하는 과정
-        float newSpeedX = Mathf.Lerp(p.rb.linearVelocity.x, targetSpeedX, lerpFactor);
+        float calculatedX = Mathf.Lerp(p.rb.linearVelocity.x, rawTargetSpeedX, lerpFactor);
         //일정량의 작은 미끄러짐은 0으로 보정
-        if (p.moveInput.x == 0 && Mathf.Abs(newSpeedX) < 0.1f) newSpeedX = 0f;
+        if (p.moveInput.x == 0 && Mathf.Abs(calculatedX) < 0.1f) calculatedX = 0f;
 
-        //최종 이동속도 적용
-        p.rb.linearVelocity = new Vector2(newSpeedX, p.rb.linearVelocity.y);
+        targetVelocityX = calculatedX;
+        
+        //움직임 실행
+        ExecuteMove(p);
     }
 
     public void ExecuteJump(Player p, float jumpMultiplier = 1f)
     {
-        p.rb.linearVelocity = new Vector2(p.rb.linearVelocity.x, p.jumpForce * jumpMultiplier);
+        p.rb.linearVelocity = new Vector2(p.rb.linearVelocity.x, targetVelocityY);
     }
 
     public void ExecuteDash(Player p)
@@ -98,9 +129,9 @@ public class PlayerMove : MonoBehaviour
 
         //고정 이동 루프
         float timer = 0f;
-        while (timer < p.waitSecond)
+        while (timer < waitSecond)
         {
-            p.rb.linearVelocity = new Vector2(dir * p.dashForce / p.waitSecond, 0f);
+            p.rb.linearVelocity = new Vector2(dir * dashForce / waitSecond, 0f);
             timer += Time.fixedDeltaTime;
             yield return new WaitForFixedUpdate();
         }

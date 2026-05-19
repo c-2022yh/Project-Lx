@@ -20,18 +20,18 @@ public class NormalState : PlayerState
 
     public override void DoUpdate()
     {
-
     }
     public override void DoFixedUpdate()
     {
-        player.DoMove();
+        player.ProcessMove();
+        player.ProcessJump();
     }
 
-    public override void DoJump()
+    public override void DoDoubleJump()
     {
         if (player.isGrounded)
         {
-            player.ExecuteJump();
+            //player.ExecuteJump();
         }
     }
 

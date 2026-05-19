@@ -9,33 +9,7 @@ public class Player : MonoBehaviour
     public Rigidbody2D rb;
     public SpriteRenderer spriteRenderer;
 
-    [Header("Movement Settings")]
-    public float moveSpeed = 10f;
-    public float jumpForce = 15f;
-
-    [Header("Dash Settings")]
-    public float dashForce = 2f;
-    public float dashCooldown = 0.5f;
-    public float waitSecond = 0.01f;
-
-    [Header("Transformation Settings")]
-    public float superSpeedMultiplier = 1.5f;
-    public float superJumpMultiplier = 1.1f;
-    public float animalSpeedMultiplier = 1.8f;
-    public float animalJumpMultiplier = 1f;
-
-    public float lastDashTime; //쿨타임
-
-    [Header("Friction (Lerp)")]
-    [Range(0, 1)] public float airControlMin = 0.8f;
-    [Range(0f, 0.3f)] public float groundDecel = 0.01f;
-    [Range(0f, 0.5f)] public float airDecel = 0.1f;
-
-    [Header("Ground Check")]
-    public Transform groundCheck;
-    Vector2 boxSize = new Vector2(0.7f, 0.1f); //캐릭터 너비에 맞춘 납작한 박스
-    public LayerMask groundLayer;
-
+    //플레이어 상태 처리
     [Header("State Data")]
     public bool isGrounded;
     public bool isJumpPressed;
@@ -48,19 +22,44 @@ public class Player : MonoBehaviour
     public AttackPattern currentAttackPattern; //현재 공격패턴 정보
     public bool isFacingRight = true;
 
+    //땅에 닿았는지 확인하는 변수
+    [Header("Ground Check")]
+    public Transform groundCheck;
+    Vector2 boxSize = new Vector2(0.7f, 0.1f); //캐릭터 너비에 맞춘 납작한 박스
+    public LayerMask groundLayer;
+
+    //각성 시 이동속도 변환
+    [Header("Transformation Settings")]
+    public float superSpeedMultiplier = 1.5f;
+    public float superJumpMultiplier = 1.1f;
+    public float animalSpeedMultiplier = 1.8f;
+    public float animalJumpMultiplier = 1f;
+
     public Vector3 initialScale;
     public Vector3 scaleAnimal = new Vector3(1.4f, 1f, 1f); //환수폼 크기 설정
 
+    
+
+
+    //중력 값을 저장하는 변수 freeze 함수 내부에서 사용
+    private float originalGravity;
+    private float originalDrag;
+    
+    
     //컴포넌트 참조
     private PlayerState currentState;
     private PlayerMove playerMove;
     private PlayerAttack playerAttack;
     private PlayerSkill playerSkill;
 
-
+    //플레이어를 따라다니는 보주
     public FollowingOrb orb;
     [SerializeField] private GameObject ghostPrefab; //잔상 프리펩
 
+    
+
+    //처음 한번만 실행하는 함수
+    //변수 초기화
     void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
@@ -85,12 +84,18 @@ public class Player : MonoBehaviour
         currentState?.DoFixedUpdate();
     }
 
-    public void DoMove(float sMult = 1f, float aMult = 1f) => playerMove.DoMove(this, sMult, aMult);
-    public void ExecuteJump(float jMult = 1f) => playerMove.ExecuteJump(this, jMult);
-    public void ExecuteDash() => playerMove.ExecuteDash(this);
 
-    public void OnMove(InputValue value) { moveInput = value.Get<Vector2>(); }
-    public void OnJump(InputValue value) { if (value.isPressed) currentState?.DoJump(); }
+    /// ----------------------------------------------------
+    ///  [3단계 아키텍처로 함수 구현]
+    ///  On어쩌구        InputSystem연결
+    ///  Process어쩌구   로직과 동작 차단 if문
+    ///  Execute어쩌구   실제 velocity값 조절   
+    ///  ----------------------------------------------------
+
+    //On
+    public void OnMove(InputValue value) { moveInput = value.Get<Vector2>(); } //방향값 설정
+    public void OnJump(InputValue value) { isJumpPressed = value.isPressed; } //Move와 같게 설정
+   
     public void OnDash(InputValue value) { dashInputPressed = value.isPressed; }
     public void OnAttack(InputValue value) { if (value.isPressed && !isAttacking) playerAttack.ExecuteAttack(this); }
     public void OnTransformSuper(InputValue value) { if (value.isPressed && !isAttacking) currentState?.OnTransformSuper(); }
@@ -99,7 +104,18 @@ public class Player : MonoBehaviour
     public void OnSkillS(InputValue value) { if (value.isPressed) playerSkill.ExecuteSkillS(this); }
     public void OnSkillD(InputValue value) { if (value.isPressed) playerSkill.ExecuteSkillD(this); }
     public void OnSkillF(InputValue value) { if (value.isPressed) playerSkill.ExecuteSkillF(this); }
+    
+    //Process
+    public void ProcessMove(float sMult = 1f, float aMult = 1f) => playerMove.ProcessMove(this, sMult, aMult);
+    public void ProcessJump(float jMult = 1f) => playerMove.ProcessJump(this, jMult);
 
+
+    //Execute
+    public void ExecuteDash() => playerMove.ExecuteDash(this);
+
+
+
+    
 
     public void ChangeState(PlayerState newState)
     {
