@@ -92,13 +92,10 @@ public class PlayerMove : MonoBehaviour
 
 
     ///점프 함수
-    public void ExecuteJump(Player p, bool isNewPress = false)
+    public void ExecuteJump(Player p)
     {
         //액션 불가능 상태
         if (p.isSkillActive || p.isDashing) return;
-
-        //선입력 타임스탬프 기록
-        if (isNewPress) lastJumpRequestTime = Time.time;
 
         //선입력 만료 체크
         if (p.isGrounded && p.rb.linearVelocity.y <= 0.01f)
@@ -107,7 +104,7 @@ public class PlayerMove : MonoBehaviour
             canAirJump = true;
         }
 
-        //필터링: 선입력 주머니가 비었거나 유효시간이 지나면 끝
+        //필터링: 선입력이 없거나 유효시간이 지나면 끝
         if (Time.time - lastJumpRequestTime > bufferTime) return;
         
         //(지상:코요태 vs 공중)
