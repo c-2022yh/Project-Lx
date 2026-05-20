@@ -19,7 +19,7 @@ public class PlayerMove : MonoBehaviour
     public float coyoteTime = 0.15f;
     public float bufferTime = 0.15f;
     private float lastGroundedTime = -999f;  // 마지막으로 땅에 있었던 시간
-    private float lastJumpPressTime = -999f; // 마지막으로 점프키를 누른 시간
+    private float lastJumpRequestTime = -999f; // 마지막으로 점프키를 누른 시간
     
 
     //대쉬관련 세팅
@@ -44,12 +44,6 @@ public class PlayerMove : MonoBehaviour
         newScale.x = Mathf.Abs(newScale.x) * (p.isFacingRight ? 1f : -1f);
         p.transform.localScale = newScale;
     }
-
-    public void ResetAirJump()
-    {
-        canAirJump = true;
-    }
-
 
     ///이동 함수
     public void ExecuteMove(Player p, float speedMultiplier = 1f, float accelMultiplier = 1f)
@@ -85,34 +79,63 @@ public class PlayerMove : MonoBehaviour
         p.rb.linearVelocity = new Vector2(calculatedX, p.rb.linearVelocity.y);
     }
 
-    ///점프 함수
-    public void ExecuteJump(Player p, float jumpMultiplier = 1f)
+    
+    
+    public void ResetAirJump()
     {
+        canAirJump = true;
+    }
+    public void RequestJump()
+    {
+        lastJumpRequestTime = Time.time;
+    }
+
+
+    ///점프 함수
+    public void ExecuteJump(Player p, bool isNewPress = false)
+    {
+        //액션 불가능 상태
         if (p.isSkillActive || p.isDashing) return;
 
-        float calculatedY = jumpForce * jumpMultiplier;
+        //선입력 타임스탬프 기록
+        if (isNewPress) lastJumpRequestTime = Time.time;
 
-        lastJumpPressTime = Time.time;
+        //선입력 만료 체크
+        if (p.isGrounded && p.rb.linearVelocity.y <= 0.01f)
+        {
+            lastGroundedTime = Time.time;
+            canAirJump = true;
+        }
 
-        //지상 점프
+        //필터링: 선입력 주머니가 비었거나 유효시간이 지나면 끝
+        if (Time.time - lastJumpRequestTime > bufferTime) return;
+        
+        //(지상:코요태 vs 공중)
         bool isCoyoteValid = (Time.time - lastGroundedTime <= coyoteTime);
+        bool shouldJump = false;
+
+        //지상 점프 or 코요태 타임 중
         if ((p.isGrounded || isCoyoteValid) && Time.time >= lastJumpTime + jumpCooldown)
         {
-            lastJumpPressTime = -999f; // 지상 점프를 했으니 버퍼 초기화
-            lastGroundedTime = -999f;  // 코요테 타임 소모
-
-            lastJumpTime = Time.time;
-            p.rb.linearVelocity = new Vector2(p.rb.linearVelocity.x, calculatedY);
+            lastGroundedTime = -999f; //코요태 타임 초기화
+            shouldJump = true;
         }
-        //공중 점프
+        //공중점프
         else if (!p.isGrounded && canAirJump)
         {
-            canAirJump = false; //발동 즉시 트리거 해제, 연속 공중점프 차단
-            lastJumpTime = Time.time;
-            p.rb.linearVelocity = new Vector2(p.rb.linearVelocity.x, calculatedY);
+            canAirJump = false;
+            shouldJump = true;
         }
 
 
+        //최종 점프 실행
+        if (shouldJump)
+        {
+            lastJumpRequestTime = -999f; //선입력 버퍼 초기화
+            lastJumpTime = Time.time;
+
+            p.rb.linearVelocity = new Vector2(p.rb.linearVelocity.x, jumpForce );
+        }
     }
 
 

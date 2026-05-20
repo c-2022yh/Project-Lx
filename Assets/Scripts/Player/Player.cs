@@ -77,18 +77,17 @@ public class Player : MonoBehaviour
     {
         isGrounded = Physics2D.OverlapBox(groundCheck.position, boxSize, 0f, groundLayer);
 
-        if (isGrounded && rb.linearVelocity.y <= 0.01f)
-        {
-            playerMove.ResetAirJump();
-        }
-        currentState?.DoFixedUpdate();
+        playerMove.ExecuteMove(this);
+        playerMove.ExecuteJump(this);
+
+        //currentState?.DoFixedUpdate();
     }
 
 
     //인풋시스템과 연결
     public void OnMove(InputValue value) { moveInput = value.Get<Vector2>(); } //방향값 설정
     
-    public void OnJump(InputValue value) { if (value.isPressed) playerMove.ExecuteJump(this); }
+    public void OnJump(InputValue value) { if (value.isPressed) playerMove.RequestJump(); }
     public void OnDash(InputValue value) { if (value.isPressed) playerMove.ExecuteDash(this); }
     public void OnAttack(InputValue value) { if (value.isPressed && !isAttacking) playerAttack.ExecuteAttack(this); }
     public void OnTransformSuper(InputValue value) { if (value.isPressed && !isAttacking) currentState?.OnTransformSuper(); }
@@ -99,8 +98,7 @@ public class Player : MonoBehaviour
     public void OnSkillF(InputValue value) { if (value.isPressed) playerSkill.ExecuteSkillF(this); }
 
     //꾹 눌렀을때도 실행되어야 하니 따로 구현
-    public void ExecuteMove(float sMult = 1f, float aMult = 1f) => playerMove.ExecuteMove(this, sMult, aMult);
-
+    
 
 
 

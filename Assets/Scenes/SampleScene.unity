@@ -27765,7 +27765,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::PlayerMove
   moveSpeed: 10
   jumpForce: 15
-  jumpCooldown: 0.4
+  jumpCooldown: 0.3
+  coyoteTime: 0.15
+  bufferTime: 0.15
   dashForce: 2
   dashCooldown: 0.5
   waitSecond: 0.01

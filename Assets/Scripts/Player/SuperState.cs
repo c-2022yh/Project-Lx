@@ -25,7 +25,7 @@ public class SuperState : PlayerState
     }
     public override void DoFixedUpdate()
     {
-        player.ExecuteMove(player.superSpeedMultiplier, 1.2f);
+
     }
     public override void DoDoubleJump()
     {

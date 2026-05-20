@@ -23,7 +23,6 @@ public class NormalState : PlayerState
     }
     public override void DoFixedUpdate()
     {
-        player.ExecuteMove();
     }
 
     public override void DoDoubleJump()
