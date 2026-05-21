@@ -12,9 +12,10 @@ public class PlayerMove : MonoBehaviour
     public float jumpForce = 15f;
     public float jumpCooldown = 0.4f;
     private float lastJumpTime = -999f;
-    private bool canAirJump = true;
+    [SerializeField] private int maxAirJumps = 1;
+    private int remainingAirJumps;
 
-    // ★ 복잡한 타이머 대신 딱 3개만 선언 (기록용 시간 변수)
+    //코요태 타임 관련 세팅
     [Header("Jump Juice")]
     public float coyoteTime = 0.15f;
     public float bufferTime = 0.15f;
@@ -23,17 +24,18 @@ public class PlayerMove : MonoBehaviour
     
 
     //대쉬관련 세팅
+
     [Header("Dash Settings")]
-    public float dashForce = 2f;
+    public float dashSpeed = 100f;
+    public float dashDuration = 0.02f;
     public float dashCooldown = 0.5f;
-    public float waitSecond = 0.01f;
     public float lastDashTime; //대쉬 내부쿨 관련 변수
 
-    //공중에서 마찰계수 정하기
+    //공중에서 마찰계수 정하기 ->스무딩 저항값
     [Header("Friction (Lerp)")]
     [Range(0, 1)] public float airControlMin = 0.8f;
-    [Range(0f, 0.3f)] public float groundDecel = 0.01f;
-    [Range(0f, 0.5f)] public float airDecel = 0.1f;
+    [Range(0f, 0.3f)] public float groundSmooth = 0.01f;
+    [Range(0f, 0.5f)] public float airSmooth = 0.1f;
 
     private void Flip(Player p)
     {
@@ -67,7 +69,7 @@ public class PlayerMove : MonoBehaviour
         if (!p.isGrounded) rawTargetSpeedX *= airControlMin;
 
         //가속/감속 비율 계산
-        float decelVar = p.isGrounded ? groundDecel : airDecel;
+        float decelVar = p.isGrounded ? groundSmooth : airSmooth;
         //가속도에도 보정값이 필요하다면 적용 (1f - decelVar가 클수록 빠릿하게 반응)
         float lerpFactor = (1f - decelVar) * accelMultiplier;
         //플레이어가 부드럽게 움직이도록 하는 과정
@@ -79,29 +81,20 @@ public class PlayerMove : MonoBehaviour
         p.rb.linearVelocity = new Vector2(calculatedX, p.rb.linearVelocity.y);
     }
 
-    
-    
-    public void ResetAirJump()
-    {
-        canAirJump = true;
-    }
-    public void RequestJump()
-    {
-        lastJumpRequestTime = Time.time;
-    }
 
 
     ///점프 함수
+    public void RequestJump() { lastJumpRequestTime = Time.time; }
     public void ExecuteJump(Player p)
     {
         //액션 불가능 상태
         if (p.isSkillActive || p.isDashing) return;
 
-        //선입력 만료 체크
+        //땅에 닿으면 초기화
         if (p.isGrounded && p.rb.linearVelocity.y <= 0.01f)
         {
             lastGroundedTime = Time.time;
-            canAirJump = true;
+            remainingAirJumps = maxAirJumps;
         }
 
         //필터링: 선입력이 없거나 유효시간이 지나면 끝
@@ -118,9 +111,9 @@ public class PlayerMove : MonoBehaviour
             shouldJump = true;
         }
         //공중점프
-        else if (!p.isGrounded && canAirJump)
+        else if (!p.isGrounded && remainingAirJumps > 0)
         {
-            canAirJump = false;
+            remainingAirJumps--;
             shouldJump = true;
         }
 
@@ -135,21 +128,22 @@ public class PlayerMove : MonoBehaviour
         }
     }
 
-
+    /// 대쉬 함수
     public void ExecuteDash(Player p)
     {
         if (Time.time < lastDashTime + dashCooldown) return;
-        if(p.moveInput.x == 0)
-        {
-            Debug.Log("<color=yellow>[Dash]</color> 방향키 입력 없어 대쉬 취소");
-            return;
-        }
 
-        float dashDir = p.moveInput.x > 0 ? 1f : -1f;
         lastDashTime = Time.time;
 
+        float dir;
+
+        if (Mathf.Abs(p.moveInput.x) > 0.01f)
+            dir = Mathf.Sign(p.moveInput.x);
+        else
+            dir = p.isFacingRight ? 1f : -1f;
+
         //대쉬 중 중력 잠시 끄기
-        StartCoroutine(DashRoutine(p, dashDir));
+        StartCoroutine(DashRoutine(p, dir));
     }
 
     private IEnumerator DashRoutine(Player p, float dir)
@@ -178,14 +172,14 @@ public class PlayerMove : MonoBehaviour
 
         //고정 이동 루프
         float timer = 0f;
-        while (timer < waitSecond)
+        while (timer < dashDuration)
         {
-            p.rb.linearVelocity = new Vector2(dir * dashForce / waitSecond, 0f);
+            p.rb.linearVelocity = new Vector2(dir * dashSpeed, 0f);
             timer += Time.fixedDeltaTime;
             yield return new WaitForFixedUpdate();
         }
 
-        p.rb.linearVelocity = Vector2.zero;
+        p.rb.linearVelocity = new Vector2(0f, p.rb.linearVelocity.y);
         p.rb.gravityScale = originalGravity;
         p.rb.linearDamping = originalDrag;
 

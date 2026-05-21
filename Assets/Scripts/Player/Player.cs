@@ -71,10 +71,11 @@ public class Player : MonoBehaviour
 
     void Update()
     {
-        currentState?.DoUpdate(); //현재 상태의 Update()실행
+        currentState?.DoUpdate();
     }
     void FixedUpdate()
     {
+        //땅에 닿았는지 체크
         isGrounded = Physics2D.OverlapBox(groundCheck.position, boxSize, 0f, groundLayer);
 
         playerMove.ExecuteMove(this);
