@@ -39,7 +39,9 @@ public class PlayerMove : MonoBehaviour
 
     private void Flip(Player p)
     {
-        if (p.isAttacking || p.isDashing || p.isSkillActive) return; //공격중이면 방향전환x
+        if (p.playerActionState.isAttacking ||
+            p.playerActionState.isDashing ||
+            p.playerActionState.isSkillActive) return; //공격중이면 방향전환x
 
         p.isFacingRight = !p.isFacingRight;
         Vector3 newScale = p.transform.localScale;
@@ -50,21 +52,16 @@ public class PlayerMove : MonoBehaviour
     ///이동 함수
     public void ExecuteMove(Player p, float speedMultiplier = 1f, float accelMultiplier = 1f)
     {
-        if (p.isSkillActive || p.isDashing) return;
-        
+        if (!p.playerActionState.CanMove()) return;
+
+
         //움직이는 방향 바라보기
         if (p.moveInput.x > 0 && !p.isFacingRight) Flip(p);
         else if (p.moveInput.x < 0 && p.isFacingRight) Flip(p);
 
-        //공격 중일 때의 추가 속도 보정값 계산
-        float attackSpeedFactor = 1f;
-        if (p.isAttacking && p.currentAttackPattern != null)
-        {
-            attackSpeedFactor = p.currentAttackPattern.moveSpeedMultiplier;
-        }
 
         //목표 속도 계산 (보정값 적용)
-        float rawTargetSpeedX = p.moveInput.x * (moveSpeed * speedMultiplier) * attackSpeedFactor;
+        float rawTargetSpeedX = p.moveInput.x * (moveSpeed * speedMultiplier);
         //공중 제어 보정
         if (!p.isGrounded) rawTargetSpeedX *= airControlMin;
 
@@ -88,7 +85,7 @@ public class PlayerMove : MonoBehaviour
     public void ExecuteJump(Player p)
     {
         //액션 불가능 상태
-        if (p.isSkillActive || p.isDashing) return;
+        if (!p.playerActionState.CanMove()) return;
 
         //땅에 닿으면 초기화
         if (p.isGrounded && p.rb.linearVelocity.y <= 0.01f)
@@ -148,7 +145,9 @@ public class PlayerMove : MonoBehaviour
 
     private IEnumerator DashRoutine(Player p, float dir)
     {
-        p.isDashing = true;
+        //상태 업데이트
+        p.playerActionState.EnterDash();
+
 
         float originalGravity = p.rb.gravityScale; //중력 값
         float originalDrag = p.rb.linearDamping; //공기 저항(마찰)
@@ -183,7 +182,12 @@ public class PlayerMove : MonoBehaviour
         p.rb.gravityScale = originalGravity;
         p.rb.linearDamping = originalDrag;
 
-        p.isDashing = false;
+
+        //상태 되돌리기 but,본인이 바꾼 상태일때만 노말로 교체->남이 바꾼 State 참견 금지
+        if (p.playerActionState.isDashing)
+        {
+            p.playerActionState.EnterNormal();
+        }
 
     }
 

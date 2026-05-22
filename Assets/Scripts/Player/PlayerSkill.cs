@@ -38,7 +38,7 @@ public class PlayerSkill : MonoBehaviour
 
     private void UseSkill(Player p, SkillData data, bool isCooldown, System.Action<bool> setCooldown, string keyType)
     {
-        if (data == null || isCooldown || p.isAttacking || p.isSkillActive) return;
+        if (data == null || isCooldown || (!p.playerActionState.CanSkill())) return;
 
         // SkillMasterRoutine에 keyType("A", "S" 등)을 전달합니다.
         StartCoroutine(SkillMasterRoutine(p, data, setCooldown, keyType));
@@ -46,6 +46,10 @@ public class PlayerSkill : MonoBehaviour
 
     private IEnumerator SkillMasterRoutine(Player p, SkillData data, System.Action<bool> setCooldown, string keyType)
     {
+        //상태 업데이트
+        p.playerActionState.EnterSkill();
+
+
         // F 스킬은 쿨타임 계산 방식이 다르므로 따로 처리합니다.
         if (keyType == "F")
         {
@@ -93,12 +97,13 @@ public class PlayerSkill : MonoBehaviour
 
         yield return new WaitForSeconds(data.cooldown);
         setCooldown(false);
+
+        
     }
 
     //스킬 물리 로직 (돌진 및 베기)
     private IEnumerator DashSlashRoutine(Player p, SkillData data)
     {
-        p.isSkillActive = true;
         if (swordCollider != null) swordCollider.enabled = true;
 
         float originalGravity = p.rb.gravityScale;
@@ -170,14 +175,18 @@ public class PlayerSkill : MonoBehaviour
         if (weaponHandle != null)
             weaponHandle.transform.localRotation = Quaternion.Euler(0, 0, defaultAngle);
 
-        p.isSkillActive = false;
+        //상태 되돌리기 but,본인이 바꾼 상태일때만 노말로 교체->남이 바꾼 State 참견 금지
+        if (p.playerActionState.isSkillActive)
+        {
+            p.playerActionState.EnterNormal();
+        }
+
     }
 
 
     //스킬 물리 로직 (근거리 강력한 공격)
     private IEnumerator HeavySlashRoutine(Player p, SkillData data)
     {
-        p.isSkillActive = true;
         if (swordCollider != null) swordCollider.enabled = true;
 
         float originalGravity = p.rb.gravityScale;
@@ -225,15 +234,18 @@ public class PlayerSkill : MonoBehaviour
         if (weaponHandle != null)
             weaponHandle.transform.localRotation = Quaternion.Euler(0, 0, defaultAngle);
 
-        p.isSkillActive = false;
+        //상태 되돌리기 but,본인이 바꾼 상태일때만 노말로 교체->남이 바꾼 State 참견 금지
+        if (p.playerActionState.isSkillActive)
+        {
+            p.playerActionState.EnterNormal();
+        }
+
     }
 
     //스킬 물리 로직 (가드)
     private IEnumerator GuardRoutine(Player p, SkillData data)
     {
         if (!p.isGrounded) yield break;
-
-        p.isSkillActive = true;
 
         // 1. 물리 상태 저장 및 고정 (시전 중 미끄러짐 방지)
         float originalGravity = p.rb.gravityScale;
@@ -287,7 +299,13 @@ public class PlayerSkill : MonoBehaviour
         if (weaponHandle != null)
             weaponHandle.transform.localRotation = Quaternion.Euler(0, 0, defaultAngle);
 
-        p.isSkillActive = false;
+        //상태 되돌리기 but,본인이 바꾼 상태일때만 노말로 교체->남이 바꾼 State 참견 금지
+        if (p.playerActionState.isSkillActive)
+        {
+            p.playerActionState.EnterNormal();
+        }
+
+
     }
 
     //스킬 물리 로직 (그림자 텔포)
@@ -302,7 +320,14 @@ public class PlayerSkill : MonoBehaviour
             // 소환 직후에 그림자라는 걸 알 수 있게 살짝 이펙트를 주거나 소리만 나게 해도 충분합니다.
             Debug.Log("그림자 설치");
 
+            //상태 되돌리기 but,본인이 바꾼 상태일때만 노말로 교체->남이 바꾼 State 참견 금지
+            if (p.playerActionState.isSkillActive)
+            {
+                p.playerActionState.EnterNormal();
+            }
+
             yield return null; // 한 프레임만 대기하고 즉시 컨트롤 반환
+            
         }
         // 2. 그림자가 이미 있다면 -> 위치 바꾸기!
         else
@@ -323,8 +348,16 @@ public class PlayerSkill : MonoBehaviour
             // 이동 직후 물리 속도 초기화 (공중에서 바꿨을 때 튀는 현상 방지)
             p.rb.linearVelocity = Vector2.zero;
 
+            //상태 되돌리기 but,본인이 바꾼 상태일때만 노말로 교체->남이 바꾼 State 참견 금지
+            if (p.playerActionState.isSkillActive)
+            {
+                p.playerActionState.EnterNormal();
+            }
+
             yield return null;
+
         }
+
     }
 
 

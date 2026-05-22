@@ -27495,6 +27495,7 @@ GameObject:
   - component: {fileID: 2085880633}
   - component: {fileID: 2085880638}
   - component: {fileID: 2085880639}
+  - component: {fileID: 2085880640}
   m_Layer: 7
   m_Name: Player
   m_TagString: Untagged
@@ -27673,6 +27674,7 @@ MonoBehaviour:
   animalJumpMultiplier: 1
   initialScale: {x: 0.8, y: 1.4, z: 1}
   scaleAnimal: {x: 1.4, y: 1, z: 1}
+  playerActionState: {fileID: 0}
   orb: {fileID: 1219774428}
   ghostPrefab: {fileID: 4465796823959608584, guid: 2329405a733afa342a28f81b9a5707a6, type: 3}
 --- !u!70 &2085880636
@@ -27798,6 +27800,19 @@ MonoBehaviour:
   rangeIndicator: {fileID: 250930144}
   defaultAngle: 20
   shadowPrefab: {fileID: 1405246298}
+--- !u!114 &2085880640
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2085880627}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c885f00a6c847764db692f9fe3b8cd2f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerActionState
+  currentState: 0
 --- !u!1001 &5058752678472082574
 PrefabInstance:
   m_ObjectHideFlags: 0

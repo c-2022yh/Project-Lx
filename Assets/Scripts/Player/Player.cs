@@ -13,11 +13,6 @@ public class Player : MonoBehaviour
     [Header("State Data")]
     public bool isGrounded;
     public Vector2 moveInput;
-
-    public bool isDashing = false;
-    public bool isAttacking = false;
-    public bool isSkillActive = false;
-    public AttackPattern currentAttackPattern; //현재 공격패턴 정보
     public bool isFacingRight = true;
 
     //땅에 닿았는지 확인하는 변수
@@ -47,6 +42,9 @@ public class Player : MonoBehaviour
     private PlayerMove playerMove;
     private PlayerAttack playerAttack;
     private PlayerSkill playerSkill;
+    
+    public PlayerActionState playerActionState;
+
 
     //플레이어를 따라다니는 보주
     public FollowingOrb orb;
@@ -62,16 +60,19 @@ public class Player : MonoBehaviour
         spriteRenderer = GetComponent<SpriteRenderer>();
         initialScale = transform.localScale;
         rb.freezeRotation = true;
+
+        //스크립트 연결
         playerMove = GetComponent<PlayerMove>();
         playerAttack = GetComponent<PlayerAttack>();
         playerSkill = GetComponent<PlayerSkill>();
-
+        playerActionState = GetComponent<PlayerActionState>();
+        
         ChangeState(new NormalState(this));
     }
 
     void Update()
     {
-        currentState?.DoUpdate();
+
     }
     void FixedUpdate()
     {
@@ -88,20 +89,17 @@ public class Player : MonoBehaviour
     //인풋시스템과 연결
     public void OnMove(InputValue value) { moveInput = value.Get<Vector2>(); } //방향값 설정
     
-    public void OnJump(InputValue value) { if (value.isPressed) playerMove.RequestJump(); }
-    public void OnDash(InputValue value) { if (value.isPressed) playerMove.ExecuteDash(this); }
-    public void OnAttack(InputValue value) { if (value.isPressed && !isAttacking) playerAttack.ExecuteAttack(this); }
-    public void OnTransformSuper(InputValue value) { if (value.isPressed && !isAttacking) currentState?.OnTransformSuper(); }
-    public void OnTransformAnimal(InputValue value) { if (value.isPressed && !isAttacking) currentState?.OnTransformAnimal(); }
-    public void OnSkillA(InputValue value) { if (value.isPressed) playerSkill.ExecuteSkillA(this); }
-    public void OnSkillS(InputValue value) { if (value.isPressed) playerSkill.ExecuteSkillS(this); }
-    public void OnSkillD(InputValue value) { if (value.isPressed) playerSkill.ExecuteSkillD(this); }
-    public void OnSkillF(InputValue value) { if (value.isPressed) playerSkill.ExecuteSkillF(this); }
+    public void OnJump(InputValue value) { if (value.isPressed && playerActionState.CanJump()) playerMove.RequestJump(); }
+    public void OnDash(InputValue value) { if (value.isPressed && playerActionState.CanDash()) playerMove.ExecuteDash(this); }
+    public void OnAttack(InputValue value) { if (value.isPressed && playerActionState.CanAttack()) playerAttack.ExecuteAttack(this); }
+    public void OnSkillA(InputValue value) { if (value.isPressed && playerActionState.CanSkill()) playerSkill.ExecuteSkillA(this); }
+    public void OnSkillS(InputValue value) { if (value.isPressed && playerActionState.CanSkill()) playerSkill.ExecuteSkillS(this); }
+    public void OnSkillD(InputValue value) { if (value.isPressed && playerActionState.CanSkill()) playerSkill.ExecuteSkillD(this); }
+    public void OnSkillF(InputValue value) { if (value.isPressed && playerActionState.CanSkill()) playerSkill.ExecuteSkillF(this); }
+    public void OnTransformSuper(InputValue value) { if (value.isPressed && playerActionState.CanTransform()) currentState?.OnTransformSuper(); }
+    public void OnTransformAnimal(InputValue value) { if (value.isPressed && playerActionState.CanTransform()) currentState?.OnTransformAnimal(); }
 
-    //꾹 눌렀을때도 실행되어야 하니 따로 구현
     
-
-
 
 
     public void ChangeState(PlayerState newState)
