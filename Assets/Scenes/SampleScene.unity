@@ -27279,7 +27279,7 @@ GameObject:
   - component: {fileID: 1219774429}
   - component: {fileID: 1219774428}
   m_Layer: 0
-  m_Name: FollowingOrb
+  m_Name: EnergyOrb
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -27301,8 +27301,9 @@ MonoBehaviour:
   offset: {x: -1, y: 1, z: 0}
   followSpeed: 5
   normalScale: 0.5
+  maxScale: 1.2
   scaleSpeed: 5
-  spriteRenderer: {fileID: 0}
+  spriteRenderer: {fileID: 1219774429}
   normalColor: {r: 1, g: 1, b: 1, a: 1}
   superColor: {r: 0, g: 1, b: 1, a: 1}
 --- !u!212 &1219774429
@@ -27372,9 +27373,9 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1219774427}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.5, y: 0.5, z: 1}
+  m_LocalScale: {x: 0.5, y: 0.49999997, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
@@ -27664,7 +27665,6 @@ MonoBehaviour:
   superJumpMultiplier: 1.3
   animalSpeedMultiplier: 1.8
   animalJumpMultiplier: 1
-  orb: {fileID: 1219774428}
   ghostPrefab: {fileID: 4465796823959608584, guid: 2329405a733afa342a28f81b9a5707a6, type: 3}
   initialScale: {x: 0.8, y: 1.4, z: 1}
   scaleAnimal: {x: 1.4, y: 1, z: 1}
@@ -27816,6 +27816,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::playerEnergy
   currentEnergy: 0
   maxEnergy: 100
+  orb: {fileID: 1219774428}
 --- !u!1001 &5058752678472082574
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -27881,9 +27882,9 @@ SceneRoots:
   - {fileID: 619394802}
   - {fileID: 1208853550}
   - {fileID: 986799911}
+  - {fileID: 1219774430}
   - {fileID: 2085880631}
   - {fileID: 711327567}
-  - {fileID: 1219774430}
   - {fileID: 627121128}
   - {fileID: 265026799}
   - {fileID: 1357546703}

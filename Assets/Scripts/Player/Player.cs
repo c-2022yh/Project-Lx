@@ -29,8 +29,6 @@ public class Player : MonoBehaviour
     public float animalJumpMultiplier = 1f;
 
 
-    public FollowingOrb orb; //플레이어를 따라다니는 보주
-
 
 
 

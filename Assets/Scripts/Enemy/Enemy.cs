@@ -13,6 +13,11 @@ public class Enemy : MonoBehaviour
     private int direction = 1;
     private Coroutine decisionCoroutine;
 
+    public PlayerEnergy playerEnergy;
+    public float energyReward = 20f;
+
+    private bool isDead = false;
+
     void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
@@ -22,6 +27,13 @@ public class Enemy : MonoBehaviour
     //오브젝트 풀링에서 소환될때마다 호출
     void OnEnable()
     {
+        isDead = false;
+
+        if (playerEnergy == null)
+        {
+            playerEnergy = FindAnyObjectByType<PlayerEnergy>();
+        }
+
         rb.linearVelocity = Vector2.zero;
 
         //코루틴 안전하게 다시 시작
@@ -58,8 +70,14 @@ public class Enemy : MonoBehaviour
         //(선택 사항) 아이템 드랍이나 점수 추가
         // ScoreManager.Instance.AddScore(100);
 
-        //상태 초기화
-        //다시 풀에서 꺼내질 때를 대비해 물리 속도를 0으로 만듭니다.
+        if (isDead) return;
+        isDead = true;
+
+        if (playerEnergy != null)
+        {
+            playerEnergy.GainEnergy(energyReward);
+        }
+
         Rigidbody2D rb = GetComponent<Rigidbody2D>();
         if (rb != null)
         {
