@@ -161,7 +161,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EnemyPooler
   enemyPrefab: {fileID: 1525100744247835566, guid: 9327f6c6fb11400489f8551ee42588e9, type: 3}
-  poolSize: 100
+  poolSize: 10
 --- !u!4 &265026799
 Transform:
   m_ObjectHideFlags: 0
@@ -189,7 +189,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9085421495ad5254fbe948ebcc0d719a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EnemySpawner
-  spawnRate: 2
+  spawnRate: 5
   minX: -90
   maxX: 0
   minY: -1
@@ -546,7 +546,7 @@ Transform:
   m_GameObject: {fileID: 575089867}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -1.3, y: 1, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -27279,7 +27279,7 @@ GameObject:
   - component: {fileID: 1219774429}
   - component: {fileID: 1219774428}
   m_Layer: 0
-  m_Name: FollowingOrb
+  m_Name: EnergyOrb
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -27301,8 +27301,11 @@ MonoBehaviour:
   offset: {x: -1, y: 1, z: 0}
   followSpeed: 5
   normalScale: 0.5
-  superScale: 1.2
+  maxScale: 1.2
   scaleSpeed: 5
+  spriteRenderer: {fileID: 1219774429}
+  normalColor: {r: 1, g: 1, b: 1, a: 1}
+  superColor: {r: 0, g: 1, b: 1, a: 1}
 --- !u!212 &1219774429
 SpriteRenderer:
   serializedVersion: 2
@@ -27370,9 +27373,9 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1219774427}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.5, y: 0.5, z: 1}
+  m_LocalScale: {x: 0.5, y: 0.49999997, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
@@ -27399,11 +27402,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 9069123986871723739, guid: 356533b922e7b83449881f459722ecb1, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 300
+      value: 2.39925
       objectReference: {fileID: 0}
     - target: {fileID: 9069123986871723739, guid: 356533b922e7b83449881f459722ecb1, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 300
+      value: 2.7511895
       objectReference: {fileID: 0}
     - target: {fileID: 9069123986871723739, guid: 356533b922e7b83449881f459722ecb1, type: 3}
       propertyPath: m_LocalPosition.z
@@ -27495,6 +27498,8 @@ GameObject:
   - component: {fileID: 2085880633}
   - component: {fileID: 2085880638}
   - component: {fileID: 2085880639}
+  - component: {fileID: 2085880640}
+  - component: {fileID: 2085880641}
   m_Layer: 7
   m_Name: Player
   m_TagString: Untagged
@@ -27649,44 +27654,21 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Player
   rb: {fileID: 2085880629}
   spriteRenderer: {fileID: 2085880630}
-  moveSpeed: 10
-  jumpForce: 15
-  dashForce: 1.5
-  dashCooldown: 1
-  waitSecond: 0.01
-  superSpeedMultiplier: 1.5
-  superJumpMultiplier: 1.3
-  animalSpeedMultiplier: 1.8
-  animalJumpMultiplier: 1
-  lastDashTime: 0
-  airControlMin: 0.8
-  groundDecel: 0.01
-  airDecel: 0.1
+  isGrounded: 0
+  moveInput: {x: 0, y: 0}
+  isFacingRight: 1
   groundCheck: {fileID: 1986439829}
   groundLayer:
     serializedVersion: 2
     m_Bits: 64
-  isGrounded: 0
-  isJumpPressed: 0
-  canDoubleJump: 0
-  moveInput: {x: 0, y: 0}
-  dashInputPressed: 0
-  isDashing: 0
-  isAttacking: 0
-  isSkillActive: 0
-  currentAttackPattern:
-    attackName: 
-    startAngle: 0
-    endAngle: 0
-    duration: 0
-    isThrust: 0
-    thrustDistance: 0
-    moveSpeedMultiplier: 0.2
-  isFacingRight: 1
+  superSpeedMultiplier: 1.5
+  superJumpMultiplier: 1.3
+  animalSpeedMultiplier: 1.8
+  animalJumpMultiplier: 1
+  ghostPrefab: {fileID: 4465796823959608584, guid: 2329405a733afa342a28f81b9a5707a6, type: 3}
   initialScale: {x: 0.8, y: 1.4, z: 1}
   scaleAnimal: {x: 1.4, y: 1, z: 1}
-  orb: {fileID: 1219774428}
-  ghostPrefab: {fileID: 4465796823959608584, guid: 2329405a733afa342a28f81b9a5707a6, type: 3}
+  playerActionState: {fileID: 0}
 --- !u!70 &2085880636
 CapsuleCollider2D:
   m_ObjectHideFlags: 0
@@ -27746,21 +27728,18 @@ MonoBehaviour:
     duration: 0.2
     isThrust: 0
     thrustDistance: 0
-    moveSpeedMultiplier: 0.2
   - attackName: "\uB0B4\uB824\uBCA0\uAE30"
     startAngle: 240
     endAngle: 130
     duration: 0.3
     isThrust: 0
     thrustDistance: 0
-    moveSpeedMultiplier: 0.2
   - attackName: "\uCC0C\uB974\uAE30"
     startAngle: 180
     endAngle: 180
     duration: 0.2
     isThrust: 1
-    thrustDistance: -1
-    moveSpeedMultiplier: 0
+    thrustDistance: 2
   defaultAngle: 20
   comboResetTime: 0.5
 --- !u!114 &2085880638
@@ -27775,6 +27754,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cd50175fd4cb20a4abae1a12963df7ea, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerMove
+  moveSpeed: 10
+  jumpForce: 15
+  jumpCooldown: 0.2
+  maxAirJumps: 1
+  coyoteTime: 0.15
+  bufferTime: 0.15
+  dashSpeed: 100
+  dashDuration: 0.02
+  dashCooldown: 0.5
+  lastDashTime: 0
+  airControlMin: 0.8
+  groundSmooth: 0.01
+  airSmooth: 0.1
 --- !u!114 &2085880639
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -27792,10 +27784,39 @@ MonoBehaviour:
   skillD: {fileID: 11400000, guid: 9fd5bf915eefe4049a60f1fc326ad17e, type: 2}
   skillF: {fileID: 11400000, guid: 401216e17c71cb24f8ea92cee54f8709, type: 2}
   weaponHandle: {fileID: 601717195}
+  swordVisual: {fileID: 379651448}
   swordCollider: {fileID: 379651450}
   rangeIndicator: {fileID: 250930144}
   defaultAngle: 20
   shadowPrefab: {fileID: 1405246298}
+--- !u!114 &2085880640
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2085880627}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c885f00a6c847764db692f9fe3b8cd2f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerActionState
+  currentState: 0
+--- !u!114 &2085880641
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2085880627}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5022f0a8db8969a40947240637c09c42, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::playerEnergy
+  currentEnergy: 0
+  maxEnergy: 100
+  orb: {fileID: 1219774428}
 --- !u!1001 &5058752678472082574
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -27810,11 +27831,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7640754167466337973, guid: 1aef8a43828f4a0478dceb36e864aa1f, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 300
+      value: -10.1214
       objectReference: {fileID: 0}
     - target: {fileID: 7640754167466337973, guid: 1aef8a43828f4a0478dceb36e864aa1f, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 300
+      value: 17.3533
       objectReference: {fileID: 0}
     - target: {fileID: 7640754167466337973, guid: 1aef8a43828f4a0478dceb36e864aa1f, type: 3}
       propertyPath: m_LocalPosition.z
@@ -27861,9 +27882,9 @@ SceneRoots:
   - {fileID: 619394802}
   - {fileID: 1208853550}
   - {fileID: 986799911}
+  - {fileID: 1219774430}
   - {fileID: 2085880631}
   - {fileID: 711327567}
-  - {fileID: 1219774430}
   - {fileID: 627121128}
   - {fileID: 265026799}
   - {fileID: 1357546703}

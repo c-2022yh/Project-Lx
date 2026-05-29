@@ -1,4 +1,4 @@
-using System.Diagnostics;
+using System.Collections;
 using UnityEngine;
 
 public class NormalState : PlayerState
@@ -9,7 +9,6 @@ public class NormalState : PlayerState
     {
         SyncVisualDirection(player.initialScale);
         player.spriteRenderer.color = Color.green;
-        player.canDoubleJump = false;
         Physics2D.SyncTransforms();
     }
 
@@ -29,15 +28,11 @@ public class NormalState : PlayerState
     }
     public override void DoFixedUpdate()
     {
-        player.DoMove();
     }
 
-    public override void DoJump()
+    public override void DoDoubleJump()
     {
-        if (player.isGrounded)
-        {
-            player.ExecuteJump();
-        }
+
     }
 
     public override void OnTransformSuper()

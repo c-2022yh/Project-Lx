@@ -11,7 +11,7 @@ public abstract class PlayerState
     public abstract void DoUpdate(); //입력, 타이머, 애니메이션 체크용
     public abstract void DoFixedUpdate(); //물리 업데이트
 
-    public abstract void DoJump();  //점프(단일/더블) 로직
+    public abstract void DoDoubleJump();  //더블점프(공중점프) 로직
 
     protected void SyncVisualDirection(Vector3 targetScale) //변신 시 바라보는 방향 동기화
     {

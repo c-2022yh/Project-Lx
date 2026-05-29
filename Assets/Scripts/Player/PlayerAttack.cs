@@ -11,7 +11,6 @@ public class AttackPattern
     public float duration; //공격 속도
     public bool isThrust; //찌르기 공격인가?
     public float thrustDistance; //찌르기 거리
-    public float moveSpeedMultiplier = 0.2f; //공격시 이동속도 보정값
 }
 
 public class PlayerAttack : MonoBehaviour
@@ -30,6 +29,7 @@ public class PlayerAttack : MonoBehaviour
     private float lastAttackTime; //마지막 공격이 종료된 시간
 
     private int attackCount = 0;
+    private AttackPattern currentAttackPattern; //현재 공격패턴 정보
     private Vector3 originLocalPos;
 
 
@@ -60,8 +60,11 @@ public class PlayerAttack : MonoBehaviour
 
     IEnumerator AttackRoutine(Player p, AttackPattern data)
     {
-        p.currentAttackPattern = data;
-        p.isAttacking = true;
+
+        //상태 업데이트
+        p.playerActionState.EnterAttack();
+
+        currentAttackPattern = data;
         if (swordCollider != null) swordCollider.enabled = true;
 
         float elapsed = 0f;
@@ -88,10 +91,15 @@ public class PlayerAttack : MonoBehaviour
         weaponHandle.transform.localRotation = Quaternion.Euler(0, 0, defaultAngle);
         if (swordVisual != null) swordVisual.transform.localPosition = originLocalPos; 
         
-        p.currentAttackPattern = null;
-        p.isAttacking = false;
+        currentAttackPattern = null;
 
         lastAttackTime = Time.time;
+
+        //상태 되돌리기 but,본인이 바꾼 상태일때만 노말로 교체->남이 바꾼 State 참견 금지
+        if (p.playerActionState.isAttacking)
+        {
+            p.playerActionState.EnterNormal();
+        }
     }
 
 

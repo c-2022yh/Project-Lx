@@ -27,18 +27,12 @@ public class AnimalState : PlayerState
     }
     public override void DoFixedUpdate()
     {
-        if (!player.isDashing && !player.isSkillActive)
-        {
-            player.DoMove(player.superSpeedMultiplier, 2.0f);
-        }
+
     }
 
-    public override void DoJump()
+    public override void DoDoubleJump()
     {
-        if (player.isGrounded)
-        {
-            player.ExecuteJump(player.animalJumpMultiplier);
-        }
+        
     }
 
     public override void OnTransformAnimal()
