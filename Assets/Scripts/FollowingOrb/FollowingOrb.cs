@@ -9,8 +9,13 @@ public class FollowingOrb : MonoBehaviour
 
     [Header("Scale Settings")]
     public float normalScale = 0.5f;
-    public float superScale = 1.2f;  
     public float scaleSpeed = 5f;
+
+    [Header("Color Settings")]
+    public SpriteRenderer spriteRenderer;
+    public Color normalColor = Color.white;
+    public Color superColor = Color.cyan;
+
 
     private float targetScale;
     private Vector3 velocity = Vector3.zero;
@@ -37,12 +42,6 @@ public class FollowingOrb : MonoBehaviour
 
         float currentScale = Mathf.Lerp(transform.localScale.x, targetScale, Time.deltaTime * scaleSpeed);
         transform.localScale = Vector3.one * currentScale;
-    }
-
-
-    public void SetSuperMode(bool isSuper)
-    {
-       
     }
 
 

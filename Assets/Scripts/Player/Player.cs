@@ -28,6 +28,13 @@ public class Player : MonoBehaviour
     public float animalSpeedMultiplier = 1.8f;
     public float animalJumpMultiplier = 1f;
 
+
+    public FollowingOrb orb; //플레이어를 따라다니는 보주
+
+
+
+
+    [SerializeField] private GameObject ghostPrefab; //잔상 프리펩
     public Vector3 initialScale;
     public Vector3 scaleAnimal = new Vector3(1.4f, 1f, 1f); //환수폼 크기 설정
 
@@ -42,15 +49,10 @@ public class Player : MonoBehaviour
     private PlayerMove playerMove;
     private PlayerAttack playerAttack;
     private PlayerSkill playerSkill;
-    
+    private PlayerEnergy playerEnergy;
+
     public PlayerActionState playerActionState;
 
-
-    //플레이어를 따라다니는 보주
-    public FollowingOrb orb;
-    [SerializeField] private GameObject ghostPrefab; //잔상 프리펩
-
-    
 
     //처음 한번만 실행하는 함수
     //변수 초기화
@@ -65,8 +67,9 @@ public class Player : MonoBehaviour
         playerMove = GetComponent<PlayerMove>();
         playerAttack = GetComponent<PlayerAttack>();
         playerSkill = GetComponent<PlayerSkill>();
+        playerEnergy = GetComponent<PlayerEnergy>();
         playerActionState = GetComponent<PlayerActionState>();
-        
+
         ChangeState(new NormalState(this));
     }
 
@@ -108,6 +111,10 @@ public class Player : MonoBehaviour
         currentState = newState;
         currentState.EnterTransform();
     }
+
+
+
+
 
 
     private void OnDrawGizmos()
