@@ -4,7 +4,7 @@ using UnityEngine.InputSystem;
 
 public class Player : MonoBehaviour
 {
-
+    //컴포넌트
     [Header("Components")]
     public Rigidbody2D rb;
     public SpriteRenderer spriteRenderer;
@@ -124,6 +124,28 @@ public class Player : MonoBehaviour
         }
     }
 
+    //중력 일시정으로 정지시키는 함수
+    public void SetPhysicsFreeze(bool freeze)
+    {
+        if (freeze)
+        {
+            //중력 일시정지
+            originalGravity = rb.gravityScale;
+            originalDrag = rb.linearDamping;
+
+            rb.gravityScale = 0f;
+            rb.linearDamping = 0f;
+            rb.linearVelocity = Vector2.zero;
+        }
+        else
+        {
+            //상태 복구
+            rb.gravityScale = originalGravity;
+            rb.linearDamping = originalDrag;
+            rb.linearVelocity = Vector2.zero;
+
+        }
+    }
 
 
 }
