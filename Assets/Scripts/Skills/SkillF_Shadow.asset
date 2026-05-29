@@ -9,11 +9,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 82f39d71bec8dcd40ba7314988834396, type: 3}
+  m_Script: {fileID: 11500000, guid: 7a616849ad0513044ad5199dae13cdc0, type: 3}
   m_Name: SkillF_Shadow
-  m_EditorClassIdentifier: Assembly-CSharp::SkillData
-  skillName: SkilllF
-  cooldown: 2
+  m_EditorClassIdentifier: Assembly-CSharp::SkillF_Shadow
+  skillName: 
+  cooldown: 1
   manaCost: 0
   icon: {fileID: 0}
   dashDistance: 0
@@ -22,6 +22,6 @@ MonoBehaviour:
   endAngle: 20
   effectPrefab: {fileID: 0}
   damageMultiplier: 1
-  hitBoxSize: {x: 1, y: 1}
+  hitBoxSize: {x: 0.8, y: 1.4}
   indicatorColor: {r: 1, g: 0.5, b: 0.5, a: 0.4}
   indicatorOffset: {x: 1, y: 0, z: 0}

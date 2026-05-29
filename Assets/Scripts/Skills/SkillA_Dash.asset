@@ -9,19 +9,19 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 82f39d71bec8dcd40ba7314988834396, type: 3}
+  m_Script: {fileID: 11500000, guid: e9eb88eb47ad54046870d0fbe2af261b, type: 3}
   m_Name: SkillA_Dash
-  m_EditorClassIdentifier: Assembly-CSharp::SkillData
-  skillName: SkillA
+  m_EditorClassIdentifier: Assembly-CSharp::SkillA_Dash
+  skillName: 
   cooldown: 1
   manaCost: 0
   icon: {fileID: 0}
-  dashDistance: 5
+  dashDistance: 4
   duration: 0.01
   startAngle: 150
   endAngle: 200
   effectPrefab: {fileID: 0}
   damageMultiplier: 1
-  hitBoxSize: {x: 20, y: 1.4}
+  hitBoxSize: {x: 1, y: 1.4}
   indicatorColor: {r: 1, g: 0.5, b: 0.5, a: 0.4}
   indicatorOffset: {x: 1, y: 0, z: 0}

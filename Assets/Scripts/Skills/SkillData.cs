@@ -1,7 +1,10 @@
 using UnityEngine;
+using System.Collections;
 
+//프로젝트에서 스킬데이터 SO를 만들수 있도록 설정
 [CreateAssetMenu(fileName = "NewSkill", menuName = "ScriptableObjects/SkillData")]
-public class SkillData : ScriptableObject
+
+public abstract class SkillData : ScriptableObject
 {
     [Header("Basic Info")]
     public string skillName;
@@ -25,4 +28,13 @@ public class SkillData : ScriptableObject
     public Vector2 hitBoxSize = new Vector2(1f, 1f);
     public Color indicatorColor = new Color(1f, 0.5f, 0.5f, 0.4f);
     public Vector3 indicatorOffset = new Vector3(1f, 0f, 0f);
+
+
+    //스킬 실행하는 가상 함수
+    public abstract IEnumerator ProcessSkill(
+        Player p,
+        SkillRangeIndicator indicator,
+        GameObject weaponHandle,
+        Collider2D swordCollider,
+        float defaultAngle);
 }
