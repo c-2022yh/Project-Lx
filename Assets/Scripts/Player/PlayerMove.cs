@@ -1,6 +1,7 @@
 using System.Collections;
 using UnityEngine;
 
+//플레이어 움직임 (이동, 점프, 대쉬) 구현한 스크립트
 public class PlayerMove : MonoBehaviour
 {
     //이동속도 세팅
@@ -24,7 +25,6 @@ public class PlayerMove : MonoBehaviour
     
 
     //대쉬관련 세팅
-
     [Header("Dash Settings")]
     public float dashSpeed = 100f;
     public float dashDuration = 0.02f;
@@ -175,8 +175,6 @@ public class PlayerMove : MonoBehaviour
         }
 
         p.rb.linearVelocity = new Vector2(0f, p.rb.linearVelocity.y);
-        p.rb.gravityScale = originalGravity;
-        p.rb.linearDamping = originalDrag;
 
 
         //상태 되돌리기 but,본인이 바꾼 상태일때만 노말로 교체->남이 바꾼 State 참견 금지
@@ -184,6 +182,10 @@ public class PlayerMove : MonoBehaviour
         {
             p.playerActionState.EnterNormal();
         }
+
+
+        //중력 되돌리기
+        p.SetPhysicsFreeze(false);
 
     }
 

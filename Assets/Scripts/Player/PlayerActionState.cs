@@ -8,7 +8,7 @@ public enum PlayerActionType
     Attacking,      //공격 중
     Dashing,        //대쉬 중
     Skill,          //스킬 사용 중
-    Transforming,   //변신 중
+    Awakening,      //각성 변신 중
     HitStunned,     //피격 경직 중
     Dead            //사망 상태
 }
@@ -27,7 +27,7 @@ public class PlayerActionState : MonoBehaviour
     public bool isAttacking => currentState == PlayerActionType.Attacking;
     public bool isDashing => currentState == PlayerActionType.Dashing;
     public bool isSkillActive => currentState == PlayerActionType.Skill;
-    public bool isTransforming => currentState == PlayerActionType.Transforming;
+    public bool isAwakening => currentState == PlayerActionType.Awakening;
     public bool isHitStunned => currentState == PlayerActionType.HitStunned;
     public bool isDead => currentState == PlayerActionType.Dead;
 
@@ -67,7 +67,7 @@ public class PlayerActionState : MonoBehaviour
             || currentState == PlayerActionType.Attacking;
     }
 
-    public bool CanTransform() //변신은 아무것도 안 하고 있어야 작동
+    public bool CanAwakening() //각성은 아무것도 안 하고 있어야 작동
     {
         return currentState == PlayerActionType.Normal;
     }
@@ -118,10 +118,10 @@ public class PlayerActionState : MonoBehaviour
         ChangeState(PlayerActionType.Skill);
     }
 
-    public void EnterTransform()
+    public void EnterAwakening()
     {
-        Debug.Log("<color=green>Transform State</color>");
-        ChangeState(PlayerActionType.Transforming);
+        Debug.Log("<color=green>Awakening State</color>");
+        ChangeState(PlayerActionType.Awakening);
     }
 
     public void EnterHitStun()

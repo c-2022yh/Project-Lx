@@ -12,7 +12,6 @@ public class SkillA_Dash : SkillData
        Collider2D swordCollider,
        float defaultAngle)
     {
-        p.isSkillActive = true;
         if (swordCollider != null) swordCollider.enabled = true;
 
         float dir = Mathf.Sign(p.transform.localScale.x);
@@ -56,7 +55,6 @@ public class SkillA_Dash : SkillData
         yield return new WaitForSeconds(0.1f);
         if (indicator != null) indicator.Hide();
         
-        p.isSkillActive = false;
 
     }
 }

@@ -93,12 +93,16 @@ public class Player : MonoBehaviour
     public void OnJump(InputValue value) { if (value.isPressed && playerActionState.CanJump()) playerMove.RequestJump(); }
     public void OnDash(InputValue value) { if (value.isPressed && playerActionState.CanDash()) playerMove.ExecuteDash(this); }
     public void OnAttack(InputValue value) { if (value.isPressed && playerActionState.CanAttack()) playerAttack.ExecuteAttack(this); }
+
+    public void OnSkillX(InputValue value) { if (value.isPressed && playerActionState.CanSkill()) playerSkill.ExecuteSkillX(this); }
     public void OnSkillA(InputValue value) { if (value.isPressed && playerActionState.CanSkill()) playerSkill.ExecuteSkillA(this); }
     public void OnSkillS(InputValue value) { if (value.isPressed && playerActionState.CanSkill()) playerSkill.ExecuteSkillS(this); }
     public void OnSkillD(InputValue value) { if (value.isPressed && playerActionState.CanSkill()) playerSkill.ExecuteSkillD(this); }
     public void OnSkillF(InputValue value) { if (value.isPressed && playerActionState.CanSkill()) playerSkill.ExecuteSkillF(this); }
-    public void OnTransformSuper(InputValue value) { if (value.isPressed && playerActionState.CanTransform()) currentState?.OnTransformSuper(); }
-    public void OnTransformAnimal(InputValue value) { if (value.isPressed && playerActionState.CanTransform()) currentState?.OnTransformAnimal(); }
+
+    public void OnAwaken(InputValue value) { if (value.isPressed && playerActionState.CanAwakening()) currentState?.OnTransformSuper(); }
+    //public void OnTransformSuper(InputValue value) { if (value.isPressed && playerActionState.CanTransform()) currentState?.OnTransformSuper(); }
+    //public void OnTransformAnimal(InputValue value) { if (value.isPressed && playerActionState.CanTransform()) currentState?.OnTransformAnimal(); }
 
     
 

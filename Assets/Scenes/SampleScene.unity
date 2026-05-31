@@ -27654,17 +27654,19 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Player
   rb: {fileID: 2085880629}
   spriteRenderer: {fileID: 2085880630}
-
+  isGrounded: 0
+  moveInput: {x: 0, y: 0}
+  isFacingRight: 1
   groundCheck: {fileID: 1986439829}
   groundLayer:
     serializedVersion: 2
     m_Bits: 64
   superSpeedMultiplier: 1.5
-  superJumpMultiplier: 1.3
+  superJumpMultiplier: 1.1
   animalSpeedMultiplier: 1.8
   animalJumpMultiplier: 1
-  ghostPrefab: {fileID: 4465796823959608584, guid: 2329405a733afa342a28f81b9a5707a6, type: 3}
-  initialScale: {x: 0.8, y: 1.4, z: 1}
+  ghostPrefab: {fileID: 0}
+  initialScale: {x: 0, y: 0, z: 0}
   scaleAnimal: {x: 1.4, y: 1, z: 1}
   playerActionState: {fileID: 0}
 --- !u!70 &2085880636
@@ -27737,7 +27739,7 @@ MonoBehaviour:
     endAngle: 180
     duration: 0.2
     isThrust: 1
-
+    thrustDistance: 0
   defaultAngle: 20
   comboResetTime: 0.5
 --- !u!114 &2085880638
@@ -27782,6 +27784,7 @@ MonoBehaviour:
   skillD: {fileID: 11400000, guid: 9fd5bf915eefe4049a60f1fc326ad17e, type: 2}
   skillF: {fileID: 11400000, guid: 401216e17c71cb24f8ea92cee54f8709, type: 2}
   weaponHandle: {fileID: 601717195}
+  swordVisual: {fileID: 0}
   swordCollider: {fileID: 379651450}
   rangeIndicator: {fileID: 250930144}
   defaultAngle: 20

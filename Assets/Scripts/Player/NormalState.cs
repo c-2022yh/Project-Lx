@@ -19,12 +19,7 @@ public class NormalState : PlayerState
 
     public override void DoUpdate()
     {
-        if (player.dashInputPressed)
-        {
-            player.ExecuteDash();
 
-            player.dashInputPressed = false;
-        }
     }
     public override void DoFixedUpdate()
     {

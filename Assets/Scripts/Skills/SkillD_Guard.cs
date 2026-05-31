@@ -15,13 +15,12 @@ public class SkillD_Guard : SkillData
     
         if (!p.isGrounded) yield break;
 
-        p.isSkillActive = true;
         if (swordCollider != null) swordCollider.enabled = true;
 
         //중력 정지
         p.SetPhysicsFreeze(true);
 
-        //가드 범위 표시 (파란색 영역)
+        //가드 범위 표시->파란색
         if (indicator != null)
         {
             //플레이어 자식으로 붙여서 위치 유지
@@ -40,7 +39,6 @@ public class SkillD_Guard : SkillData
         float timer = 0f;
         while (timer < duration)
         {
-            // 검 각도 유지 (SkillData에서 설정한 Start/End Angle 사용)
             if (weaponHandle != null)
             {
                 float progress = timer / duration;
@@ -48,7 +46,6 @@ public class SkillD_Guard : SkillData
                 weaponHandle.transform.localRotation = Quaternion.Euler(0, 0, currentAngle);
             }
 
-            //혹시 모를 밀림 방지
             p.rb.linearVelocity = Vector2.zero;
 
             timer += Time.fixedDeltaTime;
@@ -64,7 +61,6 @@ public class SkillD_Guard : SkillData
         if (weaponHandle != null)
             weaponHandle.transform.localRotation = Quaternion.Euler(0, 0, defaultAngle);
 
-        p.isSkillActive = false;
 
     }
 

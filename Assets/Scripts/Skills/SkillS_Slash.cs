@@ -12,7 +12,6 @@ public class SkillS_Slash : SkillData
        Collider2D swordCollider,
        float defaultAngle)
     {
-        p.isSkillActive = true;
         if (swordCollider != null) swordCollider.enabled = true;
 
         //중력 정지
@@ -57,7 +56,6 @@ public class SkillS_Slash : SkillData
         if (weaponHandle != null)
             weaponHandle.transform.localRotation = Quaternion.Euler(0, 0, defaultAngle);
 
-        p.isSkillActive = false;
 
     }
 }
