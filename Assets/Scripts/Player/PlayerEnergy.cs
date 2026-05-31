@@ -2,8 +2,6 @@ using UnityEngine;
 
 public class PlayerEnergy : MonoBehaviour
 {
-
-
     //기력 세팅
     [Header("Energy")]
     public float currentEnergy = 0f;
@@ -25,6 +23,18 @@ public class PlayerEnergy : MonoBehaviour
         currentEnergy += amount;
         currentEnergy = Mathf.Clamp(currentEnergy, 0f, maxEnergy);//최대치 설정 =maxEnergy->100
 
+        UpdateEnergyVisual();
+    }
+
+    public void ResetEnergy()
+    {
+        currentEnergy = 0f;
+        UpdateEnergyVisual();
+    }
+
+    //보주 비주얼 업데이트
+    private void UpdateEnergyVisual()
+    {
         float ratio = currentEnergy / maxEnergy;
 
         if (orb != null)
@@ -32,7 +42,5 @@ public class PlayerEnergy : MonoBehaviour
             orb.SetEnergyRatio(ratio);
         }
     }
-
-
 
 }

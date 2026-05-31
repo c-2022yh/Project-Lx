@@ -21,34 +21,21 @@ public class Player : MonoBehaviour
     Vector2 boxSize = new Vector2(0.7f, 0.1f); //캐릭터 너비에 맞춘 납작한 박스
     public LayerMask groundLayer;
 
-    //각성 시 이동속도 변환
-    [Header("Transformation Settings")]
-    public float superSpeedMultiplier = 1.5f;
-    public float superJumpMultiplier = 1.1f;
-    public float animalSpeedMultiplier = 1.8f;
-    public float animalJumpMultiplier = 1f;
-
-
-
-
-
     [SerializeField] private GameObject ghostPrefab; //잔상 프리펩
     public Vector3 initialScale;
     public Vector3 scaleAnimal = new Vector3(1.4f, 1f, 1f); //환수폼 크기 설정
 
-    
     //중력 값을 저장하는 변수 freeze 함수 내부에서 사용
     private float originalGravity;
     private float originalDrag;
-    
-    
-    //컴포넌트 참조
-    private PlayerState currentState;
-    private PlayerMove playerMove;
-    private PlayerAttack playerAttack;
-    private PlayerSkill playerSkill;
-    private PlayerEnergy playerEnergy;
 
+    //컴포넌트 참조
+    public PlayerState currentState;
+    public PlayerMove playerMove;
+    public PlayerAttack playerAttack;
+    public PlayerSkill playerSkill;
+    public PlayerEnergy playerEnergy;
+    public PlayerAwakening playerAwakening;
     public PlayerActionState playerActionState;
 
 
@@ -66,6 +53,7 @@ public class Player : MonoBehaviour
         playerAttack = GetComponent<PlayerAttack>();
         playerSkill = GetComponent<PlayerSkill>();
         playerEnergy = GetComponent<PlayerEnergy>();
+        playerAwakening = GetComponent<PlayerAwakening>();
         playerActionState = GetComponent<PlayerActionState>();
 
         ChangeState(new NormalState(this));
@@ -100,20 +88,20 @@ public class Player : MonoBehaviour
     public void OnSkillD(InputValue value) { if (value.isPressed && playerActionState.CanSkill()) playerSkill.ExecuteSkillD(this); }
     public void OnSkillF(InputValue value) { if (value.isPressed && playerActionState.CanSkill()) playerSkill.ExecuteSkillF(this); }
 
-    public void OnAwaken(InputValue value) { if (value.isPressed && playerActionState.CanAwakening()) currentState?.OnTransformSuper(); }
+    public void OnAwaken(InputValue value) { if (value.isPressed && playerActionState.CanAwakening()) playerAwakening.TryAwaken(this); }
     //public void OnTransformSuper(InputValue value) { if (value.isPressed && playerActionState.CanTransform()) currentState?.OnTransformSuper(); }
     //public void OnTransformAnimal(InputValue value) { if (value.isPressed && playerActionState.CanTransform()) currentState?.OnTransformAnimal(); }
 
     
 
-
+    
     public void ChangeState(PlayerState newState)
     {
         currentState?.ExitTransform();
         currentState = newState;
         currentState.EnterTransform();
     }
-
+    
 
 
 
