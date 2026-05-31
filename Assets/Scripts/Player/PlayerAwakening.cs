@@ -7,19 +7,19 @@ public class PlayerAwakening : MonoBehaviour
 
     [Header("Awakening Settings")]
     public float awakeningDuration = 20f;
-    public float awakeningFreezeTime = 0.5f;
+    public float awakeningFreezeTime = 0.8f;
     
     //각성 컬러
-    public Color normalColor = Color.green;
-    public Color awakenedColor = Color.red;
+    private Color normalColor = Color.green;
+    private Color awakenedColor = Color.red;
 
     //속도 보정 값
     [Header("Stat Multiplier")]
-    public float awakenedMoveMultiplier = 1.3f;
-    public float awakenedJumpMultiplier = 1.2f;
+    private float awakenedMoveMultiplier = 1.3f;
+    private float awakenedJumpMultiplier = 1.2f;
 
     [Header("Effect")]
-    public GameObject awakeningEffectPrefab;
+    public AwakeningEffect awakeningEffect;
  
     private bool isAwakened = false;    //각성모드 들어가고 있는 상태 ->변신
     private bool isAwakening = false;   //지금 각성 중?
@@ -27,6 +27,7 @@ public class PlayerAwakening : MonoBehaviour
     private Coroutine awakeningCoroutine;
 
     public bool IsAwakened => isAwakened;
+
 
     //각성 상태에 진입하는 함수
     public void TryAwaken(Player p)
@@ -51,9 +52,10 @@ public class PlayerAwakening : MonoBehaviour
         //중력 제거
         p.SetPhysicsFreeze(true);
 
-        if (awakeningEffectPrefab != null)
+        //이펙트 보이게끔
+        if (awakeningEffect != null)
         {
-            Instantiate(awakeningEffectPrefab, p.transform.position, Quaternion.identity);
+            awakeningEffect.SetAndShow(p.transform.position);
         }
 
         yield return new WaitForSeconds(awakeningFreezeTime);

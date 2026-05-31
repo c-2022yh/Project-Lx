@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: SkillF_Shadow
   m_EditorClassIdentifier: Assembly-CSharp::SkillF_Shadow
   skillName: 
-  cooldown: 1
+  cooldown: 2
   manaCost: 0
   icon: {fileID: 0}
   dashDistance: 0
@@ -25,3 +25,4 @@ MonoBehaviour:
   hitBoxSize: {x: 0.8, y: 1.4}
   indicatorColor: {r: 1, g: 0.5, b: 0.5, a: 0.4}
   indicatorOffset: {x: 1, y: 0, z: 0}
+  shadowPrefab: {fileID: 5188507118734370343, guid: 1aef8a43828f4a0478dceb36e864aa1f, type: 3}
