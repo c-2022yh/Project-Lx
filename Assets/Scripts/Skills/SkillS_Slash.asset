@@ -18,7 +18,7 @@ MonoBehaviour:
   soulCost: 0
   icon: {fileID: 0}
   description: "\uB3CC\uB3CC"
-  compatibleSlot: 0
+  compatibleSlot: 2
   dashDistance: 0
   duration: 0.5
   startAngle: 150

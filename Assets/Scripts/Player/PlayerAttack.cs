@@ -9,8 +9,6 @@ public class AttackPattern
     public float startAngle; //시작 각도
     public float endAngle; //종료 각도
     public float duration; //공격 속도
-    public bool isThrust; //찌르기 공격인가?
-    public float thrustDistance; //찌르기 거리
 }
 
 public class PlayerAttack : MonoBehaviour
@@ -73,17 +71,9 @@ public class PlayerAttack : MonoBehaviour
             elapsed += Time.deltaTime;
             float progress = elapsed / data.duration;
 
-            if (data.isThrust) //찌르기
-            {
-                float moveAmount = Mathf.Sin(progress * Mathf.PI) * data.thrustDistance;
-                swordVisual.transform.localPosition = originLocalPos + new Vector3(moveAmount, 0, 0);
-                weaponHandle.transform.localRotation = Quaternion.Euler(0, 0, data.startAngle);
-            }
-            else //베기
-            {
-                float currentAngle = Mathf.Lerp(data.startAngle, data.endAngle, progress);
-                weaponHandle.transform.localRotation = Quaternion.Euler(0, 0, currentAngle);
-            }
+            float currentAngle = Mathf.Lerp(data.startAngle, data.endAngle, progress);
+            weaponHandle.transform.localRotation = Quaternion.Euler(0, 0, currentAngle);
+            
             yield return null;
         }
 

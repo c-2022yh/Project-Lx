@@ -18,7 +18,7 @@ MonoBehaviour:
   soulCost: 0
   icon: {fileID: 0}
   description: "\uC5D4\uBBF9\uC2A4\uB178\uB798GOAT\u314B\u314B\u314B\u314B"
-  compatibleSlot: 0
+  compatibleSlot: 1
   dashDistance: 4
   duration: 0.01
   startAngle: 150

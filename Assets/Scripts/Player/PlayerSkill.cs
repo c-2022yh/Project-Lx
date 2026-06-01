@@ -17,8 +17,6 @@ public class PlayerSkill : MonoBehaviour
     [SerializeField] private SkillRangeIndicator rangeIndicator;
     [SerializeField] private HUDPanel hudPanel;
 
-
-
     [Header("Settings")]
     [SerializeField] private float defaultAngle = 20f;
 
@@ -54,14 +52,8 @@ public class PlayerSkill : MonoBehaviour
     //스킬 코루틴
     private IEnumerator SkillRoutine(Player p, SkillData skill, int slotIndex)
     {
-        cooldowns[slotIndex] = true; //스킬 쿨 돌아가게
-
         //State 바꿈
         p.playerActionState.EnterSkill();
-
-
-        //UI 작동
-        hudPanel.StartSkillCooldown(slotIndex, skill.cooldownTime);
 
         yield return StartCoroutine(skill.ProcessSkill(
             p,
@@ -70,17 +62,24 @@ public class PlayerSkill : MonoBehaviour
             swordCollider,
             defaultAngle
         )); //실제 스킬 실행
-
+        
         //State 되돌림
         if (p.playerActionState.isSkillActive)
         {
             p.playerActionState.EnterNormal();
         }
 
+        //스킬 쿨 돌아가게
+        cooldowns[slotIndex] = true;
+        
+        //UI 작동
+        hudPanel.StartSkillCooldown(slotIndex, skill.cooldownTime);
+
         //스킬 쿨타임만큼 기다렸다가
         yield return new WaitForSeconds(skill.cooldownTime);
         //쿨타임 종료시키기
         cooldowns[slotIndex] = false;
+
     }
 
    

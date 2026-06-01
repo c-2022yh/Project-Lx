@@ -14,13 +14,10 @@ public class SkillSlotUI : MonoBehaviour
     [SerializeField] private Image iconImage;
     [SerializeField] private Image cooldownOverlay;     // Filled Radial 360
 
-    [Header("Settings — 일단 더미")]
-    [SerializeField] private float cooldownDuration = 3f;
-    [SerializeField] private Sprite dummyIcon;
-    [SerializeField] private bool startActive = false;
-
     [Header("Current Skill Data")]
     [SerializeField] private SkillData currentSkill; // 현재 바인딩된 스킬
+
+    private float cooldownDuration = 3f;
 
     private float cooldownRemaining;
     private bool isOnCooldown;
@@ -31,10 +28,7 @@ public class SkillSlotUI : MonoBehaviour
 
     void Start()
     {
-        if (currentSkill != null) BindSkill(currentSkill);
-        else if (startActive) Bind(dummyIcon, cooldownDuration);
-        else Clear();
-        
+        BindSkill(currentSkill);
     }
 
     void Update()
@@ -92,16 +86,6 @@ public class SkillSlotUI : MonoBehaviour
         isOnCooldown = false;
     }
 
-    public void OnPointerClick(PointerEventData eventData) => TryTriggerSkill();
-
-    /// <summary>외부에서 쿨타임 시작 (UIManager 등에서 호출)</summary>
-    public void StartCooldown()
-    {
-        if (!isActive) return;
-        cooldownRemaining = cooldownDuration;
-        if (cooldownOverlay != null) cooldownOverlay.fillAmount = 1f;
-        isOnCooldown = true;
-    }
 
     //쿨타임을 받는 오버로드
     public void StartCooldown(float cooldownTime)

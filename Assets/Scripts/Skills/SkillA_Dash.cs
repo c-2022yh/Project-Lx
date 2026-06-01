@@ -1,7 +1,7 @@
 using UnityEngine;
 using System.Collections;
 
-[CreateAssetMenu(fileName = "SkillA_Dash", menuName = "SkillA_Dash")]
+[CreateAssetMenu(fileName = "SkillA_Dash", menuName = "Skills/SkillA_Dash")]
 
 public class SkillA_Dash : SkillData
 {
@@ -37,11 +37,6 @@ public class SkillA_Dash : SkillData
         float speed = actualDist / duration * 0.5f;
         while (timer < duration)
         {
-            if (weaponHandle != null)
-            {
-                float angle = Mathf.Lerp(startAngle, endAngle, timer / duration);
-                weaponHandle.transform.localRotation = Quaternion.Euler(0, 0, 1);
-            }
             p.rb.linearVelocity = new Vector2(dir * speed, 0f);
             timer += Time.fixedDeltaTime;
             yield return new WaitForFixedUpdate();

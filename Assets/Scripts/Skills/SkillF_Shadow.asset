@@ -18,7 +18,7 @@ MonoBehaviour:
   soulCost: 0
   icon: {fileID: 0}
   description: "\uC0E4\uC0E4\uC0E5"
-  compatibleSlot: 0
+  compatibleSlot: 4
   dashDistance: 0
   duration: 0
   startAngle: 20

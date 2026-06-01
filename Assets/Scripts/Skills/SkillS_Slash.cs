@@ -1,7 +1,7 @@
 using UnityEngine;
 using System.Collections;
 
-[CreateAssetMenu(fileName = "SkillS_Slash", menuName = "SkillS_Slash")]
+[CreateAssetMenu(fileName = "SkillS_Slash", menuName = "Skills/SkillS_Slash")]
 
 public class SkillS_Slash : SkillData
 {
