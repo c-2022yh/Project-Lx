@@ -12,10 +12,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e9eb88eb47ad54046870d0fbe2af261b, type: 3}
   m_Name: SkillA_Dash
   m_EditorClassIdentifier: Assembly-CSharp::SkillA_Dash
-  skillName: 
-  cooldown: 1
+  skillName: Dash
+  cooldownTime: 1
   manaCost: 0
+  soulCost: 0
   icon: {fileID: 0}
+  description: "\uC5D4\uBBF9\uC2A4\uB178\uB798GOAT\u314B\u314B\u314B\u314B"
+  compatibleSlot: 0
   dashDistance: 4
   duration: 0.01
   startAngle: 150

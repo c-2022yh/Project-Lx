@@ -12,10 +12,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 26eb4b473df0f374ebff29daff78dab5, type: 3}
   m_Name: SkillS_Slash
   m_EditorClassIdentifier: Assembly-CSharp::SkillS_Slash
-  skillName: 
-  cooldown: 2
+  skillName: Slash
+  cooldownTime: 2
   manaCost: 0
+  soulCost: 0
   icon: {fileID: 0}
+  description: "\uB3CC\uB3CC"
+  compatibleSlot: 0
   dashDistance: 0
   duration: 0.5
   startAngle: 150

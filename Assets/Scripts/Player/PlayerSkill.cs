@@ -15,6 +15,9 @@ public class PlayerSkill : MonoBehaviour
     [SerializeField] private GameObject weaponHandle;
     [SerializeField] private Collider2D swordCollider;
     [SerializeField] private SkillRangeIndicator rangeIndicator;
+    [SerializeField] private HUDPanel hudPanel;
+
+
 
     [Header("Settings")]
     [SerializeField] private float defaultAngle = 20f;
@@ -56,6 +59,10 @@ public class PlayerSkill : MonoBehaviour
         //State 바꿈
         p.playerActionState.EnterSkill();
 
+
+        //UI 작동
+        hudPanel.StartSkillCooldown(slotIndex, skill.cooldownTime);
+
         yield return StartCoroutine(skill.ProcessSkill(
             p,
             rangeIndicator,
@@ -71,8 +78,10 @@ public class PlayerSkill : MonoBehaviour
         }
 
         //스킬 쿨타임만큼 기다렸다가
-        yield return new WaitForSeconds(skill.cooldown);
+        yield return new WaitForSeconds(skill.cooldownTime);
         //쿨타임 종료시키기
         cooldowns[slotIndex] = false;
     }
+
+   
 }

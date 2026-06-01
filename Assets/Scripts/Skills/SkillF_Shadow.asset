@@ -12,10 +12,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7a616849ad0513044ad5199dae13cdc0, type: 3}
   m_Name: SkillF_Shadow
   m_EditorClassIdentifier: Assembly-CSharp::SkillF_Shadow
-  skillName: 
-  cooldown: 2
+  skillName: "\uADF8\uB9BC\uC790 \uC794\uC601"
+  cooldownTime: 1
   manaCost: 0
+  soulCost: 0
   icon: {fileID: 0}
+  description: "\uC0E4\uC0E4\uC0E5"
+  compatibleSlot: 0
   dashDistance: 0
   duration: 0
   startAngle: 20

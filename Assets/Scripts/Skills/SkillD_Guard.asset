@@ -12,10 +12,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5da98eb61e2605b448406ee5774fe656, type: 3}
   m_Name: SkillD_Guard
   m_EditorClassIdentifier: Assembly-CSharp::SkillD_Guard
-  skillName: 
-  cooldown: 2
+  skillName: "\uAC00\uB4DC"
+  cooldownTime: 2
   manaCost: 0
+  soulCost: 0
   icon: {fileID: 0}
+  description: "\uAC00\uB4DC!"
+  compatibleSlot: 0
   dashDistance: 0
   duration: 1
   startAngle: 150
