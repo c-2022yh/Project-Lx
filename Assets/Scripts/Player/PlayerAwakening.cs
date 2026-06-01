@@ -6,8 +6,8 @@ public class PlayerAwakening : MonoBehaviour
     public Rigidbody2D rb;
 
     [Header("Awakening Settings")]
-    public float awakeningDuration = 20f;
-    public float awakeningFreezeTime = 0.8f;
+    private float awakeningDuration = 20f;
+    private float awakeningFreezeTime = 0.8f;
     
     //각성 컬러
     private Color normalColor = Color.green;
