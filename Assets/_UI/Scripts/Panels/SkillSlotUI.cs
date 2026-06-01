@@ -87,7 +87,7 @@ public class SkillSlotUI : MonoBehaviour
     }
 
 
-    //쿨타임을 받는 오버로드
+    //쿨타임 가져오게
     public void StartCooldown(float cooldownTime)
     {
         if (!isActive) return;
