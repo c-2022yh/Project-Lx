@@ -28034,7 +28034,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3590713088162192384, guid: e2d78d1bc91566f46be7549983fb33ff, type: 3}
       propertyPath: endScale
-      value: 5
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 4587442286088133383, guid: e2d78d1bc91566f46be7549983fb33ff, type: 3}
       propertyPath: m_Color.a
@@ -28582,7 +28582,7 @@ MonoBehaviour:
     endAngle: 180
     duration: 0.2
     isThrust: 1
-    thrustDistance: 0
+    thrustDistance: 2
   defaultAngle: 20
   comboResetTime: 0.5
 --- !u!114 &2085880638
