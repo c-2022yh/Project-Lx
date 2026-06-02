@@ -17,8 +17,6 @@ public class EnergyOrb : MonoBehaviour
     public Color normalColor = Color.white;
     public Color superColor = Color.cyan;
 
-
-
     private float targetScale;
     private Vector3 velocity = Vector3.zero;
 

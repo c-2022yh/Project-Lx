@@ -103,10 +103,6 @@ public class Player : MonoBehaviour
     }
     
 
-
-
-
-
     private void OnDrawGizmos()
     {
         if (groundCheck != null)
@@ -116,12 +112,17 @@ public class Player : MonoBehaviour
         }
     }
 
-    //중력 일시적으로 정지시키는 함수
+    private bool isPhysicsFrozen = false;
+
+    // 중력 일시정지 함수
     public void SetPhysicsFreeze(bool freeze)
     {
         if (freeze)
         {
-            //중력 일시정지
+            if (isPhysicsFrozen) return;
+
+            isPhysicsFrozen = true;
+
             originalGravity = rb.gravityScale;
             originalDrag = rb.linearDamping;
 
@@ -131,11 +132,13 @@ public class Player : MonoBehaviour
         }
         else
         {
-            //상태 복구
+            if (!isPhysicsFrozen) return;
+
+            isPhysicsFrozen = false;
+
             rb.gravityScale = originalGravity;
             rb.linearDamping = originalDrag;
             rb.linearVelocity = Vector2.zero;
-
         }
     }
 
