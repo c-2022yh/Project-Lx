@@ -116,7 +116,7 @@ public class Player : MonoBehaviour
         }
     }
 
-    //중력 일시정으로 정지시키는 함수
+    //중력 일시적으로 정지시키는 함수
     public void SetPhysicsFreeze(bool freeze)
     {
         if (freeze)
