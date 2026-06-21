@@ -3,96 +3,239 @@ using UnityEngine.InputSystem;
 using System.Collections;
 
 [System.Serializable]
-public class AttackPattern
+public class AttackPattern //공격 패턴
 {
-    public string attackName; //인스펙터 확인용
-    public float startAngle; //시작 각도
-    public float endAngle; //종료 각도
-    public float duration; //공격 속도
+    public string attackName;
+
+    [Header("Timing")]
+    public float startupTime = 0.05f;   //선딜
+    public float activeTime = 0.1f;     //공격판정 시간
+    public float recoveryTime = 0.1f;   //후딜
+
+    [Header("Sword Motion")]
+    public float startAngle = 40f;
+    public float endAngle = -40f;
+
+    [Header("Combat")]
+    public float damageMultiplier = 1f; //데미지 보정값
+
+    [Header("Movement")]
+    public float forwardMoveDistance = 0f; //공격시 앞으로 치고 나가는 거리
+
+
+    [Header("Effect")] //공격 이펙트 프리펩 설정
+    public GameObject attackEffectPrefab;
+    public Vector2 effectOffset = new Vector2(0.8f, 0f);
+    public Vector3 effectScale = Vector3.one;
+    public float effectRotationZ = 0f;
+    public float effectDuration = 0.12f;
+
 }
 
+
+//플레이어 기본 공격을 다루는 스크립트
 public class PlayerAttack : MonoBehaviour
 {
-    //인스펙터에서 연결
+    [Header("References")] //인스펙터에서 연결
     [SerializeField] private GameObject weaponHandle;
     [SerializeField] private GameObject swordVisual;
     [SerializeField] private Collider2D swordCollider;
 
-    [Header("Attack Sequences")]
-    [SerializeField] private AttackPattern[] patterns;
+    //공격 패턴(2단계)
+    [Header("Ground Combo")]
+    [SerializeField] private AttackPattern[] groundPatterns;
+    [SerializeField] private float comboResetTime = 0.6f;
     [SerializeField] private float defaultAngle = 20f;
 
-    [Header("Combo Settings")]
-    [SerializeField] private float comboResetTime = 0.5f; //이 시간이 지나면 콤보 초기화 
-    private float lastAttackTime; //마지막 공격이 종료된 시간
+    //공중 공격
+    [Header("Air Attack")]
+    [SerializeField] private AttackPattern airAttack;
 
-    private int attackCount = 0;
-    private AttackPattern currentAttackPattern; //현재 공격패턴 정보
+    private Player player;
+
+    private int comboIndex = 0;
+    private float lastAttackEndTime;
+    private Coroutine attackCoroutine;
+
     private Vector3 originLocalPos;
 
 
     void Awake()
     {
-        //콜라이더, 오브젝트 연결
         if (swordCollider != null) swordCollider.enabled = false;
         if (swordVisual != null) originLocalPos = swordVisual.transform.localPosition;
-        weaponHandle.transform.localRotation = Quaternion.Euler(0, 0, defaultAngle);
+        SetWeaponAngle(defaultAngle);
+
+        player = GetComponent<Player>();
+
+    }
+
+    private void Update()
+    {
+
     }
 
     public void ExecuteAttack(Player p)
     {
-        if (patterns.Length == 0) return;
+        if (p == null) return;
+        
+        //이미 공격 중?
+        if (attackCoroutine != null) return;
 
-        //마지막 공격 종료 후 일정 시간이 지났는지 체크
-        if (Time.time > lastAttackTime + comboResetTime)
+        //공중일 때
+        if (!p.isGrounded)
         {
-            attackCount = 0; //콤보 초기화
+            if (airAttack == null) return;
+
+            attackCoroutine = StartCoroutine(AttackRoutine(p, airAttack, true));
+            return;
         }
 
-        //인덱스 계산 0,1,2
-        int index = attackCount % patterns.Length;
-        StartCoroutine(AttackRoutine(p, patterns[index]));
-        attackCount++;
+        if (groundPatterns == null || groundPatterns.Length == 0) return;
+
+        //공격 후 일정 시간이 지나면 콤보 초기화
+        if (Time.time > lastAttackEndTime + comboResetTime) comboIndex = 0;
+
+        AttackPattern pattern = groundPatterns[comboIndex];
+        comboIndex++;
+        //콤보인덱스가 0-1에만 돌도록
+        if (comboIndex >= groundPatterns.Length) comboIndex = 0;
+
+        attackCoroutine = StartCoroutine(AttackRoutine(p, pattern, false));
     }
 
 
-    IEnumerator AttackRoutine(Player p, AttackPattern data)
+    private IEnumerator AttackRoutine(Player p, AttackPattern pattern, bool isAirAttack)
     {
-
-        //상태 업데이트
+        //상태 진입
         p.playerActionState.EnterAttack();
 
-        currentAttackPattern = data;
-        if (swordCollider != null) swordCollider.enabled = true;
+        //플레이어 바라보는 방향 설정
+        float dir = p.isFacingRight ? 1f : -1f;
 
-        float elapsed = 0f;
-        while (elapsed < data.duration)
+        if (!isAirAttack)
         {
-            elapsed += Time.deltaTime;
-            float progress = elapsed / data.duration;
+            //지상공격은 시작 시 x축 이동 제거
+            p.rb.linearVelocity = new Vector2(0f, p.rb.linearVelocity.y);
+        }
 
-            float currentAngle = Mathf.Lerp(data.startAngle, data.endAngle, progress);
-            weaponHandle.transform.localRotation = Quaternion.Euler(0, 0, currentAngle);
-            
+        //선딜
+        yield return RotateSword(pattern.startupTime, defaultAngle, pattern.startAngle);
+
+        //공격 프레임
+        if (swordCollider != null) swordCollider.enabled = true;
+        ShowAttackEffect(p, pattern, dir); //공격 이펙트 생성
+        yield return ActiveAttackPhase(p, pattern, dir);
+        if (swordCollider != null) swordCollider.enabled = false;
+
+        //후딜
+        yield return RotateSword(pattern.recoveryTime, pattern.endAngle, defaultAngle);
+
+        if (swordVisual != null)
+            swordVisual.transform.localPosition = originLocalPos;
+
+        lastAttackEndTime = Time.time;
+
+        //상태 돌아오기
+        if (p.playerActionState.isAttacking)
+            p.playerActionState.EnterNormal();
+
+        attackCoroutine = null;
+    }
+
+    //실제 공격 중 실행할 코루틴
+    private IEnumerator ActiveAttackPhase(Player p, AttackPattern pattern, float dir)
+    {
+        float timer = 0f;
+        float moved = 0f;
+
+        while (timer < pattern.activeTime)
+        {
+            timer += Time.fixedDeltaTime;
+            float t = Mathf.Clamp01(timer / pattern.activeTime);
+
+            float angle = Mathf.Lerp(pattern.startAngle, pattern.endAngle, t);
+            SetWeaponAngle(angle);
+
+            //선택사항: 공격 중 아주 살짝 전진
+            if (pattern.forwardMoveDistance > 0f)
+            {
+                float step = pattern.forwardMoveDistance * (Time.fixedDeltaTime / pattern.activeTime);
+                moved += step;
+
+                if (moved <= pattern.forwardMoveDistance)
+                {
+                    Vector2 nextPos = p.rb.position + new Vector2(dir * step, 0f);
+                    p.rb.MovePosition(nextPos);
+                }
+            }
+
+            //공격 중 직접 이동 안되게
+            p.rb.linearVelocity = new Vector2(0f, p.rb.linearVelocity.y);
+
+            yield return new WaitForFixedUpdate();
+        }
+    }
+
+    //이펙트 보였다 사라지게끔 함수
+    private void ShowAttackEffect(Player p, AttackPattern pattern, float dir)
+    {
+        if (pattern.attackEffectPrefab == null) return;
+
+        //생성위치: 플레이어가 바라보는 정면 앞
+        Vector3 spawnPos = p.transform.position + new Vector3(pattern.effectOffset.x * dir, pattern.effectOffset.y, 0f);
+        
+        //회전각 적용
+        Quaternion rotation = Quaternion.Euler(0f, 0f, pattern.effectRotationZ * dir);
+        
+        //시작
+        GameObject effectObj = Instantiate(pattern.attackEffectPrefab, spawnPos, rotation);
+
+        //크기 및 방향 설정
+        effectObj.transform.localScale = pattern.effectScale;
+        SpriteRenderer sr = effectObj.GetComponentInChildren<SpriteRenderer>();
+        if (sr != null) sr.flipX = dir < 0f;
+
+        //삭제
+        Destroy(effectObj, pattern.effectDuration);
+
+
+
+    }
+
+
+
+    //검 돌리기->각도 설정은 스프라이트 들어오면 폐기
+    private IEnumerator RotateSword(float duration, float fromAngle, float toAngle)
+    {
+        if (duration <= 0f)
+        {
+            SetWeaponAngle(toAngle);
+            yield break;
+        }
+
+        float timer = 0f;
+
+        while (timer < duration)
+        {
+            timer += Time.deltaTime;
+            float t = Mathf.Clamp01(timer / duration);
+
+            float angle = Mathf.Lerp(fromAngle, toAngle, t);
+            SetWeaponAngle(angle);
+
             yield return null;
         }
 
-        if (swordCollider != null) swordCollider.enabled = false;
-        weaponHandle.transform.localRotation = Quaternion.Euler(0, 0, defaultAngle);
-        if (swordVisual != null) swordVisual.transform.localPosition = originLocalPos; 
-        
-        currentAttackPattern = null;
-
-        lastAttackTime = Time.time;
-
-        //상태 되돌리기 but,본인이 바꾼 상태일때만 노말로 교체->남이 바꾼 State 참견 금지
-        if (p.playerActionState.isAttacking)
-        {
-            p.playerActionState.EnterNormal();
-        }
+        SetWeaponAngle(toAngle);
     }
 
-
+    //검 각도 설정 ->각도 설정은 스프라이트 들어오면 폐기
+    private void SetWeaponAngle(float angle)
+    {
+        if (weaponHandle != null)
+            weaponHandle.transform.localRotation = Quaternion.Euler(0f, 0f, angle);
+    }
 
 
 }

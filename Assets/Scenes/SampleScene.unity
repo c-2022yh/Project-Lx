@@ -29346,17 +29346,49 @@ MonoBehaviour:
   weaponHandle: {fileID: 601717195}
   swordVisual: {fileID: 379651448}
   swordCollider: {fileID: 379651450}
-  patterns:
-  - attackName: "\uC62C\uB824\uBCA0\uAE30"
-    startAngle: 150
+  groundPatterns:
+  - attackName: "\uC9E7\uAC8C \uBCA0\uAE30"
+    startupTime: 0.03
+    activeTime: 0.09
+    recoveryTime: 0.08
+    startAngle: 20
     endAngle: 200
-    duration: 0.2
-  - attackName: "\uB0B4\uB824\uBCA0\uAE30"
-    startAngle: 240
-    endAngle: 130
-    duration: 0.3
+    damageMultiplier: 1
+    forwardMoveDistance: 0
+    attackEffectPrefab: {fileID: 3545481630792328146, guid: 94f295d40691486438e6c60e511b79e0, type: 3}
+    effectOffset: {x: 0.8, y: 0}
+    effectScale: {x: 1, y: 1, z: 1}
+    effectRotationZ: 20
+    effectDuration: 0.12
+  - attackName: "\uB0B4\uB824 \uCE58\uAE30"
+    startupTime: 0.1
+    activeTime: 0.2
+    recoveryTime: 0.2
+    startAngle: 200
+    endAngle: 100
+    damageMultiplier: 1.2
+    forwardMoveDistance: 0.2
+    attackEffectPrefab: {fileID: 2066522367392586507, guid: 692a85f7206e9714c93b470598cbc6a6, type: 3}
+    effectOffset: {x: 0.8, y: 0}
+    effectScale: {x: 1, y: 1, z: 1}
+    effectRotationZ: -10
+    effectDuration: 0.2
+  comboResetTime: 0.2
   defaultAngle: 20
-  comboResetTime: 0.5
+  airAttack:
+    attackName: "\uACF5\uC911 \uBCA0\uAE30"
+    startupTime: 0.03
+    activeTime: 0.1
+    recoveryTime: 0.15
+    startAngle: 180
+    endAngle: 140
+    damageMultiplier: 1
+    forwardMoveDistance: 0
+    attackEffectPrefab: {fileID: 3545481630792328146, guid: 94f295d40691486438e6c60e511b79e0, type: 3}
+    effectOffset: {x: 0.8, y: 0}
+    effectScale: {x: 1, y: 1, z: 1}
+    effectRotationZ: 0
+    effectDuration: 0.12
 --- !u!114 &2085880638
 MonoBehaviour:
   m_ObjectHideFlags: 0
