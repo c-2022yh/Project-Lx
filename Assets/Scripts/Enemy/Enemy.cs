@@ -1,12 +1,15 @@
 using System;
 using System.Collections;
-using System.Diagnostics;
 using UnityEngine;
 
 public class Enemy : MonoBehaviour
 {
     public float moveSpeed = 3f;
     public float decisionTime = 1f;
+
+    [Header("Health")]
+    public float maxHp = 3f;
+    private float currentHp;
 
     private Rigidbody2D rb;
     private SpriteRenderer sr;
@@ -33,6 +36,7 @@ public class Enemy : MonoBehaviour
         {
             playerEnergy = FindAnyObjectByType<PlayerEnergy>();
         }
+        currentHp = maxHp;
 
         rb.linearVelocity = Vector2.zero;
 
@@ -61,6 +65,21 @@ public class Enemy : MonoBehaviour
         //y축 유지, x축만바꾸기
         rb.linearVelocity = new Vector2(direction * moveSpeed, rb.linearVelocity.y);
     }
+
+    public void TakeDamage(float damage)
+    {
+        if (isDead) return;
+
+        currentHp -= damage;
+
+        Debug.Log($"Enemy Hit! HP: {currentHp}");
+
+        if (currentHp <= 0f)
+        {
+            Die();
+        }
+    }
+
 
     public void Die()
     {

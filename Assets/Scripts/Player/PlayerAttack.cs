@@ -30,6 +30,10 @@ public class AttackPattern //공격 패턴
     public float effectRotationZ = 0f;
     public float effectDuration = 0.12f;
 
+    [Header("Effect Follow")] //이펙트가 플레이어를 얼마나 따라올 지 (공중공격 한정)
+    public bool followPlayer = false;
+    public float followDuration = 0.1f;
+
 }
 
 
@@ -123,7 +127,7 @@ public class PlayerAttack : MonoBehaviour
         yield return RotateSword(pattern.startupTime, defaultAngle, pattern.startAngle);
 
         //공격 프레임
-        if (swordCollider != null) swordCollider.enabled = true;
+        //if (swordCollider != null) swordCollider.enabled = true;
         ShowAttackEffect(p, pattern, dir); //공격 이펙트 생성
         yield return ActiveAttackPhase(p, pattern, dir);
         if (swordCollider != null) swordCollider.enabled = false;
@@ -171,7 +175,7 @@ public class PlayerAttack : MonoBehaviour
             }
 
             //공격 중 직접 이동 안되게
-            p.rb.linearVelocity = new Vector2(0f, p.rb.linearVelocity.y);
+            //p.rb.linearVelocity = new Vector2(0f, p.rb.linearVelocity.y);
 
             yield return new WaitForFixedUpdate();
         }
@@ -196,6 +200,25 @@ public class PlayerAttack : MonoBehaviour
         SpriteRenderer sr = effectObj.GetComponentInChildren<SpriteRenderer>();
         if (sr != null) sr.flipX = dir < 0f;
 
+        //공격 히트박스 찾기
+        AttackEffectHitbox hitbox = effectObj.GetComponentInChildren<AttackEffectHitbox>();
+        if (hitbox != null)
+        {
+            hitbox.SetDamage(pattern.damageMultiplier);
+        }
+
+        //공중 공격은 이펙트가 플레이어를 따라오게
+        if (pattern.followPlayer)
+        {
+            StartCoroutine(FollowEffect(
+                effectObj.transform,
+                p.transform,
+                pattern.effectOffset,
+                dir,
+                pattern.followDuration
+            ));
+        }
+
         //삭제
         Destroy(effectObj, pattern.effectDuration);
 
@@ -203,6 +226,27 @@ public class PlayerAttack : MonoBehaviour
 
     }
 
+    //따라오는 이펙트 코루틴
+    private IEnumerator FollowEffect(Transform effectTransform,Transform playerTransform, 
+        Vector2 offset, float dir, float duration)
+    {
+        float timer = 0f;
+
+        while (timer < duration)
+        {
+            if (effectTransform == null || playerTransform == null)
+                yield break;
+
+            effectTransform.position = playerTransform.position + new Vector3(
+                offset.x * dir,
+                offset.y,
+                0f
+            );
+
+            timer += Time.deltaTime;
+            yield return null;
+        }
+    }
 
 
     //검 돌리기->각도 설정은 스프라이트 들어오면 폐기

@@ -29360,6 +29360,8 @@ MonoBehaviour:
     effectScale: {x: 1, y: 1, z: 1}
     effectRotationZ: 20
     effectDuration: 0.12
+    followPlayer: 0
+    followDuration: 0.1
   - attackName: "\uB0B4\uB824 \uCE58\uAE30"
     startupTime: 0.1
     activeTime: 0.2
@@ -29373,6 +29375,8 @@ MonoBehaviour:
     effectScale: {x: 1, y: 1, z: 1}
     effectRotationZ: -10
     effectDuration: 0.2
+    followPlayer: 0
+    followDuration: 0.1
   comboResetTime: 0.2
   defaultAngle: 20
   airAttack:
@@ -29389,6 +29393,8 @@ MonoBehaviour:
     effectScale: {x: 1, y: 1, z: 1}
     effectRotationZ: 0
     effectDuration: 0.12
+    followPlayer: 1
+    followDuration: 0.1
 --- !u!114 &2085880638
 MonoBehaviour:
   m_ObjectHideFlags: 0
