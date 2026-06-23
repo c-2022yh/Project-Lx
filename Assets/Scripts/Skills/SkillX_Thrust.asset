@@ -24,11 +24,13 @@ MonoBehaviour:
   startAngle: 0
   endAngle: 0
   effectPrefab: {fileID: 0}
-  damageMultiplier: 1
+  damageMultiplier: 2
   hitBoxSize: {x: 1.5, y: 0.5}
   indicatorColor: {r: 1, g: 0.5, b: 0.5, a: 0.4}
   indicatorOffset: {x: 1, y: 0, z: 0}
-  thrustDistance: 1.8
   weaponThrustOffset: 0.7
-  thrustAngleRight: 0
-  thrustAngleLeft: 180
+  thrustEffectPrefab: {fileID: 7000748839020387578, guid: eadce98c30aaf6448abf549f26f2e279, type: 3}
+  effectOffset: {x: 1.5, y: -0.1}
+  effectScale: {x: 1, y: 1, z: 1}
+  effectRotationZ: 0
+  effectLifeTime: 0.2

@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 6455233108114614586}
   - component: {fileID: -970772169221012518}
   m_Layer: 10
-  m_Name: slash_01_small_0
+  m_Name: Slash_01_small_0
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

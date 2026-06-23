@@ -28,3 +28,14 @@ MonoBehaviour:
   hitBoxSize: {x: 1.5, y: 1.5}
   indicatorColor: {r: 1, g: 0.5, b: 0.5, a: 0.4}
   indicatorOffset: {x: 1, y: 0, z: 0}
+  slashEffectPrefab: {fileID: 3545481630792328146, guid: 94f295d40691486438e6c60e511b79e0, type: 3}
+  effectOffset: {x: 0.9, y: 0}
+  effectScale: {x: 1.3, y: 2, z: 1}
+  effectLifeTime: 0.3
+  slashRotations:
+  - -30
+  - 40
+  - -40
+  - 0
+  slashInterval: 0.1
+  damagePerSlash: 1

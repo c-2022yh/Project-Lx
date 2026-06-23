@@ -28,3 +28,8 @@ MonoBehaviour:
   hitBoxSize: {x: 1, y: 1.4}
   indicatorColor: {r: 1, g: 0.5, b: 0.5, a: 0.4}
   indicatorOffset: {x: 1, y: 0, z: 0}
+  enemyLayer:
+    serializedVersion: 2
+    m_Bits: 256
+  dashHitBoxSize: {x: 1.4, y: 1.2}
+  dashHitBoxOffset: {x: 0.7, y: 0}

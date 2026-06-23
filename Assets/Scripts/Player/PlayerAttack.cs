@@ -204,7 +204,7 @@ public class PlayerAttack : MonoBehaviour
         AttackEffectHitbox hitbox = effectObj.GetComponentInChildren<AttackEffectHitbox>();
         if (hitbox != null)
         {
-            hitbox.SetDamage(pattern.damageMultiplier);
+            hitbox.SetAttackInfo(pattern.damageMultiplier, dir);
         }
 
         //공중 공격은 이펙트가 플레이어를 따라오게
