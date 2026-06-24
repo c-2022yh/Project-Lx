@@ -2,7 +2,7 @@ using UnityEngine;
 using System.Collections;
 
 [CreateAssetMenu(fileName = "SkillX_Thrust", menuName = "Skills/SkillX_Thrust")]
-public class SkillX_Thrust : SkillData
+public class SkillX_Thrust : AttackSkillData
 {
 
     [Header("Thrust Timing")]
@@ -40,7 +40,7 @@ public class SkillX_Thrust : SkillData
 
         //실제 동작
         float timer = 0f;
-        while (timer < duration)
+        while (timer < activeTime)
         {
             p.rb.linearVelocity = Vector2.zero;
 
