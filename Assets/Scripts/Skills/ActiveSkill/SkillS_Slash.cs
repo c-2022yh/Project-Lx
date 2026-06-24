@@ -3,7 +3,7 @@ using System.Collections;
 
 [CreateAssetMenu(fileName = "SkillS_Slash", menuName = "Skills/SkillS_Slash")]
 
-public class SkillS_Slash : SkillData
+public class SkillS_Slash : AttackSkillData
 {
     [Header("Slash Effect")] //°ø°Ý ÀÌÆåÆ®
     public GameObject slashEffectPrefab;
@@ -17,12 +17,7 @@ public class SkillS_Slash : SkillData
     public float damagePerSlash = 1f;
 
 
-    public override IEnumerator ProcessSkill(
-    Player p,
-    SkillRangeIndicator indicator,
-    GameObject weaponHandle,
-    Collider2D swordCollider,
-    float defaultAngle)
+    public override IEnumerator ProcessSkill(Player p)
     {
         if (p == null) yield break;
 
@@ -39,7 +34,7 @@ public class SkillS_Slash : SkillData
         }
 
         //½ºÅ³ ÀüÃ¼ ÈÄµô ´À³¦
-        float remainTime = duration - (slashRotations.Length * slashInterval);
+        float remainTime = activeTime - (slashRotations.Length * slashInterval);
         if (remainTime > 0f)
         {
             yield return new WaitForSeconds(remainTime);

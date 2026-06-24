@@ -12,16 +12,8 @@ public class AttackPattern //공격 패턴
     public float activeTime = 0.1f;     //공격판정 시간
     public float recoveryTime = 0.1f;   //후딜
 
-    [Header("Sword Motion")]
-    public float startAngle = 40f;
-    public float endAngle = -40f;
-
     [Header("Combat")]
     public float damageMultiplier = 1f; //데미지 보정값
-
-    [Header("Movement")]
-    public float forwardMoveDistance = 0f; //공격시 앞으로 치고 나가는 거리
-
 
     [Header("Effect")] //공격 이펙트 프리펩 설정
     public GameObject attackEffectPrefab;
@@ -40,16 +32,10 @@ public class AttackPattern //공격 패턴
 //플레이어 기본 공격을 다루는 스크립트
 public class PlayerAttack : MonoBehaviour
 {
-    [Header("References")] //인스펙터에서 연결
-    [SerializeField] private GameObject weaponHandle;
-    [SerializeField] private GameObject swordVisual;
-    [SerializeField] private Collider2D swordCollider;
-
     //공격 패턴(2단계)
     [Header("Ground Combo")]
     [SerializeField] private AttackPattern[] groundPatterns;
     [SerializeField] private float comboResetTime = 0.6f;
-    [SerializeField] private float defaultAngle = 20f;
 
     //공중 공격
     [Header("Air Attack")]
@@ -63,15 +49,9 @@ public class PlayerAttack : MonoBehaviour
 
     private Vector3 originLocalPos;
 
-
     void Awake()
     {
-        if (swordCollider != null) swordCollider.enabled = false;
-        if (swordVisual != null) originLocalPos = swordVisual.transform.localPosition;
-        SetWeaponAngle(defaultAngle);
-
         player = GetComponent<Player>();
-
     }
 
     private void Update()
@@ -123,20 +103,10 @@ public class PlayerAttack : MonoBehaviour
             p.rb.linearVelocity = new Vector2(0f, p.rb.linearVelocity.y);
         }
 
-        //선딜
-        yield return RotateSword(pattern.startupTime, defaultAngle, pattern.startAngle);
 
         //공격 프레임
-        //if (swordCollider != null) swordCollider.enabled = true;
         ShowAttackEffect(p, pattern, dir); //공격 이펙트 생성
         yield return ActiveAttackPhase(p, pattern, dir);
-        if (swordCollider != null) swordCollider.enabled = false;
-
-        //후딜
-        yield return RotateSword(pattern.recoveryTime, pattern.endAngle, defaultAngle);
-
-        if (swordVisual != null)
-            swordVisual.transform.localPosition = originLocalPos;
 
         lastAttackEndTime = Time.time;
 
@@ -157,25 +127,6 @@ public class PlayerAttack : MonoBehaviour
         {
             timer += Time.fixedDeltaTime;
             float t = Mathf.Clamp01(timer / pattern.activeTime);
-
-            float angle = Mathf.Lerp(pattern.startAngle, pattern.endAngle, t);
-            SetWeaponAngle(angle);
-
-            //선택사항: 공격 중 아주 살짝 전진
-            if (pattern.forwardMoveDistance > 0f)
-            {
-                float step = pattern.forwardMoveDistance * (Time.fixedDeltaTime / pattern.activeTime);
-                moved += step;
-
-                if (moved <= pattern.forwardMoveDistance)
-                {
-                    Vector2 nextPos = p.rb.position + new Vector2(dir * step, 0f);
-                    p.rb.MovePosition(nextPos);
-                }
-            }
-
-            //공격 중 직접 이동 안되게
-            //p.rb.linearVelocity = new Vector2(0f, p.rb.linearVelocity.y);
 
             yield return new WaitForFixedUpdate();
         }
@@ -210,13 +161,8 @@ public class PlayerAttack : MonoBehaviour
         //공중 공격은 이펙트가 플레이어를 따라오게
         if (pattern.followPlayer)
         {
-            StartCoroutine(FollowEffect(
-                effectObj.transform,
-                p.transform,
-                pattern.effectOffset,
-                dir,
-                pattern.followDuration
-            ));
+            StartCoroutine(FollowEffect(effectObj.transform, p.transform, 
+                pattern.effectOffset, dir, pattern.followDuration));
         }
 
         //삭제
@@ -248,38 +194,6 @@ public class PlayerAttack : MonoBehaviour
         }
     }
 
-
-    //검 돌리기->각도 설정은 스프라이트 들어오면 폐기
-    private IEnumerator RotateSword(float duration, float fromAngle, float toAngle)
-    {
-        if (duration <= 0f)
-        {
-            SetWeaponAngle(toAngle);
-            yield break;
-        }
-
-        float timer = 0f;
-
-        while (timer < duration)
-        {
-            timer += Time.deltaTime;
-            float t = Mathf.Clamp01(timer / duration);
-
-            float angle = Mathf.Lerp(fromAngle, toAngle, t);
-            SetWeaponAngle(angle);
-
-            yield return null;
-        }
-
-        SetWeaponAngle(toAngle);
-    }
-
-    //검 각도 설정 ->각도 설정은 스프라이트 들어오면 폐기
-    private void SetWeaponAngle(float angle)
-    {
-        if (weaponHandle != null)
-            weaponHandle.transform.localRotation = Quaternion.Euler(0f, 0f, angle);
-    }
 
 
 }

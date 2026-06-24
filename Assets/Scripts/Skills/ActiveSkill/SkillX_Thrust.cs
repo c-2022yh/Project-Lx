@@ -17,14 +17,8 @@ public class SkillX_Thrust : SkillData
     public float effectLifeTime = 0.18f;
 
 
-    public override IEnumerator ProcessSkill(
-       Player p,
-       SkillRangeIndicator indicator,
-       GameObject weaponHandle,
-       Collider2D swordCollider,
-       float defaultAngle)
+    public override IEnumerator ProcessSkill(Player p)
     {
-
         //공격 방향 설정
         float dir = p.isFacingRight ? 1f : -1f;
 

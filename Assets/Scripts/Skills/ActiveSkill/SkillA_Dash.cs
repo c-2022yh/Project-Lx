@@ -4,19 +4,15 @@ using UnityEngine;
 
 [CreateAssetMenu(fileName = "SkillA_Dash", menuName = "Skills/SkillA_Dash")]
 
-public class SkillA_Dash : SkillData
+public class SkillA_Dash : AttackSkillData
 {
     [Header("Dash Attack")]
+    public float dashDistance = 3.5f;
     public LayerMask enemyLayer; //몹과 충돌을 무시해야하기 때문에 레이어값 가져올 변수
     public Vector2 dashHitBoxSize = new Vector2(1.4f, 1.2f);
     public Vector2 dashHitBoxOffset = new Vector2(0.7f, 0f);
 
-    public override IEnumerator ProcessSkill(
-    Player p,
-    SkillRangeIndicator indicator,
-    GameObject weaponHandle,
-    Collider2D swordCollider,
-    float defaultAngle)
+    public override IEnumerator ProcessSkill(Player p)
     {
         if (p == null) yield break;
 
@@ -48,9 +44,9 @@ public class SkillA_Dash : SkillData
         p.SetPhysicsFreeze(true);
 
         float timer = 0f;
-        float speed = actualDist / duration;
+        float speed = actualDist / activeTime;
 
-        while (timer < duration)
+        while (timer < activeTime)
         {
             //이동 전 현재 위치 판정
             DamageEnemiesDuringDash(p, dir, hitEnemies);
@@ -77,7 +73,6 @@ public class SkillA_Dash : SkillData
         {
             Physics2D.IgnoreLayerCollision(playerLayer, enemyLayerIndex, false);
         }
-
 
 
     }

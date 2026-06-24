@@ -9,12 +9,7 @@ public class SkillF_Shadow : SkillData
 
     private GameObject currentShadow;
 
-    public override IEnumerator ProcessSkill(
-        Player p,
-        SkillRangeIndicator indicator,
-        GameObject weaponHandle,
-        Collider2D swordCollider,
-        float defaultAngle)
+    public override IEnumerator ProcessSkill(Player p)
     {
         if (p == null) yield break;
         if (shadowPrefab == null) yield break;

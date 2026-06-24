@@ -12,13 +12,7 @@ public class PlayerSkill : MonoBehaviour
     // 4: F Skill
 
     [Header("Dependencies")]
-    [SerializeField] private GameObject weaponHandle;
-    [SerializeField] private Collider2D swordCollider;
-    [SerializeField] private SkillRangeIndicator rangeIndicator;
     [SerializeField] private HUDPanel hudPanel;
-
-    [Header("Settings")]
-    [SerializeField] private float defaultAngle = 20f;
 
     //스킬 쿨타임
     private bool[] cooldowns = new bool[5];
@@ -55,13 +49,7 @@ public class PlayerSkill : MonoBehaviour
         //State 바꿈
         p.playerActionState.EnterSkill();
 
-        yield return StartCoroutine(skill.ProcessSkill(
-            p,
-            rangeIndicator,
-            weaponHandle,
-            swordCollider,
-            defaultAngle
-        )); //실제 스킬 실행
+        yield return StartCoroutine(skill.ProcessSkill(p)); //실제 스킬 실행
         
         //State 되돌림
         if (p.playerActionState.isSkillActive)
