@@ -1,6 +1,6 @@
-using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEngine;
 
 [CreateAssetMenu(fileName = "SkillA_Dash", menuName = "Skills/SkillA_Dash")]
 
@@ -8,8 +8,8 @@ public class SkillA_Dash : SkillData
 {
     [Header("Dash Attack")]
     public LayerMask enemyLayer; //몹과 충돌을 무시해야하기 때문에 레이어값 가져올 변수
-    public Vector2 dashHitBoxSize = new Vector2(1.2f, 1.2f);
-    public Vector2 dashHitBoxOffset = Vector2.zero;
+    public Vector2 dashHitBoxSize = new Vector2(1.4f, 1.2f);
+    public Vector2 dashHitBoxOffset = new Vector2(0.7f, 0f);
 
     public override IEnumerator ProcessSkill(
     Player p,
@@ -31,30 +31,55 @@ public class SkillA_Dash : SkillData
         );
         float actualDist = hit.collider ? hit.distance : dashDistance;
 
-
-        p.SetPhysicsFreeze(true);
-
         //해시셋 (한번 충돌한 적은 다시 판정하면 안되므로 해시셋으로 관리)
         HashSet<Enemy> hitEnemies = new HashSet<Enemy>();
+
+        //레이어마스크 생성
+        int playerLayer = LayerMask.NameToLayer("Player");
+        int enemyLayerIndex = LayerMask.NameToLayer("Enemy");
+        bool canIgnoreCollision = playerLayer != -1 && enemyLayerIndex != -1;
+        // 대시 중 Player와 Enemy 물리 충돌 끄기
+        if (canIgnoreCollision)
+        {
+            Physics2D.IgnoreLayerCollision(playerLayer, enemyLayerIndex, true);
+        }
+
+
+        p.SetPhysicsFreeze(true);
 
         float timer = 0f;
         float speed = actualDist / duration;
 
         while (timer < duration)
         {
+            //이동 전 현재 위치 판정
+            DamageEnemiesDuringDash(p, dir, hitEnemies);
+
             //돌진 이동
             p.rb.linearVelocity = new Vector2(dir * speed, 0f);
 
-            //플레이어 주변에 닿은 적 데미지
-            DamageEnemiesDuringDash(p, dir, hitEnemies);
-
             timer += Time.fixedDeltaTime;
             yield return new WaitForFixedUpdate();
+
+            //이동 후 위치 판정
+            DamageEnemiesDuringDash(p, dir, hitEnemies);
         }
 
         p.rb.linearVelocity = Vector2.zero;
 
+        //마지막 프레임 판정 보정
+        DamageEnemiesDuringDash(p, dir, hitEnemies);
+
         p.SetPhysicsFreeze(false);
+
+        //대시 끝나면 Player와 Enemy 충돌 복구
+        if (canIgnoreCollision)
+        {
+            Physics2D.IgnoreLayerCollision(playerLayer, enemyLayerIndex, false);
+        }
+
+
+
     }
 
     //데미지 함수
@@ -84,6 +109,10 @@ public class SkillA_Dash : SkillData
 
             //최종 히트 판정 데미지 계산
             enemy.TakeDamage(damageMultiplier, new Vector2(dir, 0f));
+            
+            Debug.Log($"A Skill Hit: {enemy.name}");
+
         }
     }
+
 }
