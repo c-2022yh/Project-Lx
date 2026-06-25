@@ -4,7 +4,7 @@ using System.Collections.Generic;
 public abstract class AttackSkillData : SkillData
 {
     [Header("Attack")]
-    public LayerMask enemyLayer;
+    public LayerMask enemyLayer; //적을 판정할 레이어 
     public float damageMultiplier = 1.0f;
     public Vector2 knockbackDirection = new Vector2(1f, 0f);
 

@@ -8,7 +8,6 @@ public class SkillA_Dash : AttackSkillData
 {
     [Header("Dash Attack")]
     public float dashDistance = 3.5f;
-    public LayerMask enemyLayer; //몹과 충돌을 무시해야하기 때문에 레이어값 가져올 변수
     public Vector2 dashHitBoxSize = new Vector2(1.4f, 1.2f);
     public Vector2 dashHitBoxOffset = new Vector2(0.7f, 0f);
 
