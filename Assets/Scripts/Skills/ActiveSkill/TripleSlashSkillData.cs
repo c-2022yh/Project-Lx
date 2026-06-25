@@ -1,9 +1,10 @@
 using UnityEngine;
 using System.Collections;
 
-[CreateAssetMenu(fileName = "SkillS_Slash", menuName = "Skills/SkillS_Slash")]
+[CreateAssetMenu(fileName = "Skills/TripleSlash", menuName = "Skills/TripleSlash")]
 
-public class SkillS_Slash : AttackSkillData
+//근거리 강력한 3연타 스킬
+public class TripleSlashData : AttackSkillData
 {
     [Header("Slash Effect")] //공격 이펙트
     public GameObject slashEffectPrefab;

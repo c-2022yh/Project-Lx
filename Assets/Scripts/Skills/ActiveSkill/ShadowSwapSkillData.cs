@@ -1,8 +1,10 @@
-using System.Collections;
 using UnityEngine;
+using System.Collections;
 
-[CreateAssetMenu(fileName = "SkillF_Shadow", menuName = "Skills/SkillF_Shadow")]
-public class SkillF_Shadow : SkillData
+[CreateAssetMenu(fileName = "Skills/ShadowSwap", menuName = "Skills/ShadowSwap")]
+
+//그림자 교체 스킬
+public class ShadowSwapSkillData : UtilitySkillData
 {
     [Header("Shadow Settings")]
     public GameObject shadowPrefab;

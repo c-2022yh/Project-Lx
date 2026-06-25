@@ -29171,7 +29171,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 25cba404ae17a674c9403f840404d041, type: 2}
   - {fileID: 11400000, guid: 3a5ab567ab6580e4f9037a70163c7265, type: 2}
   - {fileID: 11400000, guid: be9906743b4499c4aad9d914a99a2fe1, type: 2}
-  - {fileID: 11400000, guid: 9fd5bf915eefe4049a60f1fc326ad17e, type: 2}
+  - {fileID: 11400000, guid: 948f556659e513f439facc403ca6dacb, type: 2}
   - {fileID: 11400000, guid: 401216e17c71cb24f8ea92cee54f8709, type: 2}
   hudPanel: {fileID: 1702421426}
 --- !u!114 &2085880640

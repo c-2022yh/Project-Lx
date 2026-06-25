@@ -1,8 +1,10 @@
 using UnityEngine;
 using System.Collections;
 
-[CreateAssetMenu(fileName = "SkillD_Guard", menuName = "Skills/SkillD_Guard")]
-public class SkillD_Guard : SkillData
+[CreateAssetMenu(fileName = "Skills/Guard", menuName = "Skills/Guard")]
+
+//보스 전용 스킬 가드
+public class GuardSkillData : UtilitySkillData
 {
     public override IEnumerator ProcessSkill(Player p)
     {

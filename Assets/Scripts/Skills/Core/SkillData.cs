@@ -13,7 +13,7 @@ public abstract class SkillData : ScriptableObject
     public string description;
 
     [Header("Slot")]
-    public SkillSlotType compatibleSlot = SkillSlotType.SlotA;
+    public SkillSlotType allowedSlots;
 
     [Header("Cost")]
     public float cooldownTime = 1f;

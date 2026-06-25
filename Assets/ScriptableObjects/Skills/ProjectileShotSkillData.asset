@@ -1,0 +1,32 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ddc94237142a7e5489410f10d5bdf475, type: 3}
+  m_Name: ProjectileShotSkillData
+  m_EditorClassIdentifier: Assembly-CSharp::ProjectileShotSkillData
+  skillName: Shot
+  icon: {fileID: 0}
+  description: "\uD22C\uC0AC\uCCB4 \uB0A0\uB9B0"
+  allowedSlots: 0
+  cooldownTime: 1
+  soulCost: 0
+  activeTime: 1
+  enemyLayer:
+    serializedVersion: 2
+    m_Bits: 256
+  damageMultiplier: 1
+  knockbackDirection: {x: 1, y: 0}
+  projectilePrefab: {fileID: 3545481630792328146, guid: 7188b3aae6ed7fe44aff21566314b59d, type: 3}
+  spawnOffset: {x: 0.8, y: 0}
+  projectileSpeed: 10
+  maxDistance: 10
+  rotationSpeed: -1080
+  destroyOnEnemyHit: 1

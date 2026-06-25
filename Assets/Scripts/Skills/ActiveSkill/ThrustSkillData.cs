@@ -1,8 +1,10 @@
 using UnityEngine;
 using System.Collections;
 
-[CreateAssetMenu(fileName = "SkillX_Thrust", menuName = "Skills/SkillX_Thrust")]
-public class SkillX_Thrust : AttackSkillData
+[CreateAssetMenu(fileName = "Skills/Thrust", menuName = "Skills/Thrust")]
+
+//근거리 찌르기
+public class ThrustSkillData : AttackSkillData
 {
 
     [Header("Thrust Timing")]

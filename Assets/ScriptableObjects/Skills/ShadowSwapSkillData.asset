@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 7a616849ad0513044ad5199dae13cdc0, type: 3}
-  m_Name: SkillF_Shadow
+  m_Name: ShadowSwapSkillData
   m_EditorClassIdentifier: Assembly-CSharp::SkillF_Shadow
   skillName: "\uADF8\uB9BC\uC790 \uC794\uC601"
   cooldownTime: 1

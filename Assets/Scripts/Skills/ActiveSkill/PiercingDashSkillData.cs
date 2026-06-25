@@ -1,10 +1,11 @@
+using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
-using UnityEngine;
 
-[CreateAssetMenu(fileName = "SkillA_Dash", menuName = "Skills/SkillA_Dash")]
+[CreateAssetMenu(fileName = "Skills/PiercingDash", menuName = "Skills/PiercingDash")]
 
-public class SkillA_Dash : AttackSkillData
+//질풍참 류 적을 관통하면서 대쉬베기 스킬
+public class PiercingDashSkillData : AttackSkillData
 {
     [Header("Dash Attack")]
     public float dashDistance = 3.5f;

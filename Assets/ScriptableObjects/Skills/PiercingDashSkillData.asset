@@ -10,20 +10,20 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: e9eb88eb47ad54046870d0fbe2af261b, type: 3}
-  m_Name: SkillA_Dash
+  m_Name: PiercingDashSkillData
   m_EditorClassIdentifier: Assembly-CSharp::SkillA_Dash
   skillName: Dash
-  cooldownTime: 1
-  soulCost: 0
   icon: {fileID: 0}
   description: "\uC5D4\uBBF9\uC2A4\uB178\uB798GOAT\u314B\u314B\u314B\u314B"
-  compatibleSlot: 1
-  dashDistance: 5
-  duration: 0.05
-  effectPrefab: {fileID: 0}
-  damageMultiplier: 1
+  allowedSlots: 0
+  cooldownTime: 1
+  soulCost: 0
+  activeTime: 0.05
   enemyLayer:
     serializedVersion: 2
     m_Bits: 256
+  damageMultiplier: 1
+  knockbackDirection: {x: 1, y: 0}
+  dashDistance: 5
   dashHitBoxSize: {x: 1.4, y: 1.2}
   dashHitBoxOffset: {x: 0.7, y: 0}
