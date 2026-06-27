@@ -16,7 +16,7 @@ public class UIManager : MonoBehaviour
     // [TODO] 아래 패널들은 만들면서 하나씩 활성화
     // [SerializeField] private InventoryPanel inventoryPanel;
     // [SerializeField] private MapPanel mapPanel;
-    // [SerializeField] private PausePanel pausePanel;
+    [SerializeField] private PausePanel pausePanel;
     // [SerializeField] private GameOverPanel gameOverPanel;
     // [SerializeField] private NotificationPanel notificationPanel;
 
@@ -92,6 +92,7 @@ public class UIManager : MonoBehaviour
         if (Keyboard.current.digit3Key.wasPressedThisFrame) ModifySoul(-1);
         if (Keyboard.current.digit4Key.wasPressedThisFrame) ModifySoul(+1);
         if (Keyboard.current.digit0Key.wasPressedThisFrame) ShowGameOver();
+        if (Keyboard.current.escapeKey.wasPressedThisFrame) TogglePause();
     }
 
     //  스탯 조작
@@ -141,7 +142,7 @@ public class UIManager : MonoBehaviour
         isPaused = !isPaused;
         Time.timeScale = isPaused ? 0f : 1f;
         Debug.Log($"[UI] Pause: {isPaused}");
-        // [TODO] pausePanel.SetVisible(isPaused);
+        pausePanel.SetVisible(isPaused);
         // [PLAYER_HOOK] 플레이어 입력 막기: PlayerInput.actions.FindActionMap("Player").Disable();
         // [SFX_HOOK]
     }
