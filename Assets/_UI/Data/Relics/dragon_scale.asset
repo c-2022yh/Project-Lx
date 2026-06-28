@@ -16,4 +16,5 @@ MonoBehaviour:
   relicName: "\uC6A9\uC758 \uBE44\uB298"
   icon: {fileID: 0}
   description: "\uC77C\uB2E8 \uCC38\uACA9"
+  cost: 4
   linkedSkill: {fileID: 11400000, guid: 413c89f8f39eab348b0f7c7026e9750f, type: 2}

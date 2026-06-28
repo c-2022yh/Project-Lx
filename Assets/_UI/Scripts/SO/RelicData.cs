@@ -1,5 +1,4 @@
 using UnityEngine;
-
 [CreateAssetMenu(fileName = "New Relic", menuName = "Game Data/Relic")]
 public class RelicData : ScriptableObject
 {
@@ -10,6 +9,9 @@ public class RelicData : ScriptableObject
     [TextArea(3, 6)]
     public string description;
 
+    [Header("Cost")]
+    public int cost = 1;
+
     [Header("Linked Skill")]
-    public SkillUIData linkedSkill;   // ← 여기 SkillData → SkillUIData 로 변경!
+    public SkillUIData linkedSkill;
 }

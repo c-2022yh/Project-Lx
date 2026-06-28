@@ -14,7 +14,7 @@ public class UIManager : MonoBehaviour
     [Header("Panels")]
     [SerializeField] private HUDPanel hudPanel;
     // [TODO] 아래 패널들은 만들면서 하나씩 활성화
-    // [SerializeField] private InventoryPanel inventoryPanel;
+     [SerializeField] private InventoryPanel inventoryPanel;
     // [SerializeField] private MapPanel mapPanel;
     [SerializeField] private PausePanel pausePanel;
     // [SerializeField] private GameOverPanel gameOverPanel;
@@ -93,6 +93,7 @@ public class UIManager : MonoBehaviour
         if (Keyboard.current.digit4Key.wasPressedThisFrame) ModifySoul(+1);
         if (Keyboard.current.digit0Key.wasPressedThisFrame) ShowGameOver();
         if (Keyboard.current.escapeKey.wasPressedThisFrame) TogglePause();
+        if (Keyboard.current.iKey.wasPressedThisFrame) ToggleInventory();
     }
 
     //  스탯 조작
@@ -124,7 +125,7 @@ public class UIManager : MonoBehaviour
         if (isPaused) return;
         isInventoryOpen = !isInventoryOpen;
         Debug.Log($"[UI] Inventory: {(isInventoryOpen ? "Open" : "Close")}");
-        // [TODO] inventoryPanel.SetVisible(isInventoryOpen);
+        inventoryPanel.SetVisible(isInventoryOpen);
         // [SFX_HOOK] AudioManager.Play(isInventoryOpen ? openSfx : closeSfx);
     }
 
