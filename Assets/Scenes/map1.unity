@@ -2787,6 +2787,17 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 356533b922e7b83449881f459722ecb1, type: 3}
+--- !u!114 &1180308975 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 5644755834758894825, guid: 356533b922e7b83449881f459722ecb1, type: 3}
+  m_PrefabInstance: {fileID: 1180308974}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 75132f198b1996b46b2c71f61c73f126, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SkillRangeIndicator
 --- !u!1 &1209780036
 GameObject:
   m_ObjectHideFlags: 0
@@ -24258,7 +24269,11 @@ MonoBehaviour:
   - {fileID: 11400000, guid: be9906743b4499c4aad9d914a99a2fe1, type: 2}
   - {fileID: 11400000, guid: 9fd5bf915eefe4049a60f1fc326ad17e, type: 2}
   - {fileID: 11400000, guid: 401216e17c71cb24f8ea92cee54f8709, type: 2}
+  weaponHandle: {fileID: 1365026800}
+  swordCollider: {fileID: 242553894}
+  rangeIndicator: {fileID: 1180308975}
   hudPanel: {fileID: 350705970}
+  defaultAngle: 20
 --- !u!114 &1724745186
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -24326,21 +24341,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8def16102bf09594bb614bd9d75654a1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerAttack
-  groundPatterns: []
+  weaponHandle: {fileID: 1365026800}
+  swordVisual: {fileID: 242553891}
+  swordCollider: {fileID: 242553894}
+  patterns:
+  - attackName: "\uC62C\uB824\uBCA0\uAE30"
+    startAngle: 150
+    endAngle: 200
+    duration: 0.2
+  - attackName: "\uB0B4\uB824\uBCA0\uAE30"
+    startAngle: 240
+    endAngle: 130
+    duration: 0.3
+  defaultAngle: 20
   comboResetTime: 0.5
-  airAttack:
-    attackName: 
-    startupTime: 0.05
-    activeTime: 0.1
-    recoveryTime: 0.1
-    damageMultiplier: 1
-    attackEffectPrefab: {fileID: 0}
-    effectOffset: {x: 0.8, y: 0}
-    effectScale: {x: 1, y: 1, z: 1}
-    effectRotationZ: 0
-    effectDuration: 0.12
-    followPlayer: 0
-    followDuration: 0.1
 --- !u!114 &1724745189
 MonoBehaviour:
   m_ObjectHideFlags: 0
