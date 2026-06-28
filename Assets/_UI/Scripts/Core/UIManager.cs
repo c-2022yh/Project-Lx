@@ -14,10 +14,10 @@ public class UIManager : MonoBehaviour
     [Header("Panels")]
     [SerializeField] private HUDPanel hudPanel;
     // [TODO] 아래 패널들은 만들면서 하나씩 활성화
-     [SerializeField] private InventoryPanel inventoryPanel;
+    [SerializeField] private InventoryPanel inventoryPanel;
     // [SerializeField] private MapPanel mapPanel;
     [SerializeField] private PausePanel pausePanel;
-    // [SerializeField] private GameOverPanel gameOverPanel;
+    [SerializeField] private GameOverPanel gameOverPanel;
     // [SerializeField] private NotificationPanel notificationPanel;
 
     // ─────────────────────────────────────────
@@ -152,7 +152,7 @@ public class UIManager : MonoBehaviour
     {
         Time.timeScale = 0f;
         Debug.Log("[UI] Game Over");
-        // [TODO] gameOverPanel.SetVisible(true);
+        gameOverPanel.SetVisible(true);
         // [PLAYER_HOOK] 플레이어 사망 처리
     }
 
