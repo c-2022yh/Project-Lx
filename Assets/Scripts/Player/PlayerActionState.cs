@@ -135,4 +135,10 @@ public class PlayerActionState : MonoBehaviour
         Debug.Log("<color=black>Dead State</color>");
         currentState = PlayerActionType.Dead;
     }
+
+    public void RespawnToNormal()
+    {
+        Debug.Log("<color=white>Respawn Normal State</color>");
+        currentState = PlayerActionType.Normal;
+    }
 }
