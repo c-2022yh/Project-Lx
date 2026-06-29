@@ -507,32 +507,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 13d6abf9dd50e0f4ab1c8d7f4101a1e9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::HUDPanel
---- !u!1 &1988348398 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 4877219076847408696, guid: 4a1aa1841ca76a04989b748135f4a93b, type: 3}
-  m_PrefabInstance: {fileID: 8461587682266505720}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &1988348400
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1988348398}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3cc0080f4fcd7ff45b504e916d6f4f19, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::InventoryPanel
-  relicGrid: {fileID: 0}
-  relicSlotPrefab: {fileID: 0}
-  ownedRelics: []
-  descIcon: {fileID: 0}
-  descName: {fileID: 0}
-  descText: {fileID: 0}
-  equipContainer: {fileID: 0}
-  budgetText: {fileID: 0}
-  maxBudget: 5
 --- !u!1001 &315186328012574211
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -547,11 +521,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6234295986293454894, guid: b67f57ed10ddf2f42b0cd17f2e8d0c19, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 19.3456
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6234295986293454894, guid: b67f57ed10ddf2f42b0cd17f2e8d0c19, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -4.53175
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6234295986293454894, guid: b67f57ed10ddf2f42b0cd17f2e8d0c19, type: 3}
       propertyPath: m_LocalPosition.z
@@ -702,10 +676,6 @@ PrefabInstance:
     - target: {fileID: 7772057309967665880, guid: 4bcab24986e935c4896f91ed2a81b60a, type: 3}
       propertyPath: m_Name
       value: CinemachineCamera
-      objectReference: {fileID: 0}
-    - target: {fileID: 8149505613674776018, guid: 4bcab24986e935c4896f91ed2a81b60a, type: 3}
-      propertyPath: BoundingShape2D
-      value: 
       objectReference: {fileID: 0}
     - target: {fileID: 8581275524673375151, guid: 4bcab24986e935c4896f91ed2a81b60a, type: 3}
       propertyPath: Target.TrackingTarget
@@ -14925,10 +14895,6 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 1834888156464773872, guid: 4a1aa1841ca76a04989b748135f4a93b, type: 3}
-      propertyPath: inventoryPanel
-      value: 
-      objectReference: {fileID: 1988348400}
     - target: {fileID: 2746805734961889801, guid: 4a1aa1841ca76a04989b748135f4a93b, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -14976,10 +14942,7 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents:
-    - targetCorrespondingSourceObject: {fileID: 4877219076847408696, guid: 4a1aa1841ca76a04989b748135f4a93b, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 1988348400}
+    m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 4a1aa1841ca76a04989b748135f4a93b, type: 3}
 --- !u!1001 &8639608961027245434
 PrefabInstance:
@@ -15032,10 +14995,6 @@ PrefabInstance:
     - target: {fileID: 5952669756419506003, guid: d9bad58e885e2384bb6586f6ac690355, type: 3}
       propertyPath: m_Name
       value: EnemyManager
-      objectReference: {fileID: 0}
-    - target: {fileID: 8062767550706803323, guid: d9bad58e885e2384bb6586f6ac690355, type: 3}
-      propertyPath: maxX
-      value: -10
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
