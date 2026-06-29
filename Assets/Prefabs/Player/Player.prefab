@@ -322,7 +322,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: be9906743b4499c4aad9d914a99a2fe1, type: 2}
   - {fileID: 11400000, guid: 948f556659e513f439facc403ca6dacb, type: 2}
   - {fileID: 11400000, guid: 401216e17c71cb24f8ea92cee54f8709, type: 2}
-  hudPanel: {fileID: 0}
+  hudPanel: {fileID: 5405542325969778392, guid: 881165a111aad8b48984bc07a73d147b, type: 3}
 --- !u!114 &781535822289692772
 MonoBehaviour:
   m_ObjectHideFlags: 0
