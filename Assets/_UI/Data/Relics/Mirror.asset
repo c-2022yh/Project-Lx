@@ -1,0 +1,21 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 97e8976399dde06499934e413ed35ac2, type: 3}
+  m_Name: Mirror
+  m_EditorClassIdentifier: Assembly-CSharp::RelicData
+  relicId: Mirror
+  relicName: "\uC625\uACBD"
+  icon: {fileID: 0}
+  description: "\uC61B \uC120\uC778\uC758 \uAC70\uC6B8. \uC801\uC758 \uC77C\uACA9\uC744
+    \uB418\uBC1B\uC544\uCE58\uB294 \uBE44\uC220\uC744 \uAC00\uB974\uCCD0\uC900\uB2E4."
+  cost: 3
+  linkedSkill: {fileID: 11400000, guid: 8bbb8df762b97fb4ab31d26e095768de, type: 2}
