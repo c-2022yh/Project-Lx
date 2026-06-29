@@ -29,17 +29,26 @@ public class PlayerHealth : MonoBehaviour
     [SerializeField] private float respawnDelay = 0.7f;
     private Vector2 respawnPosition;
 
+    //대쉬 중 적과의 충돌 일정시간 무시
+    [Header("Enemy Contact Ignore")]
+    [SerializeField] private float defaultEnemyContactIgnoreTime = 0.2f;
+    public bool IsIgnoringEnemyContact { get; private set; }
+
+    private Coroutine enemyContactIgnoreRoutine;
+    private PlayerMove playerMove;
+
     private Player player;
     private Rigidbody2D rb;
-    private PlayerActionState actionState;
+    private PlayerActionState playerActionState;
     private SpriteRenderer spriteRenderer;
 
     private void Awake()
     {
         player = GetComponent<Player>();
         rb = GetComponent<Rigidbody2D>();
-        actionState = GetComponent<PlayerActionState>();
+        playerActionState = GetComponent<PlayerActionState>();
         spriteRenderer = GetComponent<SpriteRenderer>();
+        playerMove = GetComponent<PlayerMove>();
 
         currentHealth = maxHealth;
 
@@ -63,7 +72,7 @@ public class PlayerHealth : MonoBehaviour
     {
         if (isInvincible) return;
         if (currentHealth <= 0) return;
-        if (actionState != null && !actionState.CanTakeHit()) return;
+        if (playerActionState != null && !playerActionState.CanTakeHit()) return;
 
         currentHealth -= damage;
         currentHealth = Mathf.Clamp(currentHealth, 0, maxHealth);
@@ -86,9 +95,9 @@ public class PlayerHealth : MonoBehaviour
     {
         isInvincible = true;
 
-        if (actionState != null)
+        if (playerActionState != null)
         {
-            actionState.EnterHitStun();
+            playerActionState.EnterHitStun();
         }
 
         ApplyKnockback(damageSourcePosition);
@@ -96,9 +105,9 @@ public class PlayerHealth : MonoBehaviour
         yield return new WaitForSeconds(hitStunTime);
 
         // 피격 경직 중에만 Normal로 되돌림
-        if (actionState != null && actionState.isHitStunned)
+        if (playerActionState != null && playerActionState.isHitStunned)
         {
-            actionState.EnterNormal();
+            playerActionState.EnterNormal();
         }
 
         yield return StartCoroutine(InvincibleBlinkRoutine());
@@ -144,9 +153,9 @@ public class PlayerHealth : MonoBehaviour
 
         isInvincible = true;
 
-        if (actionState != null && actionState.CanDie())
+        if (playerActionState != null && playerActionState.CanDie())
         {
-            actionState.EnterDead();
+            playerActionState.EnterDead();
         }
 
         if (rb != null)
@@ -186,9 +195,9 @@ public class PlayerHealth : MonoBehaviour
             spriteRenderer.enabled = true;
         }
 
-        if (actionState != null)
+        if (playerActionState != null)
         {
-            actionState.RespawnToNormal();
+            playerActionState.RespawnToNormal();
         }
 
         if (player != null)
@@ -201,4 +210,47 @@ public class PlayerHealth : MonoBehaviour
 
         isInvincible = false;
     }
+
+
+    //무적 판정 적용
+    public void BeginEnemyContactIgnore()
+    {
+        if (enemyContactIgnoreRoutine != null)
+        {
+            StopCoroutine(enemyContactIgnoreRoutine);
+            enemyContactIgnoreRoutine = null;
+        }
+
+        IsIgnoringEnemyContact = true;
+    }
+
+    //딜레이 이후 무적 판정 해제
+    public void EndEnemyContactIgnoreAfterDelay()
+    {
+        EndEnemyContactIgnoreAfterDelay(defaultEnemyContactIgnoreTime);
+    }
+
+    //딜레이 이후 무적 판정 해제
+    public void EndEnemyContactIgnoreAfterDelay(float delay)
+    {
+        if (enemyContactIgnoreRoutine != null)
+        {
+            StopCoroutine(enemyContactIgnoreRoutine);
+        }
+
+        enemyContactIgnoreRoutine = StartCoroutine(EnemyContactIgnoreDelayRoutine(delay));
+    }
+
+    //무적 판정 해제 코루틴
+    private IEnumerator EnemyContactIgnoreDelayRoutine(float delay)
+    {
+        IsIgnoringEnemyContact = true;
+
+        yield return new WaitForSeconds(delay);
+
+        IsIgnoringEnemyContact = false;
+        enemyContactIgnoreRoutine = null;
+    }
+
+
 }

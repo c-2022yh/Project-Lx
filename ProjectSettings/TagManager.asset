@@ -15,9 +15,9 @@ TagManager:
   - Ground
   - Player
   - Enemy
-  - SkillRangeIndicator
-  - AttackHitBox
   - 
+  - AttackHitBox
+  - EnemyContact
   - 
   - 
   - 

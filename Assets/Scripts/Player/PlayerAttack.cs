@@ -121,8 +121,7 @@ public class PlayerAttack : MonoBehaviour
     private IEnumerator ActiveAttackPhase(Player p, AttackPattern pattern, float dir)
     {
         float timer = 0f;
-        float moved = 0f;
-
+        
         while (timer < pattern.activeTime)
         {
             timer += Time.fixedDeltaTime;

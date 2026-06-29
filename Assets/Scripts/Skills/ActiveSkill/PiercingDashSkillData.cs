@@ -12,9 +12,16 @@ public class PiercingDashSkillData : AttackSkillData
     public Vector2 dashHitBoxSize = new Vector2(1.4f, 1.2f);
     public Vector2 dashHitBoxOffset = new Vector2(0.7f, 0f);
 
+    //대쉬 후 적과의 피격무적 판정 시간
+    [SerializeField] private float contactIgnoreAfterDash = 0.2f;
+
     public override IEnumerator ProcessSkill(Player p)
     {
+
         if (p == null) yield break;
+        
+        PlayerHealth playerHealth = p.GetComponent<PlayerHealth>();
+        playerHealth?.BeginEnemyContactIgnore();
 
         float dir = p.isFacingRight ? 1f : -1f;
 
@@ -34,13 +41,7 @@ public class PiercingDashSkillData : AttackSkillData
         int playerLayer = LayerMask.NameToLayer("Player");
         int enemyLayerIndex = LayerMask.NameToLayer("Enemy");
         bool canIgnoreCollision = playerLayer != -1 && enemyLayerIndex != -1;
-        // 대시 중 Player와 Enemy 물리 충돌 끄기
-        if (canIgnoreCollision)
-        {
-            Physics2D.IgnoreLayerCollision(playerLayer, enemyLayerIndex, true);
-        }
-
-
+        
         p.SetPhysicsFreeze(true);
 
         float timer = 0f;
@@ -68,11 +69,8 @@ public class PiercingDashSkillData : AttackSkillData
 
         p.SetPhysicsFreeze(false);
 
-        //대시 끝나면 Player와 Enemy 충돌 복구
-        if (canIgnoreCollision)
-        {
-            Physics2D.IgnoreLayerCollision(playerLayer, enemyLayerIndex, false);
-        }
+        //무적 판정 적용
+        playerHealth?.EndEnemyContactIgnoreAfterDelay(contactIgnoreAfterDash);
 
 
     }

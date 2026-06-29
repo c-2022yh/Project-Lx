@@ -26,7 +26,7 @@ MonoBehaviour:
   knockbackDirection: {x: 1, y: 0}
   projectilePrefab: {fileID: 3545481630792328146, guid: 7188b3aae6ed7fe44aff21566314b59d, type: 3}
   spawnOffset: {x: 0.8, y: 0}
-  projectileSpeed: 10
+  projectileSpeed: 20
   maxDistance: 10
   rotationSpeed: -1080
   destroyOnEnemyHit: 1

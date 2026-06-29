@@ -14,9 +14,8 @@ public class AttackEffectHitbox : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D other)
     {
-        Debug.Log("Attack hitbox touched: " + other.name);
 
-        // 厚剐寒 鸥老 贸府
+        //厚剐寒 鸥老 贸府
         SecretBreakableWall secretBreakableWall = other.GetComponentInParent<SecretBreakableWall>();
 
         if (secretBreakableWall != null)
@@ -26,7 +25,7 @@ public class AttackEffectHitbox : MonoBehaviour
             return;
         }
 
-        // 利 乔拜 贸府
+        //利 乔拜 贸府
         Enemy enemy = other.GetComponent<Enemy>();
 
         if (enemy == null)
