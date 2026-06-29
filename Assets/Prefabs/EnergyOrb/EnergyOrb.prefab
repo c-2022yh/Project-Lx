@@ -104,7 +104,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 621f87d74f0f9b54da46e7173cfe8287, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::FollowingOrb
-  target: {fileID: 0}
+  target: {fileID: 3783203440675197678, guid: bfe65dd7667e19c4f9533af653b8e9cf, type: 3}
   offset: {x: -1, y: 1, z: 0}
   followSpeed: 5
   normalScale: 0.5
