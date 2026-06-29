@@ -36,7 +36,7 @@ public enum RelicEffectType
     fileName = "RLC_NewRelic",
     menuName = "Relics/Relic Data"
 )]
-public class RelicData : ScriptableObject
+public class RelicData2 : ScriptableObject
 {
     [Header("Display")]
     public string relicName;

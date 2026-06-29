@@ -9,7 +9,7 @@ public class SecretBreakableWall : MonoBehaviour
     [Header("Tilemap")]
     [SerializeField] private Tilemap tilemapSecretWall;
 
-[Header("Break Settings")]
+    [Header("Break Settings")]
     [SerializeField] private int requiredHitsToBreak = 1;
     [SerializeField] private GameObject breakEffectPrefab;
 
