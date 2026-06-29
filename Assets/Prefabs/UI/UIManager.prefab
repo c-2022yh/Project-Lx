@@ -44,7 +44,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 507d306506486784a9e64fc4c0026691, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::UIManager
-  hudPanel: {fileID: 0}
+  hudPanel: {fileID: 5405542325969778392, guid: 881165a111aad8b48984bc07a73d147b, type: 3}
   inventoryPanel: {fileID: 0}
   pausePanel: {fileID: 0}
   gameOverPanel: {fileID: 0}
