@@ -18,7 +18,7 @@ MonoBehaviour:
   allowedSlots: 0
   cooldownTime: 1
   soulCost: 0
-  activeTime: 0.05
+  activeTime: 0.08
   enemyLayer:
     serializedVersion: 2
     m_Bits: 256
@@ -27,3 +27,4 @@ MonoBehaviour:
   dashDistance: 5
   dashHitBoxSize: {x: 1.4, y: 1.2}
   dashHitBoxOffset: {x: 0.7, y: 0}
+  contactIgnoreAfterDash: 0.2

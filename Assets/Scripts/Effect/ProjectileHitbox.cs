@@ -66,6 +66,17 @@ public class ProjectileHitbox : MonoBehaviour
     {
         if (!initialized) return;
 
+        //비밀벽 타일 처리
+        SecretBreakableWall secretBreakableWall = other.GetComponentInParent<SecretBreakableWall>();
+
+        if (secretBreakableWall != null)
+        {
+            Vector2 hitPoint = other.ClosestPoint(transform.position);
+            secretBreakableWall.HitWallAtWorldPosition(hitPoint);
+            Destroy(gameObject);
+            return;
+        }
+
         //Enemy 레이어가 아니면 무시
         if (((1 << other.gameObject.layer) & enemyLayer) == 0) return;
 
@@ -78,6 +89,8 @@ public class ProjectileHitbox : MonoBehaviour
 
         //데미지 주기
         enemy.TakeDamage(damageMultiplier, new Vector2(dir, 0f));
+
+        
 
         //맞으면 삭제
         if (destroyOnEnemyHit)
