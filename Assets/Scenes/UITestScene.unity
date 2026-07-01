@@ -623,6 +623,22 @@ PrefabInstance:
       propertyPath: m_Name
       value: HUD_Canvas
       objectReference: {fileID: 0}
+    - target: {fileID: 1921245063173592637, guid: 881165a111aad8b48984bc07a73d147b, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1921245063173592637, guid: 881165a111aad8b48984bc07a73d147b, type: 3}
+      propertyPath: m_AnchorMin.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1921245063173592637, guid: 881165a111aad8b48984bc07a73d147b, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1921245063173592637, guid: 881165a111aad8b48984bc07a73d147b, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 2078878761547917441, guid: 881165a111aad8b48984bc07a73d147b, type: 3}
       propertyPath: m_AnchorMax.y
       value: 0
