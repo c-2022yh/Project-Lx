@@ -19,6 +19,7 @@ public class UIManager : MonoBehaviour
     [SerializeField] private PausePanel pausePanel;
     [SerializeField] private GameOverPanel gameOverPanel;
     // [SerializeField] private NotificationPanel notificationPanel;
+    [SerializeField] private ControlGuidePanel controlGuidePanel;
 
     // ─────────────────────────────────────────
     //  더미 스탯 (UI 테스트용)
@@ -85,14 +86,30 @@ public class UIManager : MonoBehaviour
     }
 
     void Update()
+
     {
+        Debug.Log("UIManager Update 작동 중");  // ← 임시
+
         // [DEBUG_ONLY] 플레이어 붙으면 제거
         if (Keyboard.current.digit1Key.wasPressedThisFrame) ModifyHealth(-15);
         if (Keyboard.current.digit2Key.wasPressedThisFrame) ModifyHealth(+20);
         if (Keyboard.current.digit3Key.wasPressedThisFrame) ModifySoul(-1);
         if (Keyboard.current.digit4Key.wasPressedThisFrame) ModifySoul(+1);
         if (Keyboard.current.digit0Key.wasPressedThisFrame) ShowGameOver();
-        if (Keyboard.current.escapeKey.wasPressedThisFrame) TogglePause();
+        if (Keyboard.current.escapeKey.wasPressedThisFrame)
+        {
+            if (controlGuidePanel.gameObject.activeSelf)
+            {
+                // 조작법이 켜져 있으면 → 조작법 닫고 일시정지로 복귀
+                controlGuidePanel.SetVisible(false);
+                ShowPause();
+            }
+            else
+            {
+                // 아니면 일시정지 토글
+                TogglePause();
+            }
+        }
         if (Keyboard.current.iKey.wasPressedThisFrame) ToggleInventory();
     }
 
@@ -148,6 +165,7 @@ public class UIManager : MonoBehaviour
         // [SFX_HOOK]
     }
 
+
     public void ShowGameOver()
     {
         Time.timeScale = 0f;
@@ -156,5 +174,16 @@ public class UIManager : MonoBehaviour
         // [PLAYER_HOOK] 플레이어 사망 처리
     }
 
+    //가이드
     
+    public void ShowControlGuide()
+    {
+        pausePanel.SetVisible(false);      // 일시정지 끄기
+        controlGuidePanel.SetVisible(true); // 조작법 켜기
+    }
+    //되돌아가기
+    public void ShowPause()
+    {
+        pausePanel.SetVisible(true);
+    }
 }
