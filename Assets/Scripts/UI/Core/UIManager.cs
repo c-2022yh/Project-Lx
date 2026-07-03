@@ -20,6 +20,7 @@ public class UIManager : MonoBehaviour
     [SerializeField] private GameOverPanel gameOverPanel;
     // [SerializeField] private NotificationPanel notificationPanel;
     [SerializeField] private ControlGuidePanel controlGuidePanel;
+    [SerializeField] private TutorialTooltip tutorialTooltip;
 
     // ─────────────────────────────────────────
     //  더미 스탯 (UI 테스트용)
@@ -111,6 +112,9 @@ public class UIManager : MonoBehaviour
             }
         }
         if (Keyboard.current.iKey.wasPressedThisFrame) ToggleInventory();
+        //이거는 나중에 처음 스킬 발동하면 나오게 튜토리얼 구현할건데 테스트키
+        if (Keyboard.current.tKey.wasPressedThisFrame)
+            tutorialTooltip.Show("Shift", "대시로 회피하세요");  
     }
 
     //  스탯 조작
