@@ -58,7 +58,8 @@ public class UIManager : MonoBehaviour
             return;
         }
         Instance = this;
-        DontDestroyOnLoad(gameObject);
+       // DontDestroyOnLoad(gameObject);  UI_root로 관리한다고 해서 오류날까봐 주석처리함. 대신 씬마다 새로 넣을 것
+       //얘의 원래 기능은 씬 넘어가도 안 죽는거임
         /*
         uiInput = new UIInputActions();
         uiInput.UI.ToggleInventory.performed += ctx => ToggleInventory();
@@ -89,7 +90,7 @@ public class UIManager : MonoBehaviour
     void Update()
 
     {
-        Debug.Log("UIManager Update 작동 중");  // ← 임시
+      
 
         // [DEBUG_ONLY] 플레이어 붙으면 제거
         if (Keyboard.current.digit1Key.wasPressedThisFrame) ModifyHealth(-15);
