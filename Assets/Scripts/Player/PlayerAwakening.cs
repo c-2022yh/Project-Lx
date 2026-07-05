@@ -1,6 +1,7 @@
 using System.Collections;
 using UnityEngine;
 
+//플레이어 각성 상태를 관리하는 스크립트
 public class PlayerAwakening : MonoBehaviour
 {
     public Rigidbody2D rb;
@@ -37,7 +38,7 @@ public class PlayerAwakening : MonoBehaviour
         if (isAwakened || isAwakening) return;
         
         //기력 다 모아야 각성가능
-        if (p.playerEnergy.currentEnergy < p.playerEnergy.maxEnergy) return;
+        if (p.playerEnergy.CurrentEnergy < p.playerEnergy.MaxEnergy) return;
         
         awakeningCoroutine = StartCoroutine(AwakeningRoutine(p));
     }

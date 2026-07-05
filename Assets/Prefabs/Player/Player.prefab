@@ -13,14 +13,14 @@ GameObject:
   - component: {fileID: 804454924979499156}
   - component: {fileID: 6566933761278236592}
   - component: {fileID: 4329258634847844620}
-  - component: {fileID: 3959913638912958144}
   - component: {fileID: 4954982494915989086}
+  - component: {fileID: 1325905956347493422}
   - component: {fileID: 26409342934325885}
+  - component: {fileID: 3959913638912958144}
   - component: {fileID: 671875408835303829}
   - component: {fileID: 781535822289692772}
   - component: {fileID: 1460696949342154062}
   - component: {fileID: 2921268448612659600}
-  - component: {fileID: 1325905956347493422}
   m_Layer: 7
   m_Name: Player
   m_TagString: Untagged
@@ -36,7 +36,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3993503971577391545}
   serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 0.8, y: 1.4, z: 1}
   m_ConstrainProportionsScale: 0
@@ -198,6 +198,81 @@ MonoBehaviour:
   playerEnergy: {fileID: 0}
   playerAwakening: {fileID: 0}
   playerActionState: {fileID: 0}
+--- !u!114 &4954982494915989086
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3993503971577391545}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 62899f850307741f2a39c98a8b639597, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.InputSystem::UnityEngine.InputSystem.PlayerInput
+  m_Actions: {fileID: -944628639613478452, guid: 2bcd2660ca9b64942af0de543d8d7100, type: 3}
+  m_NotificationBehavior: 0
+  m_UIInputModule: {fileID: 0}
+  m_DeviceLostEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  m_DeviceRegainedEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  m_ControlsChangedEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  m_ActionEvents: []
+  m_NeverAutoSwitchControlSchemes: 0
+  m_DefaultControlScheme: 
+  m_DefaultActionMap: Player
+  m_SplitScreenIndex: -1
+  m_Camera: {fileID: 0}
+--- !u!114 &1325905956347493422
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3993503971577391545}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8d795e9348e5706499cde7a4d8c4319b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerHealth
+  maxHealth: 5
+  currentHealth: 0
+  invincibleTime: 1
+  hitStunTime: 0.25
+  knockbackX: 8
+  knockbackY: 5
+  respawnDelay: 0.7
+  defaultEnemyContactIgnoreTime: 0.2
+--- !u!114 &26409342934325885
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3993503971577391545}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cd50175fd4cb20a4abae1a12963df7ea, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerMove
+  moveSpeed: 10
+  jumpForce: 15
+  jumpCooldown: 0.2
+  maxAirJumps: 1
+  coyoteTime: 0.15
+  bufferTime: 0.15
+  dashSpeed: 100
+  dashDuration: 0.02
+  dashCooldown: 0.5
+  lastDashTime: 0
+  airControlMin: 0.8
+  groundSmooth: 0.01
+  airSmooth: 0.1
 --- !u!114 &3959913638912958144
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -249,61 +324,6 @@ MonoBehaviour:
     effectDuration: 0.12
     followPlayer: 1
     followDuration: 0.1
---- !u!114 &4954982494915989086
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3993503971577391545}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 62899f850307741f2a39c98a8b639597, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Unity.InputSystem::UnityEngine.InputSystem.PlayerInput
-  m_Actions: {fileID: -944628639613478452, guid: 2bcd2660ca9b64942af0de543d8d7100, type: 3}
-  m_NotificationBehavior: 0
-  m_UIInputModule: {fileID: 0}
-  m_DeviceLostEvent:
-    m_PersistentCalls:
-      m_Calls: []
-  m_DeviceRegainedEvent:
-    m_PersistentCalls:
-      m_Calls: []
-  m_ControlsChangedEvent:
-    m_PersistentCalls:
-      m_Calls: []
-  m_ActionEvents: []
-  m_NeverAutoSwitchControlSchemes: 0
-  m_DefaultControlScheme: 
-  m_DefaultActionMap: Player
-  m_SplitScreenIndex: -1
-  m_Camera: {fileID: 0}
---- !u!114 &26409342934325885
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3993503971577391545}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: cd50175fd4cb20a4abae1a12963df7ea, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PlayerMove
-  moveSpeed: 10
-  jumpForce: 15
-  jumpCooldown: 0.2
-  maxAirJumps: 1
-  coyoteTime: 0.15
-  bufferTime: 0.15
-  dashSpeed: 100
-  dashDuration: 0.02
-  dashCooldown: 0.5
-  lastDashTime: 0
-  airControlMin: 0.8
-  groundSmooth: 0.01
-  airSmooth: 0.1
 --- !u!114 &671875408835303829
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -350,7 +370,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::playerEnergy
   currentEnergy: 0
   maxEnergy: 100
-  orb: {fileID: 0}
+  orbPrefab: {fileID: 1398017312291189154, guid: 1e46b67fbb54b8141ac54cc7a030d053, type: 3}
+  startWithOrb: 1
 --- !u!114 &2921268448612659600
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -365,25 +386,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::PlayerAwakening
   rb: {fileID: 804454924979499156}
   awakeningEffect: {fileID: 8592009762078165480}
---- !u!114 &1325905956347493422
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3993503971577391545}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8d795e9348e5706499cde7a4d8c4319b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PlayerHealth
-  maxHealth: 5
-  currentHealth: 0
-  invincibleTime: 1
-  hitStunTime: 0.25
-  knockbackX: 8
-  knockbackY: 5
-  respawnDelay: 0.7
 --- !u!1 &5055931255594380884
 GameObject:
   m_ObjectHideFlags: 0
@@ -433,11 +435,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 29438966801062786, guid: e2d78d1bc91566f46be7549983fb33ff, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 125
+      value: 100
       objectReference: {fileID: 0}
     - target: {fileID: 29438966801062786, guid: e2d78d1bc91566f46be7549983fb33ff, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 71.428566
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 29438966801062786, guid: e2d78d1bc91566f46be7549983fb33ff, type: 3}
       propertyPath: m_LocalPosition.z
