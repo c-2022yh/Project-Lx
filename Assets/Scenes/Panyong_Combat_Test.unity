@@ -119,17 +119,6 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
---- !u!114 &127017967 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 8268741717814658033, guid: 4a1aa1841ca76a04989b748135f4a93b, type: 3}
-  m_PrefabInstance: {fileID: 8461587682266505720}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b6c5c76cfe5075e4182cab910ccba9e8, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::ControlGuidePanel
 --- !u!4 &133642917 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 3783203440675197678, guid: bfe65dd7667e19c4f9533af653b8e9cf, type: 3}
@@ -507,26 +496,17 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 58dc82209e079ed47bfa7c58defd81dd, type: 3}
---- !u!1 &1032995588 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 5912623882075170098, guid: 4a1aa1841ca76a04989b748135f4a93b, type: 3}
-  m_PrefabInstance: {fileID: 8461587682266505720}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &1032995590
+--- !u!114 &1043932607 stripped
 MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
+  m_CorrespondingSourceObject: {fileID: 1325905956347493422, guid: bfe65dd7667e19c4f9533af653b8e9cf, type: 3}
+  m_PrefabInstance: {fileID: 236780787}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1032995588}
+  m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e3c04a8390ad0b345b787a9bf54bdd19, type: 3}
+  m_Script: {fileID: 11500000, guid: 8d795e9348e5706499cde7a4d8c4319b, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::TutorialTooltip
-  keyText: {fileID: 0}
-  descText: {fileID: 0}
-  displayTime: 3
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerHealth
 --- !u!114 &1974233333 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 8789527952337916190, guid: 4a1aa1841ca76a04989b748135f4a93b, type: 3}
@@ -14962,14 +14942,6 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 1834888156464773872, guid: 4a1aa1841ca76a04989b748135f4a93b, type: 3}
-      propertyPath: tutorialTooltip
-      value: 
-      objectReference: {fileID: 1032995590}
-    - target: {fileID: 1834888156464773872, guid: 4a1aa1841ca76a04989b748135f4a93b, type: 3}
-      propertyPath: controlGuidePanel
-      value: 
-      objectReference: {fileID: 127017967}
     - target: {fileID: 2746805734961889801, guid: 4a1aa1841ca76a04989b748135f4a93b, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -15142,14 +15114,14 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: 0
       objectReference: {fileID: 0}
-    m_RemovedComponents:
-    - {fileID: 272074221538742713, guid: 4a1aa1841ca76a04989b748135f4a93b, type: 3}
+    - target: {fileID: 9186042766549042087, guid: 4a1aa1841ca76a04989b748135f4a93b, type: 3}
+      propertyPath: playerHealth
+      value: 
+      objectReference: {fileID: 1043932607}
+    m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents:
-    - targetCorrespondingSourceObject: {fileID: 5912623882075170098, guid: 4a1aa1841ca76a04989b748135f4a93b, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 1032995590}
+    m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 4a1aa1841ca76a04989b748135f4a93b, type: 3}
 --- !u!1001 &8639608961027245434
 PrefabInstance:

@@ -25,7 +25,7 @@ Transform:
   m_GameObject: {fileID: 7345204620996501783}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -140.66423, y: -6.26907, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -167,6 +167,17 @@ RectTransform:
   m_CorrespondingSourceObject: {fileID: 7670345245763944643, guid: 8b8600d912fef0946a4b314561790aa5, type: 3}
   m_PrefabInstance: {fileID: 800313098235439022}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &8257456185794216588 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 8755886233071625506, guid: 8b8600d912fef0946a4b314561790aa5, type: 3}
+  m_PrefabInstance: {fileID: 800313098235439022}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 34b507712bccc1f4199b008cac11f585, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::TutorialToolTip
 --- !u!1001 &1640537566317323084
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -286,6 +297,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c722fbc4355003f4cb46fba1eff9c3af, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::GameOverPanel
+--- !u!114 &6603567219740463378 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 5575677751463801438, guid: 9e5b3c71347631e4990efea9198808a9, type: 3}
+  m_PrefabInstance: {fileID: 1640537566317323084}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b6c5c76cfe5075e4182cab910ccba9e8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ControlGuidePanel
 --- !u!224 &6785450165485518670 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 5255312362724269058, guid: 9e5b3c71347631e4990efea9198808a9, type: 3}
@@ -654,6 +676,14 @@ PrefabInstance:
       propertyPath: inventoryPanel
       value: 
       objectReference: {fileID: 6285965766931457568}
+    - target: {fileID: 7598323755445276453, guid: b798dec77f88e90419825f290ebee3f7, type: 3}
+      propertyPath: tutorialTooltip
+      value: 
+      objectReference: {fileID: 8257456185794216588}
+    - target: {fileID: 7598323755445276453, guid: b798dec77f88e90419825f290ebee3f7, type: 3}
+      propertyPath: controlGuidePanel
+      value: 
+      objectReference: {fileID: 6603567219740463378}
     - target: {fileID: 8264186000852862974, guid: b798dec77f88e90419825f290ebee3f7, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
