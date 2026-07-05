@@ -1,25 +1,25 @@
+
 using UnityEngine;
 using UnityEngine.UI;
 
 public class HealthHUD : MonoBehaviour
 {
-    [SerializeField] private PlayerHealth playerHealth;
+    private PlayerHealth playerHealth;
+
     [SerializeField] private Image healthFill;
 
-private void Start()
+    private void Start()
     {
-        if (playerHealth == null)
-        {
-            playerHealth = FindAnyObjectByType<PlayerHealth>();
-        }
+        playerHealth = FindAnyObjectByType<PlayerHealth>();
 
         if (playerHealth == null)
         {
-            Debug.LogError("HealthHUD: PlayerHealth를 찾을 수 없습니다.");
+            Debug.LogError("HealthHUD: PlayerHealth를 찾을 수 없습니다.", this);
             return;
         }
 
         playerHealth.OnHealthChanged += UpdateHealthBar;
+
         UpdateHealthBar(playerHealth.CurrentHealth, playerHealth.MaxHealth);
     }
 
@@ -33,14 +33,10 @@ private void Start()
 
     private void UpdateHealthBar(int currentHealth, int maxHealth)
     {
-        if (healthFill == null)
-        {
-            Debug.LogError("HealthHUD: HealthBar_Fill Image가 연결되지 않았습니다.");
-            return;
-        }
+        if (healthFill == null) return;
+        
 
-        healthFill.fillAmount = (float)currentHealth / maxHealth;
+        healthFill.fillAmount = maxHealth > 0 ? (float)currentHealth / maxHealth : 0f;
+
     }
-
-
 }

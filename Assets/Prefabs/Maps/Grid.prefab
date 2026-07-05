@@ -1571,7 +1571,7 @@ GameObject:
   - component: {fileID: 4104309438601732996}
   - component: {fileID: 1027731273725408203}
   - component: {fileID: 8107006249591288675}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Tilemap_SecretWall
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1717,10 +1717,16 @@ Tilemap:
   - serializedVersion: 2
     m_RefCount: 11
     m_Data: {fileID: 11400000, guid: 44a00d8087f81f341b277c2461bf93ae, type: 2}
+  - serializedVersion: 2
+    m_RefCount: 0
+    m_Data: {fileID: 11400000, guid: dafc646cc5942994797964d4fc99eea1, type: 2}
   m_TileSpriteArray:
   - serializedVersion: 2
     m_RefCount: 11
     m_Data: {fileID: 21300000, guid: a3d57f4f632f42d43a42bc4a14f7cd7e, type: 3}
+  - serializedVersion: 2
+    m_RefCount: 0
+    m_Data: {fileID: 21300000, guid: f15f9efd92a7e264aabfe9dfc9072a98, type: 3}
   m_TileMatrixArray:
   - serializedVersion: 2
     m_RefCount: 11

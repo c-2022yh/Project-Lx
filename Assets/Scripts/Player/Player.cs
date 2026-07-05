@@ -2,6 +2,7 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
 
+//플레이어 전체 통제하는 스크립트
 public class Player : MonoBehaviour
 {
     //컴포넌트
