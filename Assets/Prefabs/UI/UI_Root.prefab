@@ -32,8 +32,8 @@ Transform:
   - {fileID: 194841560507642411}
   - {fileID: 2837424728712827337}
   - {fileID: 7019355732960585581}
-  - {fileID: 4656481477249964238}
   - {fileID: 6785450165485518670}
+  - {fileID: 4656481477249964238}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &800313098235439022
@@ -483,6 +483,10 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 4820581199549389063, guid: 881165a111aad8b48984bc07a73d147b, type: 3}
+      propertyPath: currentSkill
+      value: 
+      objectReference: {fileID: 11400000, guid: 948f556659e513f439facc403ca6dacb, type: 2}
     - target: {fileID: 5181553157482893297, guid: 881165a111aad8b48984bc07a73d147b, type: 3}
       propertyPath: m_AnchorMax.y
       value: 0
