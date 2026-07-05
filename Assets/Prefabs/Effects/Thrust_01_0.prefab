@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 2606373885818721517}
   - component: {fileID: 966387061424930619}
   - component: {fileID: -4524703130375616823}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Thrust_01_0
   m_TagString: Untagged
   m_Icon: {fileID: 0}
