@@ -19,6 +19,8 @@ public class UIManager : MonoBehaviour
     [SerializeField] private PausePanel pausePanel;
     [SerializeField] private GameOverPanel gameOverPanel;
     // [SerializeField] private NotificationPanel notificationPanel;
+    [SerializeField] private ControlGuidePanel controlGuidePanel;
+    [SerializeField] private TutorialTooltip tutorialTooltip;
 
     // ─────────────────────────────────────────
     //  더미 스탯 (UI 테스트용)
@@ -56,7 +58,8 @@ public class UIManager : MonoBehaviour
             return;
         }
         Instance = this;
-        DontDestroyOnLoad(gameObject);
+       // DontDestroyOnLoad(gameObject);  UI_root로 관리한다고 해서 오류날까봐 주석처리함. 대신 씬마다 새로 넣을 것
+       //얘의 원래 기능은 씬 넘어가도 안 죽는거임
         /*
         uiInput = new UIInputActions();
         uiInput.UI.ToggleInventory.performed += ctx => ToggleInventory();
@@ -85,15 +88,34 @@ public class UIManager : MonoBehaviour
     }
 
     void Update()
+
     {
+      
+
         // [DEBUG_ONLY] 플레이어 붙으면 제거
         if (Keyboard.current.digit1Key.wasPressedThisFrame) ModifyHealth(-15);
         if (Keyboard.current.digit2Key.wasPressedThisFrame) ModifyHealth(+20);
         if (Keyboard.current.digit3Key.wasPressedThisFrame) ModifySoul(-1);
         if (Keyboard.current.digit4Key.wasPressedThisFrame) ModifySoul(+1);
         if (Keyboard.current.digit0Key.wasPressedThisFrame) ShowGameOver();
-        if (Keyboard.current.escapeKey.wasPressedThisFrame) TogglePause();
+        if (Keyboard.current.escapeKey.wasPressedThisFrame)
+        {
+            if (controlGuidePanel.gameObject.activeSelf)
+            {
+                // 조작법이 켜져 있으면 → 조작법 닫고 일시정지로 복귀
+                controlGuidePanel.SetVisible(false);
+                ShowPause();
+            }
+            else
+            {
+                // 아니면 일시정지 토글
+                TogglePause();
+            }
+        }
         if (Keyboard.current.iKey.wasPressedThisFrame) ToggleInventory();
+        //이거는 나중에 처음 스킬 발동하면 나오게 튜토리얼 구현할건데 테스트키
+        if (Keyboard.current.tKey.wasPressedThisFrame)
+            tutorialTooltip.Show("Shift", "대시로 회피하세요");  
     }
 
     //  스탯 조작
@@ -148,6 +170,7 @@ public class UIManager : MonoBehaviour
         // [SFX_HOOK]
     }
 
+
     public void ShowGameOver()
     {
         Time.timeScale = 0f;
@@ -156,5 +179,16 @@ public class UIManager : MonoBehaviour
         // [PLAYER_HOOK] 플레이어 사망 처리
     }
 
+    //가이드
     
+    public void ShowControlGuide()
+    {
+        pausePanel.SetVisible(false);      // 일시정지 끄기
+        controlGuidePanel.SetVisible(true); // 조작법 켜기
+    }
+    //되돌아가기
+    public void ShowPause()
+    {
+        pausePanel.SetVisible(true);
+    }
 }
