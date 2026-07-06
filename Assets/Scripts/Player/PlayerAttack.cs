@@ -103,10 +103,17 @@ public class PlayerAttack : MonoBehaviour
             p.rb.linearVelocity = new Vector2(0f, p.rb.linearVelocity.y);
         }
 
+        //선딜
+        yield return new WaitForSeconds(pattern.startupTime);
 
         //공격 프레임
         ShowAttackEffect(p, pattern, dir); //공격 이펙트 생성
+        
+        //공격 활성 시간
         yield return ActiveAttackPhase(p, pattern, dir);
+
+        //후딜
+        yield return new WaitForSeconds(pattern.recoveryTime);
 
         lastAttackEndTime = Time.time;
 
@@ -125,8 +132,6 @@ public class PlayerAttack : MonoBehaviour
         while (timer < pattern.activeTime)
         {
             timer += Time.fixedDeltaTime;
-            float t = Mathf.Clamp01(timer / pattern.activeTime);
-
             yield return new WaitForFixedUpdate();
         }
     }
