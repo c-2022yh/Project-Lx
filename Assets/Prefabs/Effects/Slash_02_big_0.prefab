@@ -153,6 +153,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::AttackEffectHitbox
   damage: 2
+  hitCollider: {fileID: -8856714056107028753}
 --- !u!50 &3238675867616304835
 Rigidbody2D:
   serializedVersion: 5
