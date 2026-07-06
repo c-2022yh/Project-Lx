@@ -14,18 +14,18 @@ public enum RelicCategory
 public class RelicData : ScriptableObject
 {
     [Header("Identity")]
-    [SerializeField] private string relicId;
-    [SerializeField] private string relicName;
-    [SerializeField] private Sprite icon;
+    [SerializeField] public string relicId;
+    [SerializeField] public string relicName;
+    [SerializeField] public Sprite icon;
 
     [TextArea(3, 6)]
-    [SerializeField] private string description;
+    [SerializeField] public string description;
 
     [Header("Cost")]
-    [SerializeField] private int cost = 1;
+    [SerializeField] public int cost = 1;
 
     [Header("Info")]
-    [SerializeField] private RelicCategory category;
+    [SerializeField] public RelicCategory category;
 
     [Header("Effects")]
     [SerializeField] private List<RelicEffect> effects = new();

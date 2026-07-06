@@ -289,7 +289,7 @@ MonoBehaviour:
   - attackName: "\uC9E7\uAC8C \uBCA0\uAE30"
     startupTime: 0.03
     activeTime: 0.09
-    recoveryTime: 0.08
+    recoveryTime: 0.04
     damageMultiplier: 1
     attackEffectPrefab: {fileID: 3545481630792328146, guid: 94f295d40691486438e6c60e511b79e0, type: 3}
     effectOffset: {x: 0.8, y: 0}
@@ -301,7 +301,7 @@ MonoBehaviour:
   - attackName: "\uB0B4\uB824 \uCE58\uAE30"
     startupTime: 0.1
     activeTime: 0.2
-    recoveryTime: 0.2
+    recoveryTime: 0.1
     damageMultiplier: 1.2
     attackEffectPrefab: {fileID: 2066522367392586507, guid: 692a85f7206e9714c93b470598cbc6a6, type: 3}
     effectOffset: {x: 0.8, y: 0}
