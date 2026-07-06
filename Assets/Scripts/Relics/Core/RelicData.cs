@@ -37,4 +37,6 @@ public class RelicData : ScriptableObject
     public int Cost => cost;
     public RelicCategory Category => category;
     public IReadOnlyList<RelicEffect> Effects => effects;
+
+
 }
