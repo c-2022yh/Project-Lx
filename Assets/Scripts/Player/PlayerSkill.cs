@@ -1,6 +1,7 @@
 using System.Collections;
 using UnityEngine;
 
+//플레이어 스킬을 관리하는 스크립트
 public class PlayerSkill : MonoBehaviour
 {
     [Header("Equipped Skills")]

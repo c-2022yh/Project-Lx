@@ -2,7 +2,6 @@ using UnityEngine;
 using System.Collections;
 
 //프로젝트에서 스킬데이터 SO를 만들수 있도록 설정
-
 public abstract class SkillData : ScriptableObject
 {
     [Header("Basic Info")]
