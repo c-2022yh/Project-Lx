@@ -21,6 +21,7 @@ GameObject:
   - component: {fileID: 781535822289692772}
   - component: {fileID: 1460696949342154062}
   - component: {fileID: 2921268448612659600}
+  - component: {fileID: 144273705479961808}
   m_Layer: 7
   m_Name: Player
   m_TagString: Untagged
@@ -386,6 +387,24 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::PlayerAwakening
   rb: {fileID: 804454924979499156}
   awakeningEffect: {fileID: 8592009762078165480}
+--- !u!114 &144273705479961808
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3993503971577391545}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 781156de7e9b09749bf4c441c0b64a4d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerStats
+  physicalAttack: 10
+  magicalAttack: 10
+  physicalPenetration: 0
+  magicalPenetration: 0
+  criticalChance: 0.05
+  criticalMultiplier: 2
 --- !u!1 &5055931255594380884
 GameObject:
   m_ObjectHideFlags: 0
