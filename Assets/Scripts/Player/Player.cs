@@ -84,7 +84,7 @@ public class Player : MonoBehaviour
     
     public void OnJump(InputValue value) { if (value.isPressed && ActionState.CanJump()) Move.RequestJump(); }
     public void OnDash(InputValue value) { if (value.isPressed && ActionState.CanDash()) Move.ExecuteDash(); }
-    public void OnAttack(InputValue value) { if (value.isPressed && ActionState.CanAttack()) Attack.ExecuteAttack(this); }
+    public void OnAttack(InputValue value) { if (value.isPressed && ActionState.CanAttack()) Attack.ExecuteAttack(); }
 
     public void OnSkillX(InputValue value) { if (value.isPressed && ActionState.CanSkill()) Skill.ExecuteSkillX(this); }
     public void OnSkillA(InputValue value) { if (value.isPressed && ActionState.CanSkill()) Skill.ExecuteSkillA(this); }
