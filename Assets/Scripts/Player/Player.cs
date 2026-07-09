@@ -7,8 +7,8 @@ public class Player : MonoBehaviour
 {
     //컴포넌트
     [Header("Components")]
-    public Rigidbody2D rb;
-    public SpriteRenderer spriteRenderer;
+    public Rigidbody2D rb { get; private set; }
+    public SpriteRenderer sr { get; private set; }
 
     //플레이어 상태 처리
     [Header("State Data")]
@@ -31,13 +31,15 @@ public class Player : MonoBehaviour
     private float originalDrag;
 
     //컴포넌트 참조
-    public PlayerState currentState;
-    public PlayerMove playerMove;
-    public PlayerAttack playerAttack;
-    public PlayerSkill playerSkill;
-    public PlayerEnergy playerEnergy;
-    public PlayerAwakening playerAwakening;
-    public PlayerActionState playerActionState;
+    public PlayerState currentState { get; private set; }
+    public PlayerMove Move { get; private set; }
+    public PlayerAttack Attack { get; private set; }
+    public PlayerSkill Skill { get; private set; }
+    public PlayerEnergy Energy { get; private set; }
+    public PlayerAwakening Awakening { get; private set; }
+    public PlayerActionState ActionState { get; private set; }
+
+    public PlayerStats Stats { get; private set; }
 
 
     //처음 한번만 실행하는 함수
@@ -45,17 +47,18 @@ public class Player : MonoBehaviour
     void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
-        spriteRenderer = GetComponent<SpriteRenderer>();
+        sr = GetComponent<SpriteRenderer>();
         initialScale = transform.localScale;
         rb.freezeRotation = true;
 
         //스크립트 연결
-        playerMove = GetComponent<PlayerMove>();
-        playerAttack = GetComponent<PlayerAttack>();
-        playerSkill = GetComponent<PlayerSkill>();
-        playerEnergy = GetComponent<PlayerEnergy>();
-        playerAwakening = GetComponent<PlayerAwakening>();
-        playerActionState = GetComponent<PlayerActionState>();
+        Move = GetComponent<PlayerMove>();
+        Attack = GetComponent<PlayerAttack>();
+        Skill = GetComponent<PlayerSkill>();
+        Energy = GetComponent<PlayerEnergy>();
+        Awakening = GetComponent<PlayerAwakening>();
+        ActionState = GetComponent<PlayerActionState>();
+        Stats = GetComponent<PlayerStats>();
 
         ChangeState(new NormalState(this));
     }
@@ -69,8 +72,8 @@ public class Player : MonoBehaviour
         //땅에 닿았는지 체크
         isGrounded = Physics2D.OverlapBox(groundCheck.position, boxSize, 0f, groundLayer);
 
-        playerMove.ExecuteMove(this);
-        playerMove.ExecuteJump(this);
+        Move.ExecuteMove();
+        Move.ExecuteJump();
 
         //currentState?.DoFixedUpdate();
     }
@@ -79,19 +82,20 @@ public class Player : MonoBehaviour
     //인풋시스템과 연결
     public void OnMove(InputValue value) { moveInput = value.Get<Vector2>(); } //방향값 설정
     
-    public void OnJump(InputValue value) { if (value.isPressed && playerActionState.CanJump()) playerMove.RequestJump(); }
-    public void OnDash(InputValue value) { if (value.isPressed && playerActionState.CanDash()) playerMove.ExecuteDash(this); }
-    public void OnAttack(InputValue value) { if (value.isPressed && playerActionState.CanAttack()) playerAttack.ExecuteAttack(this); }
+    public void OnJump(InputValue value) { if (value.isPressed && ActionState.CanJump()) Move.RequestJump(); }
+    public void OnDash(InputValue value) { if (value.isPressed && ActionState.CanDash()) Move.ExecuteDash(); }
+    public void OnAttack(InputValue value) { if (value.isPressed && ActionState.CanAttack()) Attack.ExecuteAttack(this); }
 
-    public void OnSkillX(InputValue value) { if (value.isPressed && playerActionState.CanSkill()) playerSkill.ExecuteSkillX(this); }
-    public void OnSkillA(InputValue value) { if (value.isPressed && playerActionState.CanSkill()) playerSkill.ExecuteSkillA(this); }
-    public void OnSkillS(InputValue value) { if (value.isPressed && playerActionState.CanSkill()) playerSkill.ExecuteSkillS(this); }
-    public void OnSkillD(InputValue value) { if (value.isPressed && playerActionState.CanSkill()) playerSkill.ExecuteSkillD(this); }
-    public void OnSkillF(InputValue value) { if (value.isPressed && playerActionState.CanSkill()) playerSkill.ExecuteSkillF(this); }
+    public void OnSkillX(InputValue value) { if (value.isPressed && ActionState.CanSkill()) Skill.ExecuteSkillX(this); }
+    public void OnSkillA(InputValue value) { if (value.isPressed && ActionState.CanSkill()) Skill.ExecuteSkillA(this); }
+    public void OnSkillS(InputValue value) { if (value.isPressed && ActionState.CanSkill()) Skill.ExecuteSkillS(this); }
+    public void OnSkillD(InputValue value) { if (value.isPressed && ActionState.CanSkill()) Skill.ExecuteSkillD(this); }
+    public void OnSkillF(InputValue value) { if (value.isPressed && ActionState.CanSkill()) Skill.ExecuteSkillF(this); }
 
-    public void OnAwaken(InputValue value) { if (value.isPressed && playerActionState.CanAwakening()) playerAwakening.TryAwaken(this); }
-    //public void OnTransformSuper(InputValue value) { if (value.isPressed && playerActionState.CanTransform()) currentState?.OnTransformSuper(); }
-    //public void OnTransformAnimal(InputValue value) { if (value.isPressed && playerActionState.CanTransform()) currentState?.OnTransformAnimal(); }
+    public void OnAwaken(InputValue value) { if (value.isPressed && ActionState.CanAwakening()) Awakening.TryAwaken(this); }
+
+    //public void OnTransformSuper(InputValue value) { if (value.isPressed && ActionState.CanTransform()) currentState?.OnTransformSuper(); }
+    //public void OnTransformAnimal(InputValue value) { if (value.isPressed && ActionState.CanTransform()) currentState?.OnTransformAnimal(); }
 
     
 

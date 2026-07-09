@@ -92,7 +92,7 @@ public class PlayerAttack : MonoBehaviour
     private IEnumerator AttackRoutine(Player p, AttackPattern pattern, bool isAirAttack)
     {
         //상태 진입
-        p.playerActionState.EnterAttack();
+        p.ActionState.EnterAttack();
 
         //플레이어 바라보는 방향 설정
         float dir = p.isFacingRight ? 1f : -1f;
@@ -118,8 +118,8 @@ public class PlayerAttack : MonoBehaviour
         lastAttackEndTime = Time.time;
 
         //상태 돌아오기
-        if (p.playerActionState.isAttacking)
-            p.playerActionState.EnterNormal();
+        if (p.ActionState.isAttacking)
+            p.ActionState.EnterNormal();
 
         attackCoroutine = null;
     }
