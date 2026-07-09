@@ -1,14 +1,16 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class AttackEffectHitbox : MonoBehaviour
 {
-    [SerializeField] private float damage = 1f; // 기본 데미지
-    private float attackDirection = 1f; // 공격 방향
+    //히트박스가 전달할 피해 정보
+    private DamageInfo damageInfo;
+
+    //공격 방향
+    private float attackDirection = 1f;
 
     //이 공격 이펙트가 이미 타격한 적들
-    private readonly HashSet<Enemy> hitEnemies = new();
+    private readonly HashSet<IDamageable> hitTargets = new();
 
     //공격 이펙트의 콜라이더 (실제 피격 판정)
     [SerializeField] private Collider2D hitCollider;
@@ -20,9 +22,9 @@ public class AttackEffectHitbox : MonoBehaviour
     }
 
     //공격 정보 설정
-    public void SetAttackInfo(float damageValue, float direction)
+    public void SetAttackInfo(DamageInfo damageInfo, float direction)
     {
-        damage = damageValue; //데미지
+        this.damageInfo = damageInfo; //데미지 정보
         attackDirection = direction >= 0f ? 1f : -1f; //공격 방향   
     }
 
@@ -37,7 +39,6 @@ public class AttackEffectHitbox : MonoBehaviour
 
         //비밀벽 타일 처리
         SecretBreakableWall secretBreakableWall = other.GetComponentInParent<SecretBreakableWall>();
-
         if (secretBreakableWall != null)
         {
             Vector2 hitPoint = other.ClosestPoint(transform.position);
@@ -45,13 +46,18 @@ public class AttackEffectHitbox : MonoBehaviour
             return;
         }
 
-        //적 피격 처리
-        Enemy enemy = other.GetComponentInParent<Enemy>();
 
-        if (enemy == null) return;
-        //같은 적은 이 공격 이펙트에 한 번만 피격
-        if (!hitEnemies.Add(enemy)) return;
+        //공통 피격 대상 탐색
+        IDamageable target = other.GetComponentInParent<IDamageable>();
 
-        enemy.TakeDamage(damage, new Vector2(attackDirection, 0f));
+        if (target == null) return;
+
+        //같은 대상은 이 히트박스에 한 번만 피격
+        if (!hitTargets.Add(target)) return;
+
+        //피해 정보 전달
+        target.TakeDamage(damageInfo, new Vector2(attackDirection, 0f));
+        
+
     }
 }

@@ -13,22 +13,24 @@ MonoBehaviour:
   m_Name: ThrustSkillData
   m_EditorClassIdentifier: Assembly-CSharp::SkillX_Thrust
   skillName: Thrust
-  cooldownTime: 0.5
-  manaCost: 0
-  soulCost: 0
   icon: {fileID: 0}
   description: "\uAC80 \uC720\uBB3C \uD2B9\uC218 \uC2A4\uD0AC"
-  compatibleSlot: 0
-  dashDistance: 2
-  duration: 0.05
-  startAngle: 0
-  endAngle: 0
-  effectPrefab: {fileID: 0}
-  damageMultiplier: 2
-  hitBoxSize: {x: 1.5, y: 0.5}
-  indicatorColor: {r: 1, g: 0.5, b: 0.5, a: 0.4}
-  indicatorOffset: {x: 1, y: 0, z: 0}
-  weaponThrustOffset: 0.7
+  allowedSlots: 0
+  cooldownTime: 0.5
+  soulCost: 0
+  activeTime: 0.2
+  enemyLayer:
+    serializedVersion: 2
+    m_Bits: 0
+  damageSpec:
+    damageType: 0
+    damageMultiplier: 1
+    canCritical: 0
+    bonusPenetration: 0
+    bonusDamageAmplification: 0
+  knockbackDirection: {x: 1, y: 0}
+  startupTime: 0.1
+  recoveryTime: 0.08
   thrustEffectPrefab: {fileID: 7000748839020387578, guid: eadce98c30aaf6448abf549f26f2e279, type: 3}
   effectOffset: {x: 1.5, y: -0.1}
   effectScale: {x: 1, y: 1, z: 1}

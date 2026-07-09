@@ -16,12 +16,12 @@ GameObject:
   - component: {fileID: 4954982494915989086}
   - component: {fileID: 1325905956347493422}
   - component: {fileID: 26409342934325885}
+  - component: {fileID: 144273705479961808}
   - component: {fileID: 3959913638912958144}
   - component: {fileID: 671875408835303829}
   - component: {fileID: 781535822289692772}
   - component: {fileID: 1460696949342154062}
   - component: {fileID: 2921268448612659600}
-  - component: {fileID: 144273705479961808}
   m_Layer: 7
   m_Name: Player
   m_TagString: Untagged
@@ -181,8 +181,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6e5c063169e1f474f9563a73bd3ce282, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Player
-  rb: {fileID: 804454924979499156}
-  spriteRenderer: {fileID: 4885331867739562002}
   isGrounded: 0
   moveInput: {x: 0, y: 0}
   isFacingRight: 1
@@ -193,12 +191,6 @@ MonoBehaviour:
   ghostPrefab: {fileID: 4465796823959608584, guid: 2329405a733afa342a28f81b9a5707a6, type: 3}
   initialScale: {x: 0, y: 0, z: 0}
   scaleAnimal: {x: 1.4, y: 1, z: 1}
-  playerMove: {fileID: 0}
-  playerAttack: {fileID: 0}
-  playerSkill: {fileID: 0}
-  playerEnergy: {fileID: 0}
-  playerAwakening: {fileID: 0}
-  playerActionState: {fileID: 0}
 --- !u!114 &4954982494915989086
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -274,6 +266,30 @@ MonoBehaviour:
   airControlMin: 0.8
   groundSmooth: 0.01
   airSmooth: 0.1
+--- !u!114 &144273705479961808
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3993503971577391545}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 781156de7e9b09749bf4c441c0b64a4d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerStats
+  offense:
+    physicalAttack: 1
+    magicalAttack: 1
+    physicalPenetration: 0
+    magicalPenetration: 0
+    criticalChance: 0
+    criticalMultiplier: 1.5
+    damageAmplification: 0
+  defense:
+    physicalDefense: 0
+    magicalDefense: 0
+    durability: 0
 --- !u!114 &3959913638912958144
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -291,7 +307,12 @@ MonoBehaviour:
     startupTime: 0.03
     activeTime: 0.09
     recoveryTime: 0.04
-    damageMultiplier: 1
+    damageSpec:
+      damageType: 0
+      damageMultiplier: 1
+      canCritical: 0
+      bonusPenetration: 0
+      bonusDamageAmplification: 0
     attackEffectPrefab: {fileID: 3545481630792328146, guid: 94f295d40691486438e6c60e511b79e0, type: 3}
     effectOffset: {x: 0.8, y: 0}
     effectScale: {x: 1, y: 1, z: 1}
@@ -303,7 +324,12 @@ MonoBehaviour:
     startupTime: 0.1
     activeTime: 0.2
     recoveryTime: 0.1
-    damageMultiplier: 1.2
+    damageSpec:
+      damageType: 0
+      damageMultiplier: 1
+      canCritical: 0
+      bonusPenetration: 0
+      bonusDamageAmplification: 0
     attackEffectPrefab: {fileID: 2066522367392586507, guid: 692a85f7206e9714c93b470598cbc6a6, type: 3}
     effectOffset: {x: 0.8, y: 0}
     effectScale: {x: 1, y: 1, z: 1}
@@ -317,7 +343,12 @@ MonoBehaviour:
     startupTime: 0.03
     activeTime: 0.1
     recoveryTime: 0.15
-    damageMultiplier: 1
+    damageSpec:
+      damageType: 0
+      damageMultiplier: 1
+      canCritical: 0
+      bonusPenetration: 0
+      bonusDamageAmplification: 0
     attackEffectPrefab: {fileID: 3545481630792328146, guid: 94f295d40691486438e6c60e511b79e0, type: 3}
     effectOffset: {x: 0.8, y: 0}
     effectScale: {x: 1, y: 1, z: 1}
@@ -387,24 +418,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::PlayerAwakening
   rb: {fileID: 804454924979499156}
   awakeningEffect: {fileID: 8592009762078165480}
---- !u!114 &144273705479961808
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3993503971577391545}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 781156de7e9b09749bf4c441c0b64a4d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PlayerStats
-  physicalAttack: 10
-  magicalAttack: 10
-  physicalPenetration: 0
-  magicalPenetration: 0
-  criticalChance: 0.05
-  criticalMultiplier: 2
 --- !u!1 &5055931255594380884
 GameObject:
   m_ObjectHideFlags: 0

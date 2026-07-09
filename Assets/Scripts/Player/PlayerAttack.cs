@@ -13,7 +13,7 @@ public class AttackPattern //공격 패턴
     public float recoveryTime = 0.1f;   //후딜
 
     [Header("Combat")]
-    public float damageMultiplier = 1f; //데미지 보정값
+    public AttackDamageSpec damageSpec; //고유 데미지 값  
 
     [Header("Effect")] //공격 이펙트 프리펩 설정
     public GameObject attackEffectPrefab;
@@ -42,6 +42,7 @@ public class PlayerAttack : MonoBehaviour
     [SerializeField] private AttackPattern airAttack;
 
     private Player player;
+    private PlayerStats playerStats;
 
     private int comboIndex = 0;
     private float lastAttackEndTime;
@@ -52,6 +53,7 @@ public class PlayerAttack : MonoBehaviour
     void Awake()
     {
         player = GetComponent<Player>();
+        playerStats = GetComponent<PlayerStats>();
     }
 
     private void Update()
@@ -106,8 +108,11 @@ public class PlayerAttack : MonoBehaviour
         //선딜
         yield return new WaitForSeconds(pattern.startupTime);
 
-        //공격 프레임
-        ShowAttackEffect(pattern, dir); //공격 이펙트 생성
+        //공격 데미지 정보 생성
+        DamageInfo damageInfo = CreateDamageInfo(pattern);
+
+        //공격 이펙트 생성 및 히트박스 활성화  
+        SpawnAttackEffect(pattern, dir, damageInfo);
         
         //공격 활성 시간
         yield return ActiveAttackPhase(pattern, dir);
@@ -124,20 +129,20 @@ public class PlayerAttack : MonoBehaviour
         attackCoroutine = null;
     }
 
-    //실제 공격 중 실행할 코루틴
-    private IEnumerator ActiveAttackPhase(AttackPattern pattern, float dir)
+    //데미지 정보 생성
+    private DamageInfo CreateDamageInfo(AttackPattern pattern)
     {
-        float timer = 0f;
-        
-        while (timer < pattern.activeTime)
-        {
-            timer += Time.fixedDeltaTime;
-            yield return new WaitForFixedUpdate();
-        }
+        return DamageInfo.Create(
+            playerStats.Offense,
+            pattern.damageSpec,
+            gameObject
+        );
     }
 
+    
+
     //이펙트 보였다 사라지게끔 함수
-    private void ShowAttackEffect(AttackPattern pattern, float dir)
+    private void SpawnAttackEffect(AttackPattern pattern, float dir, DamageInfo damageInfo)
     {
         if (pattern.attackEffectPrefab == null) return;
 
@@ -160,7 +165,7 @@ public class PlayerAttack : MonoBehaviour
         AttackEffectHitbox hitbox = effectObj.GetComponentInChildren<AttackEffectHitbox>();
         if (hitbox != null)
         {
-            hitbox.SetAttackInfo(pattern.damageMultiplier, dir);
+            hitbox.SetAttackInfo(damageInfo, dir);
 
             //히트박스 활성화 후 일정 시간 뒤 비활성화
             StartCoroutine(DisableHitboxAfter(hitbox, pattern.activeTime));
@@ -176,10 +181,19 @@ public class PlayerAttack : MonoBehaviour
         //삭제
         Destroy(effectObj, pattern.effectDuration);
 
-
-
     }
 
+    //실제 공격 중 실행할 코루틴
+    private IEnumerator ActiveAttackPhase(AttackPattern pattern, float dir)
+    {
+        float timer = 0f;
+        
+        while (timer < pattern.activeTime)
+        {
+            timer += Time.fixedDeltaTime;
+            yield return new WaitForFixedUpdate();
+        }
+    }
     //따라오는 이펙트 코루틴
     private IEnumerator FollowEffect(Transform effectTransform,Transform playerTransform, 
         Vector2 offset, float dir, float duration)

@@ -22,7 +22,12 @@ MonoBehaviour:
   enemyLayer:
     serializedVersion: 2
     m_Bits: 256
-  damageMultiplier: 1
+  damageSpec:
+    damageType: 0
+    damageMultiplier: 1
+    canCritical: 0
+    bonusPenetration: 0
+    bonusDamageAmplification: 0
   knockbackDirection: {x: 1, y: 0}
   projectilePrefab: {fileID: 3545481630792328146, guid: 7188b3aae6ed7fe44aff21566314b59d, type: 3}
   spawnOffset: {x: 0.8, y: 0}

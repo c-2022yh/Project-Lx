@@ -36,9 +36,13 @@ public class ThrustSkillData : AttackSkillData
             startupTimer += Time.fixedDeltaTime;
             yield return new WaitForFixedUpdate();
         }
+        
+        
+        //공격 정보 생성
+        DamageInfo damageInfo = DamageInfo.Create(p.Stats.Offense, damageSpec, p.gameObject);
 
         //찌르기 이펙트 생성
-        SpawnThrustEffect(p, dir);
+        SpawnThrustEffect(p, dir, damageInfo);
 
         //실제 동작
         float timer = 0f;
@@ -66,8 +70,10 @@ public class ThrustSkillData : AttackSkillData
 
     }
 
+    
+
     //찌르기 이펙트 소환하기
-    private void SpawnThrustEffect(Player p, float dir)
+    private void SpawnThrustEffect(Player p, float dir, DamageInfo damageInfo)
     {
         if (thrustEffectPrefab == null) return;
 
@@ -82,10 +88,10 @@ public class ThrustSkillData : AttackSkillData
         //플레이어가 바라보는 방향으로
         SpriteRenderer sr = effectObj.GetComponentInChildren<SpriteRenderer>();
         if (sr != null) sr.flipX = dir < 0f;
-
+        
         //히트박스 생성
         AttackEffectHitbox hitbox = effectObj.GetComponentInChildren<AttackEffectHitbox>();
-        if (hitbox != null) hitbox.SetAttackInfo(damageMultiplier, dir);
+        if (hitbox != null) hitbox.SetAttackInfo(damageInfo, dir);
         
         //이펙트 삭제
         Destroy(effectObj, effectLifeTime);

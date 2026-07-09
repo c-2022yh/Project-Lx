@@ -15,7 +15,6 @@ public class TripleSlashData : AttackSkillData
     [Header("Multi Slash")] //이펙트 출력 관련
     public float[] slashRotations = new float[] { 35f, -25f, -60f };
     public float slashInterval = 0.08f;
-    public float damagePerSlash = 1f;
 
 
     public override IEnumerator ProcessSkill(Player p)
@@ -30,7 +29,10 @@ public class TripleSlashData : AttackSkillData
         //샤샤샥 연속 베기
         for (int i = 0; i < slashRotations.Length; i++)
         {
-            SpawnSlashEffect(p, dir, slashRotations[i]);
+            //공격 정보 생성
+            DamageInfo damageInfo = DamageInfo.Create(p.Stats.Offense, damageSpec, p.gameObject);
+
+            SpawnSlashEffect(p, dir, slashRotations[i], damageInfo);
             yield return new WaitForSeconds(slashInterval);
         }
 
@@ -47,7 +49,7 @@ public class TripleSlashData : AttackSkillData
     }
 
     //베기 이펙트 소환하기
-    private void SpawnSlashEffect(Player p, float dir, float rotationZ)
+    private void SpawnSlashEffect(Player p, float dir, float rotationZ, DamageInfo damageInfo)
     {
         if (slashEffectPrefab == null) return;
 
@@ -65,7 +67,7 @@ public class TripleSlashData : AttackSkillData
 
         //히트박스 생성
         AttackEffectHitbox hitbox = effectObj.GetComponentInChildren<AttackEffectHitbox>();
-        if (hitbox != null) hitbox.SetAttackInfo(damagePerSlash, dir);
+        if (hitbox != null) hitbox.SetAttackInfo(damageInfo, dir);
 
         //이펙트 삭제
         Destroy(effectObj, effectLifeTime);
