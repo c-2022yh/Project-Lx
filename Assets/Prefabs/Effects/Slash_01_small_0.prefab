@@ -85,7 +85,7 @@ SpriteRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_Sprite: {fileID: 1307387146689057944, guid: b4ccaecc6c95655459a3174cf0c897f2, type: 3}
-  m_Color: {r: 1, g: 1, b: 1, a: 0.39215687}
+  m_Color: {r: 1, g: 1, b: 1, a: 0.19607843}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -153,6 +153,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::AttackEffectHitbox
   damage: 1
+  hitCollider: {fileID: -6758228717117889950}
 --- !u!50 &-970772169221012518
 Rigidbody2D:
   serializedVersion: 5

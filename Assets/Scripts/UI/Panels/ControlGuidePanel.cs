@@ -13,4 +13,3 @@ public class ControlGuidePanel : MonoBehaviour
         UIManager.Instance.ShowPause();  // 일시정지 다시 켜기
     }
 }
-

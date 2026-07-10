@@ -103,10 +103,17 @@ public class PlayerAttack : MonoBehaviour
             p.rb.linearVelocity = new Vector2(0f, p.rb.linearVelocity.y);
         }
 
+        //선딜
+        yield return new WaitForSeconds(pattern.startupTime);
 
         //공격 프레임
         ShowAttackEffect(p, pattern, dir); //공격 이펙트 생성
+        
+        //공격 활성 시간
         yield return ActiveAttackPhase(p, pattern, dir);
+
+        //후딜
+        yield return new WaitForSeconds(pattern.recoveryTime);
 
         lastAttackEndTime = Time.time;
 
@@ -125,8 +132,6 @@ public class PlayerAttack : MonoBehaviour
         while (timer < pattern.activeTime)
         {
             timer += Time.fixedDeltaTime;
-            float t = Mathf.Clamp01(timer / pattern.activeTime);
-
             yield return new WaitForFixedUpdate();
         }
     }
@@ -155,6 +160,9 @@ public class PlayerAttack : MonoBehaviour
         if (hitbox != null)
         {
             hitbox.SetAttackInfo(pattern.damageMultiplier, dir);
+
+            //히트박스 활성화 후 일정 시간 뒤 비활성화
+            StartCoroutine(DisableHitboxAfter(hitbox, pattern.activeTime));
         }
 
         //공중 공격은 이펙트가 플레이어를 따라오게
@@ -193,6 +201,29 @@ public class PlayerAttack : MonoBehaviour
         }
     }
 
+    //공격 판정 히트박스 비활성화 코루틴
+    private IEnumerator DisableHitboxAfter(AttackEffectHitbox hitbox,  float duration)
+    {
+        yield return new WaitForSeconds(duration);
+
+        if (hitbox != null) hitbox.DisableHitbox();
+    }
 
 
 }
+
+/*
+ * startupTime
+    ↓
+이펙트 생성 + 히트박스 ON
+    ↓
+activeTime 경과
+    ↓
+히트박스 OFF
+    ↓
+이펙트는 계속 보일 수 있음
+    ↓
+effectDuration 경과
+    ↓
+이펙트 삭제
+*/

@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 2606373885818721517}
   - component: {fileID: 966387061424930619}
   - component: {fileID: -4524703130375616823}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Thrust_01_0
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -85,7 +85,7 @@ SpriteRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_Sprite: {fileID: -9090457413724994041, guid: 199e735459c744340b502e5d9b3752aa, type: 3}
-  m_Color: {r: 1, g: 1, b: 1, a: 0.39215687}
+  m_Color: {r: 1, g: 1, b: 1, a: 0.19607843}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0

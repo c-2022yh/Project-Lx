@@ -118,3 +118,12 @@ public class SkillSlotUI : MonoBehaviour
     public bool IsActive => isActive;
     public bool IsOnCooldown => isOnCooldown;
 }
+
+public enum SkillSlotType
+{
+    SlotX,
+    SlotA,
+    SlotS,
+    SlotD,
+    SlotF
+}
