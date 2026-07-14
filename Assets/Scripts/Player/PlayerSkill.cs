@@ -34,7 +34,7 @@ public class PlayerSkill : MonoBehaviour
         
         //쿨타임이 안 돌았거나, 스킬을 사용할 수 없는 상태면 시전 x
         if (cooldowns[slotIndex]) return;
-        if (!p.playerActionState.CanSkill()) return;
+        if (!p.ActionState.CanSkill()) return;
 
         //스킬 데이터를 가져와서 값이 없으면 리턴
         SkillData skill = equippedSkills[slotIndex];
@@ -48,14 +48,14 @@ public class PlayerSkill : MonoBehaviour
     private IEnumerator SkillRoutine(Player p, SkillData skill, int slotIndex)
     {
         //State 바꿈
-        p.playerActionState.EnterSkill();
+        p.ActionState.EnterSkill();
 
         yield return StartCoroutine(skill.ProcessSkill(p)); //실제 스킬 실행
         
         //State 되돌림
-        if (p.playerActionState.isSkillActive)
+        if (p.ActionState.isSkillActive)
         {
-            p.playerActionState.EnterNormal();
+            p.ActionState.EnterNormal();
         }
 
         //스킬 쿨 돌아가게

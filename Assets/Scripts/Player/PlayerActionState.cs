@@ -86,8 +86,6 @@ public class PlayerActionState : MonoBehaviour
     //상태 전환
     public void ChangeState(PlayerActionType newState)
     {
-        if (currentState == PlayerActionType.Dead)
-            return;
 
         currentState = newState;
     }
@@ -133,12 +131,12 @@ public class PlayerActionState : MonoBehaviour
     public void EnterDead()
     {
         Debug.Log("<color=black>Dead State</color>");
-        currentState = PlayerActionType.Dead;
+        ChangeState(PlayerActionType.Dead);
     }
 
     public void RespawnToNormal()
     {
         Debug.Log("<color=white>Respawn Normal State</color>");
-        currentState = PlayerActionType.Normal;
+        ChangeState(PlayerActionType.Normal);
     }
 }

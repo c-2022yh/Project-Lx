@@ -7,7 +7,7 @@ public class ProjectileHitbox : MonoBehaviour
     private float speed;            //속도   
     private float maxDistance;      //사거리
     private float rotationSpeed;    //회전 속도
-    private float damageMultiplier; //데미지  
+    private DamageInfo damageInfo; //데미지  
     private LayerMask enemyLayer;   //적을 식별할 레이어마스크
     private bool destroyOnEnemyHit; //적이 맞았는지 체크
 
@@ -19,13 +19,13 @@ public class ProjectileHitbox : MonoBehaviour
 
     //값을 받아오는 함수
     public void Init(float dir, float speed, float maxDistance, float rotationSpeed,
-        float damageMultiplier, LayerMask enemyLayer, bool destroyOnEnemyHit)
+        DamageInfo damageInfo, LayerMask enemyLayer, bool destroyOnEnemyHit)
     {
         this.dir = dir;
         this.speed = speed;
         this.maxDistance = maxDistance;
         this.rotationSpeed = rotationSpeed;
-        this.damageMultiplier = damageMultiplier;
+        this.damageInfo = damageInfo;
         this.enemyLayer = enemyLayer;
         this.destroyOnEnemyHit = destroyOnEnemyHit;
 
@@ -88,7 +88,7 @@ public class ProjectileHitbox : MonoBehaviour
         if (enemy == null) return;
 
         //데미지 주기
-        enemy.TakeDamage(damageMultiplier, new Vector2(dir, 0f));
+        enemy.TakeDamage(damageInfo, new Vector2(dir, 0f));
 
         
 

@@ -19,6 +19,7 @@ public class PlayerEnergy : MonoBehaviour
 
     private bool hasOrb;
 
+    //외부 접근용 프로퍼티
     public float CurrentEnergy => currentEnergy;
     public float MaxEnergy => maxEnergy;
     public float EnergyRatio => maxEnergy <= 0f ? 0f : currentEnergy / maxEnergy;
