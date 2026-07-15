@@ -1,4 +1,4 @@
-﻿#if UNITY_EDITOR
+#if UNITY_EDITOR
 using UnityEditor;
 using UnityEditor.Events;
 using UnityEngine;
@@ -38,12 +38,12 @@ public static class InventoryUIBuilder
     [MenuItem("Tools/UI/Build Inventory Panel")]
     public static void BuildInventoryPanel()
     {
-        // 한글 폰트가 없으면 만들어봐야 □만 나오니 미리 막음
+        // 한글 폰트가 없으면 만들어봐야 사각형만 나오니 미리 막음
         if (KoreanFont == null)
         {
             EditorUtility.DisplayDialog(
                 "한글 폰트 없음",
-                $"폰트 에셋을 찾을 수 없습니다:\n{KoreanFontPath}\n\n" +
+                "폰트 에셋을 찾을 수 없습니다:\n" + KoreanFontPath + "\n\n" +
                 "경로가 바뀌었다면 InventoryUIBuilder.cs의 KoreanFontPath를 수정해주세요.",
                 "확인");
             return;
@@ -73,22 +73,22 @@ public static class InventoryUIBuilder
             Object.DestroyImmediate(existing.gameObject);
         }
 
-        // === InventoryPanel 루트 ===
+        // InventoryPanel 루트
         GameObject inventoryPanel = CreateUIObject("InventoryPanel", popupCanvas.transform);
         SetStretch(inventoryPanel, 0, 0, 0, 0);
 
-        // === 반투명 배경 ===
-        GameObject bg = CreateImage("Background", inventoryPanel.transform, new Color(0, 0, 0, 200f / 255f));
+        // 반투명 배경
+        GameObject bg = CreateImage("Background", inventoryPanel.transform, new Color(0f, 0f, 0f, 200f / 255f));
         SetStretch(bg, 0, 0, 0, 0);
 
-        // === 타이틀: 유물 ===
+        // 타이틀: 유물
         GameObject titleRelic = CreateTMPText("Title_Relic", inventoryPanel.transform, "유물", 40, FontStyles.Bold);
         SetAnchorAndPos(titleRelic, AnchorType.TopLeft, 80, -60, 300, 50);
 
-        // === 보유 유물 그리드 ===
+        // 보유 유물 그리드
         GameObject relicGrid = CreateUIObject("RelicGrid", inventoryPanel.transform);
         SetStretch(relicGrid, 80, 120, 1100, 400);
-        var gridLayout = relicGrid.AddComponent<GridLayoutGroup>();
+        GridLayoutGroup gridLayout = relicGrid.AddComponent<GridLayoutGroup>();
         gridLayout.padding = new RectOffset(10, 10, 10, 10);
         gridLayout.cellSize = new Vector2(100, 100);
         gridLayout.spacing = new Vector2(10, 10);
@@ -98,14 +98,14 @@ public static class InventoryUIBuilder
         gridLayout.constraint = GridLayoutGroup.Constraint.FixedColumnCount;
         gridLayout.constraintCount = 5;
 
-        // === 설명창 ===
+        // 설명창
         GameObject descPanel = CreateUIObject("DescriptionPanel", inventoryPanel.transform);
         SetStretch(descPanel, 1150, 120, 80, 400);
 
         // 큰 아이콘
         GameObject descIcon = CreateImage("Desc_Icon", descPanel.transform, Color.white);
         SetAnchorAndPos(descIcon, AnchorType.TopCenter, 0, -100, 150, 150);
-        descIcon.GetComponent<Image>().enabled = false; // 초기엔 안 보이게
+        descIcon.GetComponent<Image>().enabled = false;
 
         // 유물 이름
         GameObject descName = CreateTMPText("Desc_Name", descPanel.transform, "유물 이름", 36, FontStyles.Bold);
@@ -117,27 +117,27 @@ public static class InventoryUIBuilder
         SetStretchTop(descText, 20, 330, 20, 200);
         descText.GetComponent<TextMeshProUGUI>().alignment = TextAlignmentOptions.TopLeft;
 
-        // === 장착 / 해제 버튼 2개 (코스트제) ===
+        // 장착 / 해제 버튼 2개 (코스트제)
         GameObject btnEquip = CreateButton("Button_Equip", descPanel.transform, "장착");
         SetAnchorAndPos(btnEquip, AnchorType.BottomLeft, 0, 100, 120, 40);
 
         GameObject btnUnequip = CreateButton("Button_Unequip", descPanel.transform, "해제");
         SetAnchorAndPos(btnUnequip, AnchorType.BottomLeft, 140, 100, 120, 40);
 
-        // === 코스트 예산 표시 ===
+        // 코스트 예산 표시
         GameObject budgetText = CreateTMPText("BudgetText", descPanel.transform, "코스트: 0 / 5", 28, FontStyles.Bold);
         SetAnchorAndPos(budgetText, AnchorType.BottomLeft, 0, 40, 300, 40);
         budgetText.GetComponent<TextMeshProUGUI>().alignment = TextAlignmentOptions.MidlineLeft;
 
-        // === 장착 목록 타이틀 ===
+        // 장착 목록 타이틀
         GameObject titleEquip = CreateTMPText("Title_Equip", inventoryPanel.transform, "장착 중", 28, FontStyles.Bold);
         SetStretchBottom(titleEquip, 0, 340, 0, 40);
         titleEquip.GetComponent<TextMeshProUGUI>().alignment = TextAlignmentOptions.Center;
 
-        // === 장착 슬롯 컨테이너 (빈 채로 둠. 런타임에 InventoryPanel이 채움) ===
+        // 장착 슬롯 컨테이너 (빈 채로 둠. 런타임에 InventoryPanel이 채움)
         GameObject equipContainer = CreateUIObject("EquipSlotContainer", inventoryPanel.transform);
         SetStretchBottom(equipContainer, 400, 120, 400, 200);
-        var hLayout = equipContainer.AddComponent<HorizontalLayoutGroup>();
+        HorizontalLayoutGroup hLayout = equipContainer.AddComponent<HorizontalLayoutGroup>();
         hLayout.spacing = 30;
         hLayout.childAlignment = TextAnchor.MiddleCenter;
         hLayout.childControlWidth = false;
@@ -145,7 +145,7 @@ public static class InventoryUIBuilder
         hLayout.childForceExpandWidth = false;
         hLayout.childForceExpandHeight = false;
 
-        // === InventoryPanel 컴포넌트 붙이고 참조 자동 연결 ===
+        // InventoryPanel 컴포넌트 붙이고 참조 자동 연결
         InventoryPanel panel = inventoryPanel.AddComponent<InventoryPanel>();
         GameObject relicSlotPrefab = GetOrCreateRelicSlotPrefab();
 
@@ -159,16 +159,14 @@ public static class InventoryUIBuilder
         SetRef(so, "budgetText", budgetText.GetComponent<TextMeshProUGUI>());
         so.ApplyModifiedPropertiesWithoutUndo();
 
-        // === 버튼 onClick 자동 연결 ===
-        UnityEventTools.AddPersistentListener(
-            btnEquip.GetComponent<Button>().onClick, panel.OnEquipButton);
-        UnityEventTools.AddPersistentListener(
-            btnUnequip.GetComponent<Button>().onClick, panel.OnUnequipButton);
+        // 버튼 onClick 자동 연결
+        UnityEventTools.AddPersistentListener(btnEquip.GetComponent<Button>().onClick, panel.OnEquipButton);
+        UnityEventTools.AddPersistentListener(btnUnequip.GetComponent<Button>().onClick, panel.OnUnequipButton);
 
-        // === UIManager의 inventoryPanel 참조 재연결 ===
+        // UIManager의 inventoryPanel 참조 재연결
         string uiManagerNote = RelinkUIManager(panel);
 
-        // === 시작 시엔 비활성 ===
+        // 시작 시엔 비활성
         inventoryPanel.SetActive(false);
 
         EditorUtility.SetDirty(inventoryPanel);
@@ -177,20 +175,16 @@ public static class InventoryUIBuilder
         EditorUtility.DisplayDialog(
             "완료!",
             "InventoryPanel(코스트제) 생성 완료!\n\n" +
-            "· 한글 폰트 자동 지정됨\n" +
-            "· 장착/해제 버튼 2개 + 코스트 예산 표시\n" +
-            "· InventoryPanel 인스펙터 참조 자동 연결됨\n" +
-            uiManagerNote + "\n\n" +
-            "※ 남은 수동 작업:\n" +
-            "  InventoryPanel의 'Owned Relics' 목록에 RelicData를 넣어주세요.\n" +
-            "  (아직 RelicData 에셋이 프로젝트에 없습니다)\n\n" +
-            "※ Popup_Canvas 프리팹에 Apply 하는 것도 잊지 마세요!",
+            "- 한글 폰트 자동 지정됨\n" +
+            "- 장착/해제 버튼 2개 + 코스트 예산 표시\n" +
+            "- InventoryPanel 인스펙터 참조 자동 연결됨\n" +
+            "- " + uiManagerNote + "\n\n" +
+            "남은 수동 작업: InventoryPanel의 Owned Relics 목록에 RelicData를 넣어주세요.\n" +
+            "그리고 Popup_Canvas 프리팹에 Apply 하는 것도 잊지 마세요!",
             "확인");
     }
 
-    // ────────────────────────────────────────────────
-    //  유물 칸(RelicSlot) 프리팹 - 없으면 만들어줌
-    // ────────────────────────────────────────────────
+    // 유물 칸(RelicSlot) 프리팹 - 없으면 만들어줌
     private static GameObject GetOrCreateRelicSlotPrefab()
     {
         GameObject existing = AssetDatabase.LoadAssetAtPath<GameObject>(RelicSlotPrefabPath);
@@ -222,11 +216,141 @@ public static class InventoryUIBuilder
 
         GameObject saved = PrefabUtility.SaveAsPrefabAsset(slot, RelicSlotPrefabPath);
         Object.DestroyImmediate(slot);
-        Debug.Log($"[InventoryUIBuilder] RelicSlot 프리팹 생성됨: {RelicSlotPrefabPath}");
+        Debug.Log("[InventoryUIBuilder] RelicSlot 프리팹 생성됨: " + RelicSlotPrefabPath);
         return saved;
     }
 
     // UIManager의 inventoryPanel 필드를 새 패널로 다시 연결
     private static string RelinkUIManager(InventoryPanel panel)
     {
-        UIManager uiManager = Object.FindFirs
+        UIManager uiManager = Object.FindFirstObjectByType<UIManager>();
+        if (uiManager == null)
+            return "UIManager를 못 찾아서 재연결 못 했습니다 (직접 연결 필요)";
+
+        SerializedObject so = new SerializedObject(uiManager);
+        SerializedProperty prop = so.FindProperty("inventoryPanel");
+        if (prop == null)
+            return "UIManager에 inventoryPanel 필드가 없습니다";
+
+        prop.objectReferenceValue = panel;
+        so.ApplyModifiedPropertiesWithoutUndo();
+        EditorUtility.SetDirty(uiManager);
+        return "UIManager.inventoryPanel 자동 재연결됨";
+    }
+
+    // SerializedObject로 private [SerializeField] 필드에 값 넣기
+    private static void SetRef(SerializedObject so, string fieldName, Object value)
+    {
+        SerializedProperty prop = so.FindProperty(fieldName);
+        if (prop == null)
+        {
+            Debug.LogWarning("[InventoryUIBuilder] InventoryPanel에 '" + fieldName + "' 필드가 없습니다. 직접 연결해주세요.");
+            return;
+        }
+        prop.objectReferenceValue = value;
+    }
+
+    // ---------------- 보조 함수들 ----------------
+
+    private enum AnchorType { TopLeft, TopCenter, TopRight, BottomLeft, BottomCenter, BottomRight, Center }
+
+    private static GameObject CreateUIObject(string name, Transform parent)
+    {
+        GameObject go = new GameObject(name, typeof(RectTransform));
+        go.transform.SetParent(parent, false);
+        return go;
+    }
+
+    private static GameObject CreateImage(string name, Transform parent, Color color)
+    {
+        GameObject go = CreateUIObject(name, parent);
+        Image img = go.AddComponent<Image>();
+        img.color = color;
+        return go;
+    }
+
+    private static GameObject CreateTMPText(string name, Transform parent, string text, float fontSize, FontStyles style)
+    {
+        GameObject go = CreateUIObject(name, parent);
+        TextMeshProUGUI tmp = go.AddComponent<TextMeshProUGUI>();
+
+        // 한글 폰트 지정 (이게 없으면 기본 LiberationSans라 한글이 네모로 나옴)
+        if (KoreanFont != null) tmp.font = KoreanFont;
+
+        tmp.text = text;
+        tmp.fontSize = fontSize;
+        tmp.fontStyle = style;
+        tmp.color = Color.white;
+        tmp.alignment = TextAlignmentOptions.MidlineLeft;
+        return go;
+    }
+
+    private static GameObject CreateButton(string name, Transform parent, string text)
+    {
+        GameObject go = CreateUIObject(name, parent);
+        Image bg = go.AddComponent<Image>();
+        bg.color = new Color(80f / 255f, 180f / 255f, 255f / 255f, 100f / 255f);
+        Button btn = go.AddComponent<Button>();
+        btn.targetGraphic = bg;
+
+        GameObject textGO = CreateTMPText("Text", go.transform, text, 18, FontStyles.Normal);
+        SetStretch(textGO, 0, 0, 0, 0);
+        textGO.GetComponent<TextMeshProUGUI>().alignment = TextAlignmentOptions.Center;
+        return go;
+    }
+
+    private static void SetStretch(GameObject go, float left, float top, float right, float bottom)
+    {
+        RectTransform rt = go.GetComponent<RectTransform>();
+        rt.anchorMin = Vector2.zero;
+        rt.anchorMax = Vector2.one;
+        rt.pivot = new Vector2(0.5f, 0.5f);
+        rt.offsetMin = new Vector2(left, bottom);
+        rt.offsetMax = new Vector2(-right, -top);
+    }
+
+    private static void SetStretchTop(GameObject go, float left, float topOffset, float right, float height)
+    {
+        RectTransform rt = go.GetComponent<RectTransform>();
+        rt.anchorMin = new Vector2(0, 1);
+        rt.anchorMax = new Vector2(1, 1);
+        rt.pivot = new Vector2(0.5f, 1);
+        rt.anchoredPosition = new Vector2((left - right) / 2f, -topOffset);
+        rt.sizeDelta = new Vector2(-(left + right), height);
+    }
+
+    private static void SetStretchBottom(GameObject go, float left, float bottomOffset, float right, float height)
+    {
+        RectTransform rt = go.GetComponent<RectTransform>();
+        rt.anchorMin = new Vector2(0, 0);
+        rt.anchorMax = new Vector2(1, 0);
+        rt.pivot = new Vector2(0.5f, 0);
+        rt.anchoredPosition = new Vector2((left - right) / 2f, bottomOffset);
+        rt.sizeDelta = new Vector2(-(left + right), height);
+    }
+
+    private static void SetAnchorAndPos(GameObject go, AnchorType anchor, float x, float y, float w, float h)
+    {
+        RectTransform rt = go.GetComponent<RectTransform>();
+        switch (anchor)
+        {
+            case AnchorType.TopLeft:
+                rt.anchorMin = new Vector2(0, 1); rt.anchorMax = new Vector2(0, 1); rt.pivot = new Vector2(0, 1); break;
+            case AnchorType.TopCenter:
+                rt.anchorMin = new Vector2(0.5f, 1); rt.anchorMax = new Vector2(0.5f, 1); rt.pivot = new Vector2(0.5f, 1); break;
+            case AnchorType.TopRight:
+                rt.anchorMin = new Vector2(1, 1); rt.anchorMax = new Vector2(1, 1); rt.pivot = new Vector2(1, 1); break;
+            case AnchorType.BottomLeft:
+                rt.anchorMin = new Vector2(0, 0); rt.anchorMax = new Vector2(0, 0); rt.pivot = new Vector2(0, 0); break;
+            case AnchorType.BottomCenter:
+                rt.anchorMin = new Vector2(0.5f, 0); rt.anchorMax = new Vector2(0.5f, 0); rt.pivot = new Vector2(0.5f, 0); break;
+            case AnchorType.BottomRight:
+                rt.anchorMin = new Vector2(1, 0); rt.anchorMax = new Vector2(1, 0); rt.pivot = new Vector2(1, 0); break;
+            case AnchorType.Center:
+                rt.anchorMin = new Vector2(0.5f, 0.5f); rt.anchorMax = new Vector2(0.5f, 0.5f); rt.pivot = new Vector2(0.5f, 0.5f); break;
+        }
+        rt.anchoredPosition = new Vector2(x, y);
+        rt.sizeDelta = new Vector2(w, h);
+    }
+}
+#endif
