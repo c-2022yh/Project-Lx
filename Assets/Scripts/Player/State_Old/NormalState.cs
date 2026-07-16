@@ -8,7 +8,7 @@ public class NormalState : PlayerState
     public override void EnterTransform()
     {
         SyncVisualDirection(player.initialScale);
-        player.spriteRenderer.color = Color.green;
+        player.sr.color = Color.green;
         Physics2D.SyncTransforms();
     }
 
@@ -36,6 +36,6 @@ public class NormalState : PlayerState
     }
     public override void OnTransformAnimal()
     {
-        player.ChangeState(new AnimalState(player));
+       // player.ChangeState(new AnimalState(player));
     }
 }

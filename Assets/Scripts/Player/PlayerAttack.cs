@@ -13,7 +13,7 @@ public class AttackPattern //공격 패턴
     public float recoveryTime = 0.1f;   //후딜
 
     [Header("Combat")]
-    public float damageMultiplier = 1f; //데미지 보정값
+    public AttackDamageSpec damageSpec; //고유 데미지 값  
 
     [Header("Effect")] //공격 이펙트 프리펩 설정
     public GameObject attackEffectPrefab;
@@ -42,6 +42,7 @@ public class PlayerAttack : MonoBehaviour
     [SerializeField] private AttackPattern airAttack;
 
     private Player player;
+    private PlayerStats playerStats;
 
     private int comboIndex = 0;
     private float lastAttackEndTime;
@@ -52,6 +53,7 @@ public class PlayerAttack : MonoBehaviour
     void Awake()
     {
         player = GetComponent<Player>();
+        playerStats = GetComponent<PlayerStats>();
     }
 
     private void Update()
@@ -59,19 +61,19 @@ public class PlayerAttack : MonoBehaviour
 
     }
 
-    public void ExecuteAttack(Player p)
+    public void ExecuteAttack()
     {
-        if (p == null) return;
+        if (player == null) return;
         
         //이미 공격 중?
         if (attackCoroutine != null) return;
 
         //공중일 때
-        if (!p.isGrounded)
+        if (!player.isGrounded)
         {
             if (airAttack == null) return;
 
-            attackCoroutine = StartCoroutine(AttackRoutine(p, airAttack, true));
+            attackCoroutine = StartCoroutine(AttackRoutine(airAttack, true));
             return;
         }
 
@@ -85,32 +87,35 @@ public class PlayerAttack : MonoBehaviour
         //콤보인덱스가 0-1에만 돌도록
         if (comboIndex >= groundPatterns.Length) comboIndex = 0;
 
-        attackCoroutine = StartCoroutine(AttackRoutine(p, pattern, false));
+        attackCoroutine = StartCoroutine(AttackRoutine(pattern, false));
     }
 
 
-    private IEnumerator AttackRoutine(Player p, AttackPattern pattern, bool isAirAttack)
+    private IEnumerator AttackRoutine(AttackPattern pattern, bool isAirAttack)
     {
         //상태 진입
-        p.playerActionState.EnterAttack();
+        player.ActionState.EnterAttack();
 
         //플레이어 바라보는 방향 설정
-        float dir = p.isFacingRight ? 1f : -1f;
+        float dir = player.isFacingRight ? 1f : -1f;
 
         if (!isAirAttack)
         {
             //지상공격은 시작 시 x축 이동 제거
-            p.rb.linearVelocity = new Vector2(0f, p.rb.linearVelocity.y);
+            player.rb.linearVelocity = new Vector2(0f, player.rb.linearVelocity.y);
         }
 
         //선딜
         yield return new WaitForSeconds(pattern.startupTime);
 
-        //공격 프레임
-        ShowAttackEffect(p, pattern, dir); //공격 이펙트 생성
+        //공격 데미지 정보 생성
+        DamageInfo damageInfo = CreateDamageInfo(pattern);
+
+        //공격 이펙트 생성 및 히트박스 활성화  
+        SpawnAttackEffect(pattern, dir, damageInfo);
         
         //공격 활성 시간
-        yield return ActiveAttackPhase(p, pattern, dir);
+        yield return ActiveAttackPhase(pattern, dir);
 
         //후딜
         yield return new WaitForSeconds(pattern.recoveryTime);
@@ -118,31 +123,32 @@ public class PlayerAttack : MonoBehaviour
         lastAttackEndTime = Time.time;
 
         //상태 돌아오기
-        if (p.playerActionState.isAttacking)
-            p.playerActionState.EnterNormal();
+        if (player.ActionState.isAttacking)
+            player.ActionState.EnterNormal();
 
         attackCoroutine = null;
     }
 
-    //실제 공격 중 실행할 코루틴
-    private IEnumerator ActiveAttackPhase(Player p, AttackPattern pattern, float dir)
+    //데미지 정보 생성
+    private DamageInfo CreateDamageInfo(AttackPattern pattern)
     {
-        float timer = 0f;
-        
-        while (timer < pattern.activeTime)
-        {
-            timer += Time.fixedDeltaTime;
-            yield return new WaitForFixedUpdate();
-        }
+        return DamageInfo.Create(
+            playerStats.Offense,
+            pattern.damageSpec,
+            gameObject
+        );
     }
 
+    
+
     //이펙트 보였다 사라지게끔 함수
-    private void ShowAttackEffect(Player p, AttackPattern pattern, float dir)
+    private void SpawnAttackEffect(AttackPattern pattern, float dir, DamageInfo damageInfo)
     {
         if (pattern.attackEffectPrefab == null) return;
 
         //생성위치: 플레이어가 바라보는 정면 앞
-        Vector3 spawnPos = p.transform.position + new Vector3(pattern.effectOffset.x * dir, pattern.effectOffset.y, 0f);
+        Vector3 spawnPos = player.transform.position + 
+            new Vector3(pattern.effectOffset.x * dir, pattern.effectOffset.y, 0f);
         
         //회전각 적용
         Quaternion rotation = Quaternion.Euler(0f, 0f, pattern.effectRotationZ * dir);
@@ -159,7 +165,7 @@ public class PlayerAttack : MonoBehaviour
         AttackEffectHitbox hitbox = effectObj.GetComponentInChildren<AttackEffectHitbox>();
         if (hitbox != null)
         {
-            hitbox.SetAttackInfo(pattern.damageMultiplier, dir);
+            hitbox.SetAttackInfo(damageInfo, dir);
 
             //히트박스 활성화 후 일정 시간 뒤 비활성화
             StartCoroutine(DisableHitboxAfter(hitbox, pattern.activeTime));
@@ -168,17 +174,26 @@ public class PlayerAttack : MonoBehaviour
         //공중 공격은 이펙트가 플레이어를 따라오게
         if (pattern.followPlayer)
         {
-            StartCoroutine(FollowEffect(effectObj.transform, p.transform, 
+            StartCoroutine(FollowEffect(effectObj.transform, player.transform, 
                 pattern.effectOffset, dir, pattern.followDuration));
         }
 
         //삭제
         Destroy(effectObj, pattern.effectDuration);
 
-
-
     }
 
+    //실제 공격 중 실행할 코루틴
+    private IEnumerator ActiveAttackPhase(AttackPattern pattern, float dir)
+    {
+        float timer = 0f;
+        
+        while (timer < pattern.activeTime)
+        {
+            timer += Time.fixedDeltaTime;
+            yield return new WaitForFixedUpdate();
+        }
+    }
     //따라오는 이펙트 코루틴
     private IEnumerator FollowEffect(Transform effectTransform,Transform playerTransform, 
         Vector2 offset, float dir, float duration)

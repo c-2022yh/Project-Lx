@@ -22,7 +22,12 @@ MonoBehaviour:
   enemyLayer:
     serializedVersion: 2
     m_Bits: 256
-  damageMultiplier: 1
+  damageSpec:
+    damageType: 0
+    damageMultiplier: 1
+    canCritical: 0
+    bonusPenetration: 0
+    bonusDamageAmplification: 0
   knockbackDirection: {x: 1, y: 0}
   dashDistance: 5
   dashHitBoxSize: {x: 1.4, y: 1.2}

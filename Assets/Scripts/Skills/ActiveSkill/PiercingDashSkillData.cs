@@ -44,13 +44,16 @@ public class PiercingDashSkillData : AttackSkillData
         
         p.SetPhysicsFreeze(true);
 
+        //공격 정보 생성
+        DamageInfo damageInfo = DamageInfo.Create(p.Stats.Offense, damageSpec, p.gameObject);
+
         float timer = 0f;
         float speed = actualDist / activeTime;
 
         while (timer < activeTime)
         {
             //이동 전 현재 위치 판정
-            DamageEnemiesDuringDash(p, dir, hitEnemies);
+            DamageEnemiesDuringDash(p, dir, hitEnemies, damageInfo);
 
             //돌진 이동
             p.rb.linearVelocity = new Vector2(dir * speed, 0f);
@@ -59,13 +62,13 @@ public class PiercingDashSkillData : AttackSkillData
             yield return new WaitForFixedUpdate();
 
             //이동 후 위치 판정
-            DamageEnemiesDuringDash(p, dir, hitEnemies);
+            DamageEnemiesDuringDash(p, dir, hitEnemies, damageInfo);
         }
 
         p.rb.linearVelocity = Vector2.zero;
 
         //마지막 프레임 판정 보정
-        DamageEnemiesDuringDash(p, dir, hitEnemies);
+        DamageEnemiesDuringDash(p, dir, hitEnemies, damageInfo);
 
         p.SetPhysicsFreeze(false);
 
@@ -75,8 +78,9 @@ public class PiercingDashSkillData : AttackSkillData
 
     }
 
-    //데미지 함수
-    private void DamageEnemiesDuringDash(Player p, float dir, HashSet<Enemy> hitEnemies) //HashSet<Enemy> hitEnemies 이미 맞은 적 목록
+    //데미지 함수    //HashSet<Enemy> hitEnemies 이미 맞은 적 목록
+    private void DamageEnemiesDuringDash(Player p, float dir, HashSet<Enemy> hitEnemies, 
+        DamageInfo damageInfo)
     { 
         //중심부 설정
         Vector2 center = (Vector2)p.transform.position + new Vector2(dashHitBoxOffset.x * dir, dashHitBoxOffset.y);
@@ -101,7 +105,7 @@ public class PiercingDashSkillData : AttackSkillData
             hitEnemies.Add(enemy);
 
             //최종 히트 판정 데미지 계산
-            enemy.TakeDamage(damageMultiplier, new Vector2(dir, 0f));
+            enemy.TakeDamage(damageInfo, new Vector2(dir, 0f));
             
             Debug.Log($"A Skill Hit: {enemy.name}");
 

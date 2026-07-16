@@ -7,7 +7,7 @@ public class AnimalState : PlayerState
 
     public override void EnterTransform()
     {
-        player.spriteRenderer.color = Color.yellow;
+        player.sr.color = Color.yellow;
         SyncVisualDirection(player.initialScale);
         var rb = player.GetComponent<Rigidbody2D>();
         Physics2D.SyncTransforms();

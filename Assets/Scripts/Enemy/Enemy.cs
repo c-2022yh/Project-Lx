@@ -2,7 +2,7 @@ using System;
 using System.Collections;
 using UnityEngine;
 
-public class Enemy : MonoBehaviour
+public class Enemy : MonoBehaviour, IDamageable
 {
     public float moveSpeed = 3f;
     public float decisionTime = 1f;
@@ -17,6 +17,9 @@ public class Enemy : MonoBehaviour
     [SerializeField] private float hitStunTime = 0.12f;
     [SerializeField] private float knockbackForce = 4f;
     [SerializeField] private float knockbackUpForce = 1f;
+
+    //적 스탯
+    private EnemyStats enemyStats;
 
     private Color originalColor;
     private bool isHitStunned = false;
@@ -36,6 +39,7 @@ public class Enemy : MonoBehaviour
     {
         rb = GetComponent<Rigidbody2D>();
         sr = GetComponent<SpriteRenderer>();
+        enemyStats = GetComponent<EnemyStats>();
 
         if (sr != null) originalColor = sr.color;
     }
@@ -88,23 +92,39 @@ public class Enemy : MonoBehaviour
     }
 
     //데미지 입음 -> 색 변환, 넉백
-    public void TakeDamage(float damage, Vector2 hitDirection)
+    public void TakeDamage(DamageInfo damageInfo, Vector2 hitDirection)
     {
-        if (isDead) return; //죽으면 바로 종료
+        if (isDead) return;
 
-        currentHp -= damage;
-        Debug.Log($"Enemy Hit! HP: {currentHp}");
+
+        //피해 타입에 따라 방어력 선택
+        float defense = damageInfo.damageType switch
+        {
+            DamageType.Physical => enemyStats.Defense.physicalDefense,
+            DamageType.Magical  => enemyStats.Defense.magicalDefense,
+            _ => 0f
+        };
+
+        //최종 피해량 계산
+        float finalDamage = DamageCalculator.Calculate( damageInfo, defense, enemyStats.Defense.durability);
+
+        //실제 체력 감소
+        currentHp -= finalDamage;
+        Debug.Log( $"Enemy Hit! " + $"Damage: {finalDamage:F2}, " + $"HP: {currentHp:F2}");
+
+        // 사망 판정
         if (currentHp <= 0f)
         {
             Die();
             return;
         }
 
-        if (hitFeedbackCoroutine != null) //넉백 중이면 넉백 취소하고 한번 더 밀리게
+
+        // 기존 피격 피드백 유지
+        if (hitFeedbackCoroutine != null)
         {
             StopCoroutine(hitFeedbackCoroutine);
         }
-
         hitFeedbackCoroutine = StartCoroutine(HitFeedbackRoutine(hitDirection));
 
 

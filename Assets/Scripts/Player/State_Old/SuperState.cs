@@ -8,7 +8,7 @@ public class SuperState : PlayerState
     public override void EnterTransform()
     {
         SyncVisualDirection(player.initialScale);
-        player.spriteRenderer.color = Color.red;
+        player.sr.color = Color.red;
         Debug.Log("<color=red>°¢¼º!</color>");
 
     }

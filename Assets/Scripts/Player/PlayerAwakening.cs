@@ -34,11 +34,11 @@ public class PlayerAwakening : MonoBehaviour
     public void TryAwaken(Player p)
     {
         if (p == null) return;
-        if (p.playerEnergy == null) return;
+        if (p.Energy == null) return;
         if (isAwakened || isAwakening) return;
         
         //기력 다 모아야 각성가능
-        if (p.playerEnergy.CurrentEnergy < p.playerEnergy.MaxEnergy) return;
+        if (p.Energy.CurrentEnergy < p.Energy.MaxEnergy) return;
         
         awakeningCoroutine = StartCoroutine(AwakeningRoutine(p));
     }
@@ -48,7 +48,7 @@ public class PlayerAwakening : MonoBehaviour
     {
         isAwakening = true;
 
-        p.playerActionState.EnterAwakening();
+        p.ActionState.EnterAwakening();
 
         //중력 제거
         p.SetPhysicsFreeze(true);
@@ -70,9 +70,9 @@ public class PlayerAwakening : MonoBehaviour
         isAwakening = false;
 
         //State 되돌리기
-        if (p.playerActionState.isAwakening)
+        if (p.ActionState.isAwakening)
         {
-            p.playerActionState.EnterNormal();
+            p.ActionState.EnterNormal();
         }
 
         yield return new WaitForSeconds(awakeningDuration);
@@ -86,9 +86,9 @@ public class PlayerAwakening : MonoBehaviour
         isAwakened = true;
 
         //각성 상태에서 컬러, 이동속도, 점프력 증가
-        p.spriteRenderer.color = awakenedColor;
-        p.playerMove.moveSpeed *= awakenedMoveMultiplier;
-        p.playerMove.jumpForce *= awakenedJumpMultiplier;
+        p.sr.color = awakenedColor;
+        p.Move.moveSpeed *= awakenedMoveMultiplier;
+        p.Move.jumpForce *= awakenedJumpMultiplier;
     }
 
     private void ExitAwakened(Player p)
@@ -96,12 +96,12 @@ public class PlayerAwakening : MonoBehaviour
         isAwakened = false;
 
         //컬러, 이동속도, 점프력 다시 복귀
-        p.spriteRenderer.color = normalColor;
-        p.playerMove.moveSpeed /= awakenedMoveMultiplier;
-        p.playerMove.jumpForce /= awakenedJumpMultiplier;
+        p.sr.color = normalColor;
+        p.Move.moveSpeed /= awakenedMoveMultiplier;
+        p.Move.jumpForce /= awakenedJumpMultiplier;
 
         //기력 게이지 초기화
-        p.playerEnergy.ResetEnergy();
+        p.Energy.ResetEnergy();
         
     }
 

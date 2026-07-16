@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 2594956225376429067}
   - component: {fileID: 6189885798968243946}
   - component: {fileID: 1668223271681138230}
+  - component: {fileID: 4822023049940657397}
   m_Layer: 8
   m_Name: Enemy
   m_TagString: Enemy
@@ -190,6 +191,22 @@ MonoBehaviour:
   knockbackUpForce: 1
   playerEnergy: {fileID: 0}
   energyReward: 20
+--- !u!114 &4822023049940657397
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1525100744247835566}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 69f98ea8972c4194bb34582e7bcc6d71, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EnemyStats
+  defense:
+    physicalDefense: 0
+    magicalDefense: 0
+    durability: 0
 --- !u!1 &3095458375250088132
 GameObject:
   m_ObjectHideFlags: 0

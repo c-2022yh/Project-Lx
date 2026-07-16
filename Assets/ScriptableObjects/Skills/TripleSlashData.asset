@@ -22,7 +22,12 @@ MonoBehaviour:
   enemyLayer:
     serializedVersion: 2
     m_Bits: 0
-  damageMultiplier: 1
+  damageSpec:
+    damageType: 0
+    damageMultiplier: 1
+    canCritical: 0
+    bonusPenetration: 0
+    bonusDamageAmplification: 0
   knockbackDirection: {x: 1, y: 0}
   slashEffectPrefab: {fileID: 3545481630792328146, guid: 94f295d40691486438e6c60e511b79e0, type: 3}
   effectOffset: {x: 0.9, y: 0}
@@ -33,4 +38,3 @@ MonoBehaviour:
   - 40
   - -40
   slashInterval: 0.1
-  damagePerSlash: 1
