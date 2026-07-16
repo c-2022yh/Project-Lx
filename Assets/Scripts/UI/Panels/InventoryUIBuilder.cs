@@ -223,7 +223,7 @@ public static class InventoryUIBuilder
     // UIManager의 inventoryPanel 필드를 새 패널로 다시 연결
     private static string RelinkUIManager(InventoryPanel panel)
     {
-        UIManager uiManager = Object.FindFirstObjectByType<UIManager>();
+        UIManager uiManager = Object.FindAnyObjectByType<UIManager>();
         if (uiManager == null)
             return "UIManager를 못 찾아서 재연결 못 했습니다 (직접 연결 필요)";
 
