@@ -63,7 +63,7 @@ public class SkillSlotUI : MonoBehaviour
         isActive = true;
         isOnCooldown = false;
     }
-    /// <summary>SkillUIData로 슬롯 바인딩 (정식 방법)</summary>
+    /// <summary>SkillData로 슬롯 바인딩 (정식 방법)</summary>
     public void BindSkill(SkillData skill)
     {
         if (skill == null) { Clear(); return; }
