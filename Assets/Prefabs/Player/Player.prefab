@@ -433,7 +433,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::RelicManager
   player: {fileID: 4329258634847844620}
   startingRelics:
-  - {fileID: 11400000, guid: 1d27f38d02a9bf547a27951f4cc4ec08, type: 2}
+  - {fileID: 11400000, guid: 4999950b9fa018b42ad9146b4fa25a73, type: 2}
 --- !u!1 &5055931255594380884
 GameObject:
   m_ObjectHideFlags: 0

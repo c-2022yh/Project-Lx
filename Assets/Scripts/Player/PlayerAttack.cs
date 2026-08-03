@@ -238,6 +238,80 @@ public class PlayerAttack : MonoBehaviour
     }
 
 
+
+    //황혼 추가콤보 적용 전용 메소드
+    //외부 효과가 지상 콤보 패턴을 추가할 때 사용
+    public bool AddGroundAttackPattern(AttackPattern pattern)
+    {
+        if (pattern == null) return false;
+
+        //배열이 없는 경우 새로 생성
+        if (groundPatterns == null)
+        {
+            groundPatterns = new AttackPattern[] { pattern };
+            comboIndex = 0;
+            return true;
+        }
+
+        //같은 패턴이 이미 들어 있다면 중복 추가 방지
+        foreach (AttackPattern existingPattern in groundPatterns)
+        {
+            if (ReferenceEquals(existingPattern, pattern)) return false;
+        }
+
+        AttackPattern[] newPatterns = new AttackPattern[groundPatterns.Length + 1];
+
+        Array.Copy(groundPatterns, newPatterns, groundPatterns.Length);
+        newPatterns[newPatterns.Length - 1] = pattern;
+        groundPatterns = newPatterns;
+
+        //장착 순간 콤보가 꼬이지 않도록 초기화
+        comboIndex = 0;
+
+        return true;
+    }
+
+    //외부 효과가 추가했던 지상 콤보 패턴 제거
+    public bool RemoveGroundAttackPattern(AttackPattern pattern)
+    {
+        if (pattern == null) return false;
+
+        if (groundPatterns == null || groundPatterns.Length == 0) return false;
+        
+        int removeIndex = -1;
+
+        for (int i = 0; i < groundPatterns.Length; i++)
+        {
+            if (ReferenceEquals(groundPatterns[i], pattern))
+            {
+                removeIndex = i;
+                break;
+            }
+        }
+
+        //배열에서 찾지 못함
+        if (removeIndex < 0) return false;
+
+        AttackPattern[] newPatterns = new AttackPattern[groundPatterns.Length - 1];
+
+        int newIndex = 0;
+
+        for (int i = 0; i < groundPatterns.Length; i++)
+        {
+            if (i == removeIndex) continue;
+
+            newPatterns[newIndex] = groundPatterns[i];
+            newIndex++;
+        }
+
+        groundPatterns = newPatterns;
+
+        //제거 후 인덱스가 범위를 벗어나지 않게 초기화
+        comboIndex = 0;
+
+        return true;
+    }
+
 }
 
 /*

@@ -3,9 +3,9 @@ using System.Collections;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
-[CreateAssetMenu(
-    fileName = "RFX_Dawn",
-    menuName = "Relics/Effects/Dawn")]
+[CreateAssetMenu(fileName = "RFX_Dawn", menuName = "Relics/Effects/Dawn")]
+
+//새벽 유물 효과
 public class DawnRelicEffect : RelicEffect
 {
     [Header("Extra Attack Timing")]
@@ -29,6 +29,7 @@ public class DawnRelicEffect : RelicEffect
     [SerializeField]
     private AttackDamageSpec extraAttackDamageSpec;
 
+    //유물 장착 시 런타임 생성
     public override IRelicRuntime CreateRuntime(Player p)
     {
         return new DawnRelicRuntime(
@@ -41,6 +42,7 @@ public class DawnRelicEffect : RelicEffect
 
     }
 
+    //유물 런타임 클래스
     private sealed class DawnRelicRuntime : IRelicRuntime
     {
         private readonly Player player;
