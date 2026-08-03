@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 //투사체에 들어갈 스크립트
@@ -16,6 +17,9 @@ public class ProjectileHitbox : MonoBehaviour
     private SpriteRenderer spriteRenderer;
 
     private bool initialized;
+
+    //이 공격 이펙트가 이미 타격한 적들
+    private readonly HashSet<IDamageable> hitTargets = new();
 
     //값을 받아오는 함수
     public void Init(float dir, float speed, float maxDistance, float rotationSpeed,
@@ -77,20 +81,17 @@ public class ProjectileHitbox : MonoBehaviour
             return;
         }
 
-        //Enemy 레이어가 아니면 무시
-        if (((1 << other.gameObject.layer) & enemyLayer) == 0) return;
+        //공통 피격 대상 탐색
+        IDamageable target = other.GetComponentInParent<IDamageable>();
 
-        Enemy enemy = other.GetComponent<Enemy>();
+        if (target == null) return;
 
-        //부모에서도 찾아 줌
-        if (enemy == null) enemy = other.GetComponentInParent<Enemy>();
+        //같은 대상은 이 히트박스에 한 번만 피격
+        if (!hitTargets.Add(target)) return;
 
-        if (enemy == null) return;
+        //피해 정보 전달
+        target.TakeDamage(damageInfo, new Vector2(dir, 0f));
 
-        //데미지 주기
-        enemy.TakeDamage(damageInfo, new Vector2(dir, 0f));
-
-        
 
         //맞으면 삭제
         if (destroyOnEnemyHit)

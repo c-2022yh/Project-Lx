@@ -14,7 +14,7 @@ public enum RelicCategory
 public class RelicData : ScriptableObject
 {
     [Header("Identity")]
-    [SerializeField] public string relicId;
+    [SerializeField] private string relicId;
     [SerializeField] public string relicName;
     [SerializeField] public Sprite icon;
 

@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using System.Collections;
@@ -49,6 +50,16 @@ public class PlayerAttack : MonoBehaviour
     private Coroutine attackCoroutine;
 
     private Vector3 originLocalPos;
+
+    //지상 기본공격 이펙트가 실제 생성됐을 때 알림
+    public event Action<AttackPattern, Vector3, Quaternion, float>
+        OnGroundAttackEffectCreated;
+    /*
+    AttackPattern = 지금 사용한 1타/2타 패턴
+    Vector3       = 원래 이펙트 생성 위치
+    Quaternion    = 원래 이펙트 회전값
+    float         = 공격 방향
+    */
 
     void Awake()
     {
@@ -112,7 +123,7 @@ public class PlayerAttack : MonoBehaviour
         DamageInfo damageInfo = CreateDamageInfo(pattern);
 
         //공격 이펙트 생성 및 히트박스 활성화  
-        SpawnAttackEffect(pattern, dir, damageInfo);
+        SpawnAttackEffect(pattern, dir, damageInfo, isAirAttack);
         
         //공격 활성 시간
         yield return ActiveAttackPhase(pattern, dir);
@@ -142,7 +153,7 @@ public class PlayerAttack : MonoBehaviour
     
 
     //이펙트 보였다 사라지게끔 함수
-    private void SpawnAttackEffect(AttackPattern pattern, float dir, DamageInfo damageInfo)
+    private void SpawnAttackEffect(AttackPattern pattern, float dir, DamageInfo damageInfo, bool isAirAttack)
     {
         if (pattern.attackEffectPrefab == null) return;
 
@@ -171,6 +182,8 @@ public class PlayerAttack : MonoBehaviour
             StartCoroutine(DisableHitboxAfter(hitbox, pattern.activeTime));
         }
 
+        OnGroundAttackEffectCreated?.Invoke(pattern, spawnPos, rotation, dir);
+        
         //공중 공격은 이펙트가 플레이어를 따라오게
         if (pattern.followPlayer)
         {

@@ -24,7 +24,7 @@ MonoBehaviour:
     m_Bits: 256
   damageSpec:
     damageType: 0
-    damageMultiplier: 1
+    damageMultiplier: 3
     canCritical: 0
     bonusPenetration: 0
     bonusDamageAmplification: 0

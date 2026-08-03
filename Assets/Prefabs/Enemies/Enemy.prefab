@@ -183,7 +183,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EnemyMove
   moveSpeed: 5
   decisionTime: 1
-  maxHp: 3
+  maxHp: 10
   hitColor: {r: 1, g: 1, b: 1, a: 1}
   hitFlashTime: 0.08
   hitStunTime: 0.12
