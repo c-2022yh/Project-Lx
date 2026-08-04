@@ -51,9 +51,21 @@ public class PlayerAttack : MonoBehaviour
 
     private Vector3 originLocalPos;
 
-    //지상 기본공격 이펙트가 실제 생성됐을 때 알림
+    //기본공격 이펙트가 실제 생성됐을 때 알림
     public event Action<AttackPattern, Vector3, Quaternion, float>
-        OnGroundAttackEffectCreated;
+        AttackEffectCreated;
+    
+    //기본공격이 적에게 실제로 적중했을 때 알림
+    public event Action OnAttackHit;
+
+    //기본공격이 적에게 실제로 적중했을 때 알림
+    public void NotifyAttackHit()
+    {
+        OnAttackHit?.Invoke();
+    }
+
+
+
     /*
     AttackPattern = 지금 사용한 1타/2타 패턴
     Vector3       = 원래 이펙트 생성 위치
@@ -143,11 +155,7 @@ public class PlayerAttack : MonoBehaviour
     //데미지 정보 생성
     private DamageInfo CreateDamageInfo(AttackPattern pattern)
     {
-        return DamageInfo.Create(
-            playerStats.Offense,
-            pattern.damageSpec,
-            gameObject
-        );
+        return DamageInfo.Create(playerStats.Offense, pattern.damageSpec, gameObject);
     }
 
     
@@ -176,13 +184,12 @@ public class PlayerAttack : MonoBehaviour
         AttackEffectHitbox hitbox = effectObj.GetComponentInChildren<AttackEffectHitbox>();
         if (hitbox != null)
         {
-            hitbox.SetAttackInfo(damageInfo, dir);
+            hitbox.SetAttackInfo(damageInfo, dir, NotifyAttackHit);
 
             //히트박스 활성화 후 일정 시간 뒤 비활성화
             StartCoroutine(DisableHitboxAfter(hitbox, pattern.activeTime));
         }
 
-        OnGroundAttackEffectCreated?.Invoke(pattern, spawnPos, rotation, dir);
         
         //공중 공격은 이펙트가 플레이어를 따라오게
         if (pattern.followPlayer)
@@ -236,8 +243,6 @@ public class PlayerAttack : MonoBehaviour
 
         if (hitbox != null) hitbox.DisableHitbox();
     }
-
-
 
     //황혼 추가콤보 적용 전용 메소드
     //외부 효과가 지상 콤보 패턴을 추가할 때 사용

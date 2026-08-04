@@ -13,19 +13,19 @@ MonoBehaviour:
   m_Name: RFX_Twilight
   m_EditorClassIdentifier: Assembly-CSharp::TwilightRelicEffect
   thirdAttackPattern:
-    attackName: 
-    startupTime: 0.05
-    activeTime: 0.1
-    recoveryTime: 0.1
+    attackName: "\uD669\uD63C 3\uD0C0"
+    startupTime: 0.1
+    activeTime: 0.2
+    recoveryTime: 0.2
     damageSpec:
       damageType: 0
-      damageMultiplier: 0
+      damageMultiplier: 5
       canCritical: 0
       bonusPenetration: 0
       bonusDamageAmplification: 0
-    attackEffectPrefab: {fileID: 0}
+    attackEffectPrefab: {fileID: 2066522367392586507, guid: 692a85f7206e9714c93b470598cbc6a6, type: 3}
     effectOffset: {x: 0.8, y: 0}
-    effectScale: {x: 1, y: 1, z: 1}
+    effectScale: {x: 2, y: 2, z: 1}
     effectRotationZ: 0
     effectDuration: 0.12
     followPlayer: 0

@@ -83,10 +83,8 @@ public class DawnRelicEffect : RelicEffect
             playerAttack = player.GetComponent<PlayerAttack>();
             playerStats = player.GetComponent<PlayerStats>();
 
-            if (playerAttack == null || playerStats == null) return;
-
             isEquipped = true;
-            playerAttack.OnGroundAttackEffectCreated += HandleGroundAttackCreated;
+            playerAttack.AttackEffectCreated += HandleGroundAttackCreated;
 
             Debug.Log("[Dawn] 새벽 유물 장착 완료");
         }
@@ -98,7 +96,7 @@ public class DawnRelicEffect : RelicEffect
 
             if (playerAttack != null)
             {
-                playerAttack.OnGroundAttackEffectCreated -= HandleGroundAttackCreated;
+                playerAttack.AttackEffectCreated -= HandleGroundAttackCreated;
             }
 
             playerAttack = null;

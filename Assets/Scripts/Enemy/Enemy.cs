@@ -112,15 +112,15 @@ public class Enemy : MonoBehaviour, IDamageable
         currentHp -= finalDamage;
         Debug.Log( $"Enemy Hit! " + $"Damage: {finalDamage:F2}, " + $"HP: {currentHp:F2}");
 
-        // 사망 판정
+        //사망 판정
         if (currentHp <= 0f)
         {
-            Die();
+            Die(damageInfo);
             return;
         }
 
 
-        // 기존 피격 피드백 유지
+        //기존 피격 피드백 유지
         if (hitFeedbackCoroutine != null)
         {
             StopCoroutine(hitFeedbackCoroutine);
@@ -157,25 +157,34 @@ public class Enemy : MonoBehaviour, IDamageable
     }
 
 
-    //죽음
-    public void Die()
+    // 죽음
+    private void Die(DamageInfo lastDamageInfo)
     {
-
         if (isDead) return;
         isDead = true;
 
+        //마지막 피해를 준 플레이어에게 적 처치 알림
+        if (lastDamageInfo.attacker != null)
+        {
+            PlayerKillTracker killTracker = lastDamageInfo.attacker.GetComponentInParent<PlayerKillTracker>();
+
+            if (killTracker != null)
+            {
+                killTracker.NotifyEnemyKilled(gameObject);
+            }
+        }
+
+        //기존 기력 보상
         if (playerEnergy != null)
         {
             playerEnergy.GainEnergy(energyReward);
         }
 
-        Rigidbody2D rb = GetComponent<Rigidbody2D>();
         if (rb != null)
         {
             rb.linearVelocity = Vector2.zero;
         }
 
         gameObject.SetActive(false);
-
     }
 }

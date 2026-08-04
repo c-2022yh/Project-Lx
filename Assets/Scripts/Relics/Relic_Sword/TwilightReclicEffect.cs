@@ -41,9 +41,6 @@ public class TwilightRelicEffect : RelicEffect
 
             playerAttack = player.GetComponent<PlayerAttack>();
 
-            if (playerAttack == null) return;
-            if (thirdAttackPattern == null) return;
-            
             patternAdded = playerAttack.AddGroundAttackPattern(thirdAttackPattern);
 
             if (patternAdded)

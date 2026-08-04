@@ -16,9 +16,9 @@ MonoBehaviour:
   icon: {fileID: 0}
   description: "\uC5D4\uBBF9\uC2A4\uB178\uB798GOAT\u314B\u314B\u314B\u314B"
   allowedSlots: 0
-  cooldownTime: 1
+  cooldownTime: 4
   soulCost: 0
-  activeTime: 0.08
+  activeTime: 0.05
   enemyLayer:
     serializedVersion: 2
     m_Bits: 256

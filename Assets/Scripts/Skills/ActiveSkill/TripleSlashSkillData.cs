@@ -65,9 +65,16 @@ public class TripleSlashData : AttackSkillData
         SpriteRenderer sr = effectObj.GetComponentInChildren<SpriteRenderer>();
         if (sr != null) sr.flipX = dir < 0f;
 
-        //히트박스 생성
+
+        //히트박스 생성하면서 공격 적중 정보 전달
         AttackEffectHitbox hitbox = effectObj.GetComponentInChildren<AttackEffectHitbox>();
-        if (hitbox != null) hitbox.SetAttackInfo(damageInfo, dir);
+
+        if (hitbox != null)
+        {
+            PlayerAttack playerAttack = p.GetComponent<PlayerAttack>();
+            hitbox.SetAttackInfo(damageInfo, dir, playerAttack.NotifyAttackHit);
+            
+        }
 
         //이펙트 삭제
         Destroy(effectObj, effectLifeTime);
