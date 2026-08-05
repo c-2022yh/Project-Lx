@@ -44,6 +44,9 @@ public class PlayerSkill : MonoBehaviour
         SkillData skill = equippedSkills[slotIndex];
         if (skill == null) return;
 
+        //스킬별 사용 조건 검사
+        if (!skill.CanUse(p)) return;
+
         //코루틴 돌림
         StartCoroutine(SkillRoutine(p, skill, slotIndex));
     }

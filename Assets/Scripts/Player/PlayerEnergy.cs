@@ -147,4 +147,29 @@ public class PlayerEnergy : MonoBehaviour
     }
 
 
+    //지정한 기력을 소비할 수 있는지 확인
+    public bool CanSpendEnergy(float amount)
+    {
+        if (amount <= 0f) return true;
+        if (!hasOrb) return false;
+
+        return currentEnergy >= amount;
+    }
+
+
+    //지정한 기력을 소비
+    public bool TrySpendEnergy(float amount)
+    {
+        if (amount <= 0f) return true;
+        if (!hasOrb) return false;
+        if (currentEnergy < amount) return false;
+
+        currentEnergy -= amount;
+        currentEnergy = Mathf.Clamp(currentEnergy, 0f, maxEnergy);
+
+        UpdateEnergyVisual();
+
+        return true;
+    }
+
 }

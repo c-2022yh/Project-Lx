@@ -11,8 +11,6 @@ public abstract class SkillData : ScriptableObject
     [TextArea(2, 4)]
     public string description;
 
-    [Header("Slot")]
-    public SkillSlotType allowedSlots;
 
     [Header("Cost")]
     public float cooldownTime = 1f;
@@ -20,6 +18,9 @@ public abstract class SkillData : ScriptableObject
 
     [Header("Timing")]
     public float activeTime = 0.2f;
+
+    //현재 상태에서 스킬을 사용할 수 있는지 확인
+    public virtual bool CanUse(Player p) => p != null;
     
     //스킬 실행하는 가상 함수
     public abstract IEnumerator ProcessSkill(Player p);

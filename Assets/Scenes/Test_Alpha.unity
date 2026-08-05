@@ -28788,7 +28788,7 @@ PrefabInstance:
     - target: {fileID: 3456935351307144872, guid: 36ba43a03c37b6448be36953396a32ab, type: 3}
       propertyPath: 'startingRelics.Array.data[5]'
       value: 
-      objectReference: {fileID: 11400000, guid: 9cdf442e82c7c324aa3798f20cc13aa0, type: 2}
+      objectReference: {fileID: 11400000, guid: 974811fac3648cc4385fa4bfa630517c, type: 2}
     - target: {fileID: 3534435414625035758, guid: 36ba43a03c37b6448be36953396a32ab, type: 3}
       propertyPath: m_LocalPosition.y
       value: 30
