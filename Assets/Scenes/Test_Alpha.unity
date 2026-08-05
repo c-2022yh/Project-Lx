@@ -28763,7 +28763,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3456935351307144872, guid: 36ba43a03c37b6448be36953396a32ab, type: 3}
       propertyPath: startingRelics.Array.size
-      value: 5
+      value: 6
       objectReference: {fileID: 0}
     - target: {fileID: 3456935351307144872, guid: 36ba43a03c37b6448be36953396a32ab, type: 3}
       propertyPath: 'startingRelics.Array.data[0]'
@@ -28785,6 +28785,10 @@ PrefabInstance:
       propertyPath: 'startingRelics.Array.data[4]'
       value: 
       objectReference: {fileID: 11400000, guid: bcde0833a4df729408e4f174e24e5eb5, type: 2}
+    - target: {fileID: 3456935351307144872, guid: 36ba43a03c37b6448be36953396a32ab, type: 3}
+      propertyPath: 'startingRelics.Array.data[5]'
+      value: 
+      objectReference: {fileID: 11400000, guid: 9cdf442e82c7c324aa3798f20cc13aa0, type: 2}
     - target: {fileID: 3534435414625035758, guid: 36ba43a03c37b6448be36953396a32ab, type: 3}
       propertyPath: m_LocalPosition.y
       value: 30
@@ -28852,6 +28856,10 @@ PrefabInstance:
     - target: {fileID: 6679834704843644975, guid: 36ba43a03c37b6448be36953396a32ab, type: 3}
       propertyPath: m_AnchoredPosition.y
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6687452711419742390, guid: 36ba43a03c37b6448be36953396a32ab, type: 3}
+      propertyPath: normalCombatBonus.damageAmplification
+      value: 0.2
       objectReference: {fileID: 0}
     - target: {fileID: 6855383144840140953, guid: 36ba43a03c37b6448be36953396a32ab, type: 3}
       propertyPath: m_LocalPosition.x
