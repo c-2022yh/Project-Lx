@@ -11,6 +11,10 @@ public class Enemy : MonoBehaviour, IDamageable
     public float maxHp = 3f; //최대 체력
     private float currentHp; //현재 체력
 
+    //체력 바
+    [Header("Health UI")]
+    [SerializeField] private EnemyHealthBar healthBar;
+
     [Header("Hit Feedback")] //피격 관련 판정 변수 //컬러설정은 삭제예정
     [SerializeField] private Color hitColor = Color.white; 
     [SerializeField] private float hitFlashTime = 0.08f;
@@ -58,6 +62,12 @@ public class Enemy : MonoBehaviour, IDamageable
             playerEnergy = FindAnyObjectByType<PlayerEnergy>();
         }
         currentHp = maxHp;
+
+        //체력바를 최대 체력으로 초기화하고 숨김
+        if (healthBar != null)
+        {
+            healthBar.Initialize(currentHp, maxHp);
+        }
 
         rb.linearVelocity = Vector2.zero;
 
@@ -109,8 +119,13 @@ public class Enemy : MonoBehaviour, IDamageable
         float finalDamage = DamageCalculator.Calculate( damageInfo, defense, enemyStats.Defense.durability);
 
         //실제 체력 감소
-        currentHp -= finalDamage;
+        currentHp = Mathf.Max(0f, currentHp - finalDamage);
+
         Debug.Log( $"Enemy Hit! " + $"Damage: {finalDamage:F2}, " + $"HP: {currentHp:F2}");
+
+        //체력바 갱신하고 표시
+        healthBar.ShowHealth(currentHp, maxHp);
+        
 
         //사망 판정
         if (currentHp <= 0f)
