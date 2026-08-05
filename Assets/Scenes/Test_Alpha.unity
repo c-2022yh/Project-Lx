@@ -28763,12 +28763,28 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3456935351307144872, guid: 36ba43a03c37b6448be36953396a32ab, type: 3}
       propertyPath: startingRelics.Array.size
-      value: 1
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 3456935351307144872, guid: 36ba43a03c37b6448be36953396a32ab, type: 3}
       propertyPath: 'startingRelics.Array.data[0]'
       value: 
       objectReference: {fileID: 11400000, guid: 657164be750420f47abde78fe3a28ddf, type: 2}
+    - target: {fileID: 3456935351307144872, guid: 36ba43a03c37b6448be36953396a32ab, type: 3}
+      propertyPath: 'startingRelics.Array.data[1]'
+      value: 
+      objectReference: {fileID: 11400000, guid: 1d1c17746030ec545b347c1ee38fa98d, type: 2}
+    - target: {fileID: 3456935351307144872, guid: 36ba43a03c37b6448be36953396a32ab, type: 3}
+      propertyPath: 'startingRelics.Array.data[2]'
+      value: 
+      objectReference: {fileID: 11400000, guid: a207f8c94a23d1b419c9034ab23cfbab, type: 2}
+    - target: {fileID: 3456935351307144872, guid: 36ba43a03c37b6448be36953396a32ab, type: 3}
+      propertyPath: 'startingRelics.Array.data[3]'
+      value: 
+      objectReference: {fileID: 11400000, guid: ed37c9c1246ada841bf44fdd9821b208, type: 2}
+    - target: {fileID: 3456935351307144872, guid: 36ba43a03c37b6448be36953396a32ab, type: 3}
+      propertyPath: 'startingRelics.Array.data[4]'
+      value: 
+      objectReference: {fileID: 11400000, guid: bcde0833a4df729408e4f174e24e5eb5, type: 2}
     - target: {fileID: 3534435414625035758, guid: 36ba43a03c37b6448be36953396a32ab, type: 3}
       propertyPath: m_LocalPosition.y
       value: 30
@@ -28891,6 +28907,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8220047357977848500, guid: 36ba43a03c37b6448be36953396a32ab, type: 3}
       propertyPath: m_AnchoredPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8365761532581290843, guid: 36ba43a03c37b6448be36953396a32ab, type: 3}
+      propertyPath: isDashUnlocked
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 9013409287783473331, guid: 36ba43a03c37b6448be36953396a32ab, type: 3}

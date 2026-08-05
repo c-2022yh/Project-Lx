@@ -62,12 +62,14 @@ public class PlayerHealth : MonoBehaviour
         OnHealthChanged?.Invoke(currentHealth, maxHealth);
     }
 
+    //리스폰 위치 저장
     public void SetRespawnPoint(Vector2 newRespawnPosition)
     {
         respawnPosition = newRespawnPosition;
         Debug.Log("Respawn point saved: " + respawnPosition);
     }
 
+    //데미지 입음
     public void TakeDamage(float damage, Vector2 damageSourcePosition)
     {
         if (isInvincible) return;
@@ -102,6 +104,46 @@ public class PlayerHealth : MonoBehaviour
         currentHealth = Mathf.Clamp(currentHealth + amount, 0, maxHealth);
 
         Debug.Log("Player healed. HP: " + currentHealth);
+
+        OnHealthChanged?.Invoke(currentHealth, maxHealth);
+    }
+
+    //최대 체력 증가
+    public void AddMaxHealth(int amount, bool healAddedAmount = true)
+    {
+        if (amount <= 0) return;
+
+        maxHealth += amount;
+
+        //장착할 때 늘어난 체력만큼 현재 체력도 채움
+        //사망 상태에서는 장착만으로 부활하지 않게 처리
+        if (healAddedAmount && currentHealth > 0)
+        {
+            currentHealth += amount;
+        }
+
+        if (currentHealth > maxHealth)
+        {
+            currentHealth = maxHealth;
+        }
+
+        OnHealthChanged?.Invoke(currentHealth, maxHealth);
+    }
+
+
+    //최대 체력 감소
+    public void RemoveMaxHealth(int amount)
+    {
+        if (amount <= 0) return;
+
+        maxHealth -= amount;
+
+        //최대 체력은 최소 1 유지
+        if (maxHealth < 1) maxHealth = 1;
+        
+        //현재 체력이 새 최대 체력을 넘으면 같이 조정
+        if (currentHealth > maxHealth) currentHealth = maxHealth;
+        
 
         OnHealthChanged?.Invoke(currentHealth, maxHealth);
     }

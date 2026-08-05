@@ -1,0 +1,22 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 97e8976399dde06499934e413ed35ac2, type: 3}
+  m_Name: Relic_WindShoes
+  m_EditorClassIdentifier: Assembly-CSharp::RelicData
+  relicId: body_windshoes
+  relicName: "\uBC14\uB78C\uC7A5\uD654"
+  icon: {fileID: 0}
+  description: "\uB300\uC26C \uD574\uAE08"
+  cost: 1
+  category: 2
+  effects:
+  - {fileID: 11400000, guid: fe90c98aa9cd0d8439d98a1f18b7dd4c, type: 2}
