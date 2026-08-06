@@ -15,6 +15,14 @@ public class Enemy : MonoBehaviour, IDamageable
     [Header("Health UI")]
     [SerializeField] private EnemyHealthBar healthBar;
 
+    //데미지 팝업
+    [Header("Damage Popup")]
+    [SerializeField] private DamagePopup damagePopupPrefab;
+
+    [SerializeField]
+    private Vector3 damagePopupOffset = new Vector3(0f, 1.4f, 0f);
+
+
     [Header("Hit Feedback")] //피격 관련 판정 변수 //컬러설정은 삭제예정
     [SerializeField] private Color hitColor = Color.white; 
     [SerializeField] private float hitFlashTime = 0.08f;
@@ -125,7 +133,13 @@ public class Enemy : MonoBehaviour, IDamageable
 
         //체력바 갱신하고 표시
         healthBar.ShowHealth(currentHp, maxHp);
+
+        //최종 피해량 팝업 생성
+        DamagePopup popup = Instantiate(damagePopupPrefab, transform.position + damagePopupOffset, Quaternion.identity);
+
+        popup.Show(finalDamage);
         
+
 
         //사망 판정
         if (currentHp <= 0f)
