@@ -1,26 +1,26 @@
-using UnityEngine;
+ï»¿using UnityEngine;
 using UnityEngine.UI;
 
 public class PausePanel : MonoBehaviour
 {
-    // ÀÏ½ÃÁ¤Áö È­¸éÀ» ÄÑ°í ²ô´Â ÇÔ¼ö
-    // UIManager°¡ ÀÌ ÇÔ¼ö¸¦ È£ÃâÇØ¼­ ÆĞ³ÎÀ» º¸ÀÌ°Å³ª ¼û±è
+    // ì¼ì‹œì •ì§€ í™”ë©´ì„ ì¼œê³  ë„ëŠ” í•¨ìˆ˜
+    // UIManagerê°€ ì´ í•¨ìˆ˜ë¥¼ í˜¸ì¶œí•´ì„œ íŒ¨ë„ì„ ë³´ì´ê±°ë‚˜ ìˆ¨ê¹€
     public void SetVisible(bool visible)
     {
         gameObject.SetActive(visible);
     }
 
-    // "Continue" ¹öÆ°ÀÌ ´­·ÈÀ» ¶§ ½ÇÇà
+    // "Continue" ë²„íŠ¼ì´ ëˆŒë ¸ì„ ë•Œ ì‹¤í–‰
     public void OnResumeButton()
     {
-        // UIManager¿¡°Ô "ÀÏ½ÃÁ¤Áö Ç®±â"¶ó°í ¿äÃ»
+        // UIManagerì—ê²Œ "ì¼ì‹œì •ì§€ í’€ê¸°"ë¼ê³  ìš”ì²­
         UIManager.Instance.TogglePause();
     }
 
-    // "Quit" ¹öÆ°ÀÌ ´­·ÈÀ» ¶§ ½ÇÇà
+    // "Quit" ë²„íŠ¼ì´ ëˆŒë ¸ì„ ë•Œ ì‹¤í–‰
     public void OnQuitButton()
     {
-        // ÀÏ´Ü ·Î±×¸¸ (³ªÁß¿¡ ¸ŞÀÎ ¸Ş´º·Î °¡´Â ÄÚµå·Î ±³Ã¼)
-        Debug.Log("[PausePanel] ³ª°¡±â ¹öÆ° ´­¸² - ¸ŞÀÎ ¸Ş´º·Î ÀÌµ¿ ¿¹Á¤");
+        // ì¼ë‹¨ ë¡œê·¸ë§Œ (ë‚˜ì¤‘ì— ë©”ì¸ ë©”ë‰´ë¡œ ê°€ëŠ” ì½”ë“œë¡œ êµì²´)
+        Debug.Log("[PausePanel] ë‚˜ê°€ê¸° ë²„íŠ¼ ëˆŒë¦¼ - ë©”ì¸ ë©”ë‰´ë¡œ ì´ë™ ì˜ˆì •");
     }
 }

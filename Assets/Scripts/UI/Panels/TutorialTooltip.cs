@@ -1,4 +1,4 @@
-using UnityEngine;
+ï»¿using UnityEngine;
 using System.Collections;
 using TMPro;
 
@@ -6,19 +6,19 @@ public class TutorialTooltip : MonoBehaviour
 {
     [SerializeField] private TextMeshProUGUI keyText;
     [SerializeField] private TextMeshProUGUI descText;
-    [SerializeField] private float displayTime = 3f; // ¸î ÃÊ º¸¿©ÁÙÁö
+    [SerializeField] private float displayTime = 3f; // ëª‡ ì´ˆ ë³´ì—¬ì¤„ì§€
 
-    // ÅøÆÁ ¶ç¿ì±â (Å°, ¼³¸íÀ» ¹Ş¾Æ¼­)
+    // íˆ´íŒ ë„ìš°ê¸° (í‚¤, ì„¤ëª…ì„ ë°›ì•„ì„œ)
     public void Show(string key, string desc)
     {
         keyText.text = key;
         descText.text = desc;
         gameObject.SetActive(true);
-        StopAllCoroutines();          // ÀÌÀü Å¸ÀÌ¸Ó Ãë¼Ò
+        StopAllCoroutines();          // ì´ì „ íƒ€ì´ë¨¸ ì·¨ì†Œ
         StartCoroutine(HideAfterDelay());
     }
 
-    // ÀÏÁ¤ ½Ã°£ ÈÄ ÀÚµ¿À¸·Î ¼û±â±â
+    // ì¼ì • ì‹œê°„ í›„ ìë™ìœ¼ë¡œ ìˆ¨ê¸°ê¸°
     private IEnumerator HideAfterDelay()
     {
         yield return new WaitForSeconds(displayTime);

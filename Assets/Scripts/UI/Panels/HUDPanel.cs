@@ -1,17 +1,17 @@
-using UnityEngine;
+ï»¿using UnityEngine;
 using UnityEngine.UI;
 using System.Collections.Generic;
 
 /// <summary>
-/// HUD: Ã¼·Â¹Ù, 5Ä­ ±â·Â °ÔÀÌÁö, ½ºÅ³ ½½·Ô.
-/// UIManagerÀÇ ÀÌº¥Æ®¸¦ ±¸µ¶ÇØ¼­ UI¸¦ °»½Å.
+/// HUD: ì²´ë ¥ë°”, 5ì¹¸ ê¸°ë ¥ ê²Œì´ì§€, ìŠ¤í‚¬ ìŠ¬ë¡¯.
+/// UIManagerì˜ ì´ë²¤íŠ¸ë¥¼ êµ¬ë…í•´ì„œ UIë¥¼ ê°±ì‹ .
 /// </summary>
 public class HUDPanel : MonoBehaviour
 {
     [Header("Health Bar")]
     [SerializeField] private Image healthFillImage;  // HealthBar_Fill
 
-    [Header("Soul Gauge (5Ä­)")]
+    [Header("Soul Gauge (5ì¹¸)")]
     [SerializeField] private Image[] soulOrbs;       // SoulOrb_1 ~ 5
 
     [Header("Soul Orb Colors")]
@@ -43,22 +43,22 @@ public class HUDPanel : MonoBehaviour
 
     void Start()
     {
-        // UIManager.Start()°¡ ¸ÕÀú È£ÃâµÆÀ» ¼ö ÀÖÀ¸¹Ç·Î ½ÃÀÛ ½Ã ÇÑ¹ø Á÷Á¢ °»½Å
+        // UIManager.Start()ê°€ ë¨¼ì € í˜¸ì¶œëì„ ìˆ˜ ìˆìœ¼ë¯€ë¡œ ì‹œì‘ ì‹œ í•œë²ˆ ì§ì ‘ ê°±ì‹ 
         if (UIManager.Instance != null)
         {
-            // °­Á¦·Î ÇÑ¹ø Ç¥½Ã (ÀÌº¥Æ®°¡ ÀÌ¹Ì ¹ßÇàµÈ °æ¿ì ´ëºñ)
-            // ´õ Á¤±³ÇÏ°Ô ÇÏ·Á¸é UIManager¿¡ GetCurrent... getter Ãß°¡
+            // ê°•ì œë¡œ í•œë²ˆ í‘œì‹œ (ì´ë²¤íŠ¸ê°€ ì´ë¯¸ ë°œí–‰ëœ ê²½ìš° ëŒ€ë¹„)
+            // ë” ì •êµí•˜ê²Œ í•˜ë ¤ë©´ UIManagerì— GetCurrent... getter ì¶”ê°€
         }
     }
 
-    //Ã¼·Â¹Ù ¾÷µ¥ÀÌÆ®ÇÏ±â
+    //ì²´ë ¥ë°” ì—…ë°ì´íŠ¸í•˜ê¸°
     private void UpdateHealth(int current, int max)
     {
         if (healthFillImage != null)
             healthFillImage.fillAmount = max > 0 ? (float)current / max : 0f;
     }
 
-    //±â·Â °ÔÀÌÁö ¾÷µ¥ÀÌÆ®ÇÏ±â
+    //ê¸°ë ¥ ê²Œì´ì§€ ì—…ë°ì´íŠ¸í•˜ê¸°
     private void UpdateSoul(int current, int max)
     {
         if (soulOrbs == null) return;
@@ -70,18 +70,18 @@ public class HUDPanel : MonoBehaviour
     }
 
 
-    //½ºÅ³ ÄğÅ¸ÀÓ µ¹¸®±â
+    //ìŠ¤í‚¬ ì¿¨íƒ€ì„ ëŒë¦¬ê¸°
     public void StartSkillCooldown(int slotIndex, float cooldownTime)
     {
         if (skillSlots == null)
         {
-            Debug.LogWarning("[HUDPanel] skillSlots ¹è¿­ÀÌ ºñ¾îÀÖÀ½");
+            Debug.LogWarning("[HUDPanel] skillSlots ë°°ì—´ì´ ë¹„ì–´ìˆìŒ");
             return;
         }
 
         if (slotIndex < 0 || slotIndex >= skillSlots.Length)
         {
-            Debug.LogWarning($"[HUDPanel] Àß¸øµÈ ½½·Ô ÀÎµ¦½º: {slotIndex}");
+            Debug.LogWarning($"[HUDPanel] ì˜ëª»ëœ ìŠ¬ë¡¯ ì¸ë±ìŠ¤: {slotIndex}");
             return;
         }
 
@@ -89,7 +89,7 @@ public class HUDPanel : MonoBehaviour
 
         if (slotUI == null)
         {
-            Debug.LogWarning($"[HUDPanel] {slotIndex}¹ø ½½·Ô UI°¡ ¿¬°áµÇÁö ¾ÊÀ½");
+            Debug.LogWarning($"[HUDPanel] {slotIndex}ë²ˆ ìŠ¬ë¡¯ UIê°€ ì—°ê²°ë˜ì§€ ì•ŠìŒ");
             return;
         }
 
