@@ -22,6 +22,16 @@ public class Enemy : MonoBehaviour, IDamageable
     [SerializeField]
     private Vector3 damagePopupOffset = new Vector3(0f, 1.4f, 0f);
 
+    //피격 이펙트
+    [Header("Hit Effect")]
+    [SerializeField]
+    private EnemyHitEffect hitEffectPrefab;
+
+    [SerializeField]
+    private Vector3 hitEffectOffset = new Vector3(0f, 0.3f, 0f);
+
+
+
 
     [Header("Hit Feedback")] //피격 관련 판정 변수 //컬러설정은 삭제예정
     [SerializeField] private Color hitColor = Color.white; 
@@ -138,7 +148,17 @@ public class Enemy : MonoBehaviour, IDamageable
         DamagePopup popup = Instantiate(damagePopupPrefab, transform.position + damagePopupOffset, Quaternion.identity);
 
         popup.Show(finalDamage);
-        
+
+        //피격 이펙트 생성
+        if (hitEffectPrefab != null)
+        {
+            Instantiate(
+                hitEffectPrefab,
+                transform.position + hitEffectOffset,
+                Quaternion.identity
+            );
+        }
+
 
 
         //사망 판정

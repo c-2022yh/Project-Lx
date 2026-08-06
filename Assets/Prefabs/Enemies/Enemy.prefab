@@ -188,6 +188,8 @@ MonoBehaviour:
   healthBar: {fileID: 4980014735012934091}
   damagePopupPrefab: {fileID: 4418119550550923920, guid: f9203d53f7bdee24b9be1417d4647687, type: 3}
   damagePopupOffset: {x: 0, y: 1.4, z: 0}
+  hitEffectPrefab: {fileID: 2831077347966305720, guid: c7da690de55294d4fbd4bf51893a14e6, type: 3}
+  hitEffectOffset: {x: 0, y: 0.3, z: 0}
   hitColor: {r: 1, g: 1, b: 1, a: 1}
   hitFlashTime: 0.08
   hitStunTime: 0.12

@@ -181,12 +181,6 @@ public class DawnRelicEffect : RelicEffect
 
             if (hitbox == null)
             {
-                Debug.LogWarning(
-                    "[Dawn] 추가 공격 이펙트에서 " +
-                    "AttackEffectHitbox를 찾지 못했습니다.",
-                    extraAttack
-                );
-
                 Object.Destroy(extraAttack);
                 yield break;
             }
@@ -214,26 +208,14 @@ public class DawnRelicEffect : RelicEffect
                 lifeTime = pattern.effectDuration;
 
             // 공격 판정보다 먼저 삭제되지 않게 보호
-            lifeTime = Mathf.Max(
-                lifeTime,
-                pattern.activeTime
-            );
+            lifeTime = Mathf.Max(lifeTime, pattern.activeTime);
 
-            Object.Destroy(
-                extraAttack,
-                lifeTime
-            );
+            Object.Destroy(extraAttack, lifeTime);
         }
 
-        private static void ApplyVisual(
-            GameObject extraAttack,
-            Color color,
-            float direction)
+        private static void ApplyVisual(GameObject extraAttack, Color color, float direction)
         {
-            SpriteRenderer[] renderers =
-                extraAttack.GetComponentsInChildren<
-                    SpriteRenderer>(true);
-
+            SpriteRenderer[] renderers = extraAttack.GetComponentsInChildren<SpriteRenderer>(true);
             foreach (SpriteRenderer renderer in renderers)
             {
                 renderer.flipX = direction < 0f;
@@ -247,17 +229,12 @@ public class DawnRelicEffect : RelicEffect
         {
             if (activeTime > 0f)
             {
-                yield return new WaitForSeconds(
-                    activeTime
-                );
+                yield return new WaitForSeconds(activeTime);
             }
 
-            if (extraAttack == null)
-                yield break;
+            if (extraAttack == null)  yield break;
 
-            Collider2D[] colliders =
-                extraAttack.GetComponentsInChildren<
-                    Collider2D>(true);
+            Collider2D[] colliders = extraAttack.GetComponentsInChildren<Collider2D>(true);
 
             foreach (Collider2D collider in colliders)
             {

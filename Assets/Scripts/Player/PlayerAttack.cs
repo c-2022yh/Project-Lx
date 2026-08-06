@@ -180,6 +180,9 @@ public class PlayerAttack : MonoBehaviour
         SpriteRenderer sr = effectObj.GetComponentInChildren<SpriteRenderer>();
         if (sr != null) sr.flipX = dir < 0f;
 
+        //기본공격 이펙트 생성을 알림
+        AttackEffectCreated?.Invoke(pattern, spawnPos, rotation, dir);
+
         //공격 히트박스 찾기
         AttackEffectHitbox hitbox = effectObj.GetComponentInChildren<AttackEffectHitbox>();
         if (hitbox != null)
