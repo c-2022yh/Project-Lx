@@ -15,7 +15,9 @@ MonoBehaviour:
   relicId: sword_dawn
   relicName: "\uC0C8\uBCBD"
   icon: {fileID: 0}
-  description: "\uAE30\uBCF8 \uACF5\uACA9 \uC2DC \uCD94\uAC00 \uC794\uC0C1 \uC0DD\uC131"
+  description: "\uAE30\uBCF8 \uACF5\uACA9 \uC2DC \uCD94\uAC00 \uC794\uC0C1\uC744
+    \uC0DD\uC131\uD55C\uB2E4. \uCD94\uAC00 \uC794\uC0C1\uC740 \uAE30\uBCF8 \uACF5\uACA9
+    \uB370\uBBF8\uC9C0\uC640 \uBE44\uB840\uD558\uC5EC \uC801\uC6A9\uB41C\uB2E4."
   cost: 1
   category: 0
   effects:

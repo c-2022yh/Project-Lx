@@ -15,8 +15,8 @@ MonoBehaviour:
   relicId: orb_fullmoon
   relicName: "\uB9CC\uC6D4"
   icon: {fileID: 0}
-  description: "\uCD5C\uB300 \uAE30\uB825\uC774 \uC99D\uAC00\uD558\uACE0 \uAC15\uD654
-    \uAC01\uC131\uC774 \uBC1C\uB3D9\uD568"
+  description: "\uCD5C\uB300 \uD68D\uB4DD \uAC00\uB2A5 \uAE30\uB825\uC774 \uC99D\uAC00\uD558\uACE0
+    \uCD5C\uB300 \uAE30\uB825\uC2DC \uAC15\uD654 \uAC01\uC131\uC774 \uAC00\uB2A5\uD558\uB2E4."
   cost: 1
   category: 1
   effects:

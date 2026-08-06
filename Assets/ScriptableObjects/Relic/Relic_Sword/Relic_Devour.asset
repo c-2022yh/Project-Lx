@@ -15,7 +15,8 @@ MonoBehaviour:
   relicId: sword_devour
   relicName: "\uD3EC\uC2DD"
   icon: {fileID: 0}
-  description: "\uC801 \uACF5\uACA9 \uC801\uC911 \uC2DC \uCCB4\uB825 \uD68C\uBCF5"
+  description: "\uC801 \uACF5\uACA9 \uC801\uC911 \uC2DC \uCCB4\uB825\uC744 \uC18C\uB7C9
+    \uD68C\uBCF5\uD558\uACE0 3\uC5F0\uACA9 \uC2A4\uD0AC\uC744 \uD68D\uB4DD\uD55C\uB2E4."
   cost: 1
   category: 0
   effects:

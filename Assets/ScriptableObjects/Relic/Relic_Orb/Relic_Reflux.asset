@@ -15,7 +15,8 @@ MonoBehaviour:
   relicId: orb_reflux
   relicName: "\uD658\uB958"
   icon: {fileID: 0}
-  description: "\uAC01\uC131\uC774 \uB05D\uB098\uBA74 \uAE30\uB825\uC744 \uD68C\uBCF5\uD55C\uB2E4"
+  description: "\uAC01\uC131\uC774 \uB05D\uB098\uBA74 \uAE30\uB825\uC744 \uC77C\uC815\uB7C9
+    \uD68C\uBCF5\uD55C\uB2E4."
   cost: 1
   category: 1
   effects:
