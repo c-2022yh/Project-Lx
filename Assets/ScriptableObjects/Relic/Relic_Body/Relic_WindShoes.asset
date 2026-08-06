@@ -15,7 +15,7 @@ MonoBehaviour:
   relicId: body_windshoes
   relicName: "\uBC14\uB78C\uC7A5\uD654"
   icon: {fileID: -2768152960142812005, guid: 15c72eb08c2c89743bb8382df5f310ae, type: 3}
-  description: "\uB300\uC26C \uD574\uAE08"
+  description: "LShift\uD0A4\uC5D0 \uB300\uC26C \uC2A4\uD0AC\uC744 \uCD94\uAC00\uD55C\uB2E4."
   cost: 1
   category: 2
   effects:
