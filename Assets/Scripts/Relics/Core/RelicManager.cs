@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -17,6 +18,13 @@ public class RelicManager : MonoBehaviour
     private readonly Dictionary<RelicData, List<IRelicRuntime>> runtimesByRelic = new();
 
     public IReadOnlyList<RelicData> EquippedRelics => equippedRelics;
+
+    //유물이 장착되거나 해제됐을 때 UI에 알림
+    //public event Action<RelicData> OnRelicEquipped;
+    //public event Action<RelicData> OnRelicUnequipped;
+
+    //장착 유물 목록이 변경됐을 때 알림
+    public event Action OnRelicsChanged;
 
     private void Awake()
     {
@@ -120,6 +128,9 @@ public class RelicManager : MonoBehaviour
 
         Debug.Log($"유물 장착 완료: {relic.RelicName}");
 
+        //UI에 장착
+        OnRelicsChanged?.Invoke();
+
         return true;
     }
 
@@ -146,6 +157,11 @@ public class RelicManager : MonoBehaviour
         equippedRelics.Remove(relic);
 
         Debug.Log($"유물 해제: {relic.RelicName}");
+
+        //UI에 해제
+        OnRelicsChanged?.Invoke();
+
+
 
         return true;
     }

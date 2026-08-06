@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::RelicData
   relicId: orb_fullmoon
   relicName: "\uB9CC\uC6D4"
-  icon: {fileID: 0}
+  icon: {fileID: -1182824547796299415, guid: dff88157032a4d14ba99f5d1f3e0247f, type: 3}
   description: "\uCD5C\uB300 \uD68D\uB4DD \uAC00\uB2A5 \uAE30\uB825\uC774 \uC99D\uAC00\uD558\uACE0
     \uCD5C\uB300 \uAE30\uB825\uC2DC \uAC15\uD654 \uAC01\uC131\uC774 \uAC00\uB2A5\uD558\uB2E4."
   cost: 1

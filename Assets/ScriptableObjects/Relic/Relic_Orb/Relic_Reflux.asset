@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::RelicData
   relicId: orb_reflux
   relicName: "\uD658\uB958"
-  icon: {fileID: 0}
+  icon: {fileID: -7248975650603562337, guid: 225aa47f0997c3c4d927e3e822ec323d, type: 3}
   description: "\uAC01\uC131\uC774 \uB05D\uB098\uBA74 \uAE30\uB825\uC744 \uC77C\uC815\uB7C9
     \uD68C\uBCF5\uD55C\uB2E4."
   cost: 1

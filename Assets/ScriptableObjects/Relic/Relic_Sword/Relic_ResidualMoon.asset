@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::RelicData
   relicId: sword_residialmoon
   relicName: "\uC794\uC6D4"
-  icon: {fileID: 0}
+  icon: {fileID: 3978710155941839102, guid: 6f6b7fc4258caae44808538caad7a094, type: 3}
   description: "\uC55E\uC73C\uB85C \uC804\uC9C4\uD558\uBA70 \uAD00\uD1B5\uD558\uB294
     \uC801\uC5D0\uAC8C \uB370\uBBF8\uC9C0\uB97C \uC8FC\uB294 \uC1C4\uB3C4 \uC2A4\uD0AC\uC744
     \uCD94\uAC00\uD55C\uB2E4. \uC801 \uCC98\uCE58 \uC2DC \uC1C4\uB3C4 \uC2A4\uD0AC\uC744

@@ -18,7 +18,7 @@ MonoBehaviour:
   destroyAfter: 0.2
   extraAttackDamageSpec:
     damageType: 0
-    damageMultiplier: 2
+    damageMultiplier: 1
     canCritical: 0
     bonusPenetration: 0
     bonusDamageAmplification: 0

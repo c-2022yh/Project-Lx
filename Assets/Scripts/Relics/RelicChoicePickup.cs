@@ -8,6 +8,10 @@ public class RelicChoicePickup : MonoBehaviour
     [SerializeField]
     private RelicSelectionPanelUI relicSelectionPanel;
 
+
+    [Header("Relic Category")]
+    [SerializeField]
+    private RelicCategory relicCategory;
     //¡ﬂ∫π »πµÊ πÊ¡ˆ
     private bool isPicked;
 
@@ -36,7 +40,7 @@ public class RelicChoicePickup : MonoBehaviour
         isPicked = true;
 
         //¿Øπ∞ º±≈√√¢ ø≠±‚
-        relicSelectionPanel.OpenSelection();
+        relicSelectionPanel.OpenSelection(relicCategory);
 
         //»πµÊ ø¿∫Í¡ß∆Æ º˚±‚±‚
         gameObject.SetActive(false);

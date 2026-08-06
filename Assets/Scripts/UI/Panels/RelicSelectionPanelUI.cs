@@ -9,6 +9,8 @@ public class RelicSelectionPanelUI : MonoBehaviour
     [Header("Relic Pools")]
     [SerializeField] private RelicData[] swordRelics;
     [SerializeField] private RelicData[] orbRelics;
+    [SerializeField] private RelicData[] bodyRelics;
+
 
     [Header("Cards")]
     [SerializeField] private RelicCardUI[] relicCards;
@@ -27,35 +29,48 @@ public class RelicSelectionPanelUI : MonoBehaviour
     }
 
 
-    //유물 선택창 열기
-    public void OpenSelection()
+    //지정된 카테고리의 유물 선택창 열기
+    public void OpenSelection(RelicCategory category)
     {
         gameObject.SetActive(true);
 
-        List<RelicData> swordPool = CreateValidPool(swordRelics);
-        List<RelicData> orbPool = CreateValidPool(orbRelics);
+        List<RelicData> selectedPool;
 
-        //유물 3개를 뽑을 수 있는 카테고리만 후보에 추가
-        List<List<RelicData>> availablePools = new();
-
-        if (swordPool.Count >= ChoiceCount)
+        switch (category)
         {
-            availablePools.Add(swordPool);
+            case RelicCategory.Sword:
+                selectedPool = CreateValidPool(swordRelics);
+                break;
+
+            case RelicCategory.Orb:
+                selectedPool = CreateValidPool(orbRelics);
+                break;
+
+            case RelicCategory.Body:
+                selectedPool = CreateValidPool(bodyRelics);
+                break;
+
+            default:
+                Debug.LogWarning(
+                    $"[RelicSelectionPanelUI] 지원하지 않는 카테고리: {category}",
+                    this
+                );
+
+                CloseSelection();
+                return;
         }
 
-        if (orbPool.Count >= ChoiceCount)
+        if (selectedPool.Count < ChoiceCount)
         {
-            availablePools.Add(orbPool);
-        }
+            Debug.LogWarning(
+                $"[RelicSelectionPanelUI] {category} 유물이 " +
+                $"{ChoiceCount}개보다 적습니다.",
+                this
+            );
 
-        if (availablePools.Count == 0)
-        {
             CloseSelection();
             return;
         }
-
-        //검 / 보주 중 가능한 카테고리 하나를 랜덤 선택
-        List<RelicData> selectedPool = availablePools[UnityEngine.Random.Range(0, availablePools.Count)];
 
         ShowRandomRelics(selectedPool);
     }

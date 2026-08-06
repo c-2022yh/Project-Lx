@@ -63,7 +63,6 @@ public class EnemyHealthBar : MonoBehaviour
         float healthRatio =  maxHp <= 0f ? 0f : currentHp / maxHp;
 
         fillRect.localScale = new Vector3(Mathf.Clamp01(healthRatio), 1f, 1f);
-        Debug.Log($"[EnemyHealthBar] HP: {currentHp}/{maxHp}, " +  $"Ratio: {healthRatio}");
 
     }
 
