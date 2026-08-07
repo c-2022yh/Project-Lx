@@ -1,4 +1,4 @@
-using UnityEngine;
+ï»¿using UnityEngine;
 
 public class GameOverPanel : MonoBehaviour
 {
@@ -7,19 +7,19 @@ public class GameOverPanel : MonoBehaviour
         gameObject.SetActive(visible);
     }
 
-    // "´Ù½ÃÇÏ±â" ¹öÆ°
+    // "ë‹¤ì‹œí•˜ê¸°" ë²„íŠ¼
     public void OnRetryButton()
     {
-        Time.timeScale = 1f; // ¸ØÃè´ø ½Ã°£ µÇµ¹¸®±â
-        Debug.Log("[GameOverPanel] ´Ù½ÃÇÏ±â - ÇöÀç ¾À Àç½ÃÀÛ ¿¹Á¤");
-        // [TODO] ³ªÁß¿¡ ¾À Àç½ÃÀÛ ÄÚµå Ãß°¡
+        Time.timeScale = 1f; // ë©ˆì·„ë˜ ì‹œê°„ ë˜ëŒë¦¬ê¸°
+        Debug.Log("[GameOverPanel] ë‹¤ì‹œí•˜ê¸° - í˜„ì¬ ì”¬ ì¬ì‹œì‘ ì˜ˆì •");
+        // [TODO] ë‚˜ì¤‘ì— ì”¬ ì¬ì‹œì‘ ì½”ë“œ ì¶”ê°€
     }
 
-    // "¸ŞÀÎÀ¸·Î" ¹öÆ°
+    // "ë©”ì¸ìœ¼ë¡œ" ë²„íŠ¼
     public void OnMainMenuButton()
     {
         Time.timeScale = 1f;
-        Debug.Log("[GameOverPanel] ¸ŞÀÎ ¸Ş´º·Î ÀÌµ¿ ¿¹Á¤");
-        // [TODO] ³ªÁß¿¡ ¸ŞÀÎ ¸Ş´º ¾ÀÀ¸·Î
+        Debug.Log("[GameOverPanel] ë©”ì¸ ë©”ë‰´ë¡œ ì´ë™ ì˜ˆì •");
+        // [TODO] ë‚˜ì¤‘ì— ë©”ì¸ ë©”ë‰´ ì”¬ìœ¼ë¡œ
     }
 }

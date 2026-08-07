@@ -1,4 +1,4 @@
-using UnityEngine;
+ï»¿using UnityEngine;
 
 public class ControlGuidePanel : MonoBehaviour
 {
@@ -9,7 +9,7 @@ public class ControlGuidePanel : MonoBehaviour
 
     public void OnCloseButton()
     {
-        SetVisible(false);  // Á¶ÀÛ¹ı ²ô±â
-        UIManager.Instance.ShowPause();  // ÀÏ½ÃÁ¤Áö ´Ù½Ã ÄÑ±â
+        SetVisible(false);  // ì¡°ì‘ë²• ë„ê¸°
+        UIManager.Instance.ShowPause();  // ì¼ì‹œì •ì§€ ë‹¤ì‹œ ì¼œê¸°
     }
 }

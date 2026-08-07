@@ -1,57 +1,94 @@
 #if UNITY_EDITOR
 using UnityEditor;
+using UnityEditor.Events;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 
 /// <summary>
-/// ÀÎº¥Åä¸® UI¸¦ ÀÚµ¿À¸·Î »ı¼ºÇÏ´Â ¿¡µğÅÍ µµ±¸.
-/// Unity »ó´Ü ¸Ş´º Tools/UI ¡æ Build Inventory Panel Å¬¸¯À¸·Î ½ÇÇà.
+/// ì¸ë²¤í† ë¦¬ UIë¥¼ ìë™ìœ¼ë¡œ ìƒì„±í•˜ëŠ” ì—ë””í„° ë„êµ¬.
+/// Unity ìƒë‹¨ ë©”ë‰´ Tools/UI â†’ Build Inventory Panel í´ë¦­ìœ¼ë¡œ ì‹¤í–‰.
+///
+/// [ì½”ìŠ¤íŠ¸ì œ ë²„ì „]
+/// - A/S/D/F ê³ ì • ìŠ¬ë¡¯ ì—†ìŒ. ì¥ì°©/í•´ì œ ë²„íŠ¼ 2ê°œ + ì½”ìŠ¤íŠ¸ ì˜ˆì‚° í‘œì‹œ.
+/// - ëª¨ë“  TMP í…ìŠ¤íŠ¸ì— í•œê¸€ í°íŠ¸(TerrarumSans)ë¥¼ ìë™ìœ¼ë¡œ ì§€ì •.
+/// - InventoryPanel ì»´í¬ë„ŒíŠ¸ë¥¼ ë¶™ì´ê³  ì¸ìŠ¤í™í„° ì°¸ì¡°ê¹Œì§€ ìë™ ì—°ê²°.
+/// - UIManagerì˜ inventoryPanel ì°¸ì¡°ë„ ìë™ ì¬ì—°ê²°.
 /// </summary>
 public static class InventoryUIBuilder
 {
+    // í•œê¸€ í°íŠ¸ ì—ì…‹ ê²½ë¡œ
+    private const string KoreanFontPath = "Assets/TextMesh Pro/Fonts/TerrarumSansBitmap SDF.asset";
+
+    // ìœ ë¬¼ ì¹¸ í”„ë¦¬íŒ¹ ê²½ë¡œ (ì—†ìœ¼ë©´ ìë™ ìƒì„±)
+    private const string RelicSlotPrefabPath = "Assets/Prefabs/UI/RelicSlot.prefab";
+
+    private static TMP_FontAsset koreanFont;
+
+    private static TMP_FontAsset KoreanFont
+    {
+        get
+        {
+            if (koreanFont == null)
+                koreanFont = AssetDatabase.LoadAssetAtPath<TMP_FontAsset>(KoreanFontPath);
+            return koreanFont;
+        }
+    }
+
     [MenuItem("Tools/UI/Build Inventory Panel")]
     public static void BuildInventoryPanel()
     {
-        // Popup_Canvas Ã£±â
+        // í•œê¸€ í°íŠ¸ê°€ ì—†ìœ¼ë©´ ë§Œë“¤ì–´ë´ì•¼ ì‚¬ê°í˜•ë§Œ ë‚˜ì˜¤ë‹ˆ ë¯¸ë¦¬ ë§‰ìŒ
+        if (KoreanFont == null)
+        {
+            EditorUtility.DisplayDialog(
+                "í•œê¸€ í°íŠ¸ ì—†ìŒ",
+                "í°íŠ¸ ì—ì…‹ì„ ì°¾ì„ ìˆ˜ ì—†ìŠµë‹ˆë‹¤:\n" + KoreanFontPath + "\n\n" +
+                "ê²½ë¡œê°€ ë°”ë€Œì—ˆë‹¤ë©´ InventoryUIBuilder.csì˜ KoreanFontPathë¥¼ ìˆ˜ì •í•´ì£¼ì„¸ìš”.",
+                "í™•ì¸");
+            return;
+        }
+
+        // Popup_Canvas ì°¾ê¸°
         GameObject popupCanvas = GameObject.Find("Popup_Canvas");
         if (popupCanvas == null)
         {
             EditorUtility.DisplayDialog(
-                "Popup_Canvas ¾øÀ½",
-                "Hierarchy¿¡ Popup_Canvas°¡ ¾ø½À´Ï´Ù. ¸ÕÀú Popup_Canvas¸¦ ¸¸µé¾îÁÖ¼¼¿ä.",
-                "È®ÀÎ");
+                "Popup_Canvas ì—†ìŒ",
+                "Hierarchyì— Popup_Canvasê°€ ì—†ìŠµë‹ˆë‹¤.\nì”¬ì— UI_Rootë¥¼ ë¨¼ì € ì˜¬ë ¤ì£¼ì„¸ìš”.",
+                "í™•ì¸");
             return;
         }
 
-        // ÀÌ¹Ì InventoryPanelÀÌ ÀÖÀ¸¸é °æ°í
+        // ì´ë¯¸ InventoryPanelì´ ìˆìœ¼ë©´ ì§€ìš°ê³  ìƒˆë¡œ
         Transform existing = popupCanvas.transform.Find("InventoryPanel");
         if (existing != null)
         {
             bool replace = EditorUtility.DisplayDialog(
-                "ÀÌ¹Ì Á¸ÀçÇÔ",
-                "InventoryPanelÀÌ ÀÌ¹Ì ÀÖ½À´Ï´Ù. »èÁ¦ÇÏ°í »õ·Î ¸¸µé±î¿ä?",
-                "»èÁ¦ÇÏ°í »õ·Î ¸¸µé±â", "Ãë¼Ò");
+                "ì´ë¯¸ ìˆìŒ",
+                "InventoryPanelì´ ì´ë¯¸ ìˆìŠµë‹ˆë‹¤.\nì§€ìš°ê³  ì½”ìŠ¤íŠ¸ì œ ë²„ì „ìœ¼ë¡œ ìƒˆë¡œ ë§Œë“¤ê¹Œìš”?\n\n" +
+                "(ì¸ìŠ¤í™í„° ì°¸ì¡°ëŠ” ë¹Œë”ê°€ ìë™ìœ¼ë¡œ ë‹¤ì‹œ ì—°ê²°í•©ë‹ˆë‹¤)",
+                "ì§€ìš°ê³  ìƒˆë¡œ ë§Œë“¤ê¸°", "ì·¨ì†Œ");
             if (!replace) return;
             Object.DestroyImmediate(existing.gameObject);
         }
 
-        // === InventoryPanel ·çÆ® ===
+        // InventoryPanel ë£¨íŠ¸
         GameObject inventoryPanel = CreateUIObject("InventoryPanel", popupCanvas.transform);
         SetStretch(inventoryPanel, 0, 0, 0, 0);
 
-        // === ¹İÅõ¸í ¹è°æ ===
-        GameObject bg = CreateImage("Background", inventoryPanel.transform, new Color(0, 0, 0, 200f / 255f));
+        // ë°˜íˆ¬ëª… ë°°ê²½
+        GameObject bg = CreateImage("Background", inventoryPanel.transform, new Color(0f, 0f, 0f, 200f / 255f));
         SetStretch(bg, 0, 0, 0, 0);
 
-        // === Å¸ÀÌÆ²: À¯¹° ===
-        GameObject titleRelic = CreateTMPText("Title_Relic", inventoryPanel.transform, "À¯¹°", 40, FontStyles.Bold);
+        // íƒ€ì´í‹€: ìœ ë¬¼
+        GameObject titleRelic = CreateTMPText("Title_Relic", inventoryPanel.transform, "ìœ ë¬¼", 40, FontStyles.Bold);
         SetAnchorAndPos(titleRelic, AnchorType.TopLeft, 80, -60, 300, 50);
 
-        // === À¯¹° ±×¸®µå ¿µ¿ª ===
+        // ë³´ìœ  ìœ ë¬¼ ê·¸ë¦¬ë“œ
         GameObject relicGrid = CreateUIObject("RelicGrid", inventoryPanel.transform);
         SetStretch(relicGrid, 80, 120, 1100, 400);
-        var gridLayout = relicGrid.AddComponent<GridLayoutGroup>();
+        GridLayoutGroup gridLayout = relicGrid.AddComponent<GridLayoutGroup>();
         gridLayout.padding = new RectOffset(10, 10, 10, 10);
         gridLayout.cellSize = new Vector2(100, 100);
         gridLayout.spacing = new Vector2(10, 10);
@@ -61,46 +98,46 @@ public static class InventoryUIBuilder
         gridLayout.constraint = GridLayoutGroup.Constraint.FixedColumnCount;
         gridLayout.constraintCount = 5;
 
-        // === ¼³¸í ¿µ¿ª ===
+        // ì„¤ëª…ì°½
         GameObject descPanel = CreateUIObject("DescriptionPanel", inventoryPanel.transform);
         SetStretch(descPanel, 1150, 120, 80, 400);
 
-        // Å« ¾ÆÀÌÄÜ
+        // í° ì•„ì´ì½˜
         GameObject descIcon = CreateImage("Desc_Icon", descPanel.transform, Color.white);
         SetAnchorAndPos(descIcon, AnchorType.TopCenter, 0, -100, 150, 150);
-        descIcon.GetComponent<Image>().enabled = false; // ÃÊ±â¿£ ¾È º¸ÀÌ°Ô
+        descIcon.GetComponent<Image>().enabled = false;
 
-        // À¯¹° ÀÌ¸§
-        GameObject descName = CreateTMPText("Desc_Name", descPanel.transform, "À¯¹° ÀÌ¸§", 36, FontStyles.Bold);
+        // ìœ ë¬¼ ì´ë¦„
+        GameObject descName = CreateTMPText("Desc_Name", descPanel.transform, "ìœ ë¬¼ ì´ë¦„", 36, FontStyles.Bold);
         SetStretchTop(descName, 0, 260, 0, 60);
         descName.GetComponent<TextMeshProUGUI>().alignment = TextAlignmentOptions.Center;
 
-        // À¯¹° ¼³¸í
-        GameObject descText = CreateTMPText("Desc_Text", descPanel.transform, "¿©±â¿¡ À¯¹° ¼³¸íÀÌ Ç¥½ÃµË´Ï´Ù.", 22, FontStyles.Normal);
+        // ìœ ë¬¼ ì„¤ëª…
+        GameObject descText = CreateTMPText("Desc_Text", descPanel.transform, "ì—¬ê¸°ì— ìœ ë¬¼ ì„¤ëª…ì´ í‘œì‹œë©ë‹ˆë‹¤.", 22, FontStyles.Normal);
         SetStretchTop(descText, 20, 330, 20, 200);
         descText.GetComponent<TextMeshProUGUI>().alignment = TextAlignmentOptions.TopLeft;
 
-        // ÀåÂø ¹öÆ° 4°³ (A/S/D/F)
-        string[] slotKeys = { "A", "S", "D", "F" };
-        for (int i = 0; i < 4; i++)
-        {
-            GameObject btn = CreateButton($"Button_Equip{slotKeys[i]}", descPanel.transform, $"{slotKeys[i]}¿¡ ÀåÂø");
-            SetAnchorAndPos(btn, AnchorType.BottomLeft, i * 130, 100, 120, 40);
-        }
+        // ì¥ì°© / í•´ì œ ë²„íŠ¼ 2ê°œ (ì½”ìŠ¤íŠ¸ì œ)
+        GameObject btnEquip = CreateButton("Button_Equip", descPanel.transform, "ì¥ì°©");
+        SetAnchorAndPos(btnEquip, AnchorType.BottomLeft, 0, 100, 120, 40);
 
-        // ÇØÁ¦ ¹öÆ°
-        GameObject btnUnequip = CreateButton("Button_Unequip", descPanel.transform, "ÇØÁ¦");
-        SetAnchorAndPos(btnUnequip, AnchorType.BottomLeft, 0, 40, 200, 40);
+        GameObject btnUnequip = CreateButton("Button_Unequip", descPanel.transform, "í•´ì œ");
+        SetAnchorAndPos(btnUnequip, AnchorType.BottomLeft, 140, 100, 120, 40);
 
-        // === ÀåÂø ¿µ¿ª Å¸ÀÌÆ² ===
-        GameObject titleEquip = CreateTMPText("Title_Equip", inventoryPanel.transform, "ÀåÂø Áß", 28, FontStyles.Bold);
+        // ì½”ìŠ¤íŠ¸ ì˜ˆì‚° í‘œì‹œ
+        GameObject budgetText = CreateTMPText("BudgetText", descPanel.transform, "ì½”ìŠ¤íŠ¸: 0 / 5", 28, FontStyles.Bold);
+        SetAnchorAndPos(budgetText, AnchorType.BottomLeft, 0, 40, 300, 40);
+        budgetText.GetComponent<TextMeshProUGUI>().alignment = TextAlignmentOptions.MidlineLeft;
+
+        // ì¥ì°© ëª©ë¡ íƒ€ì´í‹€
+        GameObject titleEquip = CreateTMPText("Title_Equip", inventoryPanel.transform, "ì¥ì°© ì¤‘", 28, FontStyles.Bold);
         SetStretchBottom(titleEquip, 0, 340, 0, 40);
         titleEquip.GetComponent<TextMeshProUGUI>().alignment = TextAlignmentOptions.Center;
 
-        // === ÀåÂø ½½·Ô 4°³ ===
+        // ì¥ì°© ìŠ¬ë¡¯ ì»¨í…Œì´ë„ˆ (ë¹ˆ ì±„ë¡œ ë‘ . ëŸ°íƒ€ì„ì— InventoryPanelì´ ì±„ì›€)
         GameObject equipContainer = CreateUIObject("EquipSlotContainer", inventoryPanel.transform);
         SetStretchBottom(equipContainer, 400, 120, 400, 200);
-        var hLayout = equipContainer.AddComponent<HorizontalLayoutGroup>();
+        HorizontalLayoutGroup hLayout = equipContainer.AddComponent<HorizontalLayoutGroup>();
         hLayout.spacing = 30;
         hLayout.childAlignment = TextAnchor.MiddleCenter;
         hLayout.childControlWidth = false;
@@ -108,38 +145,112 @@ public static class InventoryUIBuilder
         hLayout.childForceExpandWidth = false;
         hLayout.childForceExpandHeight = false;
 
-        for (int i = 0; i < 4; i++)
-        {
-            GameObject equipSlot = CreateImage($"EquipSlot_{slotKeys[i]}", equipContainer.transform,
-                new Color(40f / 255f, 40f / 255f, 50f / 255f, 200f / 255f));
-            RectTransform rt = equipSlot.GetComponent<RectTransform>();
-            rt.sizeDelta = new Vector2(120, 120);
+        // InventoryPanel ì»´í¬ë„ŒíŠ¸ ë¶™ì´ê³  ì°¸ì¡° ìë™ ì—°ê²°
+        InventoryPanel panel = inventoryPanel.AddComponent<InventoryPanel>();
+        GameObject relicSlotPrefab = GetOrCreateRelicSlotPrefab();
 
-            // ¾ÆÀÌÄÜ ÀÚ¸®
-            GameObject icon = CreateImage("Icon", equipSlot.transform, Color.white);
-            SetStretch(icon, 15, 15, 15, 15);
-            icon.GetComponent<Image>().enabled = false; // ÃÊ±â¿£ ¾È º¸ÀÌ°Ô
+        SerializedObject so = new SerializedObject(panel);
+        SetRef(so, "relicGrid", relicGrid.transform);
+        SetRef(so, "relicSlotPrefab", relicSlotPrefab);
+        SetRef(so, "descIcon", descIcon.GetComponent<Image>());
+        SetRef(so, "descName", descName.GetComponent<TextMeshProUGUI>());
+        SetRef(so, "descText", descText.GetComponent<TextMeshProUGUI>());
+        SetRef(so, "equipContainer", equipContainer.transform);
+        SetRef(so, "budgetText", budgetText.GetComponent<TextMeshProUGUI>());
+        so.ApplyModifiedPropertiesWithoutUndo();
 
-            // ¶óº§
-            GameObject label = CreateTMPText("Label", equipSlot.transform, slotKeys[i], 24, FontStyles.Bold);
-            SetAnchorAndPos(label, AnchorType.BottomCenter, 0, 15, 40, 30);
-            label.GetComponent<TextMeshProUGUI>().alignment = TextAlignmentOptions.Center;
-        }
+        // ë²„íŠ¼ onClick ìë™ ì—°ê²°
+        UnityEventTools.AddPersistentListener(btnEquip.GetComponent<Button>().onClick, panel.OnEquipButton);
+        UnityEventTools.AddPersistentListener(btnUnequip.GetComponent<Button>().onClick, panel.OnUnequipButton);
 
-        // === ½ÃÀÛ ½Ã¿£ ºñÈ°¼º ===
+        // UIManagerì˜ inventoryPanel ì°¸ì¡° ì¬ì—°ê²°
+        string uiManagerNote = RelinkUIManager(panel);
+
+        // ì‹œì‘ ì‹œì—” ë¹„í™œì„±
         inventoryPanel.SetActive(false);
 
-        // ¼±ÅÃÇØ¼­ º¸¿©ÁÖ±â
+        EditorUtility.SetDirty(inventoryPanel);
         Selection.activeGameObject = inventoryPanel;
+
         EditorUtility.DisplayDialog(
-            "¿Ï·á!",
-            "InventoryPanel »ı¼º ¿Ï·á!\nHierarchy¿¡¼­ Ã¼Å©¹Ú½º ÄÑ¼­ È®ÀÎÇÏ¼¼¿ä.",
-            "È®ÀÎ");
+            "ì™„ë£Œ!",
+            "InventoryPanel(ì½”ìŠ¤íŠ¸ì œ) ìƒì„± ì™„ë£Œ!\n\n" +
+            "- í•œê¸€ í°íŠ¸ ìë™ ì§€ì •ë¨\n" +
+            "- ì¥ì°©/í•´ì œ ë²„íŠ¼ 2ê°œ + ì½”ìŠ¤íŠ¸ ì˜ˆì‚° í‘œì‹œ\n" +
+            "- InventoryPanel ì¸ìŠ¤í™í„° ì°¸ì¡° ìë™ ì—°ê²°ë¨\n" +
+            "- " + uiManagerNote + "\n\n" +
+            "ë‚¨ì€ ìˆ˜ë™ ì‘ì—…: InventoryPanelì˜ Owned Relics ëª©ë¡ì— RelicDataë¥¼ ë„£ì–´ì£¼ì„¸ìš”.\n" +
+            "ê·¸ë¦¬ê³  Popup_Canvas í”„ë¦¬íŒ¹ì— Apply í•˜ëŠ” ê²ƒë„ ìŠì§€ ë§ˆì„¸ìš”!",
+            "í™•ì¸");
     }
 
-    // ¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡
-    //  ÇïÆÛ ÇÔ¼öµé
-    // ¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡
+    // ìœ ë¬¼ ì¹¸(RelicSlot) í”„ë¦¬íŒ¹ - ì—†ìœ¼ë©´ ë§Œë“¤ì–´ì¤Œ
+    private static GameObject GetOrCreateRelicSlotPrefab()
+    {
+        GameObject existing = AssetDatabase.LoadAssetAtPath<GameObject>(RelicSlotPrefabPath);
+        if (existing != null) return existing;
+
+        GameObject slot = new GameObject("RelicSlot", typeof(RectTransform));
+        Image slotBg = slot.AddComponent<Image>();
+        slotBg.color = new Color(40f / 255f, 40f / 255f, 50f / 255f, 200f / 255f);
+        Button slotBtn = slot.AddComponent<Button>();
+        slotBtn.targetGraphic = slotBg;
+        slot.GetComponent<RectTransform>().sizeDelta = new Vector2(100, 100);
+
+        // ì•„ì´ì½˜ (InventoryPanelì´ Find("Icon")ìœ¼ë¡œ ì°¾ìŒ)
+        GameObject icon = CreateImage("Icon", slot.transform, Color.white);
+        SetStretch(icon, 10, 10, 10, 10);
+        icon.GetComponent<Image>().enabled = false;
+
+        // ì½”ìŠ¤íŠ¸ í‘œì‹œ (InventoryPanelì´ Find("Cost")ë¡œ ì°¾ìŒ)
+        GameObject cost = CreateTMPText("Cost", slot.transform, "0", 20, FontStyles.Bold);
+        SetAnchorAndPos(cost, AnchorType.BottomRight, -6, 6, 30, 26);
+        cost.GetComponent<TextMeshProUGUI>().alignment = TextAlignmentOptions.BottomRight;
+
+        if (!AssetDatabase.IsValidFolder("Assets/Prefabs/UI"))
+        {
+            if (!AssetDatabase.IsValidFolder("Assets/Prefabs"))
+                AssetDatabase.CreateFolder("Assets", "Prefabs");
+            AssetDatabase.CreateFolder("Assets/Prefabs", "UI");
+        }
+
+        GameObject saved = PrefabUtility.SaveAsPrefabAsset(slot, RelicSlotPrefabPath);
+        Object.DestroyImmediate(slot);
+        Debug.Log("[InventoryUIBuilder] RelicSlot í”„ë¦¬íŒ¹ ìƒì„±ë¨: " + RelicSlotPrefabPath);
+        return saved;
+    }
+
+    // UIManagerì˜ inventoryPanel í•„ë“œë¥¼ ìƒˆ íŒ¨ë„ë¡œ ë‹¤ì‹œ ì—°ê²°
+    private static string RelinkUIManager(InventoryPanel panel)
+    {
+        UIManager uiManager = Object.FindAnyObjectByType<UIManager>();
+        if (uiManager == null)
+            return "UIManagerë¥¼ ëª» ì°¾ì•„ì„œ ì¬ì—°ê²° ëª» í–ˆìŠµë‹ˆë‹¤ (ì§ì ‘ ì—°ê²° í•„ìš”)";
+
+        SerializedObject so = new SerializedObject(uiManager);
+        SerializedProperty prop = so.FindProperty("inventoryPanel");
+        if (prop == null)
+            return "UIManagerì— inventoryPanel í•„ë“œê°€ ì—†ìŠµë‹ˆë‹¤";
+
+        prop.objectReferenceValue = panel;
+        so.ApplyModifiedPropertiesWithoutUndo();
+        EditorUtility.SetDirty(uiManager);
+        return "UIManager.inventoryPanel ìë™ ì¬ì—°ê²°ë¨";
+    }
+
+    // SerializedObjectë¡œ private [SerializeField] í•„ë“œì— ê°’ ë„£ê¸°
+    private static void SetRef(SerializedObject so, string fieldName, Object value)
+    {
+        SerializedProperty prop = so.FindProperty(fieldName);
+        if (prop == null)
+        {
+            Debug.LogWarning("[InventoryUIBuilder] InventoryPanelì— '" + fieldName + "' í•„ë“œê°€ ì—†ìŠµë‹ˆë‹¤. ì§ì ‘ ì—°ê²°í•´ì£¼ì„¸ìš”.");
+            return;
+        }
+        prop.objectReferenceValue = value;
+    }
+
+    // ---------------- ë³´ì¡° í•¨ìˆ˜ë“¤ ----------------
 
     private enum AnchorType { TopLeft, TopCenter, TopRight, BottomLeft, BottomCenter, BottomRight, Center }
 
@@ -162,6 +273,10 @@ public static class InventoryUIBuilder
     {
         GameObject go = CreateUIObject(name, parent);
         TextMeshProUGUI tmp = go.AddComponent<TextMeshProUGUI>();
+
+        // í•œê¸€ í°íŠ¸ ì§€ì • (ì´ê²Œ ì—†ìœ¼ë©´ ê¸°ë³¸ LiberationSansë¼ í•œê¸€ì´ ë„¤ëª¨ë¡œ ë‚˜ì˜´)
+        if (KoreanFont != null) tmp.font = KoreanFont;
+
         tmp.text = text;
         tmp.fontSize = fontSize;
         tmp.fontStyle = style;
@@ -178,7 +293,6 @@ public static class InventoryUIBuilder
         Button btn = go.AddComponent<Button>();
         btn.targetGraphic = bg;
 
-        // ¹öÆ° ¾È¿¡ ÅØ½ºÆ®
         GameObject textGO = CreateTMPText("Text", go.transform, text, 18, FontStyles.Normal);
         SetStretch(textGO, 0, 0, 0, 0);
         textGO.GetComponent<TextMeshProUGUI>().alignment = TextAlignmentOptions.Center;
@@ -220,13 +334,20 @@ public static class InventoryUIBuilder
         RectTransform rt = go.GetComponent<RectTransform>();
         switch (anchor)
         {
-            case AnchorType.TopLeft: rt.anchorMin = new Vector2(0, 1); rt.anchorMax = new Vector2(0, 1); rt.pivot = new Vector2(0, 1); break;
-            case AnchorType.TopCenter: rt.anchorMin = new Vector2(0.5f, 1); rt.anchorMax = new Vector2(0.5f, 1); rt.pivot = new Vector2(0.5f, 1); break;
-            case AnchorType.TopRight: rt.anchorMin = new Vector2(1, 1); rt.anchorMax = new Vector2(1, 1); rt.pivot = new Vector2(1, 1); break;
-            case AnchorType.BottomLeft: rt.anchorMin = new Vector2(0, 0); rt.anchorMax = new Vector2(0, 0); rt.pivot = new Vector2(0, 0); break;
-            case AnchorType.BottomCenter: rt.anchorMin = new Vector2(0.5f, 0); rt.anchorMax = new Vector2(0.5f, 0); rt.pivot = new Vector2(0.5f, 0); break;
-            case AnchorType.BottomRight: rt.anchorMin = new Vector2(1, 0); rt.anchorMax = new Vector2(1, 0); rt.pivot = new Vector2(1, 0); break;
-            case AnchorType.Center: rt.anchorMin = new Vector2(0.5f, 0.5f); rt.anchorMax = new Vector2(0.5f, 0.5f); rt.pivot = new Vector2(0.5f, 0.5f); break;
+            case AnchorType.TopLeft:
+                rt.anchorMin = new Vector2(0, 1); rt.anchorMax = new Vector2(0, 1); rt.pivot = new Vector2(0, 1); break;
+            case AnchorType.TopCenter:
+                rt.anchorMin = new Vector2(0.5f, 1); rt.anchorMax = new Vector2(0.5f, 1); rt.pivot = new Vector2(0.5f, 1); break;
+            case AnchorType.TopRight:
+                rt.anchorMin = new Vector2(1, 1); rt.anchorMax = new Vector2(1, 1); rt.pivot = new Vector2(1, 1); break;
+            case AnchorType.BottomLeft:
+                rt.anchorMin = new Vector2(0, 0); rt.anchorMax = new Vector2(0, 0); rt.pivot = new Vector2(0, 0); break;
+            case AnchorType.BottomCenter:
+                rt.anchorMin = new Vector2(0.5f, 0); rt.anchorMax = new Vector2(0.5f, 0); rt.pivot = new Vector2(0.5f, 0); break;
+            case AnchorType.BottomRight:
+                rt.anchorMin = new Vector2(1, 0); rt.anchorMax = new Vector2(1, 0); rt.pivot = new Vector2(1, 0); break;
+            case AnchorType.Center:
+                rt.anchorMin = new Vector2(0.5f, 0.5f); rt.anchorMax = new Vector2(0.5f, 0.5f); rt.pivot = new Vector2(0.5f, 0.5f); break;
         }
         rt.anchoredPosition = new Vector2(x, y);
         rt.sizeDelta = new Vector2(w, h);

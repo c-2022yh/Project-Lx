@@ -1,30 +1,30 @@
-using UnityEngine;
+ï»¿using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using System.Collections.Generic;
 
 public class InventoryPanel : MonoBehaviour
 {
-    [Header("¿¬°á")]
+    [Header("ì—°ê²°")]
     [SerializeField] private Transform relicGrid;
     [SerializeField] private GameObject relicSlotPrefab;
 
-    [Header("À¯¹° µ¥ÀÌÅÍ")]
+    [Header("ìœ ë¬¼ ë°ì´í„°")]
     [SerializeField] private List<RelicData> ownedRelics;
 
-    [Header("¼³¸íÃ¢ ¿¬°á")]
+    [Header("ì„¤ëª…ì°½ ì—°ê²°")]
     [SerializeField] private Image descIcon;
     [SerializeField] private TextMeshProUGUI descName;
     [SerializeField] private TextMeshProUGUI descText;
 
-    [Header("ÀåÂø/¿¹»ê ¿¬°á")]
+    [Header("ì¥ì°©/ì˜ˆì‚° ì—°ê²°")]
     [SerializeField] private Transform equipContainer;   // EquipSlotContainer
     [SerializeField] private TextMeshProUGUI budgetText; // BudgetText
-    [SerializeField] private int maxBudget = 5;          // ÃÑ ¿¹»ê
+    [SerializeField] private int maxBudget = 5;          // ì´ ì˜ˆì‚°
 
     private bool isBuilt = false;
-    private RelicData selectedRelic;                  // Áö±İ ¼±ÅÃÇÑ À¯¹°
-    private List<RelicData> equippedRelics = new List<RelicData>(); // ÀåÂøÇÑ À¯¹°µé
+    private RelicData selectedRelic;                  // ì§€ê¸ˆ ì„ íƒí•œ ìœ ë¬¼
+    private List<RelicData> equippedRelics = new List<RelicData>(); // ì¥ì°©í•œ ìœ ë¬¼ë“¤
 
     public void SetVisible(bool visible)
     {
@@ -66,24 +66,24 @@ public class InventoryPanel : MonoBehaviour
 
     private void ShowDescription(RelicData relic)
     {
-        selectedRelic = relic; // ¼±ÅÃÇÑ À¯¹° ±â¾ï
+        selectedRelic = relic; // ì„ íƒí•œ ìœ ë¬¼ ê¸°ì–µ
 
         if (descIcon != null) { descIcon.sprite = relic.icon; descIcon.enabled = true; }
         if (descName != null) descName.text = relic.relicName;
-        if (descText != null) descText.text = $"{relic.description}\n\nÄÚ½ºÆ®: {relic.cost}";
+        if (descText != null) descText.text = $"{relic.description}\n\nì½”ìŠ¤íŠ¸: {relic.cost}";
     }
 
-    // "ÀåÂø" ¹öÆ°ÀÌ È£Ãâ
+    // "ì¥ì°©" ë²„íŠ¼ì´ í˜¸ì¶œ
     public void OnEquipButton()
     {
-        if (selectedRelic == null) return;                  // ¼±ÅÃÇÑ °Å ¾øÀ¸¸é ¹«½Ã
-        if (equippedRelics.Contains(selectedRelic)) return; // ÀÌ¹Ì ÀåÂøÇßÀ¸¸é ¹«½Ã
+        if (selectedRelic == null) return;                  // ì„ íƒí•œ ê±° ì—†ìœ¼ë©´ ë¬´ì‹œ
+        if (equippedRelics.Contains(selectedRelic)) return; // ì´ë¯¸ ì¥ì°©í–ˆìœ¼ë©´ ë¬´ì‹œ
 
         int currentCost = GetCurrentCost();
         if (currentCost + selectedRelic.cost > maxBudget)
         {
-            Debug.Log("[ÀÎº¥Åä¸®] ¿¹»ê ÃÊ°ú! ÀåÂø ºÒ°¡");
-            return; // ¿¹»ê ³ÑÀ¸¸é ÀåÂø °ÅºÎ
+            Debug.Log("[ì¸ë²¤í† ë¦¬] ì˜ˆì‚° ì´ˆê³¼! ì¥ì°© ë¶ˆê°€");
+            return; // ì˜ˆì‚° ë„˜ìœ¼ë©´ ì¥ì°© ê±°ë¶€
         }
 
         equippedRelics.Add(selectedRelic);
@@ -91,7 +91,7 @@ public class InventoryPanel : MonoBehaviour
         UpdateBudgetText();
     }
 
-    // "ÇØÁ¦" ¹öÆ°ÀÌ È£Ãâ
+    // "í•´ì œ" ë²„íŠ¼ì´ í˜¸ì¶œ
     public void OnUnequipButton()
     {
         if (selectedRelic == null) return;
@@ -102,7 +102,7 @@ public class InventoryPanel : MonoBehaviour
         UpdateBudgetText();
     }
 
-    // ÇöÀç »ç¿ë ÁßÀÎ ÄÚ½ºÆ® ÇÕ
+    // í˜„ì¬ ì‚¬ìš© ì¤‘ì¸ ì½”ìŠ¤íŠ¸ í•©
     private int GetCurrentCost()
     {
         int sum = 0;
@@ -110,21 +110,21 @@ public class InventoryPanel : MonoBehaviour
         return sum;
     }
 
-    // ¿¹»ê ÅØ½ºÆ® °»½Å
+    // ì˜ˆì‚° í…ìŠ¤íŠ¸ ê°±ì‹ 
     private void UpdateBudgetText()
     {
         if (budgetText != null)
-            budgetText.text = $"ÄÚ½ºÆ®: {GetCurrentCost()} / {maxBudget}";
+            budgetText.text = $"ì½”ìŠ¤íŠ¸: {GetCurrentCost()} / {maxBudget}";
     }
 
-    // ÀåÂø ½½·Ô ¿µ¿ª¿¡ ÀåÂøÇÑ À¯¹° ¾ÆÀÌÄÜ ´Ù½Ã ±×¸®±â
+    // ì¥ì°© ìŠ¬ë¡¯ ì˜ì—­ì— ì¥ì°©í•œ ìœ ë¬¼ ì•„ì´ì½˜ ë‹¤ì‹œ ê·¸ë¦¬ê¸°
     private void RefreshEquipSlots()
     {
-        // ±âÁ¸ Ç¥½Ã ´Ù Áö¿ì±â
+        // ê¸°ì¡´ í‘œì‹œ ë‹¤ ì§€ìš°ê¸°
         foreach (Transform child in equipContainer)
             Destroy(child.gameObject);
 
-        // ÀåÂøÇÑ À¯¹°¸¶´Ù ¾ÆÀÌÄÜ Ä­ ¸¸µé±â (ÇÁ¸®ÆÕ ÀçÈ°¿ë)
+        // ì¥ì°©í•œ ìœ ë¬¼ë§ˆë‹¤ ì•„ì´ì½˜ ì¹¸ ë§Œë“¤ê¸° (í”„ë¦¬íŒ¹ ì¬í™œìš©)
         foreach (RelicData relic in equippedRelics)
         {
             GameObject slot = Instantiate(relicSlotPrefab, equipContainer);
