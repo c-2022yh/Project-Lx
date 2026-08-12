@@ -5,30 +5,44 @@ public class EnemyPooler : MonoBehaviour
 {
     public static EnemyPooler Instance;
 
-    [SerializeField] private GameObject enemyPrefab;
-    [SerializeField] private int poolSize = 10;
-    private List<GameObject> pool = new List<GameObject>();
+    [Header("Enemy Prefabs")]
+    [SerializeField] private List<GameObject> enemyPrefabs;
 
-    void Awake()
+    [SerializeField] private int poolSizePerPrefab = 10;
+
+    private readonly List<GameObject> pool = new();
+
+
+    private void Awake()
     {
         Instance = this;
 
-        for (int i = 0; i < poolSize; i++)
+        foreach (GameObject enemyPrefab in enemyPrefabs)
         {
-            GameObject obj = Instantiate(enemyPrefab);
-
-            //매니저 자식으로 넣어 정리
-            obj.transform.SetParent(this.transform); 
-            obj.SetActive(false);
-            pool.Add(obj);
+            for (int i = 0; i < poolSizePerPrefab; i++)
+            {
+                GameObject obj = Instantiate(enemyPrefab, transform);
+            
+                obj.SetActive(false);
+                pool.Add(obj);
+            }
         }
     }
 
+
     public GameObject GetEnemy()
     {
-        foreach (var enemy in pool)
+        //랜덤 위치부터 탐색해서 적 종류가 한쪽으로 몰리지 않게 함
+        int startIndex = UnityEngine.Random.Range(0, pool.Count);
+
+        for (int i = 0; i < pool.Count; i++)
         {
-            if (!enemy.activeInHierarchy) return enemy;
+            int index = (startIndex + i) % pool.Count;
+
+            if (!pool[index].activeInHierarchy)
+            {
+                return pool[index];
+            }
         }
 
         return null;

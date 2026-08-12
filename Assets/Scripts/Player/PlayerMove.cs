@@ -34,6 +34,11 @@ public class PlayerMove : MonoBehaviour
     public float dashCooldown = 0.5f;
     public float lastDashTime; //대쉬 내부쿨 관련 변수
 
+    //대쉬 잠금 여부 (유물 장착 시 해제)
+    [SerializeField] private bool isDashUnlocked = false;
+
+    public bool IsDashUnlocked => isDashUnlocked;
+
     //공중에서 마찰계수 정하기 ->스무딩 저항값
     [Header("Friction (Lerp)")]
     [Range(0, 1)] public float airControlMin = 0.8f;
@@ -135,9 +140,32 @@ public class PlayerMove : MonoBehaviour
         }
     }
 
+    //현재 최대 공중 점프 횟수
+    public int MaxAirJumps => maxAirJumps;
+
+    //최대 공중 점프 횟수 변경
+    public void ModifyMaxAirJumps(int amount)
+    {
+        maxAirJumps += amount;
+
+        //공중 점프 횟수는 음수가 되지 않도록 제한
+        maxAirJumps = Mathf.Max(0, maxAirJumps);
+
+        //장착 중이거나 해제되었을 때
+        //현재 남은 공중 점프 횟수도 같이 보정
+        remainingAirJumps = Mathf.Clamp(remainingAirJumps + amount, 0, maxAirJumps);
+
+        UnityEngine.Debug.Log(
+            $"Max Air Jumps: {maxAirJumps}, " +
+            $"Remaining Air Jumps: {remainingAirJumps}"
+        );
+    }
+
+
     /// 대쉬 함수
     public void ExecuteDash()
     {
+        if (!isDashUnlocked) return;
         if (Time.time < lastDashTime + dashCooldown) return;
 
         lastDashTime = Time.time;
@@ -195,6 +223,12 @@ public class PlayerMove : MonoBehaviour
         //중력 되돌리기
         player.SetPhysicsFreeze(false);
 
+    }
+
+    //대쉬 해금 여부 설정
+    public void SetDashUnlocked(bool unlocked)
+    {
+        isDashUnlocked = unlocked;
     }
 
 }

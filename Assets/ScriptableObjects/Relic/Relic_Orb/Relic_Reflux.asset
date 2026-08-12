@@ -1,0 +1,23 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 97e8976399dde06499934e413ed35ac2, type: 3}
+  m_Name: Relic_Reflux
+  m_EditorClassIdentifier: Assembly-CSharp::RelicData
+  relicId: orb_reflux
+  relicName: "\uD658\uB958"
+  icon: {fileID: -7248975650603562337, guid: 225aa47f0997c3c4d927e3e822ec323d, type: 3}
+  description: "\uAC01\uC131\uC774 \uB05D\uB098\uBA74 \uAE30\uB825\uC744 \uC77C\uC815\uB7C9
+    \uD68C\uBCF5\uD55C\uB2E4."
+  cost: 1
+  category: 1
+  effects:
+  - {fileID: 11400000, guid: 212fe7dc06323ad4988095fc7c0f4cd6, type: 2}

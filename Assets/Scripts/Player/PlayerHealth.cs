@@ -5,14 +5,14 @@ using UnityEngine;
 public class PlayerHealth : MonoBehaviour
 {
     // HUD 체력바 갱신용 이벤트
-    public event Action<int, int> OnHealthChanged;
+    public event Action<float, float> OnHealthChanged;
 
-    public int CurrentHealth => currentHealth;
-    public int MaxHealth => maxHealth;
+    public float CurrentHealth => currentHealth;
+    public float MaxHealth => maxHealth;
 
     [Header("Health")]
-    [SerializeField] private int maxHealth = 5;
-    [SerializeField] private int currentHealth;
+    [SerializeField] private float maxHealth = 10f;
+    [SerializeField] private float currentHealth;
 
     [Header("Invincible")]
     [SerializeField] private float invincibleTime = 1.0f;
@@ -62,13 +62,15 @@ public class PlayerHealth : MonoBehaviour
         OnHealthChanged?.Invoke(currentHealth, maxHealth);
     }
 
+    //리스폰 위치 저장
     public void SetRespawnPoint(Vector2 newRespawnPosition)
     {
         respawnPosition = newRespawnPosition;
         Debug.Log("Respawn point saved: " + respawnPosition);
     }
 
-    public void TakeDamage(int damage, Vector2 damageSourcePosition)
+    //데미지 입음
+    public void TakeDamage(float damage, Vector2 damageSourcePosition)
     {
         if (isInvincible) return;
         if (currentHealth <= 0) return;
@@ -79,7 +81,7 @@ public class PlayerHealth : MonoBehaviour
 
         Debug.Log("Player damaged. HP: " + currentHealth);
 
-        // 체력이 바뀔 때마다 HUD 알림
+        //체력이 바뀔 때마다 HUD 알림
         OnHealthChanged?.Invoke(currentHealth, maxHealth);
 
         if (currentHealth <= 0)
@@ -91,6 +93,63 @@ public class PlayerHealth : MonoBehaviour
         StartCoroutine(HitRoutine(damageSourcePosition));
     }
 
+    //회복 처리
+    public void Heal(float amount)
+    {
+        if (amount <= 0) return;
+
+        //사망 상태거나 이미 최대 체력이면 회복하지 않음
+        if (currentHealth <= 0 || currentHealth >= maxHealth) return;
+
+        currentHealth = Mathf.Clamp(currentHealth + amount, 0, maxHealth);
+
+        Debug.Log("Player healed. HP: " + currentHealth);
+
+        OnHealthChanged?.Invoke(currentHealth, maxHealth);
+    }
+
+    //최대 체력 증가
+    public void AddMaxHealth(int amount, bool healAddedAmount = true)
+    {
+        if (amount <= 0) return;
+
+        maxHealth += amount;
+
+        //장착할 때 늘어난 체력만큼 현재 체력도 채움
+        //사망 상태에서는 장착만으로 부활하지 않게 처리
+        if (healAddedAmount && currentHealth > 0)
+        {
+            currentHealth += amount;
+        }
+
+        if (currentHealth > maxHealth)
+        {
+            currentHealth = maxHealth;
+        }
+
+        OnHealthChanged?.Invoke(currentHealth, maxHealth);
+    }
+
+
+    //최대 체력 감소
+    public void RemoveMaxHealth(int amount)
+    {
+        if (amount <= 0) return;
+
+        maxHealth -= amount;
+
+        //최대 체력은 최소 1 유지
+        if (maxHealth < 1) maxHealth = 1;
+        
+        //현재 체력이 새 최대 체력을 넘으면 같이 조정
+        if (currentHealth > maxHealth) currentHealth = maxHealth;
+        
+
+        OnHealthChanged?.Invoke(currentHealth, maxHealth);
+    }
+
+
+    //피격 처리 코루틴
     private IEnumerator HitRoutine(Vector2 damageSourcePosition)
     {
         isInvincible = true;
@@ -104,7 +163,7 @@ public class PlayerHealth : MonoBehaviour
 
         yield return new WaitForSeconds(hitStunTime);
 
-        // 피격 경직 중에만 Normal로 되돌림
+        //피격 경직 중에만 Normal로 되돌림
         if (playerActionState != null && playerActionState.isHitStunned)
         {
             playerActionState.EnterNormal();
@@ -115,6 +174,8 @@ public class PlayerHealth : MonoBehaviour
         isInvincible = false;
     }
 
+
+    //넉백 적용
     private void ApplyKnockback(Vector2 damageSourcePosition)
     {
         if (rb == null) return;
@@ -125,6 +186,7 @@ public class PlayerHealth : MonoBehaviour
         rb.linearVelocity = new Vector2(dirX * knockbackX, knockbackY);
     }
 
+    //무적 시간 동안 깜빡임 코루틴
     private IEnumerator InvincibleBlinkRoutine()
     {
         float timer = 0f;
@@ -147,6 +209,9 @@ public class PlayerHealth : MonoBehaviour
         }
     }
 
+
+
+    //플레이어 사망 처리
     private void Die()
     {
         Debug.Log("Player Dead");
@@ -172,6 +237,7 @@ public class PlayerHealth : MonoBehaviour
         StartCoroutine(RespawnRoutine());
     }
 
+    //리스폰 코루틴
     private IEnumerator RespawnRoutine()
     {
         yield return new WaitForSeconds(respawnDelay);

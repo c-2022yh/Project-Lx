@@ -1,0 +1,16 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cc7aefb0fdf6b9f48a42d9a85d69ed80, type: 3}
+  m_Name: RFX_Devour
+  m_EditorClassIdentifier: Assembly-CSharp::DevourRelicEffect
+  devourSkill: {fileID: 11400000, guid: be9906743b4499c4aad9d914a99a2fe1, type: 2}
+  healPerHit: 0.5

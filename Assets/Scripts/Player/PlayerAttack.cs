@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using System.Collections;
@@ -49,6 +50,28 @@ public class PlayerAttack : MonoBehaviour
     private Coroutine attackCoroutine;
 
     private Vector3 originLocalPos;
+
+    //기본공격 이펙트가 실제 생성됐을 때 알림
+    public event Action<AttackPattern, Vector3, Quaternion, float>
+        AttackEffectCreated;
+    
+    //기본공격이 적에게 실제로 적중했을 때 알림
+    public event Action OnAttackHit;
+
+    //기본공격이 적에게 실제로 적중했을 때 알림
+    public void NotifyAttackHit()
+    {
+        OnAttackHit?.Invoke();
+    }
+
+
+
+    /*
+    AttackPattern = 지금 사용한 1타/2타 패턴
+    Vector3       = 원래 이펙트 생성 위치
+    Quaternion    = 원래 이펙트 회전값
+    float         = 공격 방향
+    */
 
     void Awake()
     {
@@ -112,7 +135,7 @@ public class PlayerAttack : MonoBehaviour
         DamageInfo damageInfo = CreateDamageInfo(pattern);
 
         //공격 이펙트 생성 및 히트박스 활성화  
-        SpawnAttackEffect(pattern, dir, damageInfo);
+        SpawnAttackEffect(pattern, dir, damageInfo, isAirAttack);
         
         //공격 활성 시간
         yield return ActiveAttackPhase(pattern, dir);
@@ -132,17 +155,13 @@ public class PlayerAttack : MonoBehaviour
     //데미지 정보 생성
     private DamageInfo CreateDamageInfo(AttackPattern pattern)
     {
-        return DamageInfo.Create(
-            playerStats.Offense,
-            pattern.damageSpec,
-            gameObject
-        );
+        return DamageInfo.Create(playerStats.Offense, pattern.damageSpec, gameObject);
     }
 
     
 
     //이펙트 보였다 사라지게끔 함수
-    private void SpawnAttackEffect(AttackPattern pattern, float dir, DamageInfo damageInfo)
+    private void SpawnAttackEffect(AttackPattern pattern, float dir, DamageInfo damageInfo, bool isAirAttack)
     {
         if (pattern.attackEffectPrefab == null) return;
 
@@ -161,16 +180,20 @@ public class PlayerAttack : MonoBehaviour
         SpriteRenderer sr = effectObj.GetComponentInChildren<SpriteRenderer>();
         if (sr != null) sr.flipX = dir < 0f;
 
+        //기본공격 이펙트 생성을 알림
+        AttackEffectCreated?.Invoke(pattern, spawnPos, rotation, dir);
+
         //공격 히트박스 찾기
         AttackEffectHitbox hitbox = effectObj.GetComponentInChildren<AttackEffectHitbox>();
         if (hitbox != null)
         {
-            hitbox.SetAttackInfo(damageInfo, dir);
+            hitbox.SetAttackInfo(damageInfo, dir, NotifyAttackHit);
 
             //히트박스 활성화 후 일정 시간 뒤 비활성화
             StartCoroutine(DisableHitboxAfter(hitbox, pattern.activeTime));
         }
 
+        
         //공중 공격은 이펙트가 플레이어를 따라오게
         if (pattern.followPlayer)
         {
@@ -224,6 +247,78 @@ public class PlayerAttack : MonoBehaviour
         if (hitbox != null) hitbox.DisableHitbox();
     }
 
+    //황혼 추가콤보 적용 전용 메소드
+    //외부 효과가 지상 콤보 패턴을 추가할 때 사용
+    public bool AddGroundAttackPattern(AttackPattern pattern)
+    {
+        if (pattern == null) return false;
+
+        //배열이 없는 경우 새로 생성
+        if (groundPatterns == null)
+        {
+            groundPatterns = new AttackPattern[] { pattern };
+            comboIndex = 0;
+            return true;
+        }
+
+        //같은 패턴이 이미 들어 있다면 중복 추가 방지
+        foreach (AttackPattern existingPattern in groundPatterns)
+        {
+            if (ReferenceEquals(existingPattern, pattern)) return false;
+        }
+
+        AttackPattern[] newPatterns = new AttackPattern[groundPatterns.Length + 1];
+
+        Array.Copy(groundPatterns, newPatterns, groundPatterns.Length);
+        newPatterns[newPatterns.Length - 1] = pattern;
+        groundPatterns = newPatterns;
+
+        //장착 순간 콤보가 꼬이지 않도록 초기화
+        comboIndex = 0;
+
+        return true;
+    }
+
+    //외부 효과가 추가했던 지상 콤보 패턴 제거
+    public bool RemoveGroundAttackPattern(AttackPattern pattern)
+    {
+        if (pattern == null) return false;
+
+        if (groundPatterns == null || groundPatterns.Length == 0) return false;
+        
+        int removeIndex = -1;
+
+        for (int i = 0; i < groundPatterns.Length; i++)
+        {
+            if (ReferenceEquals(groundPatterns[i], pattern))
+            {
+                removeIndex = i;
+                break;
+            }
+        }
+
+        //배열에서 찾지 못함
+        if (removeIndex < 0) return false;
+
+        AttackPattern[] newPatterns = new AttackPattern[groundPatterns.Length - 1];
+
+        int newIndex = 0;
+
+        for (int i = 0; i < groundPatterns.Length; i++)
+        {
+            if (i == removeIndex) continue;
+
+            newPatterns[newIndex] = groundPatterns[i];
+            newIndex++;
+        }
+
+        groundPatterns = newPatterns;
+
+        //제거 후 인덱스가 범위를 벗어나지 않게 초기화
+        comboIndex = 0;
+
+        return true;
+    }
 
 }
 

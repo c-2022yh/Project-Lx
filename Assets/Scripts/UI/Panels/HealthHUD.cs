@@ -31,7 +31,7 @@ public class HealthHUD : MonoBehaviour
         }
     }
 
-    private void UpdateHealthBar(int currentHealth, int maxHealth)
+    private void UpdateHealthBar(float currentHealth, float maxHealth)
     {
         if (healthFill == null) return;
         
