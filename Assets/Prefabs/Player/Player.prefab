@@ -255,7 +255,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerMove
   moveSpeed: 10
-  jumpForce: 15
+  jumpForce: 20
   jumpCooldown: 0.2
   maxAirJumps: 1
   coyoteTime: 0.15

@@ -3,8 +3,8 @@ guid: 2cbc78a028313f44b9bbb6bee8061a42
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -6099814895393525185
-    second: dash_06_0
+      213: -4856956221999801311
+    second: Dash_06_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -100,13 +100,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: dash_06_0
+      name: Dash_06_0
       rect:
         serializedVersion: 2
-        x: 192
-        y: 148
-        width: 248
-        height: 408
+        x: 54
+        y: 17
+        width: 211
+        height: 319
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -115,8 +115,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: f32be6cbbaa195ba0800000000000000
-      internalID: -6099814895393525185
+      spriteID: 12c1412ac00a89cb0800000000000000
+      internalID: -4856956221999801311
       vertices: []
       indices: 
       edges: []
@@ -135,7 +135,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      dash_06_0: -6099814895393525185
+      Dash_06_0: -4856956221999801311
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
