@@ -7,15 +7,11 @@ public class SuperState : PlayerState
 
     public override void EnterTransform()
     {
-        SyncVisualDirection(player.initialScale);
-        player.sr.color = Color.red;
-        Debug.Log("<color=red>각성!</color>");
 
     }
 
     public override void ExitTransform()
     {
-        Debug.Log("<color=white>각성 해제</color>");
 
     }
 

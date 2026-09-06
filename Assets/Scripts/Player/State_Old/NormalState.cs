@@ -7,9 +7,7 @@ public class NormalState : PlayerState
 
     public override void EnterTransform()
     {
-        SyncVisualDirection(player.initialScale);
-        player.sr.color = Color.green;
-        Physics2D.SyncTransforms();
+
     }
 
     public override void ExitTransform()

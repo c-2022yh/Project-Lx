@@ -52,16 +52,16 @@ public class PlayerMove : MonoBehaviour
         rb = GetComponent<Rigidbody2D>();
     }
 
+    //방향전환
     private void Flip()
     {
         if (player.ActionState.isAttacking ||
             player.ActionState.isDashing ||
-            player.ActionState.isSkillActive) return; //공격중이면 방향전환x
+            player.ActionState.isSkillActive) return;
 
         player.isFacingRight = !player.isFacingRight;
-        Vector3 newScale = player.transform.localScale;
-        newScale.x = Mathf.Abs(newScale.x) * (player.isFacingRight ? 1f : -1f);
-        player.transform.localScale = newScale;
+        player.sr.flipX = !player.isFacingRight; ;
+
     }
 
     ///이동 함수

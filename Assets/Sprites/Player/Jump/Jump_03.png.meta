@@ -103,8 +103,8 @@ TextureImporter:
       name: Jump_03_0
       rect:
         serializedVersion: 2
-        x: 117
-        y: 33
+        x: 85
+        y: 17
         width: 221
         height: 320
       alignment: 0
