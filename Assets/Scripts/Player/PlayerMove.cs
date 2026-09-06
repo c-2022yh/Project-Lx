@@ -179,6 +179,9 @@ public class PlayerMove : MonoBehaviour
 
         //대쉬 중 중력 잠시 끄기
         StartCoroutine(DashRoutine(dir));
+
+        //애니메이션 설정
+        player.Animation.PlayDash(0.12f);
     }
 
     private IEnumerator DashRoutine(float dir)
@@ -194,12 +197,7 @@ public class PlayerMove : MonoBehaviour
         if (ghost != null)
         {
             ghost.SetActive(true);
-            ghost.GetComponent<GhostEffect>().Init(
-                player.sr.sprite,
-                player.transform.position,
-                player.transform.rotation,
-                player.transform.localScale
-            );
+            ghost.GetComponent<GhostEffect>().Init(player.transform.position, player.sr.flipX);
         }
 
         //고정 이동 루프

@@ -1,14 +1,20 @@
+using System.Collections;
 using UnityEngine;
 
-// 플레이어의 애니메이션 출력을 처리하는 스크립트
+//플레이어의 애니메이션 출력을 처리하는 스크립트
 public class PlayerAnimation : MonoBehaviour
 {
     private Player player;
     private Animator animator;
 
+    //애니메이션 제어 변수
     private static readonly int Speed = Animator.StringToHash("Speed");
     private static readonly int IsGrounded = Animator.StringToHash("IsGrounded");
     private static readonly int VerticalVelocity = Animator.StringToHash("VerticalVelocity");
+    private static readonly int IsDashing = Animator.StringToHash("IsDashing");
+    private static readonly int IsDashAnimating = Animator.StringToHash("IsDashAnimating");
+
+    private bool isDashAnimating;
 
     private void Awake()
     {
@@ -21,5 +27,26 @@ public class PlayerAnimation : MonoBehaviour
         animator.SetFloat(Speed, Mathf.Abs(player.rb.linearVelocity.x));
         animator.SetBool(IsGrounded, player.isGrounded);
         animator.SetFloat(VerticalVelocity, player.rb.linearVelocity.y);
+        animator.SetBool(IsDashing, player.ActionState.isDashing);
     }
+
+
+    //대쉬 시간 후에도 대쉬모션을 유지하기 위한 함수
+    public void PlayDash(float holdTime)
+    {
+        StopAllCoroutines();
+        StartCoroutine(DashAnimationRoutine(holdTime));
+    }
+
+    private IEnumerator DashAnimationRoutine(float holdTime)
+    {
+        isDashAnimating = true;
+        animator.SetBool(IsDashAnimating, true);
+
+        yield return new WaitForSeconds(holdTime);
+
+        isDashAnimating = false;
+        animator.SetBool(IsDashAnimating, false);
+    }
+
 }
