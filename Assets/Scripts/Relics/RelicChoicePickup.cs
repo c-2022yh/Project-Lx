@@ -34,8 +34,8 @@ public class RelicChest : MonoBehaviour, IInteractable
 
         Debug.Log("Relic Chest Opened : " + gameObject.name);
 
-        // 일단 테스트용
-        // 나중에 상자 열린 스프라이트나 애니메이션으로 변경
+        //일단 테스트용
+        //나중에 상자 열린 스프라이트나 애니메이션으로 변경
     }
 
     private void OnTriggerEnter2D(Collider2D other)

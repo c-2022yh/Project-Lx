@@ -1,6 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!1 &302716006854552784
+--- !u!1 &7910553057862901481
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -8,40 +8,40 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 6806519720308926755}
-  - component: {fileID: 1922008627024900672}
-  - component: {fileID: 7653867029461170685}
-  - component: {fileID: -8353104645662142705}
-  m_Layer: 13
-  m_Name: Shrine
+  - component: {fileID: 6600056884393840366}
+  - component: {fileID: 6471398530283479147}
+  - component: {fileID: 4498363900662600447}
+  - component: {fileID: -7436604582824392157}
+  m_Layer: 6
+  m_Name: BreakableBrick
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &6806519720308926755
+--- !u!4 &6600056884393840366
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 302716006854552784}
+  m_GameObject: {fileID: 7910553057862901481}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 2, y: 5, z: 1}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!212 &1922008627024900672
+--- !u!212 &6471398530283479147
 SpriteRenderer:
   serializedVersion: 2
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 302716006854552784}
+  m_GameObject: {fileID: 7910553057862901481}
   m_Enabled: 1
   m_CastShadows: 0
   m_ReceiveShadows: 0
@@ -84,7 +84,7 @@ SpriteRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_Sprite: {fileID: 7482667652216324306, guid: 311925a002f4447b3a28927169b83ea6, type: 3}
-  m_Color: {r: 1, g: 1, b: 1, a: 0.39215687}
+  m_Color: {r: 1, g: 0.35026366, b: 0, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -93,13 +93,13 @@ SpriteRenderer:
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
   m_SpriteSortPoint: 0
---- !u!61 &7653867029461170685
+--- !u!61 &4498363900662600447
 BoxCollider2D:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 302716006854552784}
+  m_GameObject: {fileID: 7910553057862901481}
   m_Enabled: 1
   serializedVersion: 3
   m_Density: 1
@@ -123,7 +123,7 @@ BoxCollider2D:
   m_CallbackLayers:
     serializedVersion: 2
     m_Bits: 4294967295
-  m_IsTrigger: 1
+  m_IsTrigger: 0
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
@@ -139,19 +139,17 @@ BoxCollider2D:
   m_AutoTiling: 0
   m_Size: {x: 1, y: 1}
   m_EdgeRadius: 0
---- !u!114 &-8353104645662142705
+--- !u!114 &-7436604582824392157
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 302716006854552784}
+  m_GameObject: {fileID: 7910553057862901481}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1e3d61ec67bd4fa4abc49c1fe471b4f7, type: 3}
+  m_Script: {fileID: 11500000, guid: 5b553ab9decb24f46a7a34d2cd59c3dc, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::Shrine
-  respawnPoint: {fileID: 6806519720308926755}
-  spriteRenderer: {fileID: 1922008627024900672}
-  inactiveColor: {r: 1, g: 1, b: 1, a: 0.39215687}
-  activeColor: {r: 1, g: 0.9999916, b: 0.6179246, a: 0.39215687}
+  m_EditorClassIdentifier: Assembly-CSharp::BreakableBrick
+  requiredHitsToBreak: 1
+  breakEffectPrefab: {fileID: 0}
