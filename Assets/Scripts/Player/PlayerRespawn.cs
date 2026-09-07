@@ -15,7 +15,7 @@ public class PlayerRespawn : MonoBehaviour
     private PlayerActionState playerActionState;
 
     private Rigidbody2D rb;
-    private SpriteRenderer spriteRenderer;
+    [SerializeField] private SpriteRenderer sr;
 
 
     private void Awake()
@@ -26,7 +26,6 @@ public class PlayerRespawn : MonoBehaviour
         playerActionState = GetComponent<PlayerActionState>();
 
         rb = GetComponent<Rigidbody2D>();
-        spriteRenderer = GetComponent<SpriteRenderer>();
 
         //시작 위치를 기본 리스폰 위치로 사용
         respawnPosition = transform.position;
@@ -89,7 +88,7 @@ public class PlayerRespawn : MonoBehaviour
 
 
         if (playerHealth != null) playerHealth.RestoreHealthOnRespawn();
-        if (spriteRenderer != null) spriteRenderer.enabled = true;
+        if (sr != null) sr.enabled = true;
         if (playerActionState != null) playerActionState.RespawnToNormal();
         if (player != null) player.SetPhysicsFreeze(false);
         if (hitReaction != null) hitReaction.StartRespawnInvincible();

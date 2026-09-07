@@ -5,7 +5,7 @@ using UnityEngine;
 public class PlayerAnimation : MonoBehaviour
 {
     private Player player;
-    private Animator animator;
+    [SerializeField] private Animator animator;
 
     //애니메이션 제어 변수
     private static readonly int Speed = Animator.StringToHash("Speed");
@@ -27,7 +27,6 @@ public class PlayerAnimation : MonoBehaviour
     private void Awake()
     {
         player = GetComponent<Player>();
-        animator = GetComponent<Animator>();
     }
 
     private void Update()

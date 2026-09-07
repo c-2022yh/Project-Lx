@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 6697412681533666636}
   - component: {fileID: 6767095945404313491}
   m_Layer: 0
-  m_Name: RelicChoicePickup2
+  m_Name: RelicChest_Orb
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -105,8 +105,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 38b54376be6d5124e893a234b1eb972e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::RelicChoicePickup
-  relicSelectionPanel: {fileID: 6618570499243674766, guid: e360bd61ca46c9649b20acec3dba1d81, type: 3}
-  relicCategory: 1
+  relicSelectionPanel: {fileID: 0}
+  relicPool:
+  - {fileID: 11400000, guid: 9cdf442e82c7c324aa3798f20cc13aa0, type: 2}
+  - {fileID: 11400000, guid: b77c839046af69f49b6dbdab13c7325f, type: 2}
+  - {fileID: 11400000, guid: 974811fac3648cc4385fa4bfa630517c, type: 2}
 --- !u!58 &6767095945404313491
 CircleCollider2D:
   m_ObjectHideFlags: 0

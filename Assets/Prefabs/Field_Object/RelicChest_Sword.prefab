@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 6697412681533666636}
   - component: {fileID: 6767095945404313491}
   m_Layer: 0
-  m_Name: RelicChoicePickup3
+  m_Name: RelicChest_Sword
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -84,7 +84,7 @@ SpriteRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_Sprite: {fileID: -712631045867808456, guid: b670ab75dde984907b8570040daa08c5, type: 3}
-  m_Color: {r: 0.84313726, g: 0.98003507, b: 1, a: 1}
+  m_Color: {r: 1, g: 0.99823046, b: 0.8443396, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -105,8 +105,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 38b54376be6d5124e893a234b1eb972e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::RelicChoicePickup
-  relicSelectionPanel: {fileID: 6618570499243674766, guid: e360bd61ca46c9649b20acec3dba1d81, type: 3}
-  relicCategory: 2
+  relicSelectionPanel: {fileID: 0}
+  relicPool:
+  - {fileID: 11400000, guid: 1d27f38d02a9bf547a27951f4cc4ec08, type: 2}
+  - {fileID: 11400000, guid: 657164be750420f47abde78fe3a28ddf, type: 2}
+  - {fileID: 11400000, guid: 63c731e20f38318459bc5d72aff6f3e2, type: 2}
+  - {fileID: 11400000, guid: 4999950b9fa018b42ad9146b4fa25a73, type: 2}
 --- !u!58 &6767095945404313491
 CircleCollider2D:
   m_ObjectHideFlags: 0

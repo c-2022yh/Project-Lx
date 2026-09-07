@@ -25,13 +25,13 @@ public class PlayerHitReaction : MonoBehaviour
 
     private Rigidbody2D rb;
     private PlayerActionState playerActionState;
-    private SpriteRenderer spriteRenderer;
+
+    [SerializeField] private SpriteRenderer sr;
 
     private void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
         playerActionState = GetComponent<PlayerActionState>();
-        spriteRenderer = GetComponent<SpriteRenderer>();
     }
 
     //현재 데미지를 받을 수 있는지 확인하기
@@ -93,9 +93,9 @@ public class PlayerHitReaction : MonoBehaviour
 
         while (timer < invincibleTime)
         {
-            if (spriteRenderer != null)
+            if (sr != null)
             {
-                spriteRenderer.enabled = !spriteRenderer.enabled;
+                sr.enabled = !sr.enabled;
             }
 
             timer += blinkInterval;
@@ -103,9 +103,9 @@ public class PlayerHitReaction : MonoBehaviour
             yield return new WaitForSeconds(blinkInterval);
         }
 
-        if (spriteRenderer != null)
+        if (sr != null)
         {
-            spriteRenderer.enabled = true;
+            sr.enabled = true;
         }
     }
 

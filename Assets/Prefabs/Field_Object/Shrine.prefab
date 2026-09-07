@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 6806519720308926755}
   - component: {fileID: 1922008627024900672}
   - component: {fileID: 7653867029461170685}
+  - component: {fileID: -8353104645662142705}
   m_Layer: 0
   m_Name: Shrine
   m_TagString: Untagged
@@ -83,7 +84,7 @@ SpriteRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_Sprite: {fileID: 7482667652216324306, guid: 311925a002f4447b3a28927169b83ea6, type: 3}
-  m_Color: {r: 0.95248395, g: 1, b: 0.7122642, a: 0.45490196}
+  m_Color: {r: 1, g: 1, b: 1, a: 0.39215687}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -138,3 +139,19 @@ BoxCollider2D:
   m_AutoTiling: 0
   m_Size: {x: 1, y: 1}
   m_EdgeRadius: 0
+--- !u!114 &-8353104645662142705
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 302716006854552784}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1e3d61ec67bd4fa4abc49c1fe471b4f7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Shrine
+  respawnPoint: {fileID: 6806519720308926755}
+  spriteRenderer: {fileID: 1922008627024900672}
+  inactiveColor: {r: 1, g: 1, b: 1, a: 0.39215687}
+  activeColor: {r: 1, g: 0.9999916, b: 0.6179246, a: 0.39215687}

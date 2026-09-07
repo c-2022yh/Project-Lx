@@ -8,7 +8,8 @@ public class Player : MonoBehaviour
     //컴포넌트
     [Header("Components")]
     public Rigidbody2D rb { get; private set; }
-    public SpriteRenderer sr { get; private set; }
+    [SerializeField] private SpriteRenderer spriteRenderer;
+    public SpriteRenderer sr => spriteRenderer;
 
     //플레이어 상태 처리
     [Header("State Data")]
@@ -26,23 +27,11 @@ public class Player : MonoBehaviour
     private float originalGravity;
     private float originalDrag;
 
-    //현재 상호작용 가능한 제단 참조
-    private Shrine currentShrine;
-
-    public void SetCurrentShrine(Shrine shrine)
-    {
-        currentShrine = shrine;
-    }
-
-    public void ClearCurrentShrine(Shrine shrine)
-    {
-        if (currentShrine == shrine)
-        {
-            currentShrine = null;
-        }
-    }
+    //현재 상호작용 가능한 오브젝트 참조
+    private IInteractable currentInteractable;
 
     
+
 
     //컴포넌트 참조
     public PlayerState currentState { get; private set; }
@@ -64,7 +53,6 @@ public class Player : MonoBehaviour
     void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
-        sr = GetComponent<SpriteRenderer>();
         rb.freezeRotation = true;
 
         //스크립트 연결
@@ -117,10 +105,7 @@ public class Player : MonoBehaviour
     //public void OnTransformSuper(InputValue value) { if (value.isPressed && ActionState.CanTransform()) currentState?.OnTransformSuper(); }
     //public void OnTransformAnimal(InputValue value) { if (value.isPressed && ActionState.CanTransform()) currentState?.OnTransformAnimal(); }
 
-    //public void OnInteract(InputValue value) { if (value.isPressed)
-    //
-    
-    public void OnInteract() { currentShrine?.Activate(); }
+    public void OnInteract() { currentInteractable?.Interact(this); }
 
 
     public void ChangeState(PlayerState newState)
@@ -170,5 +155,18 @@ public class Player : MonoBehaviour
         }
     }
 
+    //현재 상호작용 가능한 오브젝트 설정
+    public void SetInteractable(IInteractable interactable)
+    {
+        currentInteractable = interactable;
+    }
+
+    public void ClearInteractable(IInteractable interactable)
+    {
+        if (currentInteractable == interactable)
+        {
+            currentInteractable = null;
+        }
+    }
 
 }
