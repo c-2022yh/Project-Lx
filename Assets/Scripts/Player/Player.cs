@@ -22,17 +22,36 @@ public class Player : MonoBehaviour
     Vector2 boxSize = new Vector2(0.7f, 0.1f); //캐릭터 너비에 맞춘 납작한 박스
     public LayerMask groundLayer;
 
-    [SerializeField] private GameObject ghostPrefab; //잔상 프리펩
-
     //중력 값을 저장하는 변수 freeze 함수 내부에서 사용
     private float originalGravity;
     private float originalDrag;
+
+    //현재 상호작용 가능한 제단 참조
+    private Shrine currentShrine;
+
+    public void SetCurrentShrine(Shrine shrine)
+    {
+        currentShrine = shrine;
+    }
+
+    public void ClearCurrentShrine(Shrine shrine)
+    {
+        if (currentShrine == shrine)
+        {
+            currentShrine = null;
+        }
+    }
+
+    
 
     //컴포넌트 참조
     public PlayerState currentState { get; private set; }
     public PlayerMove Move { get; private set; }
     public PlayerAttack Attack { get; private set; }
     public PlayerSkill Skill { get; private set; }
+    public PlayerHealth Health { get; private set; }
+    public PlayerHitReaction HitReaction { get; private set; }
+    public PlayerRespawn Respawn { get; private set; }
     public PlayerEnergy Energy { get; private set; }
     public PlayerAwakening Awakening { get; private set; }
     public PlayerActionState ActionState { get; private set; }
@@ -53,6 +72,9 @@ public class Player : MonoBehaviour
         Attack = GetComponent<PlayerAttack>();
         Skill = GetComponent<PlayerSkill>();
         Energy = GetComponent<PlayerEnergy>();
+        Health = GetComponent<PlayerHealth>();
+        HitReaction = GetComponent<PlayerHitReaction>();
+        Respawn = GetComponent<PlayerRespawn>();
         Awakening = GetComponent<PlayerAwakening>();
         ActionState = GetComponent<PlayerActionState>();
         Stats = GetComponent<PlayerStats>();
@@ -95,9 +117,12 @@ public class Player : MonoBehaviour
     //public void OnTransformSuper(InputValue value) { if (value.isPressed && ActionState.CanTransform()) currentState?.OnTransformSuper(); }
     //public void OnTransformAnimal(InputValue value) { if (value.isPressed && ActionState.CanTransform()) currentState?.OnTransformAnimal(); }
 
+    //public void OnInteract(InputValue value) { if (value.isPressed)
+    //
     
+    public void OnInteract() { currentShrine?.Activate(); }
 
-    
+
     public void ChangeState(PlayerState newState)
     {
         currentState?.ExitTransform();

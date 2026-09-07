@@ -27,12 +27,12 @@ public class EnemyContactHitbox : MonoBehaviour
 
     private void DamagePlayer(Collider2D other)
     {
-        PlayerHealth playerHealth = other.GetComponentInParent<PlayerHealth>();
-        if (playerHealth == null) return;
+        //PlayerHealth playerHealth = other.GetComponentInParent<PlayerHealth>();
+        //PlayerHitReaction playerHitReaction = other.GetComponentInParent<PlayerHitReaction>();
 
         //대쉬 중 + 착지 후 유예시간 동안 적 접촉 데미지 무시
-        if (playerHealth.IsIgnoringEnemyContact) return;
+        //if (playerHitReaction.IsIgnoringEnemyContact) return;
 
-        playerHealth.TakeDamage(damage, transform.position);
+        //playerHealth.TakeDamage(damage, transform.position);
     }
 }

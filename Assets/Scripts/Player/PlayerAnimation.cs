@@ -61,7 +61,6 @@ public class PlayerAnimation : MonoBehaviour
     //공격 애니메이션 재생 함수
     public void PlayAttack(int index)
     {
-        Debug.Log($"PlayAttack 호출됨 / index = {index}");
         animator.SetInteger(AttackIndex, index);
         animator.SetTrigger(Attack);
     }

@@ -26,6 +26,8 @@ GameObject:
   - component: {fileID: 8913146774277055173}
   - component: {fileID: 8811411989047366458}
   - component: {fileID: 1430454550019267386}
+  - component: {fileID: 1598087884320357999}
+  - component: {fileID: 8630995702748567631}
   m_Layer: 7
   m_Name: Player
   m_TagString: Player
@@ -496,6 +498,30 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &1598087884320357999
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3993503971577391545}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 67f5484ee39fd4a4aaf7c2dcd8d92fb2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerHitReaction
+--- !u!114 &8630995702748567631
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3993503971577391545}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1e1a2a98a45561f488ffaade76951e86, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerRespawn
 --- !u!1 &5055931255594380884
 GameObject:
   m_ObjectHideFlags: 0
