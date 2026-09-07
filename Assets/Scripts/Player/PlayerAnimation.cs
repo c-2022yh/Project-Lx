@@ -11,8 +11,16 @@ public class PlayerAnimation : MonoBehaviour
     private static readonly int Speed = Animator.StringToHash("Speed");
     private static readonly int IsGrounded = Animator.StringToHash("IsGrounded");
     private static readonly int VerticalVelocity = Animator.StringToHash("VerticalVelocity");
+
     private static readonly int IsDashing = Animator.StringToHash("IsDashing");
     private static readonly int IsDashAnimating = Animator.StringToHash("IsDashAnimating");
+
+    private static readonly int AttackIndex = Animator.StringToHash("AttackIndex");
+    private static readonly int Attack = Animator.StringToHash("Attack");
+    private static readonly int IsAttacking = Animator.StringToHash("IsAttacking");
+
+
+
 
     private bool isDashAnimating;
 
@@ -28,6 +36,7 @@ public class PlayerAnimation : MonoBehaviour
         animator.SetBool(IsGrounded, player.isGrounded);
         animator.SetFloat(VerticalVelocity, player.rb.linearVelocity.y);
         animator.SetBool(IsDashing, player.ActionState.isDashing);
+        animator.SetBool(IsAttacking, player.ActionState.isAttacking);
     }
 
 
@@ -48,5 +57,14 @@ public class PlayerAnimation : MonoBehaviour
         isDashAnimating = false;
         animator.SetBool(IsDashAnimating, false);
     }
+
+    //공격 애니메이션 재생 함수
+    public void PlayAttack(int index)
+    {
+        Debug.Log($"PlayAttack 호출됨 / index = {index}");
+        animator.SetInteger(AttackIndex, index);
+        animator.SetTrigger(Attack);
+    }
+    
 
 }

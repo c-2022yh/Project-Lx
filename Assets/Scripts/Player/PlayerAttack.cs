@@ -52,8 +52,7 @@ public class PlayerAttack : MonoBehaviour
     private Vector3 originLocalPos;
 
     //기본공격 이펙트가 실제 생성됐을 때 알림
-    public event Action<AttackPattern, Vector3, Quaternion, float>
-        AttackEffectCreated;
+    public event Action<AttackPattern, Vector3, Quaternion, float> AttackEffectCreated;
     
     //기본공격이 적에게 실제로 적중했을 때 알림
     public event Action OnAttackHit;
@@ -96,7 +95,8 @@ public class PlayerAttack : MonoBehaviour
         {
             if (airAttack == null) return;
 
-            attackCoroutine = StartCoroutine(AttackRoutine(airAttack, true));
+            //공중공격은 애니메이션 처리용 어택인덱스가 -1
+            attackCoroutine = StartCoroutine(AttackRoutine(airAttack, true, -1));
             return;
         }
 
@@ -105,19 +105,23 @@ public class PlayerAttack : MonoBehaviour
         //공격 후 일정 시간이 지나면 콤보 초기화
         if (Time.time > lastAttackEndTime + comboResetTime) comboIndex = 0;
 
+        int attackIndex = comboIndex;
         AttackPattern pattern = groundPatterns[comboIndex];
         comboIndex++;
         //콤보인덱스가 0-1에만 돌도록
         if (comboIndex >= groundPatterns.Length) comboIndex = 0;
 
-        attackCoroutine = StartCoroutine(AttackRoutine(pattern, false));
+        attackCoroutine = StartCoroutine(AttackRoutine(pattern, false, attackIndex));
     }
 
 
-    private IEnumerator AttackRoutine(AttackPattern pattern, bool isAirAttack)
+    private IEnumerator AttackRoutine(AttackPattern pattern, bool isAirAttack, int attackIndex)
     {
         //상태 진입
         player.ActionState.EnterAttack();
+
+        //공격 애니메이션 재생
+        player.Animation.PlayAttack(attackIndex);
 
         //플레이어 바라보는 방향 설정
         float dir = player.isFacingRight ? 1f : -1f;
@@ -126,6 +130,7 @@ public class PlayerAttack : MonoBehaviour
         {
             //지상공격은 시작 시 x축 이동 제거
             player.rb.linearVelocity = new Vector2(0f, player.rb.linearVelocity.y);
+
         }
 
         //선딜
@@ -140,6 +145,7 @@ public class PlayerAttack : MonoBehaviour
         //공격 활성 시간
         yield return ActiveAttackPhase(pattern, dir);
 
+        
         //후딜
         yield return new WaitForSeconds(pattern.recoveryTime);
 

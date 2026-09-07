@@ -28972,6 +28972,10 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 8365761532581290843, guid: 36ba43a03c37b6448be36953396a32ab, type: 3}
+      propertyPath: isDashUnlocked
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
