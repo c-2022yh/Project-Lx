@@ -53,6 +53,15 @@ public class AttackEffectHitbox : MonoBehaviour
             return;
         }
 
+        //파괴 가능한 벽돌 처리
+        BreakableBrick breakableBrick = other.GetComponentInParent<BreakableBrick>();
+
+        if (breakableBrick != null)
+        {
+            breakableBrick.HitBrick();
+            return;
+        }
+
 
         //공통 피격 대상 탐색
         IDamageable target = other.GetComponentInParent<IDamageable>();

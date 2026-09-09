@@ -19,9 +19,9 @@ public class PiercingDashSkillData : AttackSkillData
     {
 
         if (p == null) yield break;
-        
-        PlayerHealth playerHealth = p.GetComponent<PlayerHealth>();
-        playerHealth?.BeginEnemyContactIgnore();
+
+        PlayerHitReaction hitReaction = p.GetComponent<PlayerHitReaction>();
+        hitReaction?.BeginEnemyContactIgnore();
 
         float dir = p.isFacingRight ? 1f : -1f;
 
@@ -37,11 +37,6 @@ public class PiercingDashSkillData : AttackSkillData
         //해시셋 (한번 충돌한 적은 다시 판정하면 안되므로 해시셋으로 관리)
         HashSet<Enemy> hitEnemies = new HashSet<Enemy>();
 
-        //레이어마스크 생성
-        int playerLayer = LayerMask.NameToLayer("Player");
-        int enemyLayerIndex = LayerMask.NameToLayer("Enemy");
-        bool canIgnoreCollision = playerLayer != -1 && enemyLayerIndex != -1;
-        
         p.SetPhysicsFreeze(true);
 
         //공격 정보 생성
@@ -73,14 +68,13 @@ public class PiercingDashSkillData : AttackSkillData
         p.SetPhysicsFreeze(false);
 
         //무적 판정 적용
-        playerHealth?.EndEnemyContactIgnoreAfterDelay(contactIgnoreAfterDash);
+        hitReaction?.EndEnemyContactIgnoreAfterDelay(contactIgnoreAfterDash);
 
 
     }
 
     //데미지 함수    //HashSet<Enemy> hitEnemies 이미 맞은 적 목록
-    private void DamageEnemiesDuringDash(Player p, float dir, HashSet<Enemy> hitEnemies, 
-        DamageInfo damageInfo)
+    private void DamageEnemiesDuringDash(Player p, float dir, HashSet<Enemy> hitEnemies, DamageInfo damageInfo)
     { 
         //중심부 설정
         Vector2 center = (Vector2)p.transform.position + new Vector2(dashHitBoxOffset.x * dir, dashHitBoxOffset.y);

@@ -1,48 +1,59 @@
-
 using UnityEngine;
 
-//필드에서 획득하면 유물 선택창을 여는 오브젝트
-public class RelicChoicePickup : MonoBehaviour
+//상호작용하면 유물 선택창을 여는 보물상자
+public class RelicChest : MonoBehaviour, IInteractable
 {
     [Header("UI")]
-    [SerializeField]
-    private RelicSelectionPanelUI relicSelectionPanel;
+    [SerializeField] private RelicSelectionPanelUI relicSelectionPanel;
 
+    [Header("Relic Pool")]
+    [SerializeField] private RelicData[] relicPool;
 
-    [Header("Relic Category")]
-    [SerializeField]
-    private RelicCategory relicCategory;
-    //중복 획득 방지
-    private bool isPicked;
+    private bool isOpened;
 
+    public string InteractionText => "열기";
 
     private void Awake()
     {
-        //선택창이 비활성화 상태여도 찾도록 설정
         if (relicSelectionPanel == null)
         {
             relicSelectionPanel = FindFirstObjectByType<RelicSelectionPanelUI>(FindObjectsInactive.Include);
         }
     }
 
+    public void Interact(Player player)
+    {
+        if (isOpened) return;
+        if (relicSelectionPanel == null) return;
+
+        bool opened = relicSelectionPanel.OpenSelection(relicPool);
+
+        if (!opened) return;
+
+        isOpened = true;
+
+        Debug.Log("Relic Chest Opened : " + gameObject.name);
+
+        //일단 테스트용
+        //나중에 상자 열린 스프라이트나 애니메이션으로 변경
+    }
 
     private void OnTriggerEnter2D(Collider2D other)
     {
-        if (isPicked) return;
+        Player player = other.GetComponentInParent<Player>();
 
-        if (!other.CompareTag("Player")) return;
+        if (player == null) return;
+        if (isOpened) return;
 
-        if (relicSelectionPanel == null)
-        {
-            return;
-        }
+        player.SetInteractable(this);
+    }
 
-        isPicked = true;
+    private void OnTriggerExit2D(Collider2D other)
+    {
+        Player player = other.GetComponentInParent<Player>();
 
-        //유물 선택창 열기
-        relicSelectionPanel.OpenSelection(relicCategory);
+        if (player == null) return;
 
-        //획득 오브젝트 숨기기
-        gameObject.SetActive(false);
+        player.ClearInteractable(this);
     }
 }

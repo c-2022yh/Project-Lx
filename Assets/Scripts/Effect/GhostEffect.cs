@@ -1,31 +1,31 @@
 using UnityEngine;
 
+//잔상 이펙트 처리 스크립트
 public class GhostEffect : MonoBehaviour
 {
     private SpriteRenderer sr;
     private float alpha;
     [SerializeField] private float fadeSpeed = 2f;
 
-    public void Init(Sprite currentSprite, Vector3 pos, Quaternion rot, Vector3 scale)
+    public void Init(Vector3 pos, bool flipX)
     {
         if (sr == null) sr = GetComponent<SpriteRenderer>();
 
-        //이미지 받아오기
-        sr.sprite = currentSprite;
-
-        //위치와 크기 받아오기
+        //위치 받아오기
         transform.position = pos;
-        transform.rotation = rot;
-        transform.localScale = scale;
+
+        //방향 받아오기
+        sr.flipX = flipX;
 
         // 알파값 조절
         alpha = 1f;
-        sr.color = new Color(1f, 1f, 0.8f, 0.5f); 
+        sr.color = new Color(1f, 1f, 1f, 0.5f); 
+        
     }
     private void Update()
     {
         alpha -= Time.deltaTime * fadeSpeed;
-        sr.color = new Color(1f, 0.2f, 0.2f, alpha);
+        sr.color = new Color(1f, 1f, 1f, alpha);
 
         if (alpha <= 0)
         {
