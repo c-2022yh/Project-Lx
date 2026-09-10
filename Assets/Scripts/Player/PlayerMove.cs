@@ -45,11 +45,17 @@ public class PlayerMove : MonoBehaviour
     [Range(0f, 0.3f)] public float groundSmooth = 0.01f;
     [Range(0f, 0.5f)] public float airSmooth = 0.1f;
 
+    //잔상 생성기
+    private GhostPooler ghostPooler;
+
+
     private void Awake()
     {
         //컴포넌트 연결
         player = GetComponent<Player>();
         rb = GetComponent<Rigidbody2D>();
+        ghostPooler = GetComponentInChildren<GhostPooler>();
+
     }
 
     //방향전환
@@ -193,7 +199,7 @@ public class PlayerMove : MonoBehaviour
         player.SetPhysicsFreeze(true);
 
         //대쉬 시작 지점에 잔상
-        GameObject ghost = GhostPooler.Instance.GetGhost();
+        GameObject ghost = ghostPooler.GetGhost();
         if (ghost != null)
         {
             ghost.SetActive(true);

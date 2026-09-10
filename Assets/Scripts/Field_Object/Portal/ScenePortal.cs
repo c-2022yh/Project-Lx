@@ -1,17 +1,28 @@
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 //상호작용 가능한 포탈
 public class ScenePortal : MonoBehaviour, IInteractable
 {
+    [Header("Scene Transition")]
+    [SerializeField] private string targetSceneName;
+    [SerializeField] private string targetSpawnId;
+
     private Player player;
 
     public string InteractionText => "이동";
 
     public void Interact(Player player)
     {
-        Debug.Log("포탈 상호작용 성공");
+        if (string.IsNullOrEmpty(targetSceneName))
+        {
+            Debug.LogWarning("이동할 씬이 지정되지 않았습니다.", this);
+            return;
+        }
 
-        // 나중에 여기서 씬 이동 처리
+        SceneTransitionData.TargetSpawnId = targetSpawnId;
+
+        SceneManager.LoadScene(targetSceneName);
     }
 
     private void OnTriggerEnter2D(Collider2D other)
@@ -31,7 +42,6 @@ public class ScenePortal : MonoBehaviour, IInteractable
         if (foundPlayer == null || foundPlayer != player) return;
 
         player.ClearInteractable(this);
-
         player = null;
     }
 }

@@ -1,24 +1,19 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+//잔상 생성 관리 오브젝트 풀러
 public class GhostPooler : MonoBehaviour
 {
-    public static GhostPooler Instance;
-
     [SerializeField] private GameObject ghostPrefab;
     [SerializeField] private int poolSize = 30;
+
     private List<GameObject> pool = new List<GameObject>();
 
-    void Awake()
+    private void Awake()
     {
-        Instance = this;
-
         for (int i = 0; i < poolSize; i++)
         {
-            GameObject obj = Instantiate(ghostPrefab);
-
-            // 하이어라키 정리를 위해 매니저 자식으로 넣기
-            obj.transform.SetParent(this.transform);
+            GameObject obj = Instantiate(ghostPrefab, transform);
 
             obj.SetActive(false);
             pool.Add(obj);
@@ -27,15 +22,17 @@ public class GhostPooler : MonoBehaviour
 
     public GameObject GetGhost()
     {
-        foreach (var ghost in pool)
+        foreach (GameObject ghost in pool)
         {
-            if (!ghost.activeInHierarchy) return ghost;
+            if (ghost == null) continue;
+            if (!ghost.activeInHierarchy)  return ghost;
         }
 
-        GameObject newGhost = Instantiate(ghostPrefab);
-        newGhost.transform.SetParent(this.transform);
+        GameObject newGhost = Instantiate(ghostPrefab, transform);
+
         newGhost.SetActive(false);
         pool.Add(newGhost);
+
         return newGhost;
     }
 }
