@@ -14,6 +14,9 @@ GameObject:
   - component: {fileID: 6189885798968243946}
   - component: {fileID: 1668223271681138230}
   - component: {fileID: 4822023049940657397}
+  - component: {fileID: -8136608608017206370}
+  - component: {fileID: 1248093202980035841}
+  - component: {fileID: -125882657874111120}
   m_Layer: 8
   m_Name: Enemy 2
   m_TagString: Enemy
@@ -182,34 +185,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bbd1bff1921f4ac46ab3869ff595deb3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EnemyMove
-  moveSpeed: 4
-  decisionTime: 0.8
-  walkSprites:
-  - {fileID: -5750353039905602045, guid: 0891c90c68f8dd4448d314a4d6a53e0b, type: 3}
-  - {fileID: -7371509505491802261, guid: 370762ec529b98642b30d2dc9bda3ca1, type: 3}
-  - {fileID: 2720535173406242035, guid: 0b27f4c22a1d1664491a4429d789a38b, type: 3}
-  - {fileID: 8102358098348255977, guid: 8a91556b23acc3445ae8d0f24f79c172, type: 3}
-  walkFrameTime: 0.24
-  deathSprites:
-  - {fileID: 6894999169920593895, guid: 6d5812c633aaa5a40b6b52f4b51c564d, type: 3}
-  - {fileID: -1045133410153605164, guid: 65c8f2608407f2b40b873e3e7159ea37, type: 3}
-  - {fileID: -5622901713081898559, guid: 2b307731d2fec3e4981d374d8df35857, type: 3}
-  - {fileID: -796155573255488767, guid: 982e51406033bf5438aac4dae65d7075, type: 3}
-  deathFrameTime: 0.12
-  deathEndHoldTime: 0.08
-  maxHp: 10
-  healthBar: {fileID: 4980014735012934091}
-  damagePopupPrefab: {fileID: 4418119550550923920, guid: f9203d53f7bdee24b9be1417d4647687, type: 3}
-  damagePopupOffset: {x: 0, y: 1.4, z: 0}
-  hitEffectPrefab: {fileID: 2831077347966305720, guid: c7da690de55294d4fbd4bf51893a14e6, type: 3}
-  hitEffectOffset: {x: 0, y: 0.3, z: 0}
-  hitStunTime: 0.12
-  knockbackForce: 4
-  knockbackUpForce: 1
-  hitBlinkCount: 2
-  hitBlinkInterval: 0.03
-  playerEnergy: {fileID: 0}
-  energyReward: 20
 --- !u!114 &4822023049940657397
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -226,6 +201,70 @@ MonoBehaviour:
     physicalDefense: 0
     magicalDefense: 0
     durability: 0
+--- !u!114 &-8136608608017206370
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1525100744247835566}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ddee26ff22870b04ab962e7079dc5ac6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EnemyAI
+  moveSpeed: 3
+  decisionTime: 1
+--- !u!114 &1248093202980035841
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1525100744247835566}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a6890d6397d7bf44d9f271bdd365cc08, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EnemyAnimation
+  walkSprites:
+  - {fileID: -5750353039905602045, guid: 0891c90c68f8dd4448d314a4d6a53e0b, type: 3}
+  - {fileID: -7371509505491802261, guid: 370762ec529b98642b30d2dc9bda3ca1, type: 3}
+  - {fileID: 2720535173406242035, guid: 0b27f4c22a1d1664491a4429d789a38b, type: 3}
+  - {fileID: 8102358098348255977, guid: 8a91556b23acc3445ae8d0f24f79c172, type: 3}
+  walkFrameTime: 0.12
+  deathSprites:
+  - {fileID: 6894999169920593895, guid: 6d5812c633aaa5a40b6b52f4b51c564d, type: 3}
+  - {fileID: -1045133410153605164, guid: 65c8f2608407f2b40b873e3e7159ea37, type: 3}
+  - {fileID: -5622901713081898559, guid: 2b307731d2fec3e4981d374d8df35857, type: 3}
+  - {fileID: -796155573255488767, guid: 982e51406033bf5438aac4dae65d7075, type: 3}
+  deathFrameTime: 0.12
+  deathEndHoldTime: 0.08
+--- !u!114 &-125882657874111120
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1525100744247835566}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f744d1166891d6943bd60c8634499e22, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EnemyHealth
+  maxHp: 10
+  healthBar: {fileID: 4980014735012934091}
+  damagePopupPrefab: {fileID: 4418119550550923920, guid: f9203d53f7bdee24b9be1417d4647687, type: 3}
+  damagePopupOffset: {x: 0, y: 1.4, z: 0}
+  hitEffectPrefab: {fileID: 2831077347966305720, guid: c7da690de55294d4fbd4bf51893a14e6, type: 3}
+  hitEffectOffset: {x: 0, y: 0.3, z: 0}
+  hitStunTime: 0.12
+  knockbackForce: 4
+  knockbackUpForce: 1
+  hitBlinkCount: 2
+  hitBlinkInterval: 0.03
+  playerEnergy: {fileID: 0}
+  energyReward: 20
 --- !u!1 &3095458375250088132
 GameObject:
   m_ObjectHideFlags: 0

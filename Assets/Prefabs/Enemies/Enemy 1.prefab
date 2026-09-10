@@ -14,6 +14,9 @@ GameObject:
   - component: {fileID: 6189885798968243946}
   - component: {fileID: 1668223271681138230}
   - component: {fileID: 4822023049940657397}
+  - component: {fileID: 1404998612177364811}
+  - component: {fileID: -3363200476755289365}
+  - component: {fileID: -3398159243529488567}
   m_Layer: 8
   m_Name: Enemy 1
   m_TagString: Enemy
@@ -182,32 +185,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bbd1bff1921f4ac46ab3869ff595deb3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EnemyMove
-  moveSpeed: 3
-  decisionTime: 0.7
-  walkSprites:
-  - {fileID: -2966200626249415253, guid: d81b0a29ba9f02341bd05aba710acb17, type: 3}
-  - {fileID: -1540426309290004842, guid: 3c64cd477ed18c14abc4dd9fce579404, type: 3}
-  - {fileID: 8389134475083476877, guid: 6e6f7109f435f3c42886be1fc56095db, type: 3}
-  walkFrameTime: 0.24
-  deathSprites:
-  - {fileID: -6270953770400647376, guid: d15263fcb0f6dce4bb1a4503bc10984f, type: 3}
-  - {fileID: 4349915267927364619, guid: 902ecc88c06e31543b68afc0714d6351, type: 3}
-  - {fileID: 7680820834086852892, guid: 15da4e75b7d1fd343a30b2d257b66b64, type: 3}
-  deathFrameTime: 0.12
-  deathEndHoldTime: 0.08
-  maxHp: 10
-  healthBar: {fileID: 4980014735012934091}
-  damagePopupPrefab: {fileID: 4418119550550923920, guid: f9203d53f7bdee24b9be1417d4647687, type: 3}
-  damagePopupOffset: {x: 0, y: 1.4, z: 0}
-  hitEffectPrefab: {fileID: 2831077347966305720, guid: c7da690de55294d4fbd4bf51893a14e6, type: 3}
-  hitEffectOffset: {x: 0, y: 0.3, z: 0}
-  hitStunTime: 0.12
-  knockbackForce: 4
-  knockbackUpForce: 1
-  hitBlinkCount: 2
-  hitBlinkInterval: 0.03
-  playerEnergy: {fileID: 0}
-  energyReward: 20
 --- !u!114 &4822023049940657397
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -224,6 +201,68 @@ MonoBehaviour:
     physicalDefense: 0
     magicalDefense: 0
     durability: 0
+--- !u!114 &1404998612177364811
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1525100744247835566}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ddee26ff22870b04ab962e7079dc5ac6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EnemyAi
+  moveSpeed: 3
+  decisionTime: 1
+--- !u!114 &-3363200476755289365
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1525100744247835566}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a6890d6397d7bf44d9f271bdd365cc08, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EnemyAnimation
+  walkSprites:
+  - {fileID: -2966200626249415253, guid: d81b0a29ba9f02341bd05aba710acb17, type: 3}
+  - {fileID: -1540426309290004842, guid: 3c64cd477ed18c14abc4dd9fce579404, type: 3}
+  - {fileID: 8389134475083476877, guid: 6e6f7109f435f3c42886be1fc56095db, type: 3}
+  walkFrameTime: 0.12
+  deathSprites:
+  - {fileID: -6270953770400647376, guid: d15263fcb0f6dce4bb1a4503bc10984f, type: 3}
+  - {fileID: 4349915267927364619, guid: 902ecc88c06e31543b68afc0714d6351, type: 3}
+  - {fileID: 7680820834086852892, guid: 15da4e75b7d1fd343a30b2d257b66b64, type: 3}
+  deathFrameTime: 0.12
+  deathEndHoldTime: 0.08
+--- !u!114 &-3398159243529488567
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1525100744247835566}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f744d1166891d6943bd60c8634499e22, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EnemyHealth
+  maxHp: 10
+  healthBar: {fileID: 4980014735012934091}
+  damagePopupPrefab: {fileID: 4418119550550923920, guid: f9203d53f7bdee24b9be1417d4647687, type: 3}
+  damagePopupOffset: {x: 0, y: 1.4, z: 0}
+  hitEffectPrefab: {fileID: 2831077347966305720, guid: c7da690de55294d4fbd4bf51893a14e6, type: 3}
+  hitEffectOffset: {x: 0, y: 0.3, z: 0}
+  hitStunTime: 0.12
+  knockbackForce: 4
+  knockbackUpForce: 1
+  hitBlinkCount: 2
+  hitBlinkInterval: 0.03
+  playerEnergy: {fileID: 0}
+  energyReward: 20
 --- !u!1 &3095458375250088132
 GameObject:
   m_ObjectHideFlags: 0
