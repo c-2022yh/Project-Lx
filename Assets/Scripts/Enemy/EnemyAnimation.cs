@@ -58,6 +58,13 @@ public class EnemyAnimation : MonoBehaviour
     public void SetDirection(int direction)
     {
         if (direction == 0) return;
+
+        if (sr == null)
+        {
+            sr = GetComponent<SpriteRenderer>();
+            if (sr == null) return;
+        } 
+
         sr.flipX = direction > 0;
     }
 
