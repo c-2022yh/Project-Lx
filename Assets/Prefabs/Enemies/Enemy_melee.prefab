@@ -12,14 +12,14 @@ GameObject:
   - component: {fileID: 7890773792849387744}
   - component: {fileID: -6937502073185910699}
   - component: {fileID: 2594956225376429067}
-  - component: {fileID: 6189885798968243946}
   - component: {fileID: 1668223271681138230}
   - component: {fileID: 4822023049940657397}
   - component: {fileID: 1404998612177364811}
   - component: {fileID: -3363200476755289365}
   - component: {fileID: -3398159243529488567}
+  - component: {fileID: 849854591839963007}
   m_Layer: 8
-  m_Name: Enemy 1
+  m_Name: Enemy_melee
   m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -168,52 +168,6 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 4
---- !u!61 &6189885798968243946
-BoxCollider2D:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1525100744247835566}
-  m_Enabled: 0
-  serializedVersion: 3
-  m_Density: 1
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_ForceSendLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_ForceReceiveLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_ContactCaptureLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_CallbackLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_IsTrigger: 0
-  m_UsedByEffector: 0
-  m_CompositeOperation: 0
-  m_CompositeOrder: 0
-  m_Offset: {x: 0, y: 0}
-  m_SpriteTilingProperty:
-    border: {x: 0, y: 0, z: 0, w: 0}
-    pivot: {x: 0.5, y: 0.5}
-    oldSize: {x: 3.9375, y: 3.6875}
-    newSize: {x: 1, y: 1}
-    adaptiveTilingThreshold: 0.5
-    drawMode: 0
-    adaptiveTiling: 0
-  m_AutoTiling: 0
-  m_Size: {x: 4, y: 3.4}
-  m_EdgeRadius: 0
 --- !u!114 &1668223271681138230
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -315,18 +269,30 @@ MonoBehaviour:
   damagePopupOffset: {x: 0, y: 1.4, z: 0}
   hitEffectPrefab: {fileID: 2831077347966305720, guid: c7da690de55294d4fbd4bf51893a14e6, type: 3}
   hitEffectOffset: {x: 0, y: 0.3, z: 0}
-  hitStunTime: 0.2
-  knockbackForce: 7
-  knockbackUpForce: 0
-  backGroundCheck: {fileID: 3473758253372014481}
-  backGroundCheckDistance: 0.3
-  groundLayer:
-    serializedVersion: 2
-    m_Bits: 64
   hitBlinkCount: 2
   hitBlinkInterval: 0.03
   playerEnergy: {fileID: 0}
   energyReward: 20
+--- !u!114 &849854591839963007
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1525100744247835566}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2de9dce1027b3234d9e0b5af287cf45b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EnemyKnockback
+  hitStunTime: 0.2
+  knockbackForce: 7
+  knockbackUpForce: 0
+  backGroundCheck: {fileID: 3473758253372014481}
+  backGroundCheckDistance: 1
+  groundLayer:
+    serializedVersion: 2
+    m_Bits: 64
 --- !u!1 &3095458375250088132
 GameObject:
   m_ObjectHideFlags: 0

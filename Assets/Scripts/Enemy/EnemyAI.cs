@@ -86,6 +86,7 @@ public class EnemyAI : MonoBehaviour
     private Rigidbody2D rb;
     private EnemyHealth health;
     private EnemyAnimation enemyAnimation;
+    private EnemyKnockback knockback;
 
     //기본 스프라이트가 왼쪽을 보고 있으므로
     //-1 = 왼쪽,1 = 오른쪽
@@ -101,6 +102,7 @@ public class EnemyAI : MonoBehaviour
         rb = GetComponent<Rigidbody2D>();
         health = GetComponent<EnemyHealth>();
         enemyAnimation = GetComponent<EnemyAnimation>();
+        knockback = GetComponent<EnemyKnockback>();
 
         //체크
         if (groundCheck != null)
@@ -149,11 +151,10 @@ public class EnemyAI : MonoBehaviour
         }
 
         //피격 넉백 중에는 AI가 속도를 덮어쓰지 않는다.
-        if (health.IsHitStunned)
+        if (knockback != null && knockback.IsKnockbackActive)
         {
             return;
         }
-
 
         //플레이어가 존재하지 않는 경우 주기적으로 다시 탐색
         FindPlayerIfNeeded();

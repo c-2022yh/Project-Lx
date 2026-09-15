@@ -26,22 +26,6 @@ public class EnemyHealth : MonoBehaviour
     [SerializeField]
     private Vector3 hitEffectOffset = new Vector3(0f, 0.3f, 0f);
 
-    [Header("Hit Feedback")]
-    [SerializeField] private float hitStunTime = 0.18f;
-    [SerializeField] private float knockbackForce = 7f;
-    [SerializeField] private float knockbackUpForce = 0f;
-    
-    private bool isKnockbackActive;
-    private int knockbackDirection;
-
-    [Header("Knockback Ground Check")]
-    [SerializeField] private Transform backGroundCheck;
-    [SerializeField] private float backGroundCheckDistance = 0.3f;
-    [SerializeField] private LayerMask groundLayer;
-
-    private float backGroundCheckX;
-
-    
     [SerializeField, Min(1)]
     private int hitBlinkCount = 2;
 
@@ -55,6 +39,7 @@ public class EnemyHealth : MonoBehaviour
     private EnemyStats enemyStats;
     private EnemyAI ai;
     private EnemyAnimation enemyAnimation;
+    private EnemyKnockback knockback;
 
     private Rigidbody2D rb;
     private SpriteRenderer sr;
@@ -63,13 +48,10 @@ public class EnemyHealth : MonoBehaviour
     private bool[] defaultColliderStates;
 
     private bool isDead;
-    private float hitStunEndTime = -999f;
-
 
     private Coroutine hitFeedbackCoroutine;
 
     public bool IsDead => isDead;
-    public bool IsHitStunned => !isDead && Time.time < hitStunEndTime;
 
     public float CurrentHp => currentHp;
     public float MaxHp => maxHp;
@@ -80,6 +62,7 @@ public class EnemyHealth : MonoBehaviour
         enemyStats = GetComponent<EnemyStats>();
         ai = GetComponent<EnemyAI>();
         enemyAnimation = GetComponent<EnemyAnimation>();
+        knockback = GetComponent<EnemyKnockback>();
 
         rb = GetComponent<Rigidbody2D>();
         sr = GetComponent<SpriteRenderer>();
@@ -92,10 +75,8 @@ public class EnemyHealth : MonoBehaviour
         {
             defaultColliderStates[i] = enemyColliders[i].enabled;
         }
-        if (backGroundCheck != null)
-        {
-            backGroundCheckX = Mathf.Abs(backGroundCheck.localPosition.x);
-        }
+
+
     }
 
     private void OnEnable()
@@ -108,31 +89,10 @@ public class EnemyHealth : MonoBehaviour
         hitFeedbackCoroutine = null;
     }
 
-    private void FixedUpdate()
-    {
-        if (isDead || rb == null)
-            return;
-
-        if (!IsHitStunned)
-            return;
-
-        rb.linearVelocity = new Vector2(
-            knockbackDirection * knockbackForce,
-            rb.linearVelocity.y
-        );
-
-        Debug.Log(
-            $"[Knockback ACTIVE] " +
-            $"Velocity={rb.linearVelocity}, " +
-            $"Position={transform.position}"
-        );
-    }
-
     //체력 초기화, 리젠 등에서 사용
     private void ResetHealth()
     {
         isDead = false;
-        hitStunEndTime = -999f;
 
         currentHp = maxHp;
 
@@ -159,8 +119,6 @@ public class EnemyHealth : MonoBehaviour
         {
             healthBar.Initialize(currentHp, maxHp);
         }
-        isKnockbackActive = false;
-        knockbackDirection = 0;
     }
 
     //적이 피해를 입음
@@ -195,13 +153,14 @@ public class EnemyHealth : MonoBehaviour
             return;
         }
 
-        StartKnockback(hitDirection);
         if (hitFeedbackCoroutine != null)
         {
             StopCoroutine(hitFeedbackCoroutine);
         }
 
         hitFeedbackCoroutine = StartCoroutine(HitFeedbackRoutine());
+
+        knockback?.ApplyKnockback(hitDirection);
     }
 
     //피격에 따른 hp감소 체력바 보여주기
@@ -235,27 +194,6 @@ public class EnemyHealth : MonoBehaviour
         }
     }
 
-    //넉백 시작
-    private void StartKnockback(Vector2 hitDirection)
-    {
-        knockbackDirection =
-            hitDirection.x >= 0f ? 1 : -1;
-
-        hitStunEndTime =
-            Time.time + hitStunTime;
-
-        rb.linearVelocity = new Vector2(
-            knockbackDirection * knockbackForce,
-            rb.linearVelocity.y
-        );
-
-        Debug.Log(
-            $"[Knockback START] " +
-            $"Dir={knockbackDirection}, " +
-            $"Velocity={rb.linearVelocity}"
-        );
-    }
-
     //깜빡임 연출
     private IEnumerator HitFeedbackRoutine()
     {
@@ -277,6 +215,7 @@ public class EnemyHealth : MonoBehaviour
         hitFeedbackCoroutine = null;
     }
 
+    //적이 사망 처리
     private void Die(DamageInfo lastDamageInfo)
     {
         if (isDead) return;
@@ -287,15 +226,6 @@ public class EnemyHealth : MonoBehaviour
         GiveReward();
 
         ai?.StopAI();
-
-        if (hitFeedbackCoroutine != null)
-        {
-            StopCoroutine(hitFeedbackCoroutine);
-            isKnockbackActive = false;
-            hitFeedbackCoroutine = null;
-        }
-
-        hitStunEndTime = -999f;
 
         if (sr != null)
         {

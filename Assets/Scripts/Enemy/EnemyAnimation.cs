@@ -17,6 +17,7 @@ public class EnemyAnimation : MonoBehaviour
     private SpriteRenderer sr;
     private EnemyAI ai;
     private EnemyHealth health;
+    private EnemyKnockback knockback;
 
     private Coroutine walkCoroutine;
     private Coroutine deathCoroutine;
@@ -26,6 +27,7 @@ public class EnemyAnimation : MonoBehaviour
         sr = GetComponent<SpriteRenderer>();
         ai = GetComponent<EnemyAI>();
         health = GetComponent<EnemyHealth>();
+        knockback = GetComponent<EnemyKnockback>();
     }
 
     private void OnEnable()
@@ -82,7 +84,7 @@ public class EnemyAnimation : MonoBehaviour
         {
             if (sr == null) yield break;
 
-            if (ai.Direction != 0 && !health.IsHitStunned)
+            if (ai.Direction != 0 && (knockback == null || !knockback.IsKnockbackActive))
             {
                 sr.sprite = walkSprites[frameIndex];
 
