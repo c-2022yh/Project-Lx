@@ -27,10 +27,21 @@ public class EnemyHealth : MonoBehaviour
     private Vector3 hitEffectOffset = new Vector3(0f, 0.3f, 0f);
 
     [Header("Hit Feedback")]
-    [SerializeField] private float hitStunTime = 0.12f;
-    [SerializeField] private float knockbackForce = 4f;
-    [SerializeField] private float knockbackUpForce = 1f;
+    [SerializeField] private float hitStunTime = 0.18f;
+    [SerializeField] private float knockbackForce = 7f;
+    [SerializeField] private float knockbackUpForce = 0f;
+    
+    private bool isKnockbackActive;
+    private int knockbackDirection;
 
+    [Header("Knockback Ground Check")]
+    [SerializeField] private Transform backGroundCheck;
+    [SerializeField] private float backGroundCheckDistance = 0.3f;
+    [SerializeField] private LayerMask groundLayer;
+
+    private float backGroundCheckX;
+
+    
     [SerializeField, Min(1)]
     private int hitBlinkCount = 2;
 
@@ -52,12 +63,13 @@ public class EnemyHealth : MonoBehaviour
     private bool[] defaultColliderStates;
 
     private bool isDead;
-    private bool isHitStunned;
+    private float hitStunEndTime = -999f;
+
 
     private Coroutine hitFeedbackCoroutine;
 
     public bool IsDead => isDead;
-    public bool IsHitStunned => isHitStunned;
+    public bool IsHitStunned => !isDead && Time.time < hitStunEndTime;
 
     public float CurrentHp => currentHp;
     public float MaxHp => maxHp;
@@ -80,6 +92,10 @@ public class EnemyHealth : MonoBehaviour
         {
             defaultColliderStates[i] = enemyColliders[i].enabled;
         }
+        if (backGroundCheck != null)
+        {
+            backGroundCheckX = Mathf.Abs(backGroundCheck.localPosition.x);
+        }
     }
 
     private void OnEnable()
@@ -92,11 +108,31 @@ public class EnemyHealth : MonoBehaviour
         hitFeedbackCoroutine = null;
     }
 
+    private void FixedUpdate()
+    {
+        if (isDead || rb == null)
+            return;
+
+        if (!IsHitStunned)
+            return;
+
+        rb.linearVelocity = new Vector2(
+            knockbackDirection * knockbackForce,
+            rb.linearVelocity.y
+        );
+
+        Debug.Log(
+            $"[Knockback ACTIVE] " +
+            $"Velocity={rb.linearVelocity}, " +
+            $"Position={transform.position}"
+        );
+    }
+
     //체력 초기화, 리젠 등에서 사용
     private void ResetHealth()
     {
         isDead = false;
-        isHitStunned = false;
+        hitStunEndTime = -999f;
 
         currentHp = maxHp;
 
@@ -123,6 +159,8 @@ public class EnemyHealth : MonoBehaviour
         {
             healthBar.Initialize(currentHp, maxHp);
         }
+        isKnockbackActive = false;
+        knockbackDirection = 0;
     }
 
     //적이 피해를 입음
@@ -157,12 +195,13 @@ public class EnemyHealth : MonoBehaviour
             return;
         }
 
+        StartKnockback(hitDirection);
         if (hitFeedbackCoroutine != null)
         {
             StopCoroutine(hitFeedbackCoroutine);
         }
 
-        hitFeedbackCoroutine = StartCoroutine(HitFeedbackRoutine(hitDirection));
+        hitFeedbackCoroutine = StartCoroutine(HitFeedbackRoutine());
     }
 
     //피격에 따른 hp감소 체력바 보여주기
@@ -196,20 +235,30 @@ public class EnemyHealth : MonoBehaviour
         }
     }
 
-    //피격 루틴: 넉백
-    private IEnumerator HitFeedbackRoutine(Vector2 hitDirection)
+    //넉백 시작
+    private void StartKnockback(Vector2 hitDirection)
     {
-        isHitStunned = true;
+        knockbackDirection =
+            hitDirection.x >= 0f ? 1 : -1;
 
-        if (rb != null)
-        {
-            float hitDir =  hitDirection.x >= 0f ? 1f : -1f;
+        hitStunEndTime =
+            Time.time + hitStunTime;
 
-            rb.linearVelocity = new Vector2(hitDir * knockbackForce, knockbackUpForce);
-        }
+        rb.linearVelocity = new Vector2(
+            knockbackDirection * knockbackForce,
+            rb.linearVelocity.y
+        );
 
-        float blinkDuration = 0f;
+        Debug.Log(
+            $"[Knockback START] " +
+            $"Dir={knockbackDirection}, " +
+            $"Velocity={rb.linearVelocity}"
+        );
+    }
 
+    //깜빡임 연출
+    private IEnumerator HitFeedbackRoutine()
+    {
         for (int i = 0; i < hitBlinkCount; i++)
         {
             if (sr == null) break;
@@ -221,23 +270,10 @@ public class EnemyHealth : MonoBehaviour
             sr.enabled = true;
 
             yield return new WaitForSeconds(hitBlinkInterval);
-
-            blinkDuration += hitBlinkInterval * 2f;
         }
 
-        float remainingStun = hitStunTime - blinkDuration;
+        if (sr != null) sr.enabled = true;
 
-        if (remainingStun > 0f)
-        {
-            yield return new WaitForSeconds(remainingStun);
-        }
-
-        if (sr != null)
-        {
-            sr.enabled = true;
-        }
-
-        isHitStunned = false;
         hitFeedbackCoroutine = null;
     }
 
@@ -255,10 +291,11 @@ public class EnemyHealth : MonoBehaviour
         if (hitFeedbackCoroutine != null)
         {
             StopCoroutine(hitFeedbackCoroutine);
+            isKnockbackActive = false;
             hitFeedbackCoroutine = null;
         }
 
-        isHitStunned = false;
+        hitStunEndTime = -999f;
 
         if (sr != null)
         {
