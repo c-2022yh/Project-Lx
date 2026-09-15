@@ -33,9 +33,6 @@ public class EnemyAI : MonoBehaviour
 
     [SerializeField] private LayerMask groundLayer;
 
-    [SerializeField] private Transform groundCheck;
-    [SerializeField] private Transform wallCheck;
-
     private float groundCheckX;
     private float wallCheckX;
 
@@ -78,6 +75,7 @@ public class EnemyAI : MonoBehaviour
     private void OnEnable()
     {
         direction = -1;
+        SetDirection(direction);
     }
 
     private void FixedUpdate()
