@@ -8,5 +8,11 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/Panyong_Combat_Test.unity
     guid: 8c9cfa26abfee488c85f1582747f6a02
+  - enabled: 1
+    path: Assets/Scenes/Title.unity
+    guid: 9e115a0fc7c58914489390e0b11585ba
+  - enabled: 1
+    path: Assets/Scenes/Test_Alpha.unity
+    guid: 6c721ca52ebfc5841a79ed669ef8c515
   m_configObjects:
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 2bcd2660ca9b64942af0de543d8d7100, type: 3}
