@@ -14,6 +14,7 @@ GameObject:
   - component: {fileID: 2594956225376429067}
   - component: {fileID: 1668223271681138230}
   - component: {fileID: 4822023049940657397}
+  - component: {fileID: -4604012485403156048}
   - component: {fileID: 9155972463604333347}
   - component: {fileID: -3363200476755289365}
   - component: {fileID: -3398159243529488567}
@@ -196,6 +197,37 @@ MonoBehaviour:
     physicalDefense: 0
     magicalDefense: 0
     durability: 0
+--- !u!114 &-4604012485403156048
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1525100744247835566}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ddee26ff22870b04ab962e7079dc5ac6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EnemyAI
+  moveSpeed: 3
+  turnCooldown: 0.5
+  minIdleTime: 0
+  maxIdleTime: 2
+  minWalkTime: 1
+  maxWalkTime: 3
+  patrolTurnChance: 0.5
+  detectionRangeX: 6
+  detectionRangeY: 4
+  loseRangeX: 9
+  loseRangeY: 3
+  playerSearchInterval: 0.5
+  groundCheck: {fileID: 3156934376962814130}
+  wallCheck: {fileID: 1439025032982720640}
+  groundCheckDistance: 1
+  wallCheckDistance: 0.5
+  groundLayer:
+    serializedVersion: 2
+    m_Bits: 64
 --- !u!114 &9155972463604333347
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -208,6 +240,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a7bfdb0be9f2b8140a969334bf629745, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EnemyRangedAI
+  attackRange: 8
+  retreatRange: 3
 --- !u!114 &-3363200476755289365
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -245,7 +279,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f744d1166891d6943bd60c8634499e22, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EnemyHealth
-  maxHp: 10
+  maxHp: 8
   healthBar: {fileID: 4980014735012934091}
   damagePopupPrefab: {fileID: 4418119550550923920, guid: f9203d53f7bdee24b9be1417d4647687, type: 3}
   damagePopupOffset: {x: 0, y: 1.4, z: 0}

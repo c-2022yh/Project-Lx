@@ -3,7 +3,7 @@ using UnityEngine;
 //적 전체를 정의하는 스크립트
 public class Enemy : MonoBehaviour, IDamageable
 {
-    public EnemyAIBase AI { get; private set; }
+    public EnemyAI AI { get; private set; }
     public EnemyHealth Health { get; private set; }
     public EnemyAnimation Animation { get; private set; }
 
@@ -15,7 +15,7 @@ public class Enemy : MonoBehaviour, IDamageable
 
     private void Awake()
     {
-        AI = GetComponent<EnemyAIBase>();
+        AI = GetComponent<EnemyAI>();
         Health = GetComponent<EnemyHealth>();
         Animation = GetComponent<EnemyAnimation>();
 

@@ -15,7 +15,7 @@ public class EnemyAnimation : MonoBehaviour
     [SerializeField] private float deathEndHoldTime = 0.08f;
 
     private SpriteRenderer sr;
-    private EnemyAIBase ai;
+    private EnemyAI ai;
     private EnemyHealth health;
     private EnemyKnockback knockback;
 
@@ -25,7 +25,7 @@ public class EnemyAnimation : MonoBehaviour
     private void Awake()
     {
         sr = GetComponent<SpriteRenderer>();
-        ai = GetComponent<EnemyAIBase>();
+        ai = GetComponent<EnemyAI>();
         health = GetComponent<EnemyHealth>();
         knockback = GetComponent<EnemyKnockback>();
     }

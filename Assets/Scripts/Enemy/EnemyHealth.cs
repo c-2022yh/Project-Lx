@@ -37,7 +37,7 @@ public class EnemyHealth : MonoBehaviour
     [SerializeField] private float energyReward = 20f;
 
     private EnemyStats enemyStats;
-    private EnemyAIBase ai;
+    private EnemyAI ai;
     private EnemyAnimation enemyAnimation;
     private EnemyKnockback knockback;
 
@@ -60,7 +60,7 @@ public class EnemyHealth : MonoBehaviour
     {
         //컴포넌트 연결
         enemyStats = GetComponent<EnemyStats>();
-        ai = GetComponent<EnemyAIBase>();
+        ai = GetComponent<EnemyAI>();
         enemyAnimation = GetComponent<EnemyAnimation>();
         knockback = GetComponent<EnemyKnockback>();
 

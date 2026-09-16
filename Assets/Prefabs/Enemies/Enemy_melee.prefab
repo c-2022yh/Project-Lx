@@ -15,6 +15,7 @@ GameObject:
   - component: {fileID: 1668223271681138230}
   - component: {fileID: 4822023049940657397}
   - component: {fileID: 1404998612177364811}
+  - component: {fileID: -2735578826098154267}
   - component: {fileID: -3363200476755289365}
   - component: {fileID: -3398159243529488567}
   - component: {fileID: 849854591839963007}
@@ -217,7 +218,6 @@ MonoBehaviour:
   patrolTurnChance: 0.5
   detectionRangeX: 6
   detectionRangeY: 1.5
-  chaseTurnDistance: 1
   loseRangeX: 9
   loseRangeY: 3
   playerSearchInterval: 0.5
@@ -228,6 +228,19 @@ MonoBehaviour:
   groundLayer:
     serializedVersion: 2
     m_Bits: 64
+--- !u!114 &-2735578826098154267
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1525100744247835566}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2cfeaa7d17132c945b328514d3e1461a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EnemyMeleeAI
+  chaseTurnDistance: 1
 --- !u!114 &-3363200476755289365
 MonoBehaviour:
   m_ObjectHideFlags: 0
