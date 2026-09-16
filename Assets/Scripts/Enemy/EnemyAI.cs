@@ -2,7 +2,7 @@ using UnityEngine;
 using System.Collections;
 
 //적의 이동과 행동 판단을 제어하는 스크립트
-public class EnemyAI : MonoBehaviour
+public class EnemyAI : EnemyAIBase
 {
     private enum AIState
     {
@@ -94,8 +94,8 @@ public class EnemyAI : MonoBehaviour
 
     private bool aiStopped;
 
-    public int Direction => direction;
-    public float MoveSpeed => moveSpeed;
+    public override int Direction => direction;
+    public override float MoveSpeed => moveSpeed;
 
     private void Awake()
     {
@@ -454,14 +454,14 @@ public class EnemyAI : MonoBehaviour
         
     }
 
-    public void StopMovement()
+    public override void StopMovement()
     {
         if (rb == null) return;
         rb.linearVelocity = new Vector2(0f, rb.linearVelocity.y);
     }
 
     //사망
-    public void StopAI()
+    public override void StopAI()
     {
         aiStopped = true;
 
