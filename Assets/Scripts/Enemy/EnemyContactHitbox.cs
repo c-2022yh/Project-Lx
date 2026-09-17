@@ -10,7 +10,7 @@ public class EnemyContactHitbox : MonoBehaviour
     {
         enemyContactAttack = GetComponentInParent<EnemyContactAttack>();
 
-        Debug.Log($"ContactAttack: {contactAttack}");
+        Debug.Log($"ContactAttack: {enemyContactAttack}");
     }
 
     private void OnTriggerEnter2D(Collider2D other)
