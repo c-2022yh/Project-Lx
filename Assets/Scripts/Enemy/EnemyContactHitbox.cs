@@ -1,46 +1,64 @@
+using System.Collections;
 using UnityEngine;
 
-//적과 플레이어가 접촉했을 때 플레이어에게 데미지를 주는 스크립트
+// 적과 플레이어의 접촉만 감지
 public class EnemyContactHitbox : MonoBehaviour
 {
-    [SerializeField] private int damage = 1;
-
-    [Header("Damage Source")]
-    [SerializeField] private Transform damageSource;
+    private EnemyContactAttack enemyContactAttack;
 
     private void Awake()
     {
-        if (damageSource == null) damageSource = transform.root;
-        
+        enemyContactAttack = GetComponentInParent<EnemyContactAttack>();
+
+        Debug.Log($"ContactAttack: {contactAttack}");
     }
 
     private void OnTriggerEnter2D(Collider2D other)
     {
-        DamagePlayer(other);
+        TryContactDamage(other);
     }
 
     private void OnTriggerStay2D(Collider2D other)
     {
-        DamagePlayer(other);
+        TryContactDamage(other);
     }
 
-    private void DamagePlayer(Collider2D other)
+    private void TryContactDamage(Collider2D other)
     {
+        Debug.Log($"Contact Trigger: {other.name}");
+
+        //플레이어 확인
         PlayerHealth playerHealth = other.GetComponentInParent<PlayerHealth>();
 
-        if (playerHealth == null) return;
+        if (playerHealth == null)
+        {
+            Debug.Log("PlayerHealth 못 음");
+            return;
+        }
 
+        //대쉬 중 접촉 데미지 무시
         PlayerHitReaction playerHitReaction = other.GetComponentInParent<PlayerHitReaction>();
 
-        // 대쉬 중 + 대쉬 종료 후 유예시간 동안
-        // 적 접촉 데미지 무시
         if (playerHitReaction != null && playerHitReaction.IsIgnoringEnemyContact)
         {
             return;
         }
 
-        playerHealth.TakeDamage(damage, damageSource.position);
+        // 데미지를 받을 수 있는 대상
+        IDamageable target = other.GetComponentInParent<IDamageable>();
 
+        if (target == null) return;
 
+        if (enemyContactAttack == null) return;
+
+        // 적 중심 → 플레이어 방향
+        Vector2 hitDirection =
+            ((Vector2)other.transform.position -
+             (Vector2)transform.root.position).normalized;
+
+        enemyContactAttack.ContactAttack(
+            target,
+            hitDirection
+        );
     }
 }

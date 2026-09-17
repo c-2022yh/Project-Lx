@@ -16,6 +16,7 @@ GameObject:
   - component: {fileID: 4822023049940657397}
   - component: {fileID: 1404998612177364811}
   - component: {fileID: -2735578826098154267}
+  - component: {fileID: -590272891194950380}
   - component: {fileID: -3363200476755289365}
   - component: {fileID: -3398159243529488567}
   - component: {fileID: 849854591839963007}
@@ -193,6 +194,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 69f98ea8972c4194bb34582e7bcc6d71, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EnemyStats
+  offense:
+    physicalAttack: 1
+    magicalAttack: 1
+    physicalPenetration: 0
+    magicalPenetration: 0
+    criticalChance: 0
+    criticalMultiplier: 1.5
+    damageAmplification: 0
   defense:
     physicalDefense: 0
     magicalDefense: 0
@@ -241,6 +250,24 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EnemyMeleeAI
   chaseTurnDistance: 1
+--- !u!114 &-590272891194950380
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1525100744247835566}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1fd63915f7f74cb4d9a03f6c8028e706, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EnemyAttack
+  contactDamageSpec:
+    damageType: 0
+    damageMultiplier: 1
+    canCritical: 0
+    bonusPenetration: 0
+    bonusDamageAmplification: 0
 --- !u!114 &-3363200476755289365
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -411,7 +438,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f41bf352cb131b749990d46e3d4b9bde, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EnemyContactHitbox
-  damage: 1
   damageSource: {fileID: 0}
 --- !u!61 &5597085818626591940
 BoxCollider2D:

@@ -96,79 +96,52 @@ public class EnemyRangedAI : MonoBehaviour
             return;
         }
 
+        // 플레이어와 실제 2D 거리
+        Vector2 difference =
+            player.position - transform.position;
 
-        float differenceX = player.position.x - transform.position.x;
+        float distance =
+            difference.magnitude;
 
-        float distanceX = Mathf.Abs(differenceX);
+        // 좌우 바라보는 방향은 X값으로 결정
+        int playerDirection =
+            difference.x > 0f ? 1 : -1;
 
-        int playerDirection = differenceX > 0f ? 1 : -1;
 
-        //너무 멀면 접근하기
-        if (distanceX > attackRange)
+        // =========================
+        // 공격 사거리 안
+        // =========================
+
+        if (distance <= attackRange)
         {
-            IsInAttackRange = false;
+            IsInAttackRange = true;
 
-            //플레이어 방향 바라보기
+            ai.StopMovement();
+
+            // 플레이어 방향 바라보기
             ai.TrySetDirection(playerDirection);
 
-            //벽 / 낭떠러지
-            if (!ai.CanMoveForward())
-            {
-                ai.HandleObstacle();
-                return;
-            }
-
-            ai.Move();
             return;
         }
 
-        //너무 가까우면 후퇴하기
-        if (distanceX < retreatRange)
-        {
-            IsInAttackRange = false;
 
-            int retreatDirection = -playerDirection;
+        // =========================
+        // 공격 사거리 밖
+        // =========================
 
-
-            //플레이어 반대 방향으로 회전
-            bool turned = ai.TrySetDirection(retreatDirection);
-
-            //방향전환 쿨다운 때문에
-            //아직 반대 방향을 못 봤다면 일단 정지
-            if (!turned)
-            {
-                ai.StopMovement();
-                return;
-            }
-
-
-            //후퇴 방향이 벽 / 낭떠러지라면
-            //더 이상 후퇴하지 않는다.
-            if (!ai.CanMoveForward())
-            {
-                ai.StopMovement();
-
-                //다시 플레이어 바라보기
-                ai.TrySetDirection(playerDirection);
-
-                //구석에 몰렸다면 공격 가능 상태로 처리
-                IsInAttackRange = true;
-
-                return;
-            }
-
-
-            ai.Move();
-
-            return;
-        }
-
-        //적정 공격 거리라면 
-        ai.StopMovement();
+        IsInAttackRange = false;
 
         ai.TrySetDirection(playerDirection);
 
-        IsInAttackRange = true;
+
+        if (!ai.CanMoveForward())
+        {
+            ai.HandleObstacle();
+            return;
+        }
+
+
+        ai.Move();
     }
 
     //상태 전환
