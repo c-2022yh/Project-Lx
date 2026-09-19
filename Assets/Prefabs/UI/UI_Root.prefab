@@ -220,6 +220,17 @@ PrefabInstance:
       addedObject: {fileID: 4559991101063083151}
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 8b8600d912fef0946a4b314561790aa5, type: 3}
+--- !u!114 &602690229650518246 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 235989382698407752, guid: 8b8600d912fef0946a4b314561790aa5, type: 3}
+  m_PrefabInstance: {fileID: 800313098235439022}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8647be8099e4de647b64fa8e591f27b1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::RelicInventoryPanel
 --- !u!114 &3652853845025332171 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 4155348776016280677, guid: 8b8600d912fef0946a4b314561790aa5, type: 3}
@@ -757,6 +768,10 @@ PrefabInstance:
       propertyPath: controlGuidePanel
       value: 
       objectReference: {fileID: 6603567219740463378}
+    - target: {fileID: 7598323755445276453, guid: b798dec77f88e90419825f290ebee3f7, type: 3}
+      propertyPath: relicInventoryPanel
+      value: 
+      objectReference: {fileID: 602690229650518246}
     - target: {fileID: 8264186000852862974, guid: b798dec77f88e90419825f290ebee3f7, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0

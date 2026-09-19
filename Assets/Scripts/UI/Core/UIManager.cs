@@ -15,6 +15,10 @@ public class UIManager : MonoBehaviour
     [SerializeField] private HUDPanel hudPanel;
     // [TODO] 아래 패널들은 만들면서 하나씩 활성화
     [SerializeField] private InventoryPanel inventoryPanel;
+
+    // 새 유물 인벤토리(카테고리별 장착칸 + 보관함).
+    // 연결되어 있으면 I키가 이쪽을 연다. 비어 있으면 기존 inventoryPanel이 그대로 열린다.
+    [SerializeField] private RelicInventoryPanel relicInventoryPanel;
     // [SerializeField] private MapPanel mapPanel;
     [SerializeField] private PausePanel pausePanel;
     [SerializeField] private GameOverPanel gameOverPanel;
@@ -147,7 +151,11 @@ public class UIManager : MonoBehaviour
         if (isPaused) return;
         isInventoryOpen = !isInventoryOpen;
         Debug.Log($"[UI] Inventory: {(isInventoryOpen ? "Open" : "Close")}");
-        inventoryPanel.SetVisible(isInventoryOpen);
+
+        if (relicInventoryPanel != null)
+            relicInventoryPanel.SetVisible(isInventoryOpen);
+        else if (inventoryPanel != null)
+            inventoryPanel.SetVisible(isInventoryOpen);
         // [SFX_HOOK] AudioManager.Play(isInventoryOpen ? openSfx : closeSfx);
     }
 
