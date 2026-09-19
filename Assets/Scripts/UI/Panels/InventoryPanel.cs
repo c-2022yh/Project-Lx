@@ -39,21 +39,44 @@ public class InventoryPanel : MonoBehaviour
 
     private void BuildRelicGrid()
     {
+        // 인스펙터 연결이 비어 있어도 터지지 않게 막는다.
+        // 전에는 Owned Relics에 빈 칸(None)이 하나만 있어도 아래 relic.icon에서
+        // NullReferenceException이 나면서 인벤토리를 여는 것 자체가 실패했다.
+        if (ownedRelics == null || relicGrid == null || relicSlotPrefab == null)
+        {
+            Debug.LogWarning(
+                "[InventoryPanel] 인스펙터 연결이 비어 있어 유물 목록을 만들지 못했습니다.\n" +
+                "Tools > UI > Build Inventory Panel 을 실행한 뒤 Owned Relics 목록을 채워주세요.",
+                this);
+
+            return;
+        }
+
         foreach (RelicData relic in ownedRelics)
         {
+            // 목록의 빈 칸은 건너뛴다.
+            if (relic == null) continue;
+
             GameObject slot = Instantiate(relicSlotPrefab, relicGrid);
 
             Transform iconTr = slot.transform.Find("Icon");
             if (iconTr != null)
             {
                 Image iconImg = iconTr.GetComponent<Image>();
-                iconImg.sprite = relic.icon;
-                iconImg.enabled = true;
+
+                if (iconImg != null)
+                {
+                    iconImg.sprite = relic.icon;
+                    iconImg.enabled = true;
+                }
             }
 
             Transform costTr = slot.transform.Find("Cost");
             if (costTr != null)
-                costTr.GetComponent<TextMeshProUGUI>().text = relic.cost.ToString();
+            {
+                TextMeshProUGUI costLabel = costTr.GetComponent<TextMeshProUGUI>();
+                if (costLabel != null) costLabel.text = relic.cost.ToString();
+            }
 
             Button btn = slot.GetComponent<Button>();
             if (btn != null)
@@ -66,6 +89,8 @@ public class InventoryPanel : MonoBehaviour
 
     private void ShowDescription(RelicData relic)
     {
+        if (relic == null) return;
+
         selectedRelic = relic; // 선택한 유물 기억
 
         if (descIcon != null) { descIcon.sprite = relic.icon; descIcon.enabled = true; }
@@ -120,6 +145,8 @@ public class InventoryPanel : MonoBehaviour
     // 장착 슬롯 영역에 장착한 유물 아이콘 다시 그리기
     private void RefreshEquipSlots()
     {
+        if (equipContainer == null || relicSlotPrefab == null) return;
+
         // 기존 표시 다 지우기
         foreach (Transform child in equipContainer)
             Destroy(child.gameObject);
@@ -133,13 +160,20 @@ public class InventoryPanel : MonoBehaviour
             if (iconTr != null)
             {
                 Image iconImg = iconTr.GetComponent<Image>();
-                iconImg.sprite = relic.icon;
-                iconImg.enabled = true;
+
+                if (iconImg != null)
+                {
+                    iconImg.sprite = relic.icon;
+                    iconImg.enabled = true;
+                }
             }
 
             Transform costTr = slot.transform.Find("Cost");
             if (costTr != null)
-                costTr.GetComponent<TextMeshProUGUI>().text = relic.cost.ToString();
+            {
+                TextMeshProUGUI costLabel = costTr.GetComponent<TextMeshProUGUI>();
+                if (costLabel != null) costLabel.text = relic.cost.ToString();
+            }
         }
     }
 }
