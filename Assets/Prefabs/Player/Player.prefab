@@ -140,6 +140,7 @@ GameObject:
   - component: {fileID: 8811411989047366458}
   - component: {fileID: 1598087884320357999}
   - component: {fileID: 8630995702748567631}
+  - component: {fileID: 9034583387251907042}
   m_Layer: 7
   m_Name: Player
   m_TagString: Player
@@ -558,6 +559,18 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::PlayerRespawn
   respawnDelay: 0.7
   sr: {fileID: 7915228961384660491}
+--- !u!114 &9034583387251907042
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3993503971577391545}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a081b54126eefb54dbda65c5148b2dec, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerPersistence
 --- !u!1 &5055931255594380884
 GameObject:
   m_ObjectHideFlags: 0
