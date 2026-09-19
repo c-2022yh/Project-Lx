@@ -25,6 +25,9 @@ public static class InventoryUIBuilder
 
     private static TMP_FontAsset koreanFont;
 
+    /// <summary>BuildInto()가 마지막으로 남긴 UIManager 재연결 결과 메시지.</summary>
+    public static string LastUIManagerNote { get; private set; } = "";
+
     private static TMP_FontAsset KoreanFont
     {
         get
@@ -73,8 +76,36 @@ public static class InventoryUIBuilder
             Object.DestroyImmediate(existing.gameObject);
         }
 
+        InventoryPanel builtPanel = BuildInto(popupCanvas.transform, true);
+        Selection.activeGameObject = builtPanel.gameObject;
+
+        EditorUtility.DisplayDialog(
+            "완료!",
+            "InventoryPanel(코스트제) 생성 완료!\n\n" +
+            "- 한글 폰트 자동 지정됨\n" +
+            "- 장착/해제 버튼 2개 + 코스트 예산 표시\n" +
+            "- InventoryPanel 인스펙터 참조 자동 연결됨\n" +
+            "- " + LastUIManagerNote + "\n\n" +
+            "남은 수동 작업: InventoryPanel의 Owned Relics 목록에 RelicData를 넣어주세요.\n" +
+            "그리고 Popup_Canvas 프리팹에 Apply 하는 것도 잊지 마세요!",
+            "확인");
+    }
+
+    /// <summary>
+    /// 패널을 실제로 만드는 본체.
+    /// 씬의 Popup_Canvas에서도, 프리팹 에셋(Popup_Canvas.prefab) 안에서도 호출할 수 있게 분리했다.
+    /// 다이얼로그를 띄우지 않으므로 배치 처리에서도 안전하다.
+    /// </summary>
+    /// <param name="popupCanvas">InventoryPanel을 자식으로 붙일 부모(보통 Popup_Canvas)</param>
+    /// <param name="relinkUIManager">UIManager.inventoryPanel까지 다시 연결할지 여부.
+    /// 프리팹 편집 중에는 씬의 UIManager를 잘못 건드리게 되므로 false로 둔다.</param>
+    public static InventoryPanel BuildInto(Transform popupCanvas, bool relinkUIManager)
+    {
+        if (KoreanFont == null)
+            Debug.LogWarning("[InventoryUIBuilder] 한글 폰트를 못 찾았습니다: " + KoreanFontPath);
+
         // InventoryPanel 루트
-        GameObject inventoryPanel = CreateUIObject("InventoryPanel", popupCanvas.transform);
+        GameObject inventoryPanel = CreateUIObject("InventoryPanel", popupCanvas);
         SetStretch(inventoryPanel, 0, 0, 0, 0);
 
         // 반투명 배경
@@ -164,24 +195,15 @@ public static class InventoryUIBuilder
         UnityEventTools.AddPersistentListener(btnUnequip.GetComponent<Button>().onClick, panel.OnUnequipButton);
 
         // UIManager의 inventoryPanel 참조 재연결
-        string uiManagerNote = RelinkUIManager(panel);
+        LastUIManagerNote = relinkUIManager
+            ? RelinkUIManager(panel)
+            : "프리팹 편집 중이라 UIManager 재연결은 건너뜀";
 
         // 시작 시엔 비활성
         inventoryPanel.SetActive(false);
 
         EditorUtility.SetDirty(inventoryPanel);
-        Selection.activeGameObject = inventoryPanel;
-
-        EditorUtility.DisplayDialog(
-            "완료!",
-            "InventoryPanel(코스트제) 생성 완료!\n\n" +
-            "- 한글 폰트 자동 지정됨\n" +
-            "- 장착/해제 버튼 2개 + 코스트 예산 표시\n" +
-            "- InventoryPanel 인스펙터 참조 자동 연결됨\n" +
-            "- " + uiManagerNote + "\n\n" +
-            "남은 수동 작업: InventoryPanel의 Owned Relics 목록에 RelicData를 넣어주세요.\n" +
-            "그리고 Popup_Canvas 프리팹에 Apply 하는 것도 잊지 마세요!",
-            "확인");
+        return panel;
     }
 
     // 유물 칸(RelicSlot) 프리팹 - 없으면 만들어줌
