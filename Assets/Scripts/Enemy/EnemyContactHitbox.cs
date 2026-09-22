@@ -25,19 +25,16 @@ public class EnemyContactHitbox : MonoBehaviour
 
     private void TryContactDamage(Collider2D other)
     {
-        Debug.Log($"Contact Trigger: {other.name}");
-
         //플레이어 확인
-        PlayerHealth playerHealth = other.GetComponentInParent<PlayerHealth>();
+        PlayerHealth playerHealth = other.GetComponent<PlayerHealth>();
 
         if (playerHealth == null)
         {
-            Debug.Log("PlayerHealth 못 음");
             return;
         }
 
         //대쉬 중 접촉 데미지 무시
-        PlayerHitReaction playerHitReaction = other.GetComponentInParent<PlayerHitReaction>();
+        PlayerHitReaction playerHitReaction = other.GetComponent<PlayerHitReaction>();
 
         if (playerHitReaction != null && playerHitReaction.IsIgnoringEnemyContact)
         {
@@ -45,7 +42,7 @@ public class EnemyContactHitbox : MonoBehaviour
         }
 
         // 데미지를 받을 수 있는 대상
-        IDamageable target = other.GetComponentInParent<IDamageable>();
+        IDamageable target = other.GetComponent<IDamageable>();
 
         if (target == null) return;
 

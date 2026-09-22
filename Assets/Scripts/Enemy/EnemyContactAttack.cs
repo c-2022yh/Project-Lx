@@ -8,6 +8,7 @@ public class EnemyContactAttack : MonoBehaviour
     private void Awake()
     {
         enemyStats = GetComponent<EnemyStats>();
+        
     }
 
     //기본 접촉 공격

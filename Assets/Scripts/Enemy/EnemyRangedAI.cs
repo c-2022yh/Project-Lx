@@ -18,9 +18,6 @@ public class EnemyRangedAI : MonoBehaviour
     //이 거리보다 멀면 플레이어에게 접근
     [SerializeField] private float attackRange = 6f;
 
-    //이 거리보다 가까우면 플레이어에게서 후퇴
-    [SerializeField] private float retreatRange = 3f;
-
     private EnemyAI ai;
 
     public bool IsInAttackRange { get; private set; }
@@ -96,39 +93,28 @@ public class EnemyRangedAI : MonoBehaviour
             return;
         }
 
-        // 플레이어와 실제 2D 거리
-        Vector2 difference =
-            player.position - transform.position;
+        //플레이어와 실제 2D 거리
+        Vector2 difference = player.position - transform.position;
 
-        float distance =
-            difference.magnitude;
+        float distance = difference.magnitude;
 
-        // 좌우 바라보는 방향은 X값으로 결정
-        int playerDirection =
-            difference.x > 0f ? 1 : -1;
+        //좌우 바라보는 방향은 X값으로 결정
+        int playerDirection = difference.x > 0f ? 1 : -1;
 
-
-        // =========================
-        // 공격 사거리 안
-        // =========================
-
+        //공격 사거리 안
         if (distance <= attackRange)
         {
             IsInAttackRange = true;
 
             ai.StopMovement();
 
-            // 플레이어 방향 바라보기
+            //플레이어 방향 바라보기
             ai.TrySetDirection(playerDirection);
 
             return;
         }
 
-
-        // =========================
-        // 공격 사거리 밖
-        // =========================
-
+        //공격 사거리 밖
         IsInAttackRange = false;
 
         ai.TrySetDirection(playerDirection);

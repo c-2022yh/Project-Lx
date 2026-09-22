@@ -2,7 +2,7 @@ using System;
 using UnityEngine;
 
 //플레이어 체력을 관리하는 스크립트
-public class PlayerHealth : MonoBehaviour
+public class PlayerHealth : MonoBehaviour, IDamageable
 {
     //체력 변화와 사망 이벤트
     public event Action<float, float> OnHealthChanged;
@@ -31,14 +31,28 @@ public class PlayerHealth : MonoBehaviour
         OnHealthChanged?.Invoke(currentHealth, maxHealth);
     }
 
+    public void TakeDamage(DamageInfo damageInfo, Vector2 hitDirection)
+    {
+        if (IsDead) return;
+
+        if (hitReaction != null && !hitReaction.CanTakeDamage()) return;
+
+        float damage = DamageCalculator.Calculate(
+            damageInfo,
+            0f,
+            0f
+        );
+
+        TakeDamage(damage, damageInfo.attacker.transform.position);
+    }
+
     //데미지 입음
     public void TakeDamage(float damage, Vector2 damageSourcePosition)
     {
         if (damage <= 0f) return;
         if (IsDead) return;
 
-        if (hitReaction != null && !hitReaction.CanTakeDamage())
-            return;
+        if (hitReaction != null && !hitReaction.CanTakeDamage()) return;
 
         currentHealth -= damage;
         currentHealth = Mathf.Clamp(currentHealth, 0f, maxHealth);

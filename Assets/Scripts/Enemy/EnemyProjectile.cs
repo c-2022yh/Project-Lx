@@ -6,6 +6,8 @@ public class EnemyProjectile : MonoBehaviour
 {
     private Rigidbody2D rb;
 
+    [SerializeField] private LayerMask obstacleLayer;
+
     //이동
     private Vector2 direction;
     private float speed;
@@ -106,6 +108,15 @@ public class EnemyProjectile : MonoBehaviour
     private void OnTriggerEnter2D(Collider2D other)
     {
         if (!initialized) return;
+
+        //벽/지형 충돌
+        bool isObstacleLayer = (obstacleLayer.value & (1 << other.gameObject.layer)) != 0;
+
+        if (isObstacleLayer)
+        {
+            Destroy(gameObject);
+            return;
+        }
 
         //플레이어 레이어인지 확인
         bool isPlayerLayer = (playerLayer.value & (1 << other.gameObject.layer)) != 0;

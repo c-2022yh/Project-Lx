@@ -262,12 +262,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1fd63915f7f74cb4d9a03f6c8028e706, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EnemyAttack
-  contactDamageSpec:
-    damageType: 0
-    damageMultiplier: 1
-    canCritical: 0
-    bonusPenetration: 0
-    bonusDamageAmplification: 0
 --- !u!114 &-3363200476755289365
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -438,7 +432,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f41bf352cb131b749990d46e3d4b9bde, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EnemyContactHitbox
-  damageSource: {fileID: 0}
 --- !u!61 &5597085818626591940
 BoxCollider2D:
   m_ObjectHideFlags: 0

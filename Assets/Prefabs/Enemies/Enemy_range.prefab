@@ -19,6 +19,8 @@ GameObject:
   - component: {fileID: -3363200476755289365}
   - component: {fileID: -3398159243529488567}
   - component: {fileID: 849854591839963007}
+  - component: {fileID: 836209086618364678}
+  - component: {fileID: 3495138512986650946}
   m_Layer: 8
   m_Name: Enemy_range
   m_TagString: Enemy
@@ -193,6 +195,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 69f98ea8972c4194bb34582e7bcc6d71, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EnemyStats
+  offense:
+    physicalAttack: 1
+    magicalAttack: 1
+    physicalPenetration: 0
+    magicalPenetration: 0
+    criticalChance: 0
+    criticalMultiplier: 1.5
+    damageAmplification: 0
   defense:
     physicalDefense: 0
     magicalDefense: 0
@@ -240,8 +250,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a7bfdb0be9f2b8140a969334bf629745, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EnemyRangedAI
-  attackRange: 8
-  retreatRange: 3
+  attackRange: 10
 --- !u!114 &-3363200476755289365
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -309,6 +318,47 @@ MonoBehaviour:
   groundLayer:
     serializedVersion: 2
     m_Bits: 64
+--- !u!114 &836209086618364678
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1525100744247835566}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1fd63915f7f74cb4d9a03f6c8028e706, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EnemyContactAttack
+--- !u!114 &3495138512986650946
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1525100744247835566}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8fded4a8d9e0fbb499beeab59861ba50, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EnemyRangedAttack
+  damageSpec:
+    damageType: 0
+    damageMultiplier: 1
+    canCritical: 0
+    bonusPenetration: 0
+    bonusDamageAmplification: 0
+  attackDelay: 0.3
+  attackCooldown: 1.5
+  projectilePrefab: {fileID: 2512384032804664592, guid: e5f5bfef07c18394184c98867e17d215, type: 3}
+  spawnOffset: {x: 0.8, y: 0}
+  projectileSpeed: 10
+  maxDistance: 10
+  rotationSpeed: 0
+  destroyOnPlayerHit: 1
+  playerLayer:
+    serializedVersion: 2
+    m_Bits: 128
 --- !u!1 &3095458375250088132
 GameObject:
   m_ObjectHideFlags: 0
@@ -414,8 +464,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f41bf352cb131b749990d46e3d4b9bde, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EnemyContactHitbox
-  damage: 1
-  damageSource: {fileID: 0}
 --- !u!61 &5597085818626591940
 BoxCollider2D:
   m_ObjectHideFlags: 0
