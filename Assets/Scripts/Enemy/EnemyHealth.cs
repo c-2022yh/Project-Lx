@@ -18,7 +18,16 @@ public class EnemyHealth : MonoBehaviour
     [SerializeField] private DamagePopup damagePopupPrefab;
 
     [SerializeField]
-    private Vector3 damagePopupOffset = new Vector3(0f, 1.4f, 0f);
+    private Vector3 damagePopupOffset = new Vector3(0f, 2f, 0f);
+
+    [SerializeField]
+    private float damagePopupSpacing = 0.6f;
+
+    [SerializeField]
+    private float damagePopupResetTime = 0.15f;
+
+    private int damagePopupIndex;
+    private float lastDamagePopupTime;
 
     [Header("Hit Effect")]
     [SerializeField] private EnemyHitEffect hitEffectPrefab;
@@ -173,14 +182,29 @@ public class EnemyHealth : MonoBehaviour
 
         if (damagePopupPrefab != null)
         {
+            //짧은 시간 안에 연속 피해가 들어오면 위로 쌓기
+            if (Time.time > lastDamagePopupTime + damagePopupResetTime)
+            {
+                damagePopupIndex = 0;
+            }
+
+            float yOffset = damagePopupSpacing * damagePopupIndex;
+
+            Vector3 popupPosition =
+                transform.position +
+                damagePopupOffset +
+                new Vector3(0f, yOffset, 0f);
+
             DamagePopup popup = Instantiate(
                 damagePopupPrefab,
-                transform.position +
-                damagePopupOffset,
+                popupPosition,
                 Quaternion.identity
             );
 
             popup.Show(finalDamage);
+
+            damagePopupIndex++;
+            lastDamagePopupTime = Time.time;
         }
 
         if (hitEffectPrefab != null)

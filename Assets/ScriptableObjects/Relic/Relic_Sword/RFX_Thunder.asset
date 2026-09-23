@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: eaa82d74af6f7884aae9e8473f3060d8, type: 3}
   m_Name: RFX_Thunder
   m_EditorClassIdentifier: Assembly-CSharp::ThunderRelicEffect
-  thunderHitEffectPrefab: {fileID: 0}
+  thunderHitEffectPrefab: {fileID: 3414288935389349090, guid: bad9affacaa5836439620851e37c2305, type: 3}
   chainLightningPrefab: {fileID: 1012335222784905419, guid: c39e191f1a0e9054dab91a6686526128, type: 3}
   damageSpec:
     damageType: 1

@@ -21,7 +21,7 @@ TagManager:
   - Effects
   - FieldObject
   - EnemyProjectile
-  - 
+  - UI
   - 
   - 
   - 
@@ -53,6 +53,24 @@ TagManager:
     locked: 0
   - name: 
     uniqueID: 3117241241
+    locked: 0
+  - name: BackGround
+    uniqueID: 48636321
+    locked: 0
+  - name: Ground
+    uniqueID: 3979320971
+    locked: 0
+  - name: Player
+    uniqueID: 841780471
+    locked: 0
+  - name: Enemy
+    uniqueID: 1278559193
+    locked: 0
+  - name: Effects
+    uniqueID: 3987238507
+    locked: 0
+  - name: UI
+    uniqueID: 2061393111
     locked: 0
   m_RenderingLayers:
   - Default
