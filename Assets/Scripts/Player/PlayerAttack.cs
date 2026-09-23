@@ -53,14 +53,14 @@ public class PlayerAttack : MonoBehaviour
 
     //기본공격 이펙트가 실제 생성됐을 때 알림
     public event Action<AttackPattern, Vector3, Quaternion, float> AttackEffectCreated;
-    
-    //기본공격이 적에게 실제로 적중했을 때 알림
-    public event Action OnAttackHit;
 
     //기본공격이 적에게 실제로 적중했을 때 알림
-    public void NotifyAttackHit()
+    public event Action<IDamageable, DamageInfo> OnAttackHit;
+
+    //기본공격이 적에게 실제로 적중했을 때 알림
+    public void NotifyAttackHit(IDamageable target, DamageInfo damageInfo)
     {
-        OnAttackHit?.Invoke();
+        OnAttackHit?.Invoke(target, damageInfo);
     }
 
 

@@ -1,0 +1,28 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: eaa82d74af6f7884aae9e8473f3060d8, type: 3}
+  m_Name: RFX_Thunder
+  m_EditorClassIdentifier: Assembly-CSharp::ThunderRelicEffect
+  thunderHitEffectPrefab: {fileID: 0}
+  chainLightningPrefab: {fileID: 1012335222784905419, guid: c39e191f1a0e9054dab91a6686526128, type: 3}
+  damageSpec:
+    damageType: 1
+    damageMultiplier: 0.8
+    bonusPenetration: 0
+    bonusDamageAmplification: 0
+  maxTargets: 4
+  chainRadius: 5
+  damageRemainPerChain: 0.8
+  chainDelay: 0.05
+  targetLayer:
+    serializedVersion: 2
+    m_Bits: 256

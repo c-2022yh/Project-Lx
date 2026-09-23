@@ -198,6 +198,38 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 144273705479961808, guid: bfe65dd7667e19c4f9533af653b8e9cf, type: 3}
+      propertyPath: offense.criticalChance
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2921268448612659600, guid: bfe65dd7667e19c4f9533af653b8e9cf, type: 3}
+      propertyPath: normalColor.b
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2921268448612659600, guid: bfe65dd7667e19c4f9533af653b8e9cf, type: 3}
+      propertyPath: normalColor.g
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2921268448612659600, guid: bfe65dd7667e19c4f9533af653b8e9cf, type: 3}
+      propertyPath: normalColor.r
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2921268448612659600, guid: bfe65dd7667e19c4f9533af653b8e9cf, type: 3}
+      propertyPath: awakenedColor.b
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2921268448612659600, guid: bfe65dd7667e19c4f9533af653b8e9cf, type: 3}
+      propertyPath: awakenedColor.g
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2921268448612659600, guid: bfe65dd7667e19c4f9533af653b8e9cf, type: 3}
+      propertyPath: awakenedColor.r
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2921268448612659600, guid: bfe65dd7667e19c4f9533af653b8e9cf, type: 3}
+      propertyPath: enhancedAwakenedColor.g
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 3783203440675197678, guid: bfe65dd7667e19c4f9533af653b8e9cf, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -242,6 +274,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Player
       objectReference: {fileID: 0}
+    - target: {fileID: 6610567925237528462, guid: bfe65dd7667e19c4f9533af653b8e9cf, type: 3}
+      propertyPath: 'startingRelics.Array.data[0]'
+      value: 
+      objectReference: {fileID: 11400000, guid: d170a228869ec1c4e81a055bd0ea8f86, type: 2}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
