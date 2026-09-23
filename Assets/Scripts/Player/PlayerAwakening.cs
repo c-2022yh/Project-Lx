@@ -148,6 +148,22 @@ public class PlayerAwakening : MonoBehaviour
     private Coroutine awakeningCoroutine;
 
 
+    //사망 시 진행 중인 각성을 정리하고, 이후 물리와 행동 상태는 리스폰 코드에서 처리
+    public void CancelAwakeningForDeath()
+    {
+        //사망 후 각성 코루틴이 다시 진행되지 않도록 중지
+        if (awakeningCoroutine != null) StopCoroutine(awakeningCoroutine);
+        awakeningCoroutine = null;
+        //진행 중인 각성 진입 이펙트 숨김
+        if (awakeningEffect != null) awakeningEffect.Hide();
+        //이미 적용된 능력치 보너스는 기존 종료 함수를 통해 복구
+        if (isAwakened && activePlayer != null) ExitAwakened(activePlayer);
+        isAwakened = false;
+        isAwakening = false;
+        isEnhancedAwakening = false;
+        activePlayer = null;
+    }
+
     public bool IsAwakened => isAwakened;
     public bool IsAwakening => isAwakening;
 

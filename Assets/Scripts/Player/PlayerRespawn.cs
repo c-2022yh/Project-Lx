@@ -59,6 +59,9 @@ public class PlayerRespawn : MonoBehaviour
     //플레이어 사망 처리
     private void HandlePlayerDeath()
     {
+        //사망 물리 정지 전에 각성 코루틴과 적용된 각성 상태 정리
+        if (player != null && player.Awakening != null)
+            player.Awakening.CancelAwakeningForDeath();
         if (playerActionState != null && playerActionState.CanDie())
         {
             playerActionState.EnterDead();
