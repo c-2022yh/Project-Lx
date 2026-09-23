@@ -400,7 +400,7 @@ MonoBehaviour:
     damageSpec:
       damageType: 0
       damageMultiplier: 1
-      canCritical: 0
+      canCritical: 1
       bonusPenetration: 0
       bonusDamageAmplification: 0
     attackEffectPrefab: {fileID: 3545481630792328146, guid: 94f295d40691486438e6c60e511b79e0, type: 3}

@@ -200,7 +200,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 144273705479961808, guid: bfe65dd7667e19c4f9533af653b8e9cf, type: 3}
       propertyPath: offense.criticalChance
-      value: 1
+      value: 0.1
       objectReference: {fileID: 0}
     - target: {fileID: 2921268448612659600, guid: bfe65dd7667e19c4f9533af653b8e9cf, type: 3}
       propertyPath: normalColor.b
