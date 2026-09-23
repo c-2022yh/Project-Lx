@@ -1,94 +1,77 @@
-
 using UnityEngine;
 
 [CreateAssetMenu(fileName = "RFX_DarkMoon", menuName = "Relics/Effects/Dark Moon")]
 
-//±×¹Ê
-//±â·ÂÀ» È¹µæÇÒ ¼ö ¾ø´Â ´ë½Å »ó½Ã ÇÇÇØ ÁõÆøÀ» ¾ò´Â´Ù.
+//ê·¸ë¯
+//ìµœëŒ€ ê¸°ë ¥ì„ ë‚®ì¶° ê°ì„±ì„ ë§‰ê³  í‰ìƒì‹œ í”¼í•´ëŸ‰ì„ ë†’ì¸ë‹¤.
 public class DarkMoonRelicEffect : RelicEffect
 {
     [Header("Dark Moon Settings")]
-    [SerializeField, Min(0f)]
-    private float damageAmplificationBonus = 0.25f;
+    [SerializeField, Min(0f), Tooltip("ìµœëŒ€ ê¸°ë ¥ì—ì„œ ì°¨ê°í•  ì–‘. ê°ì„± ìš”êµ¬ëŸ‰ ë¯¸ë§Œì´ ë˜ë„ë¡ ì„¤ì •")]
+    private float maxEnergyReduction = 50f;
 
+    [SerializeField, Min(0f), Tooltip("OffensiveStats.damageAmplificationì— ë”í•  ê°’. 0.25ëŠ” 25% ë³´ë„ˆìŠ¤")]
+    private float damageAmplificationBonus = 0.25f;
 
     public override IRelicRuntime CreateRuntime(Player player)
     {
-        return new DarkMoonRuntime(player, damageAmplificationBonus);
+        return new DarkMoonRuntime(player, maxEnergyReduction, damageAmplificationBonus);
     }
 
     private sealed class DarkMoonRuntime : IRelicRuntime
     {
         private readonly Player player;
-        private readonly float damageAmplificationBonus;
+        private readonly float reduction;
+        private readonly float damageBonus;
+        private PlayerEnergy energy;
+        private PlayerAwakening awakening;
+        private OffensiveStats offense;
+        private float appliedReduction;
+        private bool equipped;
 
-        private PlayerEnergy playerEnergy;
-        private OffensiveStats playerOffense;
-
-        private bool isEquipped;
-
-
-        public DarkMoonRuntime(Player player, float damageAmplificationBonus)
+        public DarkMoonRuntime(Player player, float reduction, float damageBonus)
         {
             this.player = player;
-            this.damageAmplificationBonus = damageAmplificationBonus;
+            this.reduction = reduction;
+            this.damageBonus = damageBonus;
         }
-
 
         public void Equip()
         {
-            if (isEquipped) return;
+            if (equipped || player == null) return;
 
-            playerEnergy = player.GetComponent<PlayerEnergy>();
+            energy = player.Energy;
+            awakening = player.Awakening;
 
-            PlayerStats playerStats = player.GetComponent<PlayerStats>();
+            offense = player.Stats != null ? player.Stats.Offense : null;
 
-            playerOffense = playerStats.Offense;
+            if (energy == null || awakening == null || offense == null) return;
 
-            //ÇöÀç ±â·ÂÀ» 0À¸·Î ¸¸µé°í
-            //ÀÌÈÄ ±â·Â È¹µæµµ Â÷´Ü
-            playerEnergy.SetEnergyGainBlocked(true);
+            awakening.SetAwakeningBlocked(true);
 
-            //»ó½Ã ÇÇÇØ ÁõÆø Àû¿ë
-            playerOffense.damageAmplification += damageAmplificationBonus;
+            if (awakening.IsAwakened || awakening.IsAwakening) awakening.EndAwakening();
 
-            isEquipped = true;
+            appliedReduction = Mathf.Min(reduction, energy.MaxEnergy);
+            energy.ModifyMaxEnergy(-appliedReduction);
+            offense.damageAmplification += damageBonus;
 
-
-            Debug.Log(
-                $"[DarkMoon] ±×¹Ê ÀåÂø - " +
-                $"±â·Â È¹µæ Â÷´Ü, " +
-                $"ÇÇÇØ ÁõÆø +{damageAmplificationBonus}"
-            );
+            equipped = true;
         }
-
 
         public void Unequip()
         {
-            if (!isEquipped) return;
+            if (!equipped) return;
 
+            if (offense != null) offense.damageAmplification -= damageBonus;
+            if (energy != null) energy.ModifyMaxEnergy(appliedReduction);
+            if (awakening != null) awakening.SetAwakeningBlocked(false);
 
-            //»ó½Ã ÇÇÇØ ÁõÆø Á¦°Å
-            if (playerOffense != null)
-            {
-                playerOffense.damageAmplification -= damageAmplificationBonus;
-            }
+            appliedReduction = 0f;
 
-            //±â·Â È¹µæ Â÷´Ü ÇØÁ¦
-            if (playerEnergy != null)
-            {
-                playerEnergy.SetEnergyGainBlocked(false);
-            }
-
-
-            isEquipped = false;
-
-            playerEnergy = null;
-            playerOffense = null;
-
-            Debug.Log("[DarkMoon] ±×¹Ê ÀåÂø ÇØÁ¦");
-
-
+            equipped = false;
+            energy = null;
+            awakening = null;
+            offense = null;
         }
     }
 }

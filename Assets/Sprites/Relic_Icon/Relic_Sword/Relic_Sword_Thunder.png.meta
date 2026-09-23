@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: b14950da35110a242976d6b7673ad227
+guid: 6ad0ff10dde40134ea78820b26ab7639
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: 9152150442754787781
-    second: Relic_ResidualMoon_0
+      213: 8693138787733837997
+    second: Relic_Sword_Thunder_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -100,7 +100,7 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: Relic_ResidualMoon_0
+      name: Relic_Sword_Thunder_0
       rect:
         serializedVersion: 2
         x: 10
@@ -115,8 +115,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 5c945576658f20f70800000000000000
-      internalID: 9152150442754787781
+      spriteID: da89b025bab34a870800000000000000
+      internalID: 8693138787733837997
       vertices: []
       indices: 
       edges: []
@@ -135,7 +135,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      Relic_ResidualMoon_0: 9152150442754787781
+      Relic_Sword_Thunder_0: 8693138787733837997
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

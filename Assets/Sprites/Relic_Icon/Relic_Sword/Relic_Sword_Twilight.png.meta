@@ -3,8 +3,8 @@ guid: 69be4ccedaa2f2740b7de578c7f98dad
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -4600794961962449889
-    second: Relic_Twilight_0
+      213: 5156967357813232671
+    second: Relic_Sword_Twilight_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -100,7 +100,7 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: Relic_Twilight_0
+      name: Relic_Sword_Twilight_0
       rect:
         serializedVersion: 2
         x: 10
@@ -115,8 +115,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: f1442dfab51b620c0800000000000000
-      internalID: -4600794961962449889
+      spriteID: f141eb83d7a319740800000000000000
+      internalID: 5156967357813232671
       vertices: []
       indices: 
       edges: []
@@ -135,7 +135,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      Relic_Twilight_0: -4600794961962449889
+      Relic_Sword_Twilight_0: 5156967357813232671
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

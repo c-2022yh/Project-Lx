@@ -9,8 +9,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6594f2ee34e307546a04a8224fccb9d2, type: 3}
-  m_Name: RFX_DarkMoon
-  m_EditorClassIdentifier: Assembly-CSharp::DarkMoonRelicEffect
-  maxEnergyReduction: 20
-  damageAmplificationBonus: 0.25
+  m_Script: {fileID: 11500000, guid: 313ff019be28d0c4ea87db349a226716, type: 3}
+  m_Name: RFX_Burning
+  m_EditorClassIdentifier: Assembly-CSharp::BurningRelicEffect
+  durationBonus: 10
+  interval: 1
+  physicalAttackPerInterval: 0.2
+  magicalAttackPerInterval: 0.2

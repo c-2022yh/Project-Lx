@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::RelicData
   relicId: sword_thunder
   relicName: "\uB1CC\uC804"
-  icon: {fileID: 0}
+  icon: {fileID: 8693138787733837997, guid: 6ad0ff10dde40134ea78820b26ab7639, type: 3}
   description: "\uCE58\uBA85\uD0C0 \uD655\uB960\uC774 \uC99D\uAC00\uD558\uACE0\r\n\uCE58\uBA85\uD0C0
     \uC801\uC911 \uC2DC \uAC15\uB825\uD55C \uC804\uC774 \uBC88\uAC1C\uB97C \uBC29\uCD9C\uD55C\uB2E4."
   cost: 1

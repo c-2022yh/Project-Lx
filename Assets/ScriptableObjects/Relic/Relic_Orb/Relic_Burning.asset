@@ -10,14 +10,14 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 97e8976399dde06499934e413ed35ac2, type: 3}
-  m_Name: Relic_Devour
+  m_Name: Relic_Burning
   m_EditorClassIdentifier: Assembly-CSharp::RelicData
-  relicId: sword_devour
-  relicName: "\uD3EC\uC2DD"
-  icon: {fileID: -201805321040798213, guid: 79449327d8fb8c44e9dd9957a5c35af9, type: 3}
-  description: "\uC801 \uACF5\uACA9 \uC801\uC911 \uC2DC \uCCB4\uB825\uC744 \uC18C\uB7C9
-    \uD68C\uBCF5\uD558\uACE0 3\uC5F0\uACA9 \uC2A4\uD0AC\uC744 \uD68D\uB4DD\uD55C\uB2E4."
+  relicId: orb_burning
+  relicName: "\uC5F0\uC18C"
+  icon: {fileID: 0}
+  description: "\uAC01\uC131 \uC720\uC9C0\uC2DC\uAC04\uC774 \uC99D\uAC00\uD55C\uB2E4.\r\n\uAC01\uC131
+    \uC911 \uB9E4 \uCD08 \uACF5\uACA9\uB825\uC774 \uC99D\uAC00\uD55C\uB2E4.\r\n"
   cost: 1
-  category: 0
+  category: 1
   effects:
-  - {fileID: 11400000, guid: 1a1e7bb896867fb4795bb7ff806e61b3, type: 2}
+  - {fileID: 11400000, guid: a6563db56d9958c4094f3ea74f2fef18, type: 2}

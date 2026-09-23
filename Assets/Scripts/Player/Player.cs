@@ -100,7 +100,20 @@ public class Player : MonoBehaviour
     public void OnSkillD(InputValue value) { if (value.isPressed && ActionState.CanSkill()) Skill.ExecuteSkillD(this); }
     public void OnSkillF(InputValue value) { if (value.isPressed && ActionState.CanSkill()) Skill.ExecuteSkillF(this); }
 
-    public void OnAwaken(InputValue value) { if (value.isPressed && ActionState.CanAwakening()) Awakening.TryAwaken(this); }
+    //평상시 Q는 각성을 시도하고, 각성 중 Q는 폭주 유물의 초토화를 시도한다.
+    //초토화는 PlayerSkill 내부에서 별도로 실행하므로 X/A/S/D/F 슬롯을 차지하지 않는다.
+    public void OnAwaken(InputValue value)
+    {
+        if (!value.isPressed || Awakening == null || ActionState == null) return;
+
+        if (Awakening.IsAwakened)
+        {
+            Skill?.TryUseAwakeningSkill(this);
+            return;
+        }
+
+        if (ActionState.CanAwakening()) Awakening.TryAwaken(this);
+    }
 
     //public void OnTransformSuper(InputValue value) { if (value.isPressed && ActionState.CanTransform()) currentState?.OnTransformSuper(); }
     //public void OnTransformAnimal(InputValue value) { if (value.isPressed && ActionState.CanTransform()) currentState?.OnTransformAnimal(); }

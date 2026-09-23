@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: 79449327d8fb8c44e9dd9957a5c35af9
+guid: 94973587d775c2541b6353089a3d5a39
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: 7022232459433622336
-    second: Relic_Devour_0
+      213: 6761040222134422116
+    second: Relic_Sword_DarkShadow_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -100,7 +100,7 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: Relic_Devour_0
+      name: Relic_Sword_DarkShadow_0
       rect:
         serializedVersion: 2
         x: 10
@@ -115,8 +115,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 04b32ca673bf37160800000000000000
-      internalID: 7022232459433622336
+      spriteID: 46a4370b24a04dd50800000000000000
+      internalID: 6761040222134422116
       vertices: []
       indices: 
       edges: []
@@ -135,7 +135,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      Relic_Devour_0: 7022232459433622336
+      Relic_Sword_DarkShadow_0: 6761040222134422116
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
