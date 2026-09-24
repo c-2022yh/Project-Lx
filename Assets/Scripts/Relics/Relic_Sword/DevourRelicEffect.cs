@@ -85,14 +85,16 @@ public class DevourRelicEffect : RelicEffect
         }
 
         //평타 또는 포식 X 스킬이 적중할 때마다 호출
-        private void HandleAttackHit()
+        private void HandleAttackHit(IDamageable target, DamageInfo damageInfo)
         {
+            if (!isEquipped) return;
+            if (playerHealth == null) return;
+
             //현재 체력이 최대 체력 이상이면 회복하지 않음
             if (playerHealth.CurrentHealth >= playerHealth.MaxHealth) return;
-            
+
             //회복
             playerHealth.Heal(healPerHit);
-            Debug.Log($"[Devour] 적중 회복: {healPerHit:0.##}");
 
         }
     }

@@ -364,7 +364,7 @@ MonoBehaviour:
     damageSpec:
       damageType: 0
       damageMultiplier: 1
-      canCritical: 0
+      canCritical: 1
       bonusPenetration: 0
       bonusDamageAmplification: 0
     attackEffectPrefab: {fileID: 3545481630792328146, guid: 94f295d40691486438e6c60e511b79e0, type: 3}
@@ -381,7 +381,7 @@ MonoBehaviour:
     damageSpec:
       damageType: 0
       damageMultiplier: 1
-      canCritical: 0
+      canCritical: 1
       bonusPenetration: 0
       bonusDamageAmplification: 0
     attackEffectPrefab: {fileID: 2066522367392586507, guid: 692a85f7206e9714c93b470598cbc6a6, type: 3}
@@ -400,7 +400,7 @@ MonoBehaviour:
     damageSpec:
       damageType: 0
       damageMultiplier: 1
-      canCritical: 0
+      canCritical: 1
       bonusPenetration: 0
       bonusDamageAmplification: 0
     attackEffectPrefab: {fileID: 3545481630792328146, guid: 94f295d40691486438e6c60e511b79e0, type: 3}
@@ -423,11 +423,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerSkill
   equippedSkills:
-  - {fileID: 11400000, guid: 25cba404ae17a674c9403f840404d041, type: 2}
-  - {fileID: 11400000, guid: 3a5ab567ab6580e4f9037a70163c7265, type: 2}
-  - {fileID: 11400000, guid: be9906743b4499c4aad9d914a99a2fe1, type: 2}
-  - {fileID: 11400000, guid: 948f556659e513f439facc403ca6dacb, type: 2}
-  - {fileID: 11400000, guid: 401216e17c71cb24f8ea92cee54f8709, type: 2}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
   hudPanel: {fileID: 5405542325969778392, guid: 881165a111aad8b48984bc07a73d147b, type: 3}
 --- !u!114 &781535822289692772
 MonoBehaviour:
@@ -474,9 +474,9 @@ MonoBehaviour:
   awakeningFreezeTime: 0.8
   normalAwakeningEnergy: 100
   enhancedAwakeningEnergy: 200
-  normalColor: {r: 0, g: 1, b: 0, a: 1}
-  awakenedColor: {r: 1, g: 0, b: 0, a: 1}
-  enhancedAwakenedColor: {r: 1, g: 0, b: 1, a: 1}
+  normalColor: {r: 1, g: 1, b: 1, a: 1}
+  awakenedColor: {r: 1, g: 1, b: 1, a: 1}
+  enhancedAwakenedColor: {r: 1, g: 1, b: 1, a: 1}
   awakenedMoveMultiplier: 1.3
   awakenedJumpMultiplier: 1.2
   normalCombatBonus:
@@ -501,7 +501,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::RelicManager
   player: {fileID: 4329258634847844620}
-  startingRelics: []
+  startingRelics:
+  - {fileID: 0}
 --- !u!114 &8913146774277055173
 MonoBehaviour:
   m_ObjectHideFlags: 0

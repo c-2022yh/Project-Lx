@@ -12,4 +12,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6594f2ee34e307546a04a8224fccb9d2, type: 3}
   m_Name: RFX_DarkMoon
   m_EditorClassIdentifier: Assembly-CSharp::DarkMoonRelicEffect
+  maxEnergyReduction: 20
   damageAmplificationBonus: 0.25

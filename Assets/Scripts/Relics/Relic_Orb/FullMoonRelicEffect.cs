@@ -1,167 +1,90 @@
-
 using UnityEngine;
 
-[CreateAssetMenu(
-    fileName = "RFX_FullMoon",
-    menuName = "Relics/Effects/Full Moon"
-)]
+[CreateAssetMenu(fileName = "RFX_FullMoon", menuName = "Relics/Effects/Full Moon")]
 
-//¸¸¿ù
-//ÃÖ´ë ±â·ÂÀ» Áõ°¡½ÃÅ°°í °­È­ °¢¼ºÀ» ÇØ±İÇÑ´Ù.
+//ë§Œì›”
+//ê¸°ë ¥ íšë“ì„ ëŠ˜ë¦¬ê³  ê²Œì´ì§€ê°€ ê°€ë“ ì°¼ì„ ë•Œë§Œ í”¼í•´ëŸ‰ì„ ë†’ì¸ë‹¤.
 public class FullMoonRelicEffect : RelicEffect
 {
-    [Header("Energy")]
-    [SerializeField, Min(1f)]
-    private float bonusMaxEnergy = 100f;
+    [Header("Full Moon Settings")]
+    [SerializeField, Min(0f), Tooltip("ê¸°ë ¥ ì¶”ê°€ íšë“ ë¹„ìœ¨. 0.5ëŠ” íšë“ëŸ‰ 50% ì¦ê°€")]
+    private float energyGainBonus = 0.5f;
 
+    [SerializeField, Min(0f), Tooltip("ê¸°ë ¥ì´ ìµœëŒ€ì¼ ë•Œì˜ ìµœì¢… í”¼í•´ëŸ‰ ë³´ë„ˆìŠ¤")]
+    private float fullEnergyDamageBonus = 0.2f;
 
-    [Header("Enhanced Awakening - Attack")]
-    [SerializeField, Min(0f)]
-    private float physicalAttackBonus = 1f;
-
-    [SerializeField, Min(0f)]
-    private float magicalAttackBonus = 1f;
-
-
-    [Header("Enhanced Awakening - Penetration")]
-    [SerializeField, Min(0f)]
-    private float physicalPenetrationBonus = 10f;
-
-    [SerializeField, Min(0f)]
-    private float magicalPenetrationBonus = 10f;
-
-
-    [Header("Enhanced Awakening - Critical")]
-    [SerializeField, Range(0f, 1f)]
-    private float criticalChanceBonus = 0.2f;
-
-    [SerializeField, Min(0f)]
-    private float criticalMultiplierBonus = 0.5f;
-
-
-    [Header("Enhanced Awakening - Final Damage")]
-    [SerializeField, Min(0f)]
-    private float damageAmplificationBonus = 0.2f;
-
-
-    public override IRelicRuntime CreateRuntime(
-        Player player)
+    public override IRelicRuntime CreateRuntime(Player player)
     {
-        return new FullMoonRuntime(
-            player,
-            bonusMaxEnergy,
-            physicalAttackBonus,
-            magicalAttackBonus,
-            physicalPenetrationBonus,
-            magicalPenetrationBonus,
-            criticalChanceBonus,
-            criticalMultiplierBonus,
-            damageAmplificationBonus
-        );
+        return new FullMoonRuntime(player, energyGainBonus, fullEnergyDamageBonus);
     }
 
-
-    private sealed class FullMoonRuntime :
-        IRelicRuntime
+    private sealed class FullMoonRuntime : IRelicRuntime
     {
         private readonly Player player;
+        private readonly float gainBonus;
+        private readonly float damageBonus;
+        private PlayerEnergy energy;
+        private OffensiveStats offense;
+        private bool equipped;
+        private bool damageApplied;
 
-        private readonly float bonusMaxEnergy;
-
-        private readonly float physicalAttackBonus;
-        private readonly float magicalAttackBonus;
-
-        private readonly float physicalPenetrationBonus;
-        private readonly float magicalPenetrationBonus;
-
-        private readonly float criticalChanceBonus;
-        private readonly float criticalMultiplierBonus;
-
-        private readonly float damageAmplificationBonus;
-
-
-        private PlayerEnergy playerEnergy;
-        private PlayerAwakening playerAwakening;
-
-        private bool isEquipped;
-
-
-        public FullMoonRuntime(
-            Player player,
-            float bonusMaxEnergy,
-            float physicalAttackBonus,
-            float magicalAttackBonus,
-            float physicalPenetrationBonus,
-            float magicalPenetrationBonus,
-            float criticalChanceBonus,
-            float criticalMultiplierBonus,
-            float damageAmplificationBonus)
+        public FullMoonRuntime(Player player, float gainBonus, float damageBonus)
         {
             this.player = player;
-            this.bonusMaxEnergy = bonusMaxEnergy;
-            this.physicalAttackBonus = physicalAttackBonus;
-            this.magicalAttackBonus = magicalAttackBonus;
-            this.physicalPenetrationBonus = physicalPenetrationBonus;
-            this.magicalPenetrationBonus = magicalPenetrationBonus;
-            this.criticalChanceBonus = criticalChanceBonus;
-            this.criticalMultiplierBonus = criticalMultiplierBonus;
-            this.damageAmplificationBonus = damageAmplificationBonus;
+            this.gainBonus = gainBonus;
+            this.damageBonus = damageBonus;
         }
 
-
+        //ê¸°ë ¥ íšë“ëŸ‰ì„ ë†’ì´ê³  ê²Œì´ì§€ê°€ ë³€ê²½ë  ë•Œë§ˆë‹¤ ìµœëŒ€ ì¶©ì „ ì—¬ë¶€ë¥¼ ê²€ì‚¬
         public void Equip()
         {
-            if (isEquipped) return;
-            
-            playerEnergy = player.GetComponent<PlayerEnergy>();
-            playerAwakening = player.GetComponent<PlayerAwakening>();
+            if (equipped || player == null) return;
 
-            //ÃÖ´ë ±â·Â Áõ°¡
-            playerEnergy.ModifyMaxEnergy(bonusMaxEnergy );
+            energy = player.Energy;
+            offense = player.Stats != null ? player.Stats.Offense : null;
 
+            if (energy == null || offense == null) return;
 
-            //°­È­ °¢¼º ´É·ÂÄ¡ µî·Ï
-            playerAwakening.SetEnhancedAwakeningBonus(
-                physicalAttackBonus,
-                magicalAttackBonus,
-                physicalPenetrationBonus,
-                magicalPenetrationBonus,
-                criticalChanceBonus,
-                criticalMultiplierBonus,
-                damageAmplificationBonus
-            );
+            equipped = true;
 
-            isEquipped = true;
+            energy.ModifyEnergyGainMultiplier(gainBonus);
+            energy.OnEnergyChanged += UpdateFullEnergyBonus;
+
+            UpdateFullEnergyBonus();
         }
 
-
+        //ì´ë²¤íŠ¸ë¥¼ ë¨¼ì € ëŠê³  íšë“ ë° í”¼í•´ ë³´ë„ˆìŠ¤ë¥¼ ê°ê° ì›ìƒë³µêµ¬
         public void Unequip()
         {
-            if (!isEquipped) return;
+            if (!equipped) return;
 
-
-            //°­È­ °¢¼º µî·Ï ÇØÁ¦
-            if (playerAwakening != null)
+            if (energy != null)
             {
-                playerAwakening.ClearEnhancedAwakeningBonus();
+                energy.OnEnergyChanged -= UpdateFullEnergyBonus;
+                energy.ModifyEnergyGainMultiplier(-gainBonus);
             }
 
+            if (damageApplied && offense != null) offense.damageAmplification -= damageBonus;
 
-            //ÃÖ´ë ±â·Â º¹±¸
-            if (playerEnergy != null)
-            {
-                playerEnergy.ModifyMaxEnergy(-bonusMaxEnergy);
-            }
+            damageApplied = false;
+            equipped = false;
+            energy = null;
+            offense = null;
 
+        }
 
-            isEquipped = false;
+        //ìµœëŒ€ ê¸°ë ¥ì— ë„ë‹¬í•˜ë©´ ë³´ë„ˆìŠ¤ë¥¼ ë”í•˜ê³  ì†Œëª¨í•˜ë©´ ì •í™•íˆ í•œ ë²ˆ ì œê±°
+        private void UpdateFullEnergyBonus()
+        {
+            if (!equipped || energy == null || offense == null) return;
 
-            playerEnergy = null;
-            playerAwakening = null;
+            bool shouldApply = energy.IsFull;
 
+            if (shouldApply == damageApplied) return;
 
-            Debug.Log("[FullMoon] ¸¸¿ù ÀåÂø ÇØÁ¦");
+            offense.damageAmplification += shouldApply ? damageBonus : -damageBonus;
 
+            damageApplied = shouldApply;
         }
     }
 }

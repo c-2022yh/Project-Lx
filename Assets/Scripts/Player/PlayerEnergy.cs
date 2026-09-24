@@ -1,175 +1,125 @@
-
-using System.Diagnostics;
+using System;
 using UnityEngine;
 
-//ÇÃ·¹ÀÌ¾î ±â·Â °ü¸® ½ºÅ©¸³Æ®
+//í”Œë ˆì´ì–´ì˜ ê¸°ë ¥ê³¼ ë³´ì£¼ í‘œì‹œë¥¼ ê´€ë¦¬í•˜ëŠ” ìŠ¤í¬ë¦½íŠ¸
 public class PlayerEnergy : MonoBehaviour
 {
     [Header("Energy")]
-    [SerializeField] private float currentEnergy = 0f;
-    [SerializeField] private float maxEnergy = 100f;
+    [SerializeField, Min(0f)] private float currentEnergy;
+    [SerializeField, Min(0f)] private float maxEnergy = 100f;
 
     [Header("Orb")]
     [SerializeField] private EnergyOrb orbPrefab;
-
-    //Å×½ºÆ® Áß¿¡´Â true
     [SerializeField] private bool startWithOrb = true;
 
-    //½ÇÁ¦ °ÔÀÓ Áß »ı¼ºµÈ º¸ÁÖ ÀÎ½ºÅÏ½º
     private EnergyOrb orb;
-
-    //±â·Â È¹µæ Â÷´Ü ¿©ºÎ
-    private bool isEnergyGainBlocked;
-
-    //º¸ÁÖ º¸À¯ ¿©ºÎ
     private bool hasOrb;
+    private bool isEnergyGainBlocked;
+    private float energyGainMultiplier = 1f;
 
+    //í˜„ì¬ ê¸°ë ¥ ë˜ëŠ” ìµœëŒ€ ê¸°ë ¥ì´ ë°”ë€Œë©´ ìœ ë¬¼ íš¨ê³¼ì— ì•Œë¦¼
+    public event Action OnEnergyChanged;
 
-    //¿ÜºÎ Á¢±Ù¿ë ÇÁ·ÎÆÛÆ¼
     public float CurrentEnergy => currentEnergy;
     public float MaxEnergy => maxEnergy;
-
     public float EnergyRatio => maxEnergy <= 0f ? 0f : currentEnergy / maxEnergy;
-
-    public bool IsFull => currentEnergy >= maxEnergy;
+    public bool IsFull => maxEnergy > 0f && currentEnergy >= maxEnergy;
     public bool HasOrb => hasOrb;
     public bool IsEnergyGainBlocked => isEnergyGainBlocked;
 
+    //í…ŒìŠ¤íŠ¸ìš© ì‹œì‘ ë³´ì£¼ê°€ ì„¤ì •ë˜ì–´ ìˆìœ¼ë©´ ìƒì„±
     private void Start()
     {
-        if (startWithOrb)
-        {
-            AcquireOrb();
-        }
+        if (startWithOrb) AcquireOrb();
     }
 
-
-    //º¸ÁÖ È¹µæ
+    //ë³´ì£¼ë¥¼ í•œ ë²ˆë§Œ ìƒì„±í•˜ê³  í˜„ì¬ ê¸°ë ¥ì— ë§ì¶° ì™¸í˜•ì„ ê°±ì‹ 
     public void AcquireOrb()
     {
-        if (hasOrb) return;
-        if (orbPrefab == null) return;
-        
-
+        if (hasOrb || orbPrefab == null) return;
         hasOrb = true;
-
-        //ºÎ¸ğ ¾øÀÌ µ¶¸³ ¿ÀºêÁ§Æ®·Î »ı¼º
         orb = Instantiate(orbPrefab, transform.position, Quaternion.identity);
-
-        //ÇÃ·¹ÀÌ¾î¸¦ ÃßÀû ´ë»óÀ¸·Î µî·Ï
         orb.Initialize(transform);
 
-        //ÇöÀç ±â·Â Áï½Ã ¹İ¿µ
-        UpdateEnergyVisual();
+        NotifyEnergyChanged();
     }
 
-
-    //¿¡³ÊÁö È¹µæ
+    //íšë“ ë°°ìœ¨ì„ ì ìš©í•œ ë’¤ ê¸°ë ¥ì„ ìµœëŒ€ì¹˜ ì•ˆì—ì„œ ì¦ê°€
     public void GainEnergy(float amount)
     {
-        if (!hasOrb) return;
-        
-        //±×¹Ê ÀåÂø Áß¿¡´Â ±â·ÂÀ» ¾òÀ» ¼ö ¾øÀ½
-        if (isEnergyGainBlocked)
-        {
-            currentEnergy = 0f;
-            UpdateEnergyVisual();
-            return;
-        }
+        if (!hasOrb || isEnergyGainBlocked || amount <= 0f) return;
+        float next = Mathf.Clamp(currentEnergy + amount * Mathf.Max(0f, energyGainMultiplier), 0f, maxEnergy);
+        if (Mathf.Approximately(currentEnergy, next)) return;
+        currentEnergy = next;
 
-        if (amount <= 0f) return;
-
-        currentEnergy = Mathf.Clamp(currentEnergy + amount, 0f, maxEnergy);
-
-        UpdateEnergyVisual();
+        NotifyEnergyChanged();
     }
 
-
-    //Æ¯Á¤ ±â·Â ÀÌ»ó º¸À¯Çß´ÂÁö È®ÀÎ
-    public bool HasEnergy(float requiredEnergy)
+    //ìœ ë¬¼ì´ ì¥ì°©ë˜ê±°ë‚˜ í•´ì œë  ë•Œ íšë“ ë°°ìœ¨ì˜ ì¦ê°ë¶„ì„ ë°˜ì˜
+    //ì˜ˆ: 50% ì¶”ê°€ íšë“ì€ +0.5, í•´ì œí•  ë•ŒëŠ” -0.5.
+    public void ModifyEnergyGainMultiplier(float bonus)
     {
-        return currentEnergy >= requiredEnergy;
+        energyGainMultiplier = Mathf.Max(0f, energyGainMultiplier + bonus);
     }
 
+    //í˜„ì¬ ê¸°ë ¥ì´ ê°ì„±ì´ë‚˜ ìŠ¤í‚¬ì— í•„ìš”í•œ ì–‘ ì´ìƒì¸ì§€ í™•ì¸
+    public bool HasEnergy(float requiredEnergy) => currentEnergy >= requiredEnergy;
 
-    //ÃÖ´ë ±â·Â Á÷Á¢ ¼³Á¤
+    //ìµœëŒ€ ê¸°ë ¥ì„ ë°”ê¾¸ê³  í˜„ì¬ ê¸°ë ¥ì´ ìƒˆ ìµœëŒ€ì¹˜ë¥¼ ë„˜ìœ¼ë©´ ì¡°ì •
     public void SetMaxEnergy(float newMaxEnergy)
     {
         maxEnergy = Mathf.Max(0f, newMaxEnergy);
+        currentEnergy = Mathf.Clamp(currentEnergy, 0f, maxEnergy);
 
-        //ÃÖ´ë ±â·ÂÀÌ ÁÙ¾úÀ» ¶§ ÇöÀç ±â·Âµµ ÇÔ²² Á¦ÇÑ
-        currentEnergy = Mathf.Clamp(
-            currentEnergy,
-            0f,
-            maxEnergy
-        );
-
-        UpdateEnergyVisual();
-
+        NotifyEnergyChanged();
     }
 
+    //ìµœëŒ€ ê¸°ë ¥ì„ ìœ ë¬¼ì˜ ë³´ë„ˆìŠ¤ ì—°ì‚°
+    public void ModifyMaxEnergy(float amount) => SetMaxEnergy(maxEnergy + amount);
 
-    //ÃÖ´ë ±â·Â Áõ°¨
-    public void ModifyMaxEnergy(float amount)
-    {
-        SetMaxEnergy(maxEnergy + amount);
-    }
-
-
-    //¿¡³ÊÁö ÃÊ±âÈ­
+    //ê°ì„±ì´ ëë‚œ ë’¤ ê¸°ë ¥ì„ ë¹„ìš°ê³  ìœ ë¬¼ì— ë³€ê²½ ì‚¬ì‹¤ì„ ì•Œë¦¼
     public void ResetEnergy()
     {
+        if (currentEnergy <= 0f) return;
         currentEnergy = 0f;
-        UpdateEnergyVisual();
+
+        NotifyEnergyChanged();
     }
 
-
-    //ºñÁÖ¾ó ¾÷µ¥ÀÌÆ®
-    private void UpdateEnergyVisual()
-    {
-        if (orb == null || !hasOrb) return;
-
-        //ÇöÀç EnergyOrb ÄÚµå¿Í È£È¯µÇµµ·Ï ºñÀ² Àü´Ş
-        orb.SetEnergy(currentEnergy);
-    }
-
-    //±â·Â È¹µæ Â÷´Ü ¿©ºÎ ¼³Á¤
+    //ê¸°ë ¥ íšë“ì„ ë§‰ëŠ”ë‹¤. ê¸°ì¡´ ê·¸ë¯ ë°ì´í„°ë¥¼ ì‚¬ìš©í•˜ëŠ” ë‹¤ë¥¸ ì½”ë“œì˜ í˜¸í™˜ì„±ì„ ìœ ì§€
     public void SetEnergyGainBlocked(bool blocked)
     {
         isEnergyGainBlocked = blocked;
 
-        //±â·Â È¹µæÀ» ¸·À» ¶§ ÇöÀç ±â·Âµµ Áï½Ã ÃÊ±âÈ­
-        if (isEnergyGainBlocked)
-        {
-            ResetEnergy();
-        }
-
+        if (blocked) ResetEnergy();
     }
 
-
-    //ÁöÁ¤ÇÑ ±â·ÂÀ» ¼ÒºñÇÒ ¼ö ÀÖ´ÂÁö È®ÀÎ
+    //ë³´ì£¼ë¥¼ ë³´ìœ í•˜ê³  ìˆê³  ê¸°ë ¥ì´ ì¶©ë¶„í•œì§€ í™•ì¸
     public bool CanSpendEnergy(float amount)
     {
         if (amount <= 0f) return true;
-        if (!hasOrb) return false;
 
-        return currentEnergy >= amount;
+        return hasOrb && currentEnergy >= amount;
     }
 
-
-    //ÁöÁ¤ÇÑ ±â·ÂÀ» ¼Òºñ
+    //ê¸°ë ¥ì„ ì‹¤ì œë¡œ ì†Œëª¨í•˜ê³  ì„±ê³µ ì—¬ë¶€ë¥¼ ëŒë ¤ì¤Œ
     public bool TrySpendEnergy(float amount)
     {
+        if (!CanSpendEnergy(amount)) return false;
         if (amount <= 0f) return true;
-        if (!hasOrb) return false;
-        if (currentEnergy < amount) return false;
 
-        currentEnergy -= amount;
-        currentEnergy = Mathf.Clamp(currentEnergy, 0f, maxEnergy);
+        currentEnergy = Mathf.Clamp(currentEnergy - amount, 0f, maxEnergy);
 
-        UpdateEnergyVisual();
+        NotifyEnergyChanged();
 
         return true;
     }
 
+    //ê¸°ë ¥ UI/ë³´ì£¼ì™€ ë§Œì›”ì˜ ì¶©ì „ íŒì •ì— ë³€ê²½ ì‚¬ì‹¤ì„ ë™ì‹œì— ì „ë‹¬
+    private void NotifyEnergyChanged()
+    {
+        if (hasOrb && orb != null) orb.SetEnergy(currentEnergy);
+
+        OnEnergyChanged?.Invoke();
+    }
 }

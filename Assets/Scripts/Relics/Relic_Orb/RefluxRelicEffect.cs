@@ -1,4 +1,3 @@
-
 using UnityEngine;
 
 [CreateAssetMenu(fileName = "RFX_Reflux", menuName = "Relics/Effects/Reflux")]
@@ -45,51 +44,21 @@ public class RefluxRelicEffect : RelicEffect
         {
             if (isEquipped) return;
 
-            if (player == null)
-            {
-                Debug.LogError(
-                    "[Reflux] Player가 없습니다."
-                );
-
-                return;
-            }
-
-            playerEnergy =
-                player.GetComponent<PlayerEnergy>();
-
-            playerAwakening =
-                player.GetComponent<PlayerAwakening>();
+            if (player == null) return;
+            
+            playerEnergy = player.GetComponent<PlayerEnergy>();
+            playerAwakening = player.GetComponent<PlayerAwakening>();
 
 
-            if (playerEnergy == null)
-            {
-                Debug.LogError(
-                    "[Reflux] PlayerEnergy를 찾지 못했습니다."
-                );
-
-                return;
-            }
-
-            if (playerAwakening == null)
-            {
-                Debug.LogError(
-                    "[Reflux] PlayerAwakening을 찾지 못했습니다."
-                );
-
-                return;
-            }
-
+            if (playerEnergy == null) return;
+            
+            if (playerAwakening == null) return;
 
             //각성 종료 이벤트 구독
-            playerAwakening.OnAwakeningEnded +=
-                HandleAwakeningEnded;
+            playerAwakening.OnAwakeningEnded += HandleAwakeningEnded;
 
             isEquipped = true;
 
-            Debug.Log(
-                $"[Reflux] 환류 장착 - " +
-                $"각성 종료 시 기력 {recoveryEnergy} 회복"
-            );
         }
 
 
@@ -100,8 +69,7 @@ public class RefluxRelicEffect : RelicEffect
             //이벤트 구독 해제
             if (playerAwakening != null)
             {
-                playerAwakening.OnAwakeningEnded -=
-                    HandleAwakeningEnded;
+                playerAwakening.OnAwakeningEnded -= HandleAwakeningEnded;
             }
 
             isEquipped = false;
@@ -109,9 +77,6 @@ public class RefluxRelicEffect : RelicEffect
             playerEnergy = null;
             playerAwakening = null;
 
-            Debug.Log(
-                "[Reflux] 환류 장착 해제"
-            );
         }
 
 
@@ -121,14 +86,8 @@ public class RefluxRelicEffect : RelicEffect
             if (!isEquipped) return;
             if (playerEnergy == null) return;
 
-            playerEnergy.GainEnergy(
-                recoveryEnergy
-            );
+            playerEnergy.GainEnergy(recoveryEnergy);
 
-            Debug.Log(
-                $"[Reflux] 각성 종료 - " +
-                $"기력 {recoveryEnergy} 회복"
-            );
         }
     }
 }

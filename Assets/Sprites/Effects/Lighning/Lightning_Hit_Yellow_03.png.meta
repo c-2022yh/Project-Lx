@@ -1,0 +1,2145 @@
+fileFormatVersion: 2
+guid: 0b71ca8dfe3d68d4493bacf81c826b61
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: 6176604590424293953
+    second: Lightning_Hit_Yellow_03_0
+  - first:
+      213: 1442223860757160570
+    second: Lightning_Hit_Yellow_03_1
+  - first:
+      213: -2007373556022051006
+    second: Lightning_Hit_Yellow_03_2
+  - first:
+      213: -2676269728249055888
+    second: Lightning_Hit_Yellow_03_3
+  - first:
+      213: 3438771867912880060
+    second: Lightning_Hit_Yellow_03_4
+  - first:
+      213: -7478650786899550929
+    second: Lightning_Hit_Yellow_03_5
+  - first:
+      213: -5581950755708888788
+    second: Lightning_Hit_Yellow_03_6
+  - first:
+      213: -1185954836730257634
+    second: Lightning_Hit_Yellow_03_7
+  - first:
+      213: 2470807524995839626
+    second: Lightning_Hit_Yellow_03_8
+  - first:
+      213: -3063580624607547229
+    second: Lightning_Hit_Yellow_03_9
+  - first:
+      213: -5605628817783933103
+    second: Lightning_Hit_Yellow_03_10
+  - first:
+      213: 856058932068720338
+    second: Lightning_Hit_Yellow_03_11
+  - first:
+      213: 1080787144805016124
+    second: Lightning_Hit_Yellow_03_12
+  - first:
+      213: -7849708327209550
+    second: Lightning_Hit_Yellow_03_13
+  - first:
+      213: 3978439842191112130
+    second: Lightning_Hit_Yellow_03_14
+  - first:
+      213: 1311397453432115075
+    second: Lightning_Hit_Yellow_03_15
+  - first:
+      213: 6518155568960817886
+    second: Lightning_Hit_Yellow_03_16
+  - first:
+      213: 1129145132218657068
+    second: Lightning_Hit_Yellow_03_17
+  - first:
+      213: 7904961215490389219
+    second: Lightning_Hit_Yellow_03_18
+  - first:
+      213: -5896206112298736398
+    second: Lightning_Hit_Yellow_03_19
+  - first:
+      213: 6228978413232805464
+    second: Lightning_Hit_Yellow_03_20
+  - first:
+      213: 2965757153920269636
+    second: Lightning_Hit_Yellow_03_21
+  - first:
+      213: -4142607449385743645
+    second: Lightning_Hit_Yellow_03_22
+  - first:
+      213: 3736617965546262222
+    second: Lightning_Hit_Yellow_03_23
+  - first:
+      213: -3993722106307326835
+    second: Lightning_Hit_Yellow_03_24
+  - first:
+      213: -8168087948867849999
+    second: Lightning_Hit_Yellow_03_25
+  - first:
+      213: 1836590255773198051
+    second: Lightning_Hit_Yellow_03_26
+  - first:
+      213: -6252083564928751349
+    second: Lightning_Hit_Yellow_03_27
+  - first:
+      213: -2701236016567602642
+    second: Lightning_Hit_Yellow_03_28
+  - first:
+      213: 984062696921673349
+    second: Lightning_Hit_Yellow_03_29
+  - first:
+      213: -1010286103797188531
+    second: Lightning_Hit_Yellow_03_30
+  - first:
+      213: -8773931193938647242
+    second: Lightning_Hit_Yellow_03_31
+  - first:
+      213: 8856630399331584635
+    second: Lightning_Hit_Yellow_03_32
+  - first:
+      213: 5755316890047469363
+    second: Lightning_Hit_Yellow_03_33
+  - first:
+      213: 531107093755332919
+    second: Lightning_Hit_Yellow_03_34
+  - first:
+      213: -1663699483558946671
+    second: Lightning_Hit_Yellow_03_35
+  - first:
+      213: -7364769942504358224
+    second: Lightning_Hit_Yellow_03_36
+  - first:
+      213: -7839533560267146
+    second: Lightning_Hit_Yellow_03_37
+  - first:
+      213: 3210143800419838447
+    second: Lightning_Hit_Yellow_03_38
+  - first:
+      213: 7185132066989278326
+    second: Lightning_Hit_Yellow_03_39
+  - first:
+      213: -5832351950897046880
+    second: Lightning_Hit_Yellow_03_40
+  - first:
+      213: 2075441846501137861
+    second: Lightning_Hit_Yellow_03_41
+  - first:
+      213: -7972721014985649781
+    second: Lightning_Hit_Yellow_03_42
+  - first:
+      213: 7119249230455764166
+    second: Lightning_Hit_Yellow_03_43
+  - first:
+      213: 5276047060858126160
+    second: Lightning_Hit_Yellow_03_44
+  - first:
+      213: -8856216493453575456
+    second: Lightning_Hit_Yellow_03_45
+  - first:
+      213: 1532669140668112984
+    second: Lightning_Hit_Yellow_03_46
+  - first:
+      213: 7340552117906086096
+    second: Lightning_Hit_Yellow_03_47
+  - first:
+      213: 4999366981060864569
+    second: Lightning_Hit_Yellow_03_48
+  - first:
+      213: 2691921696083160067
+    second: Lightning_Hit_Yellow_03_49
+  - first:
+      213: 7284573796620871358
+    second: Lightning_Hit_Yellow_03_50
+  - first:
+      213: 5627667654704683336
+    second: Lightning_Hit_Yellow_03_51
+  - first:
+      213: -5967920549191560960
+    second: Lightning_Hit_Yellow_03_52
+  - first:
+      213: 3594706023315915167
+    second: Lightning_Hit_Yellow_03_53
+  - first:
+      213: -9072894552773642581
+    second: Lightning_Hit_Yellow_03_54
+  - first:
+      213: -7805744130229899889
+    second: Lightning_Hit_Yellow_03_55
+  - first:
+      213: -6642652669025772051
+    second: Lightning_Hit_Yellow_03_56
+  - first:
+      213: -980524149084845339
+    second: Lightning_Hit_Yellow_03_57
+  - first:
+      213: -8096016218057530450
+    second: Lightning_Hit_Yellow_03_58
+  - first:
+      213: 3720651196192410073
+    second: Lightning_Hit_Yellow_03_59
+  - first:
+      213: 3468711208298539593
+    second: Lightning_Hit_Yellow_03_60
+  - first:
+      213: -3139050587863795490
+    second: Lightning_Hit_Yellow_03_61
+  - first:
+      213: -5892776278397738198
+    second: Lightning_Hit_Yellow_03_62
+  - first:
+      213: 8312589731217997714
+    second: Lightning_Hit_Yellow_03_63
+  - first:
+      213: 6251413925191544212
+    second: Lightning_Hit_Yellow_03_64
+  - first:
+      213: -5614959761971733495
+    second: Lightning_Hit_Yellow_03_65
+  - first:
+      213: 458037508113917889
+    second: Lightning_Hit_Yellow_03_66
+  - first:
+      213: 605526238196598835
+    second: Lightning_Hit_Yellow_03_67
+  - first:
+      213: -6349499745109658190
+    second: Lightning_Hit_Yellow_03_68
+  - first:
+      213: 3478069897868201216
+    second: Lightning_Hit_Yellow_03_69
+  - first:
+      213: -4947756556554763413
+    second: Lightning_Hit_Yellow_03_70
+  - first:
+      213: 6086367066552626874
+    second: Lightning_Hit_Yellow_03_71
+  - first:
+      213: -1022139931901674760
+    second: Lightning_Hit_Yellow_03_72
+  - first:
+      213: -8784894531778623159
+    second: Lightning_Hit_Yellow_03_73
+  - first:
+      213: 17040985670398939
+    second: Lightning_Hit_Yellow_03_74
+  - first:
+      213: 4424779309856931094
+    second: Lightning_Hit_Yellow_03_75
+  - first:
+      213: -591395607735107467
+    second: Lightning_Hit_Yellow_03_76
+  - first:
+      213: -3634467515403599110
+    second: Lightning_Hit_Yellow_03_77
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 1
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 1
+  spriteExtrude: 0
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 72
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: Lightning_Hit_Yellow_03_0
+      rect:
+        serializedVersion: 2
+        x: 28
+        y: 496
+        width: 31
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 14289426625b7b550800000000000000
+      internalID: 6176604590424293953
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Lightning_Hit_Yellow_03_1
+      rect:
+        serializedVersion: 2
+        x: 56
+        y: 452
+        width: 69
+        height: 60
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a72e50bc5fec30410800000000000000
+      internalID: 1442223860757160570
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Lightning_Hit_Yellow_03_2
+      rect:
+        serializedVersion: 2
+        x: 133
+        y: 465
+        width: 40
+        height: 42
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 24ffac5e2606424e0800000000000000
+      internalID: -2007373556022051006
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Lightning_Hit_Yellow_03_3
+      rect:
+        serializedVersion: 2
+        x: 149
+        y: 506
+        width: 10
+        height: 6
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 07575949cdafbdad0800000000000000
+      internalID: -2676269728249055888
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Lightning_Hit_Yellow_03_4
+      rect:
+        serializedVersion: 2
+        x: 239
+        y: 497
+        width: 19
+        height: 15
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: cbfbd826bc8f8bf20800000000000000
+      internalID: 3438771867912880060
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Lightning_Hit_Yellow_03_5
+      rect:
+        serializedVersion: 2
+        x: 257
+        y: 504
+        width: 12
+        height: 8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f2d18af9bbe763890800000000000000
+      internalID: -7478650786899550929
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Lightning_Hit_Yellow_03_6
+      rect:
+        serializedVersion: 2
+        x: 266
+        y: 498
+        width: 17
+        height: 14
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c299f34bc5de882b0800000000000000
+      internalID: -5581950755708888788
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Lightning_Hit_Yellow_03_7
+      rect:
+        serializedVersion: 2
+        x: 339
+        y: 411
+        width: 110
+        height: 101
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e1f59050c54aa8fe0800000000000000
+      internalID: -1185954836730257634
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Lightning_Hit_Yellow_03_8
+      rect:
+        serializedVersion: 2
+        x: 53
+        y: 481
+        width: 6
+        height: 7
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a863db36a521a4220800000000000000
+      internalID: 2470807524995839626
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Lightning_Hit_Yellow_03_9
+      rect:
+        serializedVersion: 2
+        x: 69
+        y: 481
+        width: 6
+        height: 6
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3a07f7947a9fb75d0800000000000000
+      internalID: -3063580624607547229
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Lightning_Hit_Yellow_03_10
+      rect:
+        serializedVersion: 2
+        x: 190
+        y: 433
+        width: 42
+        height: 72
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 157bb454a4ec432b0800000000000000
+      internalID: -5605628817783933103
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Lightning_Hit_Yellow_03_11
+      rect:
+        serializedVersion: 2
+        x: 197
+        y: 482
+        width: 6
+        height: 6
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2de91c8201551eb00800000000000000
+      internalID: 856058932068720338
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Lightning_Hit_Yellow_03_12
+      rect:
+        serializedVersion: 2
+        x: 225
+        y: 474
+        width: 14
+        height: 13
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c3269e39e2abffe00800000000000000
+      internalID: 1080787144805016124
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Lightning_Hit_Yellow_03_13
+      rect:
+        serializedVersion: 2
+        x: 238
+        y: 413
+        width: 35
+        height: 80
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2b5f09b5bbc14eff0800000000000000
+      internalID: -7849708327209550
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Lightning_Hit_Yellow_03_14
+      rect:
+        serializedVersion: 2
+        x: 286
+        y: 438
+        width: 29
+        height: 67
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2c7ff0235f1463730800000000000000
+      internalID: 3978439842191112130
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Lightning_Hit_Yellow_03_15
+      rect:
+        serializedVersion: 2
+        x: 302
+        y: 486
+        width: 6
+        height: 7
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 38f4c2b2905033210800000000000000
+      internalID: 1311397453432115075
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Lightning_Hit_Yellow_03_16
+      rect:
+        serializedVersion: 2
+        x: 463
+        y: 475
+        width: 21
+        height: 27
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: edac4ae84f3257a50800000000000000
+      internalID: 6518155568960817886
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Lightning_Hit_Yellow_03_17
+      rect:
+        serializedVersion: 2
+        x: 27
+        y: 445
+        width: 18
+        height: 28
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c2921c9e3878baf00800000000000000
+      internalID: 1129145132218657068
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Lightning_Hit_Yellow_03_18
+      rect:
+        serializedVersion: 2
+        x: 47
+        y: 438
+        width: 25
+        height: 29
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3e47b8cd75014bd60800000000000000
+      internalID: 7904961215490389219
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Lightning_Hit_Yellow_03_19
+      rect:
+        serializedVersion: 2
+        x: 76
+        y: 440
+        width: 26
+        height: 31
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2f462f1c7c77c2ea0800000000000000
+      internalID: -5896206112298736398
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Lightning_Hit_Yellow_03_20
+      rect:
+        serializedVersion: 2
+        x: 118
+        y: 459
+        width: 12
+        height: 12
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 85651524dd6c17650800000000000000
+      internalID: 6228978413232805464
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Lightning_Hit_Yellow_03_21
+      rect:
+        serializedVersion: 2
+        x: 133
+        y: 447
+        width: 10
+        height: 19
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 44dbd711b6c782920800000000000000
+      internalID: 2965757153920269636
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Lightning_Hit_Yellow_03_22
+      rect:
+        serializedVersion: 2
+        x: 145
+        y: 413
+        width: 46
+        height: 50
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3eac97729708286c0800000000000000
+      internalID: -4142607449385743645
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Lightning_Hit_Yellow_03_23
+      rect:
+        serializedVersion: 2
+        x: 268
+        y: 452
+        width: 8
+        height: 13
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ece4ab10e322bd330800000000000000
+      internalID: 3736617965546262222
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Lightning_Hit_Yellow_03_24
+      rect:
+        serializedVersion: 2
+        x: 275
+        y: 447
+        width: 12
+        height: 17
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d8c4de967e27398c0800000000000000
+      internalID: -3993722106307326835
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Lightning_Hit_Yellow_03_25
+      rect:
+        serializedVersion: 2
+        x: 310
+        y: 426
+        width: 39
+        height: 38
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1f03591794f15ae80800000000000000
+      internalID: -8168087948867849999
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Lightning_Hit_Yellow_03_26
+      rect:
+        serializedVersion: 2
+        x: 444
+        y: 455
+        width: 12
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3e62e416b11ec7910800000000000000
+      internalID: 1836590255773198051
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Lightning_Hit_Yellow_03_27
+      rect:
+        serializedVersion: 2
+        x: 451
+        y: 442
+        width: 17
+        height: 22
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b092d566f132c39a0800000000000000
+      internalID: -6252083564928751349
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Lightning_Hit_Yellow_03_28
+      rect:
+        serializedVersion: 2
+        x: 467
+        y: 452
+        width: 10
+        height: 12
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e223ff99728438ad0800000000000000
+      internalID: -2701236016567602642
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Lightning_Hit_Yellow_03_29
+      rect:
+        serializedVersion: 2
+        x: 28
+        y: 424
+        width: 31
+        height: 19
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 58eaabe1fc718ad00800000000000000
+      internalID: 984062696921673349
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Lightning_Hit_Yellow_03_30
+      rect:
+        serializedVersion: 2
+        x: 106
+        y: 440
+        width: 10
+        height: 10
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d48b7ad242ebaf1f0800000000000000
+      internalID: -1010286103797188531
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Lightning_Hit_Yellow_03_31
+      rect:
+        serializedVersion: 2
+        x: 110
+        y: 424
+        width: 24
+        height: 22
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 637619db01cbc3680800000000000000
+      internalID: -8773931193938647242
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Lightning_Hit_Yellow_03_32
+      rect:
+        serializedVersion: 2
+        x: 132
+        y: 426
+        width: 11
+        height: 17
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b7ac51b7c6219ea70800000000000000
+      internalID: 8856630399331584635
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Lightning_Hit_Yellow_03_33
+      rect:
+        serializedVersion: 2
+        x: 259
+        y: 429
+        width: 26
+        height: 23
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 337d511f73efedf40800000000000000
+      internalID: 5755316890047469363
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Lightning_Hit_Yellow_03_34
+      rect:
+        serializedVersion: 2
+        x: 321
+        y: 442
+        width: 8
+        height: 6
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7390afc761fde5700800000000000000
+      internalID: 531107093755332919
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Lightning_Hit_Yellow_03_35
+      rect:
+        serializedVersion: 2
+        x: 364
+        y: 440
+        width: 15
+        height: 17
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 198d775622a59e8e0800000000000000
+      internalID: -1663699483558946671
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Lightning_Hit_Yellow_03_36
+      rect:
+        serializedVersion: 2
+        x: 389
+        y: 429
+        width: 15
+        height: 17
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0bebd8ce1c41bc990800000000000000
+      internalID: -7364769942504358224
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Lightning_Hit_Yellow_03_37
+      rect:
+        serializedVersion: 2
+        x: 62
+        y: 426
+        width: 10
+        height: 12
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 67e7fea5cf524eff0800000000000000
+      internalID: -7839533560267146
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Lightning_Hit_Yellow_03_38
+      rect:
+        serializedVersion: 2
+        x: 76
+        y: 376
+        width: 44
+        height: 59
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: fe962f547c8bc8c20800000000000000
+      internalID: 3210143800419838447
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Lightning_Hit_Yellow_03_39
+      rect:
+        serializedVersion: 2
+        x: 287
+        y: 411
+        width: 19
+        height: 27
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6740a25eb87b6b360800000000000000
+      internalID: 7185132066989278326
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Lightning_Hit_Yellow_03_40
+      rect:
+        serializedVersion: 2
+        x: 408
+        y: 410
+        width: 28
+        height: 28
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0aa99b14dc25f0fa0800000000000000
+      internalID: -5832351950897046880
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Lightning_Hit_Yellow_03_41
+      rect:
+        serializedVersion: 2
+        x: 437
+        y: 431
+        width: 8
+        height: 8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5cd5eacfc537dcc10800000000000000
+      internalID: 2075441846501137861
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Lightning_Hit_Yellow_03_42
+      rect:
+        serializedVersion: 2
+        x: 444
+        y: 426
+        width: 15
+        height: 11
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b811d786a743b5190800000000000000
+      internalID: -7972721014985649781
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Lightning_Hit_Yellow_03_43
+      rect:
+        serializedVersion: 2
+        x: 40
+        y: 410
+        width: 19
+        height: 13
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6c4f9c8a477acc260800000000000000
+      internalID: 7119249230455764166
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Lightning_Hit_Yellow_03_44
+      rect:
+        serializedVersion: 2
+        x: 58
+        y: 390
+        width: 32
+        height: 37
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 05f31b029d8483940800000000000000
+      internalID: 5276047060858126160
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Lightning_Hit_Yellow_03_45
+      rect:
+        serializedVersion: 2
+        x: 253
+        y: 411
+        width: 11
+        height: 12
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0ea7ebd7506681580800000000000000
+      internalID: -8856216493453575456
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Lightning_Hit_Yellow_03_46
+      rect:
+        serializedVersion: 2
+        x: 305
+        y: 411
+        width: 16
+        height: 14
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 850e9b78672254510800000000000000
+      internalID: 1532669140668112984
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Lightning_Hit_Yellow_03_47
+      rect:
+        serializedVersion: 2
+        x: 378
+        y: 417
+        width: 7
+        height: 12
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0d898036241eed560800000000000000
+      internalID: 7340552117906086096
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Lightning_Hit_Yellow_03_48
+      rect:
+        serializedVersion: 2
+        x: 396
+        y: 411
+        width: 8
+        height: 9
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 93a23ff08c1516540800000000000000
+      internalID: 4999366981060864569
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Lightning_Hit_Yellow_03_49
+      rect:
+        serializedVersion: 2
+        x: 440
+        y: 404
+        width: 43
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 30c243a2580ab5520800000000000000
+      internalID: 2691921696083160067
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Lightning_Hit_Yellow_03_50
+      rect:
+        serializedVersion: 2
+        x: 27
+        y: 333
+        width: 61
+        height: 80
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: eb6a4bfc541081560800000000000000
+      internalID: 7284573796620871358
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Lightning_Hit_Yellow_03_51
+      rect:
+        serializedVersion: 2
+        x: 74
+        y: 0
+        width: 405
+        height: 414
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 849d0a05aed791e40800000000000000
+      internalID: 5627667654704683336
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Lightning_Hit_Yellow_03_52
+      rect:
+        serializedVersion: 2
+        x: 85
+        y: 397
+        width: 6
+        height: 8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 001dea141efad2da0800000000000000
+      internalID: -5967920549191560960
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Lightning_Hit_Yellow_03_53
+      rect:
+        serializedVersion: 2
+        x: 303
+        y: 397
+        width: 10
+        height: 13
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f91c3b72516f2e130800000000000000
+      internalID: 3594706023315915167
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Lightning_Hit_Yellow_03_54
+      rect:
+        serializedVersion: 2
+        x: 369
+        y: 399
+        width: 8
+        height: 8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ba6b959797a961280800000000000000
+      internalID: -9072894552773642581
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Lightning_Hit_Yellow_03_55
+      rect:
+        serializedVersion: 2
+        x: 419
+        y: 353
+        width: 37
+        height: 61
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f8d6e06f11d6ca390800000000000000
+      internalID: -7805744130229899889
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Lightning_Hit_Yellow_03_56
+      rect:
+        serializedVersion: 2
+        x: 33
+        y: 332
+        width: 14
+        height: 18
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ded1b60879e80d3a0800000000000000
+      internalID: -6642652669025772051
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Lightning_Hit_Yellow_03_57
+      rect:
+        serializedVersion: 2
+        x: 44
+        y: 346
+        width: 17
+        height: 20
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5ea0b104b7a7462f0800000000000000
+      internalID: -980524149084845339
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Lightning_Hit_Yellow_03_58
+      rect:
+        serializedVersion: 2
+        x: 445
+        y: 347
+        width: 9
+        height: 18
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ea321eae42c25af80800000000000000
+      internalID: -8096016218057530450
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Lightning_Hit_Yellow_03_59
+      rect:
+        serializedVersion: 2
+        x: 27
+        y: 312
+        width: 16
+        height: 27
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9d94e22dc8862a330800000000000000
+      internalID: 3720651196192410073
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Lightning_Hit_Yellow_03_60
+      rect:
+        serializedVersion: 2
+        x: 33
+        y: 271
+        width: 41
+        height: 59
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 94aec074776532030800000000000000
+      internalID: 3468711208298539593
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Lightning_Hit_Yellow_03_61
+      rect:
+        serializedVersion: 2
+        x: 56
+        y: 244
+        width: 28
+        height: 42
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ed8b56a2f1adf64d0800000000000000
+      internalID: -3139050587863795490
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Lightning_Hit_Yellow_03_62
+      rect:
+        serializedVersion: 2
+        x: 412
+        y: 314
+        width: 6
+        height: 6
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a2321413237a83ea0800000000000000
+      internalID: -5892776278397738198
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Lightning_Hit_Yellow_03_63
+      rect:
+        serializedVersion: 2
+        x: 431
+        y: 212
+        width: 41
+        height: 105
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 29ffecc81504c5370800000000000000
+      internalID: 8312589731217997714
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Lightning_Hit_Yellow_03_64
+      rect:
+        serializedVersion: 2
+        x: 461
+        y: 315
+        width: 9
+        height: 12
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 49de8f2f7db71c650800000000000000
+      internalID: 6251413925191544212
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Lightning_Hit_Yellow_03_65
+      rect:
+        serializedVersion: 2
+        x: 33
+        y: 189
+        width: 44
+        height: 33
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 90c109788d7a312b0800000000000000
+      internalID: -5614959761971733495
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Lightning_Hit_Yellow_03_66
+      rect:
+        serializedVersion: 2
+        x: 75
+        y: 198
+        width: 11
+        height: 24
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1c76fe4dfa64b5600800000000000000
+      internalID: 458037508113917889
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Lightning_Hit_Yellow_03_67
+      rect:
+        serializedVersion: 2
+        x: 433
+        y: 219
+        width: 6
+        height: 7
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 33803e9c7e2476800800000000000000
+      internalID: 605526238196598835
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Lightning_Hit_Yellow_03_68
+      rect:
+        serializedVersion: 2
+        x: 38
+        y: 170
+        width: 23
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2b53e477f9b02e7a0800000000000000
+      internalID: -6349499745109658190
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Lightning_Hit_Yellow_03_69
+      rect:
+        serializedVersion: 2
+        x: 62
+        y: 170
+        width: 12
+        height: 13
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 00dc96ef426944030800000000000000
+      internalID: 3478069897868201216
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Lightning_Hit_Yellow_03_70
+      rect:
+        serializedVersion: 2
+        x: 67
+        y: 182
+        width: 14
+        height: 21
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b63817b40a9065bb0800000000000000
+      internalID: -4947756556554763413
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Lightning_Hit_Yellow_03_71
+      rect:
+        serializedVersion: 2
+        x: 76
+        y: 167
+        width: 19
+        height: 20
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: abe618e999e177450800000000000000
+      internalID: 6086367066552626874
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Lightning_Hit_Yellow_03_72
+      rect:
+        serializedVersion: 2
+        x: 28
+        y: 24
+        width: 63
+        height: 142
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8fa3240c521a0d1f0800000000000000
+      internalID: -1022139931901674760
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Lightning_Hit_Yellow_03_73
+      rect:
+        serializedVersion: 2
+        x: 92
+        y: 157
+        width: 6
+        height: 8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 949401cb7f8c51680800000000000000
+      internalID: -8784894531778623159
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Lightning_Hit_Yellow_03_74
+      rect:
+        serializedVersion: 2
+        x: 97
+        y: 122
+        width: 19
+        height: 20
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: bd3b189afaa8c3000800000000000000
+      internalID: 17040985670398939
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Lightning_Hit_Yellow_03_75
+      rect:
+        serializedVersion: 2
+        x: 179
+        y: 59
+        width: 6
+        height: 6
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 61d358db659f76d30800000000000000
+      internalID: 4424779309856931094
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Lightning_Hit_Yellow_03_76
+      rect:
+        serializedVersion: 2
+        x: 118
+        y: 7
+        width: 8
+        height: 8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 570093ff3d0fac7f0800000000000000
+      internalID: -591395607735107467
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Lightning_Hit_Yellow_03_77
+      rect:
+        serializedVersion: 2
+        x: 417
+        y: 13
+        width: 8
+        height: 17
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: af20cac0d07cf8dc0800000000000000
+      internalID: -3634467515403599110
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 5e97eb03825dee720800000000000000
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
+    nameFileIdTable:
+      Lightning_Hit_Yellow_03_0: 6176604590424293953
+      Lightning_Hit_Yellow_03_1: 1442223860757160570
+      Lightning_Hit_Yellow_03_10: -5605628817783933103
+      Lightning_Hit_Yellow_03_11: 856058932068720338
+      Lightning_Hit_Yellow_03_12: 1080787144805016124
+      Lightning_Hit_Yellow_03_13: -7849708327209550
+      Lightning_Hit_Yellow_03_14: 3978439842191112130
+      Lightning_Hit_Yellow_03_15: 1311397453432115075
+      Lightning_Hit_Yellow_03_16: 6518155568960817886
+      Lightning_Hit_Yellow_03_17: 1129145132218657068
+      Lightning_Hit_Yellow_03_18: 7904961215490389219
+      Lightning_Hit_Yellow_03_19: -5896206112298736398
+      Lightning_Hit_Yellow_03_2: -2007373556022051006
+      Lightning_Hit_Yellow_03_20: 6228978413232805464
+      Lightning_Hit_Yellow_03_21: 2965757153920269636
+      Lightning_Hit_Yellow_03_22: -4142607449385743645
+      Lightning_Hit_Yellow_03_23: 3736617965546262222
+      Lightning_Hit_Yellow_03_24: -3993722106307326835
+      Lightning_Hit_Yellow_03_25: -8168087948867849999
+      Lightning_Hit_Yellow_03_26: 1836590255773198051
+      Lightning_Hit_Yellow_03_27: -6252083564928751349
+      Lightning_Hit_Yellow_03_28: -2701236016567602642
+      Lightning_Hit_Yellow_03_29: 984062696921673349
+      Lightning_Hit_Yellow_03_3: -2676269728249055888
+      Lightning_Hit_Yellow_03_30: -1010286103797188531
+      Lightning_Hit_Yellow_03_31: -8773931193938647242
+      Lightning_Hit_Yellow_03_32: 8856630399331584635
+      Lightning_Hit_Yellow_03_33: 5755316890047469363
+      Lightning_Hit_Yellow_03_34: 531107093755332919
+      Lightning_Hit_Yellow_03_35: -1663699483558946671
+      Lightning_Hit_Yellow_03_36: -7364769942504358224
+      Lightning_Hit_Yellow_03_37: -7839533560267146
+      Lightning_Hit_Yellow_03_38: 3210143800419838447
+      Lightning_Hit_Yellow_03_39: 7185132066989278326
+      Lightning_Hit_Yellow_03_4: 3438771867912880060
+      Lightning_Hit_Yellow_03_40: -5832351950897046880
+      Lightning_Hit_Yellow_03_41: 2075441846501137861
+      Lightning_Hit_Yellow_03_42: -7972721014985649781
+      Lightning_Hit_Yellow_03_43: 7119249230455764166
+      Lightning_Hit_Yellow_03_44: 5276047060858126160
+      Lightning_Hit_Yellow_03_45: -8856216493453575456
+      Lightning_Hit_Yellow_03_46: 1532669140668112984
+      Lightning_Hit_Yellow_03_47: 7340552117906086096
+      Lightning_Hit_Yellow_03_48: 4999366981060864569
+      Lightning_Hit_Yellow_03_49: 2691921696083160067
+      Lightning_Hit_Yellow_03_5: -7478650786899550929
+      Lightning_Hit_Yellow_03_50: 7284573796620871358
+      Lightning_Hit_Yellow_03_51: 5627667654704683336
+      Lightning_Hit_Yellow_03_52: -5967920549191560960
+      Lightning_Hit_Yellow_03_53: 3594706023315915167
+      Lightning_Hit_Yellow_03_54: -9072894552773642581
+      Lightning_Hit_Yellow_03_55: -7805744130229899889
+      Lightning_Hit_Yellow_03_56: -6642652669025772051
+      Lightning_Hit_Yellow_03_57: -980524149084845339
+      Lightning_Hit_Yellow_03_58: -8096016218057530450
+      Lightning_Hit_Yellow_03_59: 3720651196192410073
+      Lightning_Hit_Yellow_03_6: -5581950755708888788
+      Lightning_Hit_Yellow_03_60: 3468711208298539593
+      Lightning_Hit_Yellow_03_61: -3139050587863795490
+      Lightning_Hit_Yellow_03_62: -5892776278397738198
+      Lightning_Hit_Yellow_03_63: 8312589731217997714
+      Lightning_Hit_Yellow_03_64: 6251413925191544212
+      Lightning_Hit_Yellow_03_65: -5614959761971733495
+      Lightning_Hit_Yellow_03_66: 458037508113917889
+      Lightning_Hit_Yellow_03_67: 605526238196598835
+      Lightning_Hit_Yellow_03_68: -6349499745109658190
+      Lightning_Hit_Yellow_03_69: 3478069897868201216
+      Lightning_Hit_Yellow_03_7: -1185954836730257634
+      Lightning_Hit_Yellow_03_70: -4947756556554763413
+      Lightning_Hit_Yellow_03_71: 6086367066552626874
+      Lightning_Hit_Yellow_03_72: -1022139931901674760
+      Lightning_Hit_Yellow_03_73: -8784894531778623159
+      Lightning_Hit_Yellow_03_74: 17040985670398939
+      Lightning_Hit_Yellow_03_75: 4424779309856931094
+      Lightning_Hit_Yellow_03_76: -591395607735107467
+      Lightning_Hit_Yellow_03_77: -3634467515403599110
+      Lightning_Hit_Yellow_03_8: 2470807524995839626
+      Lightning_Hit_Yellow_03_9: -3063580624607547229
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

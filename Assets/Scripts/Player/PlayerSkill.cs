@@ -22,6 +22,11 @@ public class PlayerSkill : MonoBehaviour
     //스킬 쿨타임
     private bool[] cooldowns = new bool[5];
 
+    //폭주 전용 Q 스킬. 일반 장착 슬롯이나 쿨타임 배열에 넣지않음
+    private ScorchedEarthSkillData awakeningSkill;
+    private bool awakeningSkillAvailable;
+    private Coroutine awakeningSkillRoutine;
+
     //스킬 연결
     public void ExecuteSkillX(Player p) { UseSkill(p, 0); }
     public void ExecuteSkillA(Player p) { UseSkill(p, 1); }
@@ -138,6 +143,64 @@ public class PlayerSkill : MonoBehaviour
 
         // HUD에 초기화 기능이 생기면 여기서 함께 호출
         // hudPanel.ResetSkillCooldown(slotIndex);
+    }
+
+    //폭주 장착 시 Q 전용 스킬을 등록
+    public bool RegisterAwakeningSkill(ScorchedEarthSkillData skill)
+    {
+        if (skill == null || (awakeningSkill != null && awakeningSkill != skill)) return false;
+        awakeningSkill = skill;
+        awakeningSkillAvailable = false;
+        return true;
+    }
+
+    //폭주 해제 시 등록한 스킬만 제거하고 진행 중인 판정도 안전하게 취소
+    public void UnregisterAwakeningSkill(ScorchedEarthSkillData expectedSkill)
+    {
+        if (awakeningSkill != expectedSkill) return;
+        awakeningSkillAvailable = false;
+        awakeningSkill = null;
+        if (awakeningSkillRoutine != null)
+        {
+            StopCoroutine(awakeningSkillRoutine);
+            awakeningSkillRoutine = null;
+            Player owner = GetComponent<Player>();
+            if (owner != null && owner.ActionState != null && owner.ActionState.isSkillActive)
+                owner.ActionState.EnterNormal();
+        }
+    }
+
+    //각성 시작 시 한 번의 사용권을 지급, 종료 시 회수
+    public void SetAwakeningSkillAvailable(bool available)
+    {
+        awakeningSkillAvailable = awakeningSkill != null && available;
+    }
+
+    //각성 중 Q 입력에서만 호출. 피해량은 각성 종료 전 공격 스탯으로 확정
+    public bool TryUseAwakeningSkill(Player p)
+    {
+        if (p == null || awakeningSkill == null || !awakeningSkillAvailable) return false;
+        if (awakeningSkillRoutine != null || !awakeningSkill.CanUse(p)) return false;
+
+        ScorchedEarthSkillData skill = awakeningSkill;
+        DamageInfo damageInfo = skill.PrepareDamage(p);
+        awakeningSkillAvailable = false;
+        awakeningSkillRoutine = StartCoroutine(AwakeningSkillRoutine(p, skill, damageInfo));
+
+        //한 번의 초토화를 시전한 즉시 각성 효과와 남은 시간을 정리
+        p.Awakening.EndAwakening();
+        return true;
+    }
+
+    //기존 일반 스킬과 같은 ActionState를 사용하되 별도 슬롯,쿨타임 적용x
+    private IEnumerator AwakeningSkillRoutine(Player p, ScorchedEarthSkillData skill, DamageInfo damageInfo)
+    {
+        p.ActionState.EnterSkill();
+        OnSkillUsed?.Invoke(skill);
+        //중첩 IEnumerator로 기다려야 해제 시 외부 코루틴 하나만 멈춰도 판정 취소
+        yield return skill.ProcessPreparedSkill(p, damageInfo);
+        if (p != null && p.ActionState.isSkillActive) p.ActionState.EnterNormal();
+        awakeningSkillRoutine = null;
     }
 
 }

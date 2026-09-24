@@ -19,7 +19,7 @@ public class AttackEffectHitbox : MonoBehaviour
 
     //이 공격이 적중했을 때 실행할 선택적 콜백
     //기본공격이나 포식 X 스킬에서 사용
-    private Action onHitConfirmed;
+    private Action<IDamageable, DamageInfo> onHitConfirmed;
 
     private void Awake()
     {
@@ -28,10 +28,10 @@ public class AttackEffectHitbox : MonoBehaviour
     }
 
     //공격 정보 설정
-    public void SetAttackInfo(DamageInfo damageInfo, float direction, Action onHitConfirmed = null)
+    public void SetAttackInfo(DamageInfo damageInfo, float direction, Action<IDamageable, DamageInfo> onHitConfirmed = null)
     {
-        this.damageInfo = damageInfo; //데미지 정보
-        attackDirection = direction >= 0f ? 1f : -1f; //공격 방향   
+        this.damageInfo = damageInfo;
+        attackDirection = direction >= 0f ? 1f : -1f;
         this.onHitConfirmed = onHitConfirmed;
     }
 
@@ -74,7 +74,7 @@ public class AttackEffectHitbox : MonoBehaviour
         //피해 정보 전달
         target.TakeDamage(damageInfo, new Vector2(attackDirection, 0f));
 
-        onHitConfirmed?.Invoke();
+        onHitConfirmed?.Invoke(target, damageInfo);
 
 
     }

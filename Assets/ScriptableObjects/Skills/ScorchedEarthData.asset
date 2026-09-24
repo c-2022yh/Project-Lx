@@ -1,0 +1,37 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b1ebc19437331474f823a2c70c7c6895, type: 3}
+  m_Name: ScorchedEarthData
+  m_EditorClassIdentifier: Assembly-CSharp::ScorchedEarthSkillData
+  skillName: "\uCD08\uD1A0\uD654"
+  icon: {fileID: 0}
+  description: "\uD3ED\uC8FC \uC720\uBB3C \uC7A5\uCC29 \uD6C4 \uAC01\uC131 \uC2DC
+    \uC0AC\uC6A9\uD560 \uC218 \uC788\uB294 \uAC15\uB825\uD55C \uACF5\uACA9"
+  cooldownTime: 1
+  soulCost: 0
+  activeTime: 0.2
+  enemyLayer:
+    serializedVersion: 2
+    m_Bits: 256
+  damageSpec:
+    damageType: 0
+    damageMultiplier: 0
+    canCritical: 0
+    bonusPenetration: 0
+    bonusDamageAmplification: 0
+  knockbackDirection: {x: 1, y: 0}
+  hitboxOffset: {x: 1, y: 0}
+  hitboxSize: {x: 3, y: 2}
+  windup: 0.3
+  recovery: 0.2
+  effectPrefab: {fileID: 7000748839020387578, guid: eadce98c30aaf6448abf549f26f2e279, type: 3}
+  effectLifetime: 1

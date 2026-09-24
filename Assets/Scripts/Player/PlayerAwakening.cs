@@ -2,7 +2,7 @@ using System;
 using System.Collections;
 using UnityEngine;
 
-//ÇÃ·¹ÀÌ¾î °¢¼º »óÅÂ¸¦ °ü¸®ÇÏ´Â ½ºÅ©¸³Æ®
+//í”Œë ˆì´ì–´ ê°ì„± ìƒíƒœë¥¼ ê´€ë¦¬í•˜ëŠ” ìŠ¤í¬ë¦½íŠ¸
 public class PlayerAwakening : MonoBehaviour
 {
     [System.Serializable]
@@ -27,7 +27,7 @@ public class PlayerAwakening : MonoBehaviour
         [Min(0f)]
         public float damageAmplification;
 
-        //ÇöÀç °ªÀ» º¹»çÇØ¼­ Àû¿ë ´ç½Ã ¼öÄ¡·Î ÀúÀå
+        //í˜„ì¬ ê°’ì„ ë³µì‚¬í•´ì„œ ì ìš© ë‹¹ì‹œ ìˆ˜ì¹˜ë¡œ ì €ì¥
         public CombatBonus Copy()
         {
             return new CombatBonus
@@ -46,7 +46,7 @@ public class PlayerAwakening : MonoBehaviour
         }
 
 
-        //ÀüÅõ ´É·ÂÄ¡ Àû¿ë ¶Ç´Â Á¦°Å
+        //ì „íˆ¬ ëŠ¥ë ¥ì¹˜ ì ìš© ë˜ëŠ” ì œê±°
         public void ApplyTo(OffensiveStats offense, float sign)
         {
             if (offense == null) return;
@@ -82,10 +82,10 @@ public class PlayerAwakening : MonoBehaviour
     [SerializeField] private float awakeningDuration = 20f;
     [SerializeField] private float awakeningFreezeTime = 0.8f;
 
-    //ÀÏ¹İ °¢¼º¿¡ ÇÊ¿äÇÑ ±â·Â
+    //ì¼ë°˜ ê°ì„±ì— í•„ìš”í•œ ê¸°ë ¥
     [SerializeField] private float normalAwakeningEnergy = 100f;
 
-    //°­È­ °¢¼º¿¡ ÇÊ¿äÇÑ ±â·Â
+    //ê°•í™” ê°ì„±ì— í•„ìš”í•œ ê¸°ë ¥
     [SerializeField] private float enhancedAwakeningEnergy = 200f;
 
 
@@ -113,32 +113,37 @@ public class PlayerAwakening : MonoBehaviour
     private AwakeningEffect awakeningEffect;
 
 
-    //ÇöÀç °¢¼º »óÅÂ
+    //í˜„ì¬ ê°ì„± ìƒíƒœ
     private bool isAwakened;
 
-    //°¢¼º ¿¬Ãâ ÁßÀÎ »óÅÂ
+    //ê°ì„± ì—°ì¶œ ì¤‘ì¸ ìƒíƒœ
     private bool isAwakening;
 
-    //¸¸¿ù ÀåÂøÀ¸·Î °­È­ °¢¼ºÀÌ ÇØ±İµÆ´ÂÁö
+    //ë§Œì›” ì¥ì°©ìœ¼ë¡œ ê°•í™” ê°ì„±ì´ í•´ê¸ˆëëŠ”ì§€
     private bool isEnhancedAwakeningUnlocked;
 
-    //ÇöÀç ¹ßµ¿ÇÑ °¢¼ºÀÌ °­È­ °¢¼ºÀÎÁö
+    //í˜„ì¬ ë°œë™í•œ ê°ì„±ì´ ê°•í™” ê°ì„±ì¸ì§€
     private bool isEnhancedAwakening;
 
-    //°¢¼ºÀÌ ¿ÏÀüÈ÷ Á¾·áµÆÀ» ¶§ ¹ß»ı
+    //ê°ì„±ì´ ì™„ì „íˆ ì¢…ë£Œëì„ ë•Œ ë°œìƒ
+    public event Action OnAwakeningStarted;
     public event Action OnAwakeningEnded;
 
-    //½ÇÁ¦·Î Àû¿ëÇÑ ÀÌµ¿ °ü·Ã ¹èÀ²
+    //ìœ ë¬¼ì—ì„œ ë“±ë¡í•œ ê°ì„± ì§€ì†ì‹œê°„ ë³´ë„ˆìŠ¤
+    private float awakeningDurationBonus;
+    private bool awakeningBlocked;
+
+    //ì‹¤ì œë¡œ ì ìš©í•œ ì´ë™ ê´€ë ¨ ë°°ìœ¨
     private float appliedMoveMultiplier = 1f;
     private float appliedJumpMultiplier = 1f;
 
 
-    //¸¸¿ùÀÌ µî·ÏÇÑ °­È­ °¢¼º Ãß°¡ ÀüÅõ º¸³Ê½º
+    //ë§Œì›”ì´ ë“±ë¡í•œ ê°•í™” ê°ì„± ì¶”ê°€ ì „íˆ¬ ë³´ë„ˆìŠ¤
     private CombatBonus enhancedCombatBonus = new();
 
 
-    //ÇöÀç ½ÇÁ¦·Î Àû¿ëµÈ ÀüÅõ º¸³Ê½º
-    //°¢¼º Á¾·á ½Ã °°Àº ¼öÄ¡¸¦ »©±â À§ÇØ º¹»çÇØ µĞ´Ù.
+    //í˜„ì¬ ì‹¤ì œë¡œ ì ìš©ëœ ì „íˆ¬ ë³´ë„ˆìŠ¤
+    //ê°ì„± ì¢…ë£Œ ì‹œ ê°™ì€ ìˆ˜ì¹˜ë¥¼ ë¹¼ê¸° ìœ„í•´ ë³µì‚¬
     private CombatBonus appliedNormalCombatBonus;
     private CombatBonus appliedEnhancedCombatBonus;
 
@@ -155,20 +160,24 @@ public class PlayerAwakening : MonoBehaviour
 
     public bool IsEnhancedAwakeningUnlocked => isEnhancedAwakeningUnlocked; 
 
-    //°¢¼º ÁøÀÔ ½Ãµµ
+    //ê°ì„± ì§„ì… ì‹œë„
     public void TryAwaken(Player p)
     {
         if (p == null) return;
         if (p.Energy == null) return;
+        if (awakeningBlocked) return;
 
-        //ÀÌ¹Ì °¢¼º ÁßÀÌ°Å³ª º¯½Å ÁßÀÌ¸é ½ÇÇàÇÏÁö ¾ÊÀ½
+        //ì´ë¯¸ ê°ì„± ì¤‘ì´ê±°ë‚˜ ë³€ì‹  ì¤‘ì´ë©´ ì‹¤í–‰í•˜ì§€ ì•ŠìŒ
         if (isAwakened || isAwakening) return;
 
-        //±â·Â 100 ¹Ì¸¸ÀÌ¸é ÀÏ¹İ °¢¼ºµµ ºÒ°¡´É
+        //ìµœëŒ€ ê¸°ë ¥ì´ ìš”êµ¬ëŸ‰ë³´ë‹¤ ë‚®ìœ¼ë©´ í˜„ì¬ ê¸°ë ¥ê³¼ ë¬´ê´€í•˜ê²Œ ê°ì„± ë¶ˆê°€
+        if (p.Energy.MaxEnergy < normalAwakeningEnergy) return;
+
+        //ê¸°ë ¥ 100 ë¯¸ë§Œì´ë©´ ì¼ë°˜ ê°ì„±ë„ ë¶ˆê°€ëŠ¥
         if (!p.Energy.HasEnergy(normalAwakeningEnergy)) return;
         
 
-        //¸¸¿ù ÀåÂø + ±â·Â 200 ÀÌ»óÀÌ¸é °­È­ °¢¼º
+        //ë§Œì›” ì¥ì°© + ê¸°ë ¥ 200 ì´ìƒì´ë©´ ê°•í™” ê°ì„±
         isEnhancedAwakening = isEnhancedAwakeningUnlocked && p.Energy.HasEnergy(enhancedAwakeningEnergy);
 
         activePlayer = p;
@@ -178,14 +187,14 @@ public class PlayerAwakening : MonoBehaviour
     }
 
 
-    //°¢¼º ¿¬Ãâ ¹× Áö¼Ó½Ã°£ Ã³¸®
+    //ê°ì„± ì—°ì¶œ ë° ì§€ì†ì‹œê°„ ì²˜ë¦¬
     private IEnumerator AwakeningRoutine(Player p)
     {
         isAwakening = true;
 
         p.ActionState.EnterAwakening();
 
-        //º¯½Å ¿¬Ãâ Áß ¹°¸® °íÁ¤
+        //ë³€ì‹  ì—°ì¶œ ì¤‘ ë¬¼ë¦¬ ê³ ì •
         p.SetPhysicsFreeze(true);
 
         if (awakeningEffect != null)
@@ -201,7 +210,7 @@ public class PlayerAwakening : MonoBehaviour
 
         p.SetPhysicsFreeze(false);
 
-        //½ÇÁ¦ °¢¼º ´É·ÂÄ¡ Àû¿ë
+        //ì‹¤ì œ ê°ì„± ëŠ¥ë ¥ì¹˜ ì ìš©
         EnterAwakened(p);
 
         isAwakening = false;
@@ -211,9 +220,13 @@ public class PlayerAwakening : MonoBehaviour
             p.ActionState.EnterNormal();
         }
 
-        yield return new WaitForSeconds(
-            awakeningDuration
-        );
+        //ì¥ì°©/í•´ì œë¡œ ì§€ì†ì‹œê°„ì´ ë°”ë€Œë©´ í˜„ì¬ ê°ì„±ì—ë„ ì¦‰ì‹œ ë°˜ì˜
+        float elapsed = 0f;
+        while (elapsed < Mathf.Max(0f, awakeningDuration + awakeningDurationBonus))
+        {
+            elapsed += Time.deltaTime;
+            yield return null;
+        }
 
         ExitAwakened(p);
 
@@ -222,27 +235,22 @@ public class PlayerAwakening : MonoBehaviour
     }
 
 
-    //°¢¼º ´É·ÂÄ¡ Àû¿ë
+    //ê°ì„± ëŠ¥ë ¥ì¹˜ ì ìš©
     private void EnterAwakened(Player p)
     {
         isAwakened = true;
 
-        //ÀÌµ¿¼Óµµ¿Í Á¡ÇÁ·ÂÀº
-        //ÀÏ¹İ/°­È­ °¢¼º ¸ğµÎ µ¿ÀÏÇÏ°Ô Àû¿ë
-        appliedMoveMultiplier =
-            awakenedMoveMultiplier;
+        //ì´ë™ì†ë„ì™€ ì í”„ë ¥ì€
+        //ì¼ë°˜/ê°•í™” ê°ì„± ëª¨ë‘ ë™ì¼í•˜ê²Œ ì ìš©
+        appliedMoveMultiplier = awakenedMoveMultiplier;
 
-        appliedJumpMultiplier =
-            awakenedJumpMultiplier;
+        appliedJumpMultiplier = awakenedJumpMultiplier;
 
-        p.Move.moveSpeed *=
-            appliedMoveMultiplier;
+        p.Move.moveSpeed *= appliedMoveMultiplier;
 
-        p.Move.jumpForce *=
-            appliedJumpMultiplier;
+        p.Move.jumpForce *= appliedJumpMultiplier;
 
-
-        //±âº» °¢¼º ÀüÅõ ¹öÇÁ Àû¿ë
+        //ê¸°ë³¸ ê°ì„± ì „íˆ¬ ë²„í”„ ì ìš©
         ApplyNormalCombatBonus(p);
 
 
@@ -250,7 +258,7 @@ public class PlayerAwakening : MonoBehaviour
         {
             p.sr.color = enhancedAwakenedColor;
 
-            //¸¸¿ùÀÇ Ãß°¡ ÀüÅõ ¹öÇÁ Àû¿ë
+            //ë§Œì›”ì˜ ì¶”ê°€ ì „íˆ¬ ë²„í”„ ì ìš©
             ApplyEnhancedCombatBonus();
 
         }
@@ -259,21 +267,24 @@ public class PlayerAwakening : MonoBehaviour
             p.sr.color = awakenedColor;
 
         }
+
+        //ê¸°ë³¸ ê°ì„± ë²„í”„ê°€ ì ìš©ëœ ë’¤ í­ì£¼ì™€ ì—°ì†Œì— ì‹œì‘ì„ ì•Œë¦°ë‹¤.
+        OnAwakeningStarted?.Invoke();
     }
 
 
-    //PlayerStats ¿¬°á
+    //PlayerStats ì—°ê²°
     private bool TryGetOffensiveStats(Player p)
     {
         PlayerStats playerStats =  p.GetComponent<PlayerStats>();
 
-        activeOffense = playerStats.Offense;
+        activeOffense = playerStats != null ? playerStats.Offense : null;
 
-        return true;
+        return activeOffense != null;
     }
 
 
-    //±âº» °¢¼º ÀüÅõ ¹öÇÁ Àû¿ë
+    //ê¸°ë³¸ ê°ì„± ì „íˆ¬ ë²„í”„ ì ìš©
     private void ApplyNormalCombatBonus(Player p)
     {
         if (!TryGetOffensiveStats(p))
@@ -281,7 +292,7 @@ public class PlayerAwakening : MonoBehaviour
             return;
         }
 
-        //Àû¿ë ´ç½Ã ¼öÄ¡¸¦ º¹»ç
+        //ì ìš© ë‹¹ì‹œ ìˆ˜ì¹˜ë¥¼ ë³µì‚¬
         appliedNormalCombatBonus = normalCombatBonus.Copy();
         appliedNormalCombatBonus.ApplyTo(activeOffense, 1f);
 
@@ -290,12 +301,12 @@ public class PlayerAwakening : MonoBehaviour
     }
 
 
-    //¸¸¿ù °­È­ °¢¼º Ãß°¡ ¹öÇÁ Àû¿ë
+    //ë§Œì›” ê°•í™” ê°ì„± ì¶”ê°€ ë²„í”„ ì ìš©
     private void ApplyEnhancedCombatBonus()
     {
         if (activeOffense == null) return;
 
-        //¸¸¿ùÀÌ µî·ÏÇÑ ¼öÄ¡¸¦ º¹»ç
+        //ë§Œì›”ì´ ë“±ë¡í•œ ìˆ˜ì¹˜ë¥¼ ë³µì‚¬
         appliedEnhancedCombatBonus = enhancedCombatBonus.Copy();
 
         appliedEnhancedCombatBonus.ApplyTo(activeOffense, 1f);
@@ -303,7 +314,7 @@ public class PlayerAwakening : MonoBehaviour
     }
 
 
-    //±âº» °¢¼º ÀüÅõ ¹öÇÁ Á¦°Å
+    //ê¸°ë³¸ ê°ì„± ì „íˆ¬ ë²„í”„ ì œê±°
     private void RemoveNormalCombatBonus()
     {
         if (activeOffense == null) return;
@@ -315,7 +326,7 @@ public class PlayerAwakening : MonoBehaviour
     }
 
 
-    //¸¸¿ù °­È­ °¢¼º Ãß°¡ ¹öÇÁ Á¦°Å
+    //ë§Œì›” ê°•í™” ê°ì„± ì¶”ê°€ ë²„í”„ ì œê±°
     private void RemoveEnhancedCombatBonus()
     {
         if (activeOffense == null) return;
@@ -327,14 +338,14 @@ public class PlayerAwakening : MonoBehaviour
     }
 
 
-    //°¢¼º Á¾·á
+    //ê°ì„± ì¢…ë£Œ
     private void ExitAwakened(Player p)
     {
         bool wasEnhancedAwakening = isEnhancedAwakening;
 
         isAwakened = false;
         p.sr.color = normalColor;
-        //ÀÌµ¿ ´É·ÂÄ¡ º¹±¸
+        //ì´ë™ ëŠ¥ë ¥ì¹˜ ë³µêµ¬
         if (appliedMoveMultiplier > 0f)
         {
             p.Move.moveSpeed /= appliedMoveMultiplier;
@@ -349,19 +360,18 @@ public class PlayerAwakening : MonoBehaviour
         appliedJumpMultiplier = 1f;
 
 
-        //°­È­ º¸³Ê½º¸¦ ¸ÕÀú Á¦°Å
+        //ê°•í™” ë³´ë„ˆìŠ¤ë¥¼ ë¨¼ì € ì œê±°
         RemoveEnhancedCombatBonus();
 
-        //±âº» °¢¼º º¸³Ê½º Á¦°Å
+        //ê¸°ë³¸ ê°ì„± ë³´ë„ˆìŠ¤ ì œê±°
         RemoveNormalCombatBonus();
 
         activeOffense = null;
 
-
-        //±â·Â ÃÊ±âÈ­
+        //ê¸°ë ¥ ì´ˆê¸°í™”
         p.Energy.ResetEnergy();
 
-        //°¢¼º Á¾·á ¾Ë¸²
+        //ê°ì„± ì¢…ë£Œ ì•Œë¦¼
         OnAwakeningEnded?.Invoke();
 
         isEnhancedAwakening = false;
@@ -369,7 +379,7 @@ public class PlayerAwakening : MonoBehaviour
     }
 
 
-    //¸¸¿ù À¯¹°ÀÌ °­È­ °¢¼º Ãß°¡ ´É·ÂÄ¡¸¦ µî·Ï
+    //ë§Œì›” ìœ ë¬¼ì´ ê°•í™” ê°ì„± ì¶”ê°€ ëŠ¥ë ¥ì¹˜ë¥¼ ë“±ë¡
     public void SetEnhancedAwakeningBonus(
         float physicalAttackBonus,
         float magicalAttackBonus,
@@ -397,20 +407,20 @@ public class PlayerAwakening : MonoBehaviour
     }
 
 
-    //¸¸¿ù ÀåÂø ÇØÁ¦
+    //ë§Œì›” ì¥ì°© í•´ì œ
     public void ClearEnhancedAwakeningBonus()
     {
         isEnhancedAwakeningUnlocked = false;
 
-        //°¢¼º ¿¬Ãâ µµÁß ÇØÁ¦µÈ °æ¿ì
-        //°­È­ °¢¼ºÀ» ÀÏ¹İ °¢¼ºÀ¸·Î º¯°æ
+        //ê°ì„± ì—°ì¶œ ë„ì¤‘ í•´ì œëœ ê²½ìš°
+        //ê°•í™” ê°ì„±ì„ ì¼ë°˜ ê°ì„±ìœ¼ë¡œ ë³€ê²½
         if (isAwakening && !isAwakened)
         {
             isEnhancedAwakening = false;
         }
 
-        //°­È­ °¢¼º µµÁß ¸¸¿ùÀÌ ÇØÁ¦µÇ¸é
-        //¸¸¿ù Ãß°¡ º¸³Ê½º¸¸ Áï½Ã Á¦°Å
+        //ê°•í™” ê°ì„± ë„ì¤‘ ë§Œì›”ì´ í•´ì œë˜ë©´
+        //ë§Œì›” ì¶”ê°€ ë³´ë„ˆìŠ¤ë§Œ ì¦‰ì‹œ ì œê±°
         if (isAwakened && isEnhancedAwakening)
         {
             RemoveEnhancedCombatBonus();
@@ -426,4 +436,47 @@ public class PlayerAwakening : MonoBehaviour
         enhancedCombatBonus.Clear();
 
     }
+
+    //ìœ ë¬¼ ì¥ì°©/í•´ì œ ì‹œ ê°ì„± ì§€ì†ì‹œê°„ì˜ ì¦ê°ë¶„ì„ ì ìš©
+    //ê°ì„± ì½”ë£¨í‹´ì´ ë§¤ í”„ë ˆì„ ì¢…ë£Œ ì‹œì ì„ í™•ì¸í•˜ë¯€ë¡œ í˜„ì¬ ê°ì„±ì—ë„ ë°˜ì˜
+    public void ModifyAwakeningDuration(float amount)
+    {
+        awakeningDurationBonus += amount;
+    }
+
+    //ê·¸ë¯ì´ ì¥ì°©ëœ ë™ì•ˆ ê°ì„± ì‹œë„ë¥¼ ì°¨ë‹¨
+    public void SetAwakeningBlocked(bool blocked)
+    {
+        awakeningBlocked = blocked;
+    }
+
+    //í­ì£¼ì˜ ì´ˆí† í™”ë¥¼ ì‚¬ìš©í•˜ê±°ë‚˜ ì™¸ë¶€ì—ì„œ ê°•ì œ ì¢…ë£Œí•  ë•Œ í˜¸ì¶œ
+    //ëŒ€ê¸° ì—°ì¶œ ì¤‘ì—ë„ ë¬¼ë¦¬ ìƒíƒœë¥¼ ë³µì›í•˜ë©° ì¢…ë£Œ ì´ë²¤íŠ¸ëŠ” í•œ ë²ˆë§Œ í˜¸ì¶œ
+    public void EndAwakening()
+    {
+        if (!isAwakened && !isAwakening) return;
+
+        if (awakeningCoroutine != null)
+        {
+            StopCoroutine(awakeningCoroutine);
+
+            awakeningCoroutine = null;
+        }
+
+        if (isAwakening && activePlayer != null)
+        {
+            activePlayer.SetPhysicsFreeze(false);
+
+            if (activePlayer.ActionState.isAwakening) activePlayer.ActionState.EnterNormal();
+        }
+
+        isAwakening = false;
+
+        if (isAwakened && activePlayer != null) ExitAwakened(activePlayer);
+
+        else isEnhancedAwakening = false;
+
+        activePlayer = null;
+    }
+
 }
