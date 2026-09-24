@@ -239,6 +239,26 @@ public class EnemyHealth : MonoBehaviour
         hitFeedbackCoroutine = null;
     }
 
+    //현재 체력이 처형 기준 이하인지 확인
+    public bool CanExecute(float healthRatio)
+    {
+        if (isDead) return false;
+
+        float currentHealthRatio = currentHp / maxHp;
+
+        return currentHealthRatio <= healthRatio;
+    }
+
+    //처형
+    public void Execute(DamageInfo damageInfo)
+    {
+        if (isDead) return;
+
+        currentHp = 0f;
+
+        Die(damageInfo);
+    }
+
     //적이 사망 처리
     private void Die(DamageInfo lastDamageInfo)
     {

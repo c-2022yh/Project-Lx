@@ -1,0 +1,23 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 97e8976399dde06499934e413ed35ac2, type: 3}
+  m_Name: Relic_DarkShadow
+  m_EditorClassIdentifier: Assembly-CSharp::RelicData
+  relicId: sword_darkshadow
+  relicName: "\uC554\uC601"
+  icon: {fileID: 6761040222134422116, guid: 94973587d775c2541b6353089a3d5a39, type: 3}
+  description: "\uACF5\uACA9 \uC2DC \uCCB4\uB825\uC774 \uB0AE\uC740 \uC801\uC744
+    \uCC98\uD615\uD55C\uB2E4."
+  cost: 1
+  category: 0
+  effects:
+  - {fileID: 11400000, guid: 0ba304b785459824bb020ee793ac29f8, type: 2}

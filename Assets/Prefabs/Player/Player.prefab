@@ -368,10 +368,10 @@ MonoBehaviour:
       bonusPenetration: 0
       bonusDamageAmplification: 0
     attackEffectPrefab: {fileID: 3545481630792328146, guid: 94f295d40691486438e6c60e511b79e0, type: 3}
-    effectOffset: {x: 0.8, y: 0}
+    effectOffset: {x: 2, y: 0}
     effectScale: {x: 1, y: 1, z: 1}
-    effectRotationZ: 20
-    effectDuration: 0.12
+    effectRotationZ: 0
+    effectDuration: 0.3
     followPlayer: 0
     followDuration: 0.1
   - attackName: "\uB0B4\uB824 \uCE58\uAE30"
@@ -385,10 +385,10 @@ MonoBehaviour:
       bonusPenetration: 0
       bonusDamageAmplification: 0
     attackEffectPrefab: {fileID: 2066522367392586507, guid: 692a85f7206e9714c93b470598cbc6a6, type: 3}
-    effectOffset: {x: 0.8, y: 0}
+    effectOffset: {x: 2, y: 0}
     effectScale: {x: 1, y: 1, z: 1}
-    effectRotationZ: -10
-    effectDuration: 0.2
+    effectRotationZ: 0
+    effectDuration: 0.3
     followPlayer: 0
     followDuration: 0.1
   comboResetTime: 0.2
@@ -404,10 +404,10 @@ MonoBehaviour:
       bonusPenetration: 0
       bonusDamageAmplification: 0
     attackEffectPrefab: {fileID: 3545481630792328146, guid: 94f295d40691486438e6c60e511b79e0, type: 3}
-    effectOffset: {x: 0.8, y: 0}
+    effectOffset: {x: 2, y: 0}
     effectScale: {x: 1, y: 1, z: 1}
     effectRotationZ: 0
-    effectDuration: 0.12
+    effectDuration: 0.3
     followPlayer: 1
     followDuration: 0.1
 --- !u!114 &671875408835303829

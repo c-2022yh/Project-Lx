@@ -15,7 +15,6 @@ MonoBehaviour:
   skillName: Slash
   icon: {fileID: 0}
   description: "\uB3CC\uB3CC"
-  allowedSlots: 0
   cooldownTime: 2
   soulCost: 0
   activeTime: 0.2
@@ -30,11 +29,11 @@ MonoBehaviour:
     bonusDamageAmplification: 0
   knockbackDirection: {x: 1, y: 0}
   slashEffectPrefab: {fileID: 3545481630792328146, guid: 94f295d40691486438e6c60e511b79e0, type: 3}
-  effectOffset: {x: 0.9, y: 0}
-  effectScale: {x: 1.3, y: 2, z: 1}
+  effectOffset: {x: 2, y: 0}
+  effectScale: {x: 1, y: 1, z: 1}
   effectLifeTime: 0.3
   slashRotations:
   - -30
   - 40
-  - -40
+  - 0
   slashInterval: 0.1
