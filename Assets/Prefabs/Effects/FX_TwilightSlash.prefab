@@ -87,7 +87,7 @@ SpriteRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_Sprite: {fileID: 5330298388016401944, guid: 2b210d4e646fec743afa397bc1871247, type: 3}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 1, g: 1, b: 1, a: 0.9411765}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -143,9 +143,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5ad7deeb64545b243a1b9d5812bf0b65, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::AttackEffectHitbox
-  hitCollider: {fileID: 0}
-  hitEffectPrefab: {fileID: 0}
-  criticalHitEffectPrefab: {fileID: 0}
+  hitCollider: {fileID: 7938116734117268363}
+  hitEffectPrefab: {fileID: 7910235883446043059, guid: f048efd419de81641a3c0184dfb1cef0, type: 3}
+  criticalHitEffectPrefab: {fileID: 7189187991172150212, guid: 26cecf195571a904c987bbbbb0f7e14b, type: 3}
 --- !u!61 &7938116734117268363
 BoxCollider2D:
   m_ObjectHideFlags: 0
