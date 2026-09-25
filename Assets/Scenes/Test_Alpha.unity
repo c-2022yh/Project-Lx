@@ -270,6 +270,18 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 3959913638912958144, guid: bfe65dd7667e19c4f9533af653b8e9cf, type: 3}
+      propertyPath: airAttack.effectScale.x
+      value: 0.8
+      objectReference: {fileID: 0}
+    - target: {fileID: 3959913638912958144, guid: bfe65dd7667e19c4f9533af653b8e9cf, type: 3}
+      propertyPath: airAttack.effectScale.y
+      value: 0.8
+      objectReference: {fileID: 0}
+    - target: {fileID: 3959913638912958144, guid: bfe65dd7667e19c4f9533af653b8e9cf, type: 3}
+      propertyPath: airAttack.effectOffset.x
+      value: 1.5
+      objectReference: {fileID: 0}
     - target: {fileID: 3993503971577391545, guid: bfe65dd7667e19c4f9533af653b8e9cf, type: 3}
       propertyPath: m_Name
       value: Player
