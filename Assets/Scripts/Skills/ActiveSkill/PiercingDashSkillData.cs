@@ -1,6 +1,6 @@
-using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEngine;
 
 [CreateAssetMenu(fileName = "Skills/PiercingDash", menuName = "Skills/PiercingDash")]
 
@@ -12,8 +12,13 @@ public class PiercingDashSkillData : AttackSkillData
     public Vector2 dashHitBoxSize = new Vector2(1.4f, 1.2f);
     public Vector2 dashHitBoxOffset = new Vector2(0.7f, 0f);
 
+    [Header("Hit Effect")]
+    [SerializeField] private GameObject hitEffectPrefab;
+    [SerializeField] private GameObject criticalHitEffectPrefab;
+
     //대쉬 후 적과의 피격무적 판정 시간
     [SerializeField] private float contactIgnoreAfterDash = 0.2f;
+
 
     public override IEnumerator ProcessSkill(Player p)
     {
@@ -98,10 +103,21 @@ public class PiercingDashSkillData : AttackSkillData
             //처음 맞은 적이면 목록에 추가
             hitEnemies.Add(enemy);
 
+            //피격 위치 계산
+            Vector2 hitPoint = hit.ClosestPoint(center);
+
             //최종 히트 판정 데미지 계산
             enemy.TakeDamage(damageInfo, new Vector2(dir, 0f));
-            
-            Debug.Log($"A Skill Hit: {enemy.name}");
+
+            //치명타 여부에 따라 피격 이펙트 생성
+            GameObject effectPrefab = damageInfo.isCritical ? criticalHitEffectPrefab : hitEffectPrefab;
+
+            if (effectPrefab != null)
+            {
+                Instantiate(effectPrefab, hitPoint, Quaternion.identity);
+            }
+
+            Debug.Log($"Skill Hit: {enemy.name}");
 
         }
     }

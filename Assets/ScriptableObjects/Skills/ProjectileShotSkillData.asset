@@ -15,7 +15,6 @@ MonoBehaviour:
   skillName: Shot
   icon: {fileID: 0}
   description: "\uD22C\uC0AC\uCCB4 \uB0A0\uB9B0"
-  allowedSlots: 0
   cooldownTime: 1
   soulCost: 0
   activeTime: 1
@@ -29,7 +28,7 @@ MonoBehaviour:
     bonusPenetration: 0
     bonusDamageAmplification: 0
   knockbackDirection: {x: 1, y: 0}
-  projectilePrefab: {fileID: 3545481630792328146, guid: 7188b3aae6ed7fe44aff21566314b59d, type: 3}
+  projectilePrefab: {fileID: 5221978126097955985, guid: 542a30f2e85c7c84f97a8aed8fe95956, type: 3}
   spawnOffset: {x: 0.8, y: 0}
   projectileSpeed: 20
   maxDistance: 10

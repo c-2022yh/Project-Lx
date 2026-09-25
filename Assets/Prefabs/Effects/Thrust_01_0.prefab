@@ -80,8 +80,8 @@ SpriteRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_GlobalIlluminationMeshLod: 0
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
+  m_SortingLayerID: -307728789
+  m_SortingLayer: 9
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_Sprite: {fileID: -9090457413724994041, guid: 199e735459c744340b502e5d9b3752aa, type: 3}
@@ -152,7 +152,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5ad7deeb64545b243a1b9d5812bf0b65, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::AttackEffectHitbox
-  damage: 1
+  hitCollider: {fileID: 0}
+  hitEffectPrefab: {fileID: 0}
+  criticalHitEffectPrefab: {fileID: 0}
 --- !u!50 &-4524703130375616823
 Rigidbody2D:
   serializedVersion: 5
