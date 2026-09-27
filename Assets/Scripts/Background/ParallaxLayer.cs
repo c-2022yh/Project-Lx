@@ -1,6 +1,6 @@
 using UnityEngine;
 
-[DefaultExecutionOrder(0)]
+[DefaultExecutionOrder(900)]
 public class ParallaxLayer : MonoBehaviour
 {
     public enum AxisMode
@@ -12,6 +12,7 @@ public class ParallaxLayer : MonoBehaviour
 
     [Header("Camera")]
     [SerializeField] private Transform targetCamera;
+
     [SerializeField] private float cameraDepthOffset = 10f;
 
     [Tooltip("시작할 때 배경 중심을 카메라 중심에 맞춥니다.")]

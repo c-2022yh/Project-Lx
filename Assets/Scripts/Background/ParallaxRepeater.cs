@@ -6,11 +6,14 @@ using UnityEngine;
 public class ParallaxRepeater : MonoBehaviour
 {
     [SerializeField] private Camera targetCamera;
+
     [SerializeField] private SpriteRenderer templateRenderer;
+
     [Min(2)]
     [SerializeField] private int extraTiles = 2;
 
     private readonly List<Transform> tiles = new List<Transform>();
+
     private Vector3 startLocalPosition;
 
     private void Start()
