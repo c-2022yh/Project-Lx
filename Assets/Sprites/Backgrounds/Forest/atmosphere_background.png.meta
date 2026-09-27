@@ -1,0 +1,3900 @@
+fileFormatVersion: 2
+guid: bf2d9b4894f85ed47a1a489c12614a82
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: 5001175127543543322
+    second: atmosphere_background_0
+  - first:
+      213: -1188372942407373325
+    second: atmosphere_background_1
+  - first:
+      213: -1589870215875906896
+    second: atmosphere_background_2
+  - first:
+      213: 7757343808183857389
+    second: atmosphere_background_3
+  - first:
+      213: -8713441386582026477
+    second: atmosphere_background_4
+  - first:
+      213: -995279483312408942
+    second: atmosphere_background_5
+  - first:
+      213: -2297418427827701517
+    second: atmosphere_background_6
+  - first:
+      213: 6313812365623747959
+    second: atmosphere_background_7
+  - first:
+      213: -1950222931824675268
+    second: atmosphere_background_8
+  - first:
+      213: 903619456654652130
+    second: atmosphere_background_9
+  - first:
+      213: 8196522955259708536
+    second: atmosphere_background_10
+  - first:
+      213: -620142217928365249
+    second: atmosphere_background_11
+  - first:
+      213: -7465449871262517023
+    second: atmosphere_background_12
+  - first:
+      213: 293610152993603870
+    second: atmosphere_background_13
+  - first:
+      213: -4135166581202977941
+    second: atmosphere_background_14
+  - first:
+      213: 7453078737548662846
+    second: atmosphere_background_15
+  - first:
+      213: -4259555113184520607
+    second: atmosphere_background_16
+  - first:
+      213: -1108168210570451542
+    second: atmosphere_background_17
+  - first:
+      213: -5406527539265651235
+    second: atmosphere_background_18
+  - first:
+      213: 2577990191024550818
+    second: atmosphere_background_19
+  - first:
+      213: -1896916968136697874
+    second: atmosphere_background_20
+  - first:
+      213: -4891344312866166948
+    second: atmosphere_background_21
+  - first:
+      213: 5932416767428206175
+    second: atmosphere_background_22
+  - first:
+      213: 2875435650628963165
+    second: atmosphere_background_23
+  - first:
+      213: 357120224963460135
+    second: atmosphere_background_24
+  - first:
+      213: -3709202042637684830
+    second: atmosphere_background_25
+  - first:
+      213: 3009863294657514107
+    second: atmosphere_background_26
+  - first:
+      213: -5150499123312726704
+    second: atmosphere_background_27
+  - first:
+      213: 1782946594711796708
+    second: atmosphere_background_28
+  - first:
+      213: -1954881488220474297
+    second: atmosphere_background_29
+  - first:
+      213: 2895698452510000918
+    second: atmosphere_background_30
+  - first:
+      213: -5454736817650023794
+    second: atmosphere_background_31
+  - first:
+      213: -8750383524562152942
+    second: atmosphere_background_32
+  - first:
+      213: 328915658568600143
+    second: atmosphere_background_33
+  - first:
+      213: 4344654210748801759
+    second: atmosphere_background_34
+  - first:
+      213: -1405931444807447185
+    second: atmosphere_background_35
+  - first:
+      213: 934845967461503340
+    second: atmosphere_background_36
+  - first:
+      213: -8596849121048730828
+    second: atmosphere_background_37
+  - first:
+      213: 7988401889700915353
+    second: atmosphere_background_38
+  - first:
+      213: 106902527255994794
+    second: atmosphere_background_39
+  - first:
+      213: 7314248277575522522
+    second: atmosphere_background_40
+  - first:
+      213: 8823129184641064036
+    second: atmosphere_background_41
+  - first:
+      213: -2399014918095468187
+    second: atmosphere_background_42
+  - first:
+      213: -8496866448990970538
+    second: atmosphere_background_43
+  - first:
+      213: 4420262231565413625
+    second: atmosphere_background_44
+  - first:
+      213: -6687729016619560055
+    second: atmosphere_background_45
+  - first:
+      213: 82082402458618661
+    second: atmosphere_background_46
+  - first:
+      213: -1921916266821757568
+    second: atmosphere_background_47
+  - first:
+      213: -4307461939616424312
+    second: atmosphere_background_48
+  - first:
+      213: 6103959578736930909
+    second: atmosphere_background_49
+  - first:
+      213: -2641006806334826615
+    second: atmosphere_background_50
+  - first:
+      213: -1072755948846199635
+    second: atmosphere_background_51
+  - first:
+      213: -5685062083999118147
+    second: atmosphere_background_52
+  - first:
+      213: 7666355715920829098
+    second: atmosphere_background_53
+  - first:
+      213: -9157979143769006993
+    second: atmosphere_background_54
+  - first:
+      213: -7120358142781972604
+    second: atmosphere_background_55
+  - first:
+      213: 4995098348447794718
+    second: atmosphere_background_56
+  - first:
+      213: 3400268958151371399
+    second: atmosphere_background_57
+  - first:
+      213: 4616952223526453641
+    second: atmosphere_background_58
+  - first:
+      213: 2980970060598256415
+    second: atmosphere_background_59
+  - first:
+      213: -5575919282154307030
+    second: atmosphere_background_60
+  - first:
+      213: 6204665629668424350
+    second: atmosphere_background_61
+  - first:
+      213: 6017556791992344194
+    second: atmosphere_background_62
+  - first:
+      213: -4654665386199127855
+    second: atmosphere_background_63
+  - first:
+      213: 6509900654833968619
+    second: atmosphere_background_64
+  - first:
+      213: -7237061553033622622
+    second: atmosphere_background_65
+  - first:
+      213: 6727156254768182429
+    second: atmosphere_background_66
+  - first:
+      213: -856825872445739671
+    second: atmosphere_background_67
+  - first:
+      213: -5307835883846634290
+    second: atmosphere_background_68
+  - first:
+      213: 4613283919403335888
+    second: atmosphere_background_69
+  - first:
+      213: 9059045463690155222
+    second: atmosphere_background_70
+  - first:
+      213: -1761969905523754798
+    second: atmosphere_background_71
+  - first:
+      213: -1434033649910077045
+    second: atmosphere_background_72
+  - first:
+      213: -1209835759065682913
+    second: atmosphere_background_73
+  - first:
+      213: 3227941551853665964
+    second: atmosphere_background_74
+  - first:
+      213: -2086765916607742385
+    second: atmosphere_background_75
+  - first:
+      213: 4388386476468935712
+    second: atmosphere_background_76
+  - first:
+      213: -2948897436448640960
+    second: atmosphere_background_77
+  - first:
+      213: -8748480402533398558
+    second: atmosphere_background_78
+  - first:
+      213: -8079565591903102994
+    second: atmosphere_background_79
+  - first:
+      213: -8002766829579403350
+    second: atmosphere_background_80
+  - first:
+      213: 3240321168680360591
+    second: atmosphere_background_81
+  - first:
+      213: -5451885350917792316
+    second: atmosphere_background_82
+  - first:
+      213: -3274554702793161852
+    second: atmosphere_background_83
+  - first:
+      213: 1445176831288680911
+    second: atmosphere_background_84
+  - first:
+      213: -5317825946122320828
+    second: atmosphere_background_85
+  - first:
+      213: 1236486129540117014
+    second: atmosphere_background_86
+  - first:
+      213: 4360340462295520419
+    second: atmosphere_background_87
+  - first:
+      213: -5633137065238720306
+    second: atmosphere_background_88
+  - first:
+      213: 2363491530971631925
+    second: atmosphere_background_89
+  - first:
+      213: 152508007036173590
+    second: atmosphere_background_90
+  - first:
+      213: -5989633364709779282
+    second: atmosphere_background_91
+  - first:
+      213: -2860933925997844396
+    second: atmosphere_background_92
+  - first:
+      213: 186868497615966918
+    second: atmosphere_background_93
+  - first:
+      213: -1595055470064787024
+    second: atmosphere_background_94
+  - first:
+      213: 5597504671823964401
+    second: atmosphere_background_95
+  - first:
+      213: -6484712184268507230
+    second: atmosphere_background_96
+  - first:
+      213: -3820318832557920379
+    second: atmosphere_background_97
+  - first:
+      213: 3308125503589037760
+    second: atmosphere_background_98
+  - first:
+      213: 5519747198761413956
+    second: atmosphere_background_99
+  - first:
+      213: -8041967101190485780
+    second: atmosphere_background_100
+  - first:
+      213: 3526508813255424875
+    second: atmosphere_background_101
+  - first:
+      213: -1114756029687977791
+    second: atmosphere_background_102
+  - first:
+      213: -1699132203451061727
+    second: atmosphere_background_103
+  - first:
+      213: 5961239789027133769
+    second: atmosphere_background_104
+  - first:
+      213: 8452886512133793166
+    second: atmosphere_background_105
+  - first:
+      213: -1105454159337790658
+    second: atmosphere_background_106
+  - first:
+      213: -2879193832055448667
+    second: atmosphere_background_107
+  - first:
+      213: -1269704459313038679
+    second: atmosphere_background_108
+  - first:
+      213: -7322551321283048463
+    second: atmosphere_background_109
+  - first:
+      213: -7089145170060557784
+    second: atmosphere_background_110
+  - first:
+      213: -4780539318855092445
+    second: atmosphere_background_111
+  - first:
+      213: 3286780885916542849
+    second: atmosphere_background_112
+  - first:
+      213: -8314750604657068138
+    second: atmosphere_background_113
+  - first:
+      213: -4821830017572690788
+    second: atmosphere_background_114
+  - first:
+      213: 8512521759552560161
+    second: atmosphere_background_115
+  - first:
+      213: -464497479321728384
+    second: atmosphere_background_116
+  - first:
+      213: 8264508444162836200
+    second: atmosphere_background_117
+  - first:
+      213: -3733522184662437253
+    second: atmosphere_background_118
+  - first:
+      213: 6009322155551535873
+    second: atmosphere_background_119
+  - first:
+      213: -2055539913077155260
+    second: atmosphere_background_120
+  - first:
+      213: 404505416456096317
+    second: atmosphere_background_121
+  - first:
+      213: 579613893322226069
+    second: atmosphere_background_122
+  - first:
+      213: 646013863283087568
+    second: atmosphere_background_123
+  - first:
+      213: -8862146161469566168
+    second: atmosphere_background_124
+  - first:
+      213: -8249393295757564890
+    second: atmosphere_background_125
+  - first:
+      213: -3977178453489458253
+    second: atmosphere_background_126
+  - first:
+      213: -2153988215826735557
+    second: atmosphere_background_127
+  - first:
+      213: -3290415960734115888
+    second: atmosphere_background_128
+  - first:
+      213: -5820283259554431805
+    second: atmosphere_background_129
+  - first:
+      213: 4171852986946207255
+    second: atmosphere_background_130
+  - first:
+      213: 928436063220125817
+    second: atmosphere_background_131
+  - first:
+      213: -7042604938635922704
+    second: atmosphere_background_132
+  - first:
+      213: 1493284858557111053
+    second: atmosphere_background_133
+  - first:
+      213: 3072089069429903339
+    second: atmosphere_background_134
+  - first:
+      213: -401514248847173042
+    second: atmosphere_background_135
+  - first:
+      213: 916797123409417590
+    second: atmosphere_background_136
+  - first:
+      213: 6685139004144167155
+    second: atmosphere_background_137
+  - first:
+      213: 1080235722216901280
+    second: atmosphere_background_138
+  - first:
+      213: 8537871787917336574
+    second: atmosphere_background_139
+  - first:
+      213: 5681627984960233728
+    second: atmosphere_background_140
+  - first:
+      213: -4944498437588632464
+    second: atmosphere_background_141
+  - first:
+      213: -3808878451261861712
+    second: atmosphere_background_142
+  - first:
+      213: 3284929271092895235
+    second: atmosphere_background_143
+  - first:
+      213: 2233783085508597073
+    second: atmosphere_background_144
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 1
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 1
+  spriteExtrude: 1
+  spriteMeshType: 0
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: WebGL
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: atmosphere_background_0
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 912
+        width: 9
+        height: 29
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a1670c8f74eb76540800000000000000
+      internalID: 5001175127543543322
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: atmosphere_background_1
+      rect:
+        serializedVersion: 2
+        x: 18
+        y: 907
+        width: 23
+        height: 13
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3fd6f1bea1d028fe0800000000000000
+      internalID: -1188372942407373325
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: atmosphere_background_2
+      rect:
+        serializedVersion: 2
+        x: 22
+        y: 778
+        width: 134
+        height: 149
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0b23ebf4675afe9e0800000000000000
+      internalID: -1589870215875906896
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: atmosphere_background_3
+      rect:
+        serializedVersion: 2
+        x: 520
+        y: 875
+        width: 14
+        height: 44
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: de0ff57e71f97ab60800000000000000
+      internalID: 7757343808183857389
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: atmosphere_background_4
+      rect:
+        serializedVersion: 2
+        x: 658
+        y: 910
+        width: 10
+        height: 14
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 31757958933a31780800000000000000
+      internalID: -8713441386582026477
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: atmosphere_background_5
+      rect:
+        serializedVersion: 2
+        x: 699
+        y: 828
+        width: 94
+        height: 93
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 296fde8459e0032f0800000000000000
+      internalID: -995279483312408942
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: atmosphere_background_6
+      rect:
+        serializedVersion: 2
+        x: 737
+        y: 916
+        width: 6
+        height: 9
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3f8b4e4bc1eed10e0800000000000000
+      internalID: -2297418427827701517
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: atmosphere_background_7
+      rect:
+        serializedVersion: 2
+        x: 742
+        y: 913
+        width: 9
+        height: 13
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 775e87ff4ea2f9750800000000000000
+      internalID: 6313812365623747959
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: atmosphere_background_8
+      rect:
+        serializedVersion: 2
+        x: 810
+        y: 910
+        width: 11
+        height: 9
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c36f4c3839a6fe4e0800000000000000
+      internalID: -1950222931824675268
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: atmosphere_background_9
+      rect:
+        serializedVersion: 2
+        x: 810
+        y: 891
+        width: 11
+        height: 26
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2e23806bb1d4a8c00800000000000000
+      internalID: 903619456654652130
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: atmosphere_background_10
+      rect:
+        serializedVersion: 2
+        x: 820
+        y: 875
+        width: 25
+        height: 52
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 87407956336efb170800000000000000
+      internalID: 8196522955259708536
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: atmosphere_background_11
+      rect:
+        serializedVersion: 2
+        x: 826
+        y: 855
+        width: 47
+        height: 62
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f3b282e30ffc467f0800000000000000
+      internalID: -620142217928365249
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: atmosphere_background_12
+      rect:
+        serializedVersion: 2
+        x: 866
+        y: 784
+        width: 116
+        height: 140
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1e879ee45e4656890800000000000000
+      internalID: -7465449871262517023
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: atmosphere_background_13
+      rect:
+        serializedVersion: 2
+        x: 1137
+        y: 865
+        width: 16
+        height: 53
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e11c1a7e0ec131400800000000000000
+      internalID: 293610152993603870
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: atmosphere_background_14
+      rect:
+        serializedVersion: 2
+        x: 1356
+        y: 891
+        width: 16
+        height: 32
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b6b745847efec96c0800000000000000
+      internalID: -4135166581202977941
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: atmosphere_background_15
+      rect:
+        serializedVersion: 2
+        x: 1590
+        y: 912
+        width: 19
+        height: 13
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e38da9aaf97ae6760800000000000000
+      internalID: 7453078737548662846
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: atmosphere_background_16
+      rect:
+        serializedVersion: 2
+        x: 1614
+        y: 851
+        width: 58
+        height: 76
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1661071513503e4c0800000000000000
+      internalID: -4259555113184520607
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: atmosphere_background_17
+      rect:
+        serializedVersion: 2
+        x: 22
+        y: 887
+        width: 13
+        height: 14
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: aa5619142eefe90f0800000000000000
+      internalID: -1108168210570451542
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: atmosphere_background_18
+      rect:
+        serializedVersion: 2
+        x: 137
+        y: 849
+        width: 41
+        height: 50
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ddd34b919d728f4b0800000000000000
+      internalID: -5406527539265651235
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: atmosphere_background_19
+      rect:
+        serializedVersion: 2
+        x: 169
+        y: 858
+        width: 33
+        height: 18
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2a3b5728b6cd6c320800000000000000
+      internalID: 2577990191024550818
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: atmosphere_background_20
+      rect:
+        serializedVersion: 2
+        x: 329
+        y: 849
+        width: 42
+        height: 62
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ee71dc9511ccca5e0800000000000000
+      internalID: -1896916968136697874
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: atmosphere_background_21
+      rect:
+        serializedVersion: 2
+        x: 400
+        y: 863
+        width: 21
+        height: 15
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c572c7d43447e1cb0800000000000000
+      internalID: -4891344312866166948
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: atmosphere_background_22
+      rect:
+        serializedVersion: 2
+        x: 428
+        y: 794
+        width: 41
+        height: 92
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f5e11226e9d245250800000000000000
+      internalID: 5932416767428206175
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: atmosphere_background_23
+      rect:
+        serializedVersion: 2
+        x: 460
+        y: 827
+        width: 41
+        height: 59
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d5bcb325d7997e720800000000000000
+      internalID: 2875435650628963165
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: atmosphere_background_24
+      rect:
+        serializedVersion: 2
+        x: 496
+        y: 869
+        width: 24
+        height: 17
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 72cfd07d3feb4f400800000000000000
+      internalID: 357120224963460135
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: atmosphere_background_25
+      rect:
+        serializedVersion: 2
+        x: 526
+        y: 865
+        width: 24
+        height: 22
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2af6d68f464468cc0800000000000000
+      internalID: -3709202042637684830
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: atmosphere_background_26
+      rect:
+        serializedVersion: 2
+        x: 549
+        y: 859
+        width: 23
+        height: 34
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b7a4c8438be25c920800000000000000
+      internalID: 3009863294657514107
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: atmosphere_background_27
+      rect:
+        serializedVersion: 2
+        x: 569
+        y: 802
+        width: 150
+        height: 96
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 05debfaf550c588b0800000000000000
+      internalID: -5150499123312726704
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: atmosphere_background_28
+      rect:
+        serializedVersion: 2
+        x: 776
+        y: 831
+        width: 51
+        height: 59
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4ebf94f3b7c4eb810800000000000000
+      internalID: 1782946594711796708
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: atmosphere_background_29
+      rect:
+        serializedVersion: 2
+        x: 792
+        y: 887
+        width: 19
+        height: 18
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 744b1a4d4added4e0800000000000000
+      internalID: -1954881488220474297
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: atmosphere_background_30
+      rect:
+        serializedVersion: 2
+        x: 971
+        y: 834
+        width: 69
+        height: 56
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 617c18686669f2820800000000000000
+      internalID: 2895698452510000918
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: atmosphere_background_31
+      rect:
+        serializedVersion: 2
+        x: 1083
+        y: 875
+        width: 33
+        height: 35
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e82c9b8c3c1ec44b0800000000000000
+      internalID: -5454736817650023794
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: atmosphere_background_32
+      rect:
+        serializedVersion: 2
+        x: 1204
+        y: 802
+        width: 45
+        height: 84
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 212da02cb84609680800000000000000
+      internalID: -8750383524562152942
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: atmosphere_background_33
+      rect:
+        serializedVersion: 2
+        x: 1270
+        y: 891
+        width: 27
+        height: 20
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f4a8b0e7c0b809400800000000000000
+      internalID: 328915658568600143
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: atmosphere_background_34
+      rect:
+        serializedVersion: 2
+        x: 1270
+        y: 859
+        width: 21
+        height: 25
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: fd266975cff4b4c30800000000000000
+      internalID: 4344654210748801759
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: atmosphere_background_35
+      rect:
+        serializedVersion: 2
+        x: 1289
+        y: 830
+        width: 44
+        height: 57
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f6d43b5ccc02d7ce0800000000000000
+      internalID: -1405931444807447185
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: atmosphere_background_36
+      rect:
+        serializedVersion: 2
+        x: 1300
+        y: 879
+        width: 9
+        height: 13
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c61df32547d39fc00800000000000000
+      internalID: 934845967461503340
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: atmosphere_background_37
+      rect:
+        serializedVersion: 2
+        x: 1308
+        y: 889
+        width: 13
+        height: 14
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 433e240c54bd1b880800000000000000
+      internalID: -8596849121048730828
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: atmosphere_background_38
+      rect:
+        serializedVersion: 2
+        x: 1310
+        y: 778
+        width: 106
+        height: 120
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 998aeaeb1318cde60800000000000000
+      internalID: 7988401889700915353
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: atmosphere_background_39
+      rect:
+        serializedVersion: 2
+        x: 1320
+        y: 881
+        width: 32
+        height: 28
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: aa16faa384bcb7100800000000000000
+      internalID: 106902527255994794
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: atmosphere_background_40
+      rect:
+        serializedVersion: 2
+        x: 1445
+        y: 873
+        width: 19
+        height: 19
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ad8d6ef4e0e618560800000000000000
+      internalID: 7314248277575522522
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: atmosphere_background_41
+      rect:
+        serializedVersion: 2
+        x: 1471
+        y: 873
+        width: 23
+        height: 19
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 46c99e91f3d027a70800000000000000
+      internalID: 8823129184641064036
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: atmosphere_background_42
+      rect:
+        serializedVersion: 2
+        x: 1495
+        y: 816
+        width: 51
+        height: 73
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5698e0c74acf4bed0800000000000000
+      internalID: -2399014918095468187
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: atmosphere_background_43
+      rect:
+        serializedVersion: 2
+        x: 1531
+        y: 859
+        width: 40
+        height: 46
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 65d55f3abf0151a80800000000000000
+      internalID: -8496866448990970538
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: atmosphere_background_44
+      rect:
+        serializedVersion: 2
+        x: 1569
+        y: 834
+        width: 32
+        height: 62
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9fc288e741de75d30800000000000000
+      internalID: 4420262231565413625
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: atmosphere_background_45
+      rect:
+        serializedVersion: 2
+        x: 1600
+        y: 877
+        width: 15
+        height: 22
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 983915a74e96033a0800000000000000
+      internalID: -6687729016619560055
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: atmosphere_background_46
+      rect:
+        serializedVersion: 2
+        x: 504
+        y: 861
+        width: 16
+        height: 11
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 52b4bd8928d932100800000000000000
+      internalID: 82082402458618661
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: atmosphere_background_47
+      rect:
+        serializedVersion: 2
+        x: 707
+        y: 861
+        width: 11
+        height: 9
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0855b0c865bf355e0800000000000000
+      internalID: -1921916266821757568
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: atmosphere_background_48
+      rect:
+        serializedVersion: 2
+        x: 737
+        y: 858
+        width: 18
+        height: 12
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 88ed5a51032d834c0800000000000000
+      internalID: -4307461939616424312
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: atmosphere_background_49
+      rect:
+        serializedVersion: 2
+        x: 858
+        y: 837
+        width: 51
+        height: 35
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d5035fd85ee95b450800000000000000
+      internalID: 6103959578736930909
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: atmosphere_background_50
+      rect:
+        serializedVersion: 2
+        x: 1039
+        y: 863
+        width: 15
+        height: 7
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 98716036d42495bd0800000000000000
+      internalID: -2641006806334826615
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: atmosphere_background_51
+      rect:
+        serializedVersion: 2
+        x: 1138
+        y: 866
+        width: 6
+        height: 6
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: dacc552f52ecc11f0800000000000000
+      internalID: -1072755948846199635
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: atmosphere_background_52
+      rect:
+        serializedVersion: 2
+        x: 1188
+        y: 857
+        width: 19
+        height: 14
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: dbcc035c72a9a11b0800000000000000
+      internalID: -5685062083999118147
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: atmosphere_background_53
+      rect:
+        serializedVersion: 2
+        x: 1409
+        y: 778
+        width: 83
+        height: 95
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: aaa1f31d7ed546a60800000000000000
+      internalID: 7666355715920829098
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: atmosphere_background_54
+      rect:
+        serializedVersion: 2
+        x: 1566
+        y: 861
+        width: 7
+        height: 7
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f6c56336d7258e080800000000000000
+      internalID: -9157979143769006993
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: atmosphere_background_55
+      rect:
+        serializedVersion: 2
+        x: 175
+        y: 802
+        width: 51
+        height: 52
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 48f9be19ef76f2d90800000000000000
+      internalID: -7120358142781972604
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: atmosphere_background_56
+      rect:
+        serializedVersion: 2
+        x: 222
+        y: 843
+        width: 18
+        height: 13
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e160f559b77225540800000000000000
+      internalID: 4995098348447794718
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: atmosphere_background_57
+      rect:
+        serializedVersion: 2
+        x: 295
+        y: 848
+        width: 8
+        height: 9
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 78a666f1a9e203f20800000000000000
+      internalID: 3400268958151371399
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: atmosphere_background_58
+      rect:
+        serializedVersion: 2
+        x: 295
+        y: 843
+        width: 9
+        height: 6
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9818e3ce595b21040800000000000000
+      internalID: 4616952223526453641
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: atmosphere_background_59
+      rect:
+        serializedVersion: 2
+        x: 384
+        y: 828
+        width: 41
+        height: 28
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f13a80ce9788e5920800000000000000
+      internalID: 2980970060598256415
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: atmosphere_background_60
+      rect:
+        serializedVersion: 2
+        x: 826
+        y: 832
+        width: 7
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a2201f294fa5e92b0800000000000000
+      internalID: -5575919282154307030
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: atmosphere_background_61
+      rect:
+        serializedVersion: 2
+        x: 1037
+        y: 843
+        width: 13
+        height: 11
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e9a367634866b1650800000000000000
+      internalID: 6204665629668424350
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: atmosphere_background_62
+      rect:
+        serializedVersion: 2
+        x: 1049
+        y: 843
+        width: 25
+        height: 13
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 28e517a1508a28350800000000000000
+      internalID: 6017556791992344194
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: atmosphere_background_63
+      rect:
+        serializedVersion: 2
+        x: 1059
+        y: 824
+        width: 67
+        height: 34
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1d86b432e7e476fb0800000000000000
+      internalID: -4654665386199127855
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: atmosphere_background_64
+      rect:
+        serializedVersion: 2
+        x: 1123
+        y: 824
+        width: 80
+        height: 37
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: be526769720d75a50800000000000000
+      internalID: 6509900654833968619
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: atmosphere_background_65
+      rect:
+        serializedVersion: 2
+        x: 1236
+        y: 812
+        width: 35
+        height: 42
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2ab4bc17cdac09b90800000000000000
+      internalID: -7237061553033622622
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: atmosphere_background_66
+      rect:
+        serializedVersion: 2
+        x: 1286
+        y: 843
+        width: 9
+        height: 9
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d943102c8f8ab5d50800000000000000
+      internalID: 6727156254768182429
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: atmosphere_background_67
+      rect:
+        serializedVersion: 2
+        x: 1479
+        y: 843
+        width: 15
+        height: 9
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 96de18e9861fb14f0800000000000000
+      internalID: -856825872445739671
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: atmosphere_background_68
+      rect:
+        serializedVersion: 2
+        x: 1553
+        y: 826
+        width: 24
+        height: 27
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ec4ff31c267c656b0800000000000000
+      internalID: -5307835883846634290
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: atmosphere_background_69
+      rect:
+        serializedVersion: 2
+        x: 137
+        y: 810
+        width: 27
+        height: 35
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0d0ce00584da50040800000000000000
+      internalID: 4613283919403335888
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: atmosphere_background_70
+      rect:
+        serializedVersion: 2
+        x: 163
+        y: 826
+        width: 15
+        height: 14
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6d49d533ad138bd70800000000000000
+      internalID: 9059045463690155222
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: atmosphere_background_71
+      rect:
+        serializedVersion: 2
+        x: 199
+        y: 778
+        width: 67
+        height: 54
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2d8f35cc4b93c87e0800000000000000
+      internalID: -1761969905523754798
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: atmosphere_background_72
+      rect:
+        serializedVersion: 2
+        x: 263
+        y: 827
+        width: 13
+        height: 18
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b8927254ef9491ce0800000000000000
+      internalID: -1434033649910077045
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: atmosphere_background_73
+      rect:
+        serializedVersion: 2
+        x: 271
+        y: 794
+        width: 32
+        height: 21
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f1c235089ccc53fe0800000000000000
+      internalID: -1209835759065682913
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: atmosphere_background_74
+      rect:
+        serializedVersion: 2
+        x: 295
+        y: 826
+        width: 14
+        height: 18
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: caef5f13db3fbcc20800000000000000
+      internalID: 3227941551853665964
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: atmosphere_background_75
+      rect:
+        serializedVersion: 2
+        x: 297
+        y: 810
+        width: 10
+        height: 10
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f4ef33b74715a03e0800000000000000
+      internalID: -2086765916607742385
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: atmosphere_background_76
+      rect:
+        serializedVersion: 2
+        x: 303
+        y: 800
+        width: 16
+        height: 19
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 02c1f0bef3ea6ec30800000000000000
+      internalID: 4388386476468935712
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: atmosphere_background_77
+      rect:
+        serializedVersion: 2
+        x: 313
+        y: 818
+        width: 6
+        height: 7
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0403b6dc7696317d0800000000000000
+      internalID: -2948897436448640960
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: atmosphere_background_78
+      rect:
+        serializedVersion: 2
+        x: 317
+        y: 820
+        width: 10
+        height: 10
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2e7c782ec67279680800000000000000
+      internalID: -8748480402533398558
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: atmosphere_background_79
+      rect:
+        serializedVersion: 2
+        x: 317
+        y: 792
+        width: 32
+        height: 29
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ee7952bc6ed9fdf80800000000000000
+      internalID: -8079565591903102994
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: atmosphere_background_80
+      rect:
+        serializedVersion: 2
+        x: 362
+        y: 798
+        width: 25
+        height: 48
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: aaff3ae08f570f090800000000000000
+      internalID: -8002766829579403350
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: atmosphere_background_81
+      rect:
+        serializedVersion: 2
+        x: 402
+        y: 810
+        width: 15
+        height: 10
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f8a1f595feee7fc20800000000000000
+      internalID: 3240321168680360591
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: atmosphere_background_82
+      rect:
+        serializedVersion: 2
+        x: 526
+        y: 786
+        width: 30
+        height: 22
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4cd936e98230754b0800000000000000
+      internalID: -5451885350917792316
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: atmosphere_background_83
+      rect:
+        serializedVersion: 2
+        x: 528
+        y: 805
+        width: 20
+        height: 22
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 483cd6ed8d17e82d0800000000000000
+      internalID: -3274554702793161852
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: atmosphere_background_84
+      rect:
+        serializedVersion: 2
+        x: 557
+        y: 778
+        width: 17
+        height: 26
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: fc12692dbac4e0410800000000000000
+      internalID: 1445176831288680911
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: atmosphere_background_85
+      rect:
+        serializedVersion: 2
+        x: 569
+        y: 776
+        width: 55
+        height: 31
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 44406002a794336b0800000000000000
+      internalID: -5317825946122320828
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: atmosphere_background_86
+      rect:
+        serializedVersion: 2
+        x: 573
+        y: 804
+        width: 21
+        height: 19
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 612bfe86591e82110800000000000000
+      internalID: 1236486129540117014
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: atmosphere_background_87
+      rect:
+        serializedVersion: 2
+        x: 627
+        y: 782
+        width: 19
+        height: 31
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3a413e26c8a038c30800000000000000
+      internalID: 4360340462295520419
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: atmosphere_background_88
+      rect:
+        serializedVersion: 2
+        x: 733
+        y: 830
+        width: 10
+        height: 8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ec01c5f4fa313d1b0800000000000000
+      internalID: -5633137065238720306
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: atmosphere_background_89
+      rect:
+        serializedVersion: 2
+        x: 745
+        y: 832
+        width: 6
+        height: 6
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 531553d660fccc020800000000000000
+      internalID: 2363491530971631925
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: atmosphere_background_90
+      rect:
+        serializedVersion: 2
+        x: 762
+        y: 826
+        width: 15
+        height: 14
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 61d3bc07931dd1200800000000000000
+      internalID: 152508007036173590
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: atmosphere_background_91
+      rect:
+        serializedVersion: 2
+        x: 830
+        y: 810
+        width: 15
+        height: 20
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ea855a1703c80eca0800000000000000
+      internalID: -5989633364709779282
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: atmosphere_background_92
+      rect:
+        serializedVersion: 2
+        x: 844
+        y: 810
+        width: 13
+        height: 12
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 458e80f80cbeb48d0800000000000000
+      internalID: -2860933925997844396
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: atmosphere_background_93
+      rect:
+        serializedVersion: 2
+        x: 918
+        y: 822
+        width: 15
+        height: 20
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6c25c1498e3e79200800000000000000
+      internalID: 186868497615966918
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: atmosphere_background_94
+      rect:
+        serializedVersion: 2
+        x: 1007
+        y: 776
+        width: 51
+        height: 46
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0b1aebd30893dd9e0800000000000000
+      internalID: -1595055470064787024
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: atmosphere_background_95
+      rect:
+        serializedVersion: 2
+        x: 1037
+        y: 786
+        width: 7
+        height: 13
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1f828a897d45ead40800000000000000
+      internalID: 5597504671823964401
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: atmosphere_background_96
+      rect:
+        serializedVersion: 2
+        x: 1083
+        y: 770
+        width: 23
+        height: 29
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2a7370a30aca106a0800000000000000
+      internalID: -6484712184268507230
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: atmosphere_background_97
+      rect:
+        serializedVersion: 2
+        x: 1091
+        y: 798
+        width: 21
+        height: 15
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 58f66a043408bfac0800000000000000
+      internalID: -3820318832557920379
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: atmosphere_background_98
+      rect:
+        serializedVersion: 2
+        x: 1111
+        y: 800
+        width: 17
+        height: 28
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0c6b5d94e92d8ed20800000000000000
+      internalID: 3308125503589037760
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: atmosphere_background_99
+      rect:
+        serializedVersion: 2
+        x: 1137
+        y: 782
+        width: 52
+        height: 39
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 44da12815d41a9c40800000000000000
+      internalID: 5519747198761413956
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: atmosphere_background_100
+      rect:
+        serializedVersion: 2
+        x: 1139
+        y: 794
+        width: 6
+        height: 12
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ce8c9269781356090800000000000000
+      internalID: -8041967101190485780
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: atmosphere_background_101
+      rect:
+        serializedVersion: 2
+        x: 1188
+        y: 810
+        width: 15
+        height: 11
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b6bbf57d41da0f030800000000000000
+      internalID: 3526508813255424875
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: atmosphere_background_102
+      rect:
+        serializedVersion: 2
+        x: 1342
+        y: 810
+        width: 8
+        height: 9
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1c829371c479780f0800000000000000
+      internalID: -1114756029687977791
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: atmosphere_background_103
+      rect:
+        serializedVersion: 2
+        x: 1348
+        y: 822
+        width: 6
+        height: 7
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 12a6fda63487b68e0800000000000000
+      internalID: -1699132203451061727
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: atmosphere_background_104
+      rect:
+        serializedVersion: 2
+        x: 1421
+        y: 812
+        width: 9
+        height: 19
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 94903ed01049ab250800000000000000
+      internalID: 5961239789027133769
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: atmosphere_background_105
+      rect:
+        serializedVersion: 2
+        x: 1073
+        y: 766
+        width: 23
+        height: 21
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e85ec6a5f7fae4570800000000000000
+      internalID: 8452886512133793166
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: atmosphere_background_106
+      rect:
+        serializedVersion: 2
+        x: 1332
+        y: 786
+        width: 12
+        height: 9
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e33613d8c43a8a0f0800000000000000
+      internalID: -1105454159337790658
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: atmosphere_background_107
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 0
+        width: 1672
+        height: 776
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5abd6d0e67c0b08d0800000000000000
+      internalID: -2879193832055448667
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: atmosphere_background_108
+      rect:
+        serializedVersion: 2
+        x: 536
+        y: 769
+        width: 12
+        height: 12
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9aabaec758a116ee0800000000000000
+      internalID: -1269704459313038679
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: atmosphere_background_109
+      rect:
+        serializedVersion: 2
+        x: 633
+        y: 770
+        width: 11
+        height: 11
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1fb4b5dae52116a90800000000000000
+      internalID: -7322551321283048463
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: atmosphere_background_110
+      rect:
+        serializedVersion: 2
+        x: 1095
+        y: 763
+        width: 6
+        height: 8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8224d59170c4e9d90800000000000000
+      internalID: -7089145170060557784
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: atmosphere_background_111
+      rect:
+        serializedVersion: 2
+        x: 1113
+        y: 761
+        width: 15
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 327bad061dc18adb0800000000000000
+      internalID: -4780539318855092445
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: atmosphere_background_112
+      rect:
+        serializedVersion: 2
+        x: 1131
+        y: 759
+        width: 9
+        height: 14
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 18769973dcdfc9d20800000000000000
+      internalID: 3286780885916542849
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: atmosphere_background_113
+      rect:
+        serializedVersion: 2
+        x: 1155
+        y: 769
+        width: 6
+        height: 9
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6977375e0621c9c80800000000000000
+      internalID: -8314750604657068138
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: atmosphere_background_114
+      rect:
+        serializedVersion: 2
+        x: 1160
+        y: 768
+        width: 13
+        height: 13
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c94a34b652b651db0800000000000000
+      internalID: -4821830017572690788
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: atmosphere_background_115
+      rect:
+        serializedVersion: 2
+        x: 1346
+        y: 770
+        width: 12
+        height: 11
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 12cd9e4607d822670800000000000000
+      internalID: 8512521759552560161
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: atmosphere_background_116
+      rect:
+        serializedVersion: 2
+        x: 1469
+        y: 747
+        width: 9
+        height: 24
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 08ac6f9e006cd89f0800000000000000
+      internalID: -464497479321728384
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: atmosphere_background_117
+      rect:
+        serializedVersion: 2
+        x: 143
+        y: 752
+        width: 9
+        height: 14
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8e6ca8984ae61b270800000000000000
+      internalID: 8264508444162836200
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: atmosphere_background_118
+      rect:
+        serializedVersion: 2
+        x: 1141
+        y: 731
+        width: 26
+        height: 34
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b72b726aa5ddf2cc0800000000000000
+      internalID: -3733522184662437253
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: atmosphere_background_119
+      rect:
+        serializedVersion: 2
+        x: 1162
+        y: 751
+        width: 7
+        height: 11
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 103b88669a6656350800000000000000
+      internalID: 6009322155551535873
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: atmosphere_background_120
+      rect:
+        serializedVersion: 2
+        x: 1332
+        y: 747
+        width: 22
+        height: 18
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 44a166bf6514973e0800000000000000
+      internalID: -2055539913077155260
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: atmosphere_background_121
+      rect:
+        serializedVersion: 2
+        x: 215
+        y: 96
+        width: 9
+        height: 9
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d3a469978871d9500800000000000000
+      internalID: 404505416456096317
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: atmosphere_background_122
+      rect:
+        serializedVersion: 2
+        x: 1149
+        y: 80
+        width: 8
+        height: 7
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5993a5ad3c33b0800800000000000000
+      internalID: 579613893322226069
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: atmosphere_background_123
+      rect:
+        serializedVersion: 2
+        x: 1437
+        y: 70
+        width: 11
+        height: 11
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0d857f89f2a17f800800000000000000
+      internalID: 646013863283087568
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: atmosphere_background_124
+      rect:
+        serializedVersion: 2
+        x: 611
+        y: 48
+        width: 9
+        height: 11
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 823d3021505530580800000000000000
+      internalID: -8862146161469566168
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: atmosphere_background_125
+      rect:
+        serializedVersion: 2
+        x: 619
+        y: 48
+        width: 6
+        height: 9
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 624a1e13184448d80800000000000000
+      internalID: -8249393295757564890
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: atmosphere_background_126
+      rect:
+        serializedVersion: 2
+        x: 946
+        y: 56
+        width: 6
+        height: 7
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3b36c6fb4493ec8c0800000000000000
+      internalID: -3977178453489458253
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: atmosphere_background_127
+      rect:
+        serializedVersion: 2
+        x: 1117
+        y: 50
+        width: 9
+        height: 13
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b3e1549412f7b12e0800000000000000
+      internalID: -2153988215826735557
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: atmosphere_background_128
+      rect:
+        serializedVersion: 2
+        x: 1139
+        y: 21
+        width: 18
+        height: 35
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0d7da29fd181652d0800000000000000
+      internalID: -3290415960734115888
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: atmosphere_background_129
+      rect:
+        serializedVersion: 2
+        x: 62
+        y: 21
+        width: 16
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3ccfa1e66333a3fa0800000000000000
+      internalID: -5820283259554431805
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: atmosphere_background_130
+      rect:
+        serializedVersion: 2
+        x: 641
+        y: 15
+        width: 13
+        height: 22
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 71eb41e203665e930800000000000000
+      internalID: 4171852986946207255
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: atmosphere_background_131
+      rect:
+        serializedVersion: 2
+        x: 681
+        y: 15
+        width: 9
+        height: 22
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 970d5e03ea772ec00800000000000000
+      internalID: 928436063220125817
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: atmosphere_background_132
+      rect:
+        serializedVersion: 2
+        x: 715
+        y: 31
+        width: 8
+        height: 10
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0f2b1332f14a34e90800000000000000
+      internalID: -7042604938635922704
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: atmosphere_background_133
+      rect:
+        serializedVersion: 2
+        x: 778
+        y: 37
+        width: 9
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d0b14c6caa639b410800000000000000
+      internalID: 1493284858557111053
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: atmosphere_background_134
+      rect:
+        serializedVersion: 2
+        x: 778
+        y: 17
+        width: 25
+        height: 34
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: befcab56bb042aa20800000000000000
+      internalID: 3072089069429903339
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: atmosphere_background_135
+      rect:
+        serializedVersion: 2
+        x: 1413
+        y: 14
+        width: 33
+        height: 25
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e4ad4310be88d6af0800000000000000
+      internalID: -401514248847173042
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: atmosphere_background_136
+      rect:
+        serializedVersion: 2
+        x: 707
+        y: 9
+        width: 15
+        height: 25
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6751be7502e19bc00800000000000000
+      internalID: 916797123409417590
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: atmosphere_background_137
+      rect:
+        serializedVersion: 2
+        x: 743
+        y: 29
+        width: 6
+        height: 6
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3f82f10418266cc50800000000000000
+      internalID: 6685139004144167155
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: atmosphere_background_138
+      rect:
+        serializedVersion: 2
+        x: 1385
+        y: 17
+        width: 11
+        height: 12
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0aa0d608aa4cdfe00800000000000000
+      internalID: 1080235722216901280
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: atmosphere_background_139
+      rect:
+        serializedVersion: 2
+        x: 721
+        y: 14
+        width: 13
+        height: 11
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: eff54a0d72d9c7670800000000000000
+      internalID: 8537871787917336574
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: atmosphere_background_140
+      rect:
+        serializedVersion: 2
+        x: 1188
+        y: 7
+        width: 9
+        height: 15
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 001297dbc8239de40800000000000000
+      internalID: 5681627984960233728
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: atmosphere_background_141
+      rect:
+        serializedVersion: 2
+        x: 1391
+        y: 17
+        width: 7
+        height: 6
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 07c3e0b3edc916bb0800000000000000
+      internalID: -4944498437588632464
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: atmosphere_background_142
+      rect:
+        serializedVersion: 2
+        x: 1453
+        y: 2
+        width: 21
+        height: 20
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0b095e79a35242bc0800000000000000
+      internalID: -3808878451261861712
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: atmosphere_background_143
+      rect:
+        serializedVersion: 2
+        x: 1127
+        y: 0
+        width: 110
+        height: 5
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 30e56cb84c9669d20800000000000000
+      internalID: 3284929271092895235
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: atmosphere_background_144
+      rect:
+        serializedVersion: 2
+        x: 1389
+        y: 0
+        width: 89
+        height: 8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 155140591edfffe10800000000000000
+      internalID: 2233783085508597073
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 5e97eb03825dee720800000000000000
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
+    nameFileIdTable:
+      atmosphere_background_0: 5001175127543543322
+      atmosphere_background_1: -1188372942407373325
+      atmosphere_background_10: 8196522955259708536
+      atmosphere_background_100: -8041967101190485780
+      atmosphere_background_101: 3526508813255424875
+      atmosphere_background_102: -1114756029687977791
+      atmosphere_background_103: -1699132203451061727
+      atmosphere_background_104: 5961239789027133769
+      atmosphere_background_105: 8452886512133793166
+      atmosphere_background_106: -1105454159337790658
+      atmosphere_background_107: -2879193832055448667
+      atmosphere_background_108: -1269704459313038679
+      atmosphere_background_109: -7322551321283048463
+      atmosphere_background_11: -620142217928365249
+      atmosphere_background_110: -7089145170060557784
+      atmosphere_background_111: -4780539318855092445
+      atmosphere_background_112: 3286780885916542849
+      atmosphere_background_113: -8314750604657068138
+      atmosphere_background_114: -4821830017572690788
+      atmosphere_background_115: 8512521759552560161
+      atmosphere_background_116: -464497479321728384
+      atmosphere_background_117: 8264508444162836200
+      atmosphere_background_118: -3733522184662437253
+      atmosphere_background_119: 6009322155551535873
+      atmosphere_background_12: -7465449871262517023
+      atmosphere_background_120: -2055539913077155260
+      atmosphere_background_121: 404505416456096317
+      atmosphere_background_122: 579613893322226069
+      atmosphere_background_123: 646013863283087568
+      atmosphere_background_124: -8862146161469566168
+      atmosphere_background_125: -8249393295757564890
+      atmosphere_background_126: -3977178453489458253
+      atmosphere_background_127: -2153988215826735557
+      atmosphere_background_128: -3290415960734115888
+      atmosphere_background_129: -5820283259554431805
+      atmosphere_background_13: 293610152993603870
+      atmosphere_background_130: 4171852986946207255
+      atmosphere_background_131: 928436063220125817
+      atmosphere_background_132: -7042604938635922704
+      atmosphere_background_133: 1493284858557111053
+      atmosphere_background_134: 3072089069429903339
+      atmosphere_background_135: -401514248847173042
+      atmosphere_background_136: 916797123409417590
+      atmosphere_background_137: 6685139004144167155
+      atmosphere_background_138: 1080235722216901280
+      atmosphere_background_139: 8537871787917336574
+      atmosphere_background_14: -4135166581202977941
+      atmosphere_background_140: 5681627984960233728
+      atmosphere_background_141: -4944498437588632464
+      atmosphere_background_142: -3808878451261861712
+      atmosphere_background_143: 3284929271092895235
+      atmosphere_background_144: 2233783085508597073
+      atmosphere_background_15: 7453078737548662846
+      atmosphere_background_16: -4259555113184520607
+      atmosphere_background_17: -1108168210570451542
+      atmosphere_background_18: -5406527539265651235
+      atmosphere_background_19: 2577990191024550818
+      atmosphere_background_2: -1589870215875906896
+      atmosphere_background_20: -1896916968136697874
+      atmosphere_background_21: -4891344312866166948
+      atmosphere_background_22: 5932416767428206175
+      atmosphere_background_23: 2875435650628963165
+      atmosphere_background_24: 357120224963460135
+      atmosphere_background_25: -3709202042637684830
+      atmosphere_background_26: 3009863294657514107
+      atmosphere_background_27: -5150499123312726704
+      atmosphere_background_28: 1782946594711796708
+      atmosphere_background_29: -1954881488220474297
+      atmosphere_background_3: 7757343808183857389
+      atmosphere_background_30: 2895698452510000918
+      atmosphere_background_31: -5454736817650023794
+      atmosphere_background_32: -8750383524562152942
+      atmosphere_background_33: 328915658568600143
+      atmosphere_background_34: 4344654210748801759
+      atmosphere_background_35: -1405931444807447185
+      atmosphere_background_36: 934845967461503340
+      atmosphere_background_37: -8596849121048730828
+      atmosphere_background_38: 7988401889700915353
+      atmosphere_background_39: 106902527255994794
+      atmosphere_background_4: -8713441386582026477
+      atmosphere_background_40: 7314248277575522522
+      atmosphere_background_41: 8823129184641064036
+      atmosphere_background_42: -2399014918095468187
+      atmosphere_background_43: -8496866448990970538
+      atmosphere_background_44: 4420262231565413625
+      atmosphere_background_45: -6687729016619560055
+      atmosphere_background_46: 82082402458618661
+      atmosphere_background_47: -1921916266821757568
+      atmosphere_background_48: -4307461939616424312
+      atmosphere_background_49: 6103959578736930909
+      atmosphere_background_5: -995279483312408942
+      atmosphere_background_50: -2641006806334826615
+      atmosphere_background_51: -1072755948846199635
+      atmosphere_background_52: -5685062083999118147
+      atmosphere_background_53: 7666355715920829098
+      atmosphere_background_54: -9157979143769006993
+      atmosphere_background_55: -7120358142781972604
+      atmosphere_background_56: 4995098348447794718
+      atmosphere_background_57: 3400268958151371399
+      atmosphere_background_58: 4616952223526453641
+      atmosphere_background_59: 2980970060598256415
+      atmosphere_background_6: -2297418427827701517
+      atmosphere_background_60: -5575919282154307030
+      atmosphere_background_61: 6204665629668424350
+      atmosphere_background_62: 6017556791992344194
+      atmosphere_background_63: -4654665386199127855
+      atmosphere_background_64: 6509900654833968619
+      atmosphere_background_65: -7237061553033622622
+      atmosphere_background_66: 6727156254768182429
+      atmosphere_background_67: -856825872445739671
+      atmosphere_background_68: -5307835883846634290
+      atmosphere_background_69: 4613283919403335888
+      atmosphere_background_7: 6313812365623747959
+      atmosphere_background_70: 9059045463690155222
+      atmosphere_background_71: -1761969905523754798
+      atmosphere_background_72: -1434033649910077045
+      atmosphere_background_73: -1209835759065682913
+      atmosphere_background_74: 3227941551853665964
+      atmosphere_background_75: -2086765916607742385
+      atmosphere_background_76: 4388386476468935712
+      atmosphere_background_77: -2948897436448640960
+      atmosphere_background_78: -8748480402533398558
+      atmosphere_background_79: -8079565591903102994
+      atmosphere_background_8: -1950222931824675268
+      atmosphere_background_80: -8002766829579403350
+      atmosphere_background_81: 3240321168680360591
+      atmosphere_background_82: -5451885350917792316
+      atmosphere_background_83: -3274554702793161852
+      atmosphere_background_84: 1445176831288680911
+      atmosphere_background_85: -5317825946122320828
+      atmosphere_background_86: 1236486129540117014
+      atmosphere_background_87: 4360340462295520419
+      atmosphere_background_88: -5633137065238720306
+      atmosphere_background_89: 2363491530971631925
+      atmosphere_background_9: 903619456654652130
+      atmosphere_background_90: 152508007036173590
+      atmosphere_background_91: -5989633364709779282
+      atmosphere_background_92: -2860933925997844396
+      atmosphere_background_93: 186868497615966918
+      atmosphere_background_94: -1595055470064787024
+      atmosphere_background_95: 5597504671823964401
+      atmosphere_background_96: -6484712184268507230
+      atmosphere_background_97: -3820318832557920379
+      atmosphere_background_98: 3308125503589037760
+      atmosphere_background_99: 5519747198761413956
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
