@@ -20,6 +20,7 @@ public class UIManager : MonoBehaviour
     // 연결되어 있으면 I키가 이쪽을 연다. 비어 있으면 기존 inventoryPanel이 그대로 열린다.
     [SerializeField] private RelicInventoryPanel relicInventoryPanel;
     [SerializeField] private MapPanel mapPanel;
+    [SerializeField] private SkillPanel skillPanel;
     [SerializeField] private PausePanel pausePanel;
     [SerializeField] private GameOverPanel gameOverPanel;
     // [SerializeField] private NotificationPanel notificationPanel;
@@ -43,8 +44,8 @@ public class UIManager : MonoBehaviour
     
     //  팝업 상태
 
-    private bool isInventoryOpen, isMapOpen, isPaused;
-    public bool IsAnyPopupOpen => isInventoryOpen || isMapOpen || isPaused;
+    private bool isInventoryOpen, isSkillOpen, isMapOpen, isPaused;
+    public bool IsAnyPopupOpen => isInventoryOpen || isSkillOpen || isMapOpen || isPaused;
 
     /// <summary>
     /// 화면을 점유하는 "창"이 하나라도 떠 있는지. 맵을 막는 기준이다.
@@ -52,7 +53,7 @@ public class UIManager : MonoBehaviour
     /// 누르고 있는 동안만 겹쳐 보이는 오버레이라서 서로 막을 이유가 없다.
     /// </summary>
     private bool IsAnyWindowOpen =>
-        isInventoryOpen || isPaused ||
+        isInventoryOpen || isSkillOpen || isPaused ||
         (controlGuidePanel != null && controlGuidePanel.gameObject.activeSelf) ||
         (gameOverPanel != null && gameOverPanel.gameObject.activeSelf);
 
@@ -114,6 +115,7 @@ public class UIManager : MonoBehaviour
         if (Keyboard.current.digit0Key.wasPressedThisFrame) ShowGameOver();
         if (Keyboard.current.escapeKey.wasPressedThisFrame) HandleCancelKey();
         if (Keyboard.current.iKey.wasPressedThisFrame) ToggleInventory();
+        if (Keyboard.current.kKey.wasPressedThisFrame) ToggleSkill();
 
         // 맵은 탭을 누르고 있는 동안만 보인다.
         // 손을 떼면 조건 없이 내려가므로 켜진 채로 남는 상태가 생기지 않는다.
@@ -171,6 +173,12 @@ public class UIManager : MonoBehaviour
             return;
         }
 
+        if (isSkillOpen)
+        {
+            ToggleSkill();
+            return;
+        }
+
         if (isMapOpen)
         {
             ToggleMap();
@@ -187,6 +195,10 @@ public class UIManager : MonoBehaviour
 
         // 창이 뜨면 맵은 내린다. (겹침 규칙 (2))
         SetMapVisible(false);
+
+        // 스킬 창과는 한 번에 하나만 뜬다.
+        if (!isInventoryOpen && isSkillOpen) ToggleSkill();
+
         isInventoryOpen = !isInventoryOpen;
         Debug.Log($"[UI] Inventory: {(isInventoryOpen ? "Open" : "Close")}");
 
@@ -195,6 +207,27 @@ public class UIManager : MonoBehaviour
         else if (inventoryPanel != null)
             inventoryPanel.SetVisible(isInventoryOpen);
         // [SFX_HOOK] AudioManager.Play(isInventoryOpen ? openSfx : closeSfx);
+    }
+
+    /// <summary>
+    /// 스킬 창. 인벤토리와 한 번에 하나만 뜬다.
+    /// 나중에 탭 구조로 합치면 이 둘이 같은 창의 두 탭이 된다.
+    /// </summary>
+    public void ToggleSkill()
+    {
+        // 여는 것만 막는다. 이미 열려 있으면 언제든 닫을 수 있어야 한다.
+        if (!isSkillOpen && isPaused) return;
+
+        SetMapVisible(false);
+
+        // 인벤토리가 떠 있으면 먼저 닫는다.
+        if (!isSkillOpen && isInventoryOpen) ToggleInventory();
+
+        isSkillOpen = !isSkillOpen;
+        Debug.Log($"[UI] Skill: {(isSkillOpen ? "Open" : "Close")}");
+
+        if (skillPanel != null) skillPanel.SetVisible(isSkillOpen);
+        // [SFX_HOOK]
     }
 
     public void ToggleMap()
