@@ -17,7 +17,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &6098234223698890012
 Transform:
   m_ObjectHideFlags: 0
@@ -218,7 +218,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 621f87d74f0f9b54da46e7173cfe8287, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::FollowingOrb
-  visual: {fileID: 8706767518568844283}
   orbLight: {fileID: 3539094178718562898}
 --- !u!114 &60652433999656876
 MonoBehaviour:

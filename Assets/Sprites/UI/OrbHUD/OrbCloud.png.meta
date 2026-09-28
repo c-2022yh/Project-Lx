@@ -1,10 +1,13 @@
 fileFormatVersion: 2
-guid: 0a97b532cac88b743af5e2fc4002a982
+guid: 1d147034c50369d428f857c29d555f91
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: 3416964434684036996
-    second: OrbImageFill_0
+      213: 8879292622801322497
+    second: OrbCloud_0
+  - first:
+      213: 3445006127535780924
+    second: OrbCloud_1
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -51,7 +54,7 @@ TextureImporter:
   spriteMeshType: 1
   alignment: 0
   spritePivot: {x: 0.5, y: 0.5}
-  spritePixelsToUnits: 36
+  spritePixelsToUnits: 100
   spriteBorder: {x: 0, y: 0, z: 0, w: 0}
   spriteGenerateFallbackPhysicsShape: 1
   alphaUsage: 1
@@ -96,30 +99,17 @@ TextureImporter:
     ignorePlatformSupport: 0
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
-  - serializedVersion: 4
-    buildTarget: WebGL
-    maxTextureSize: 2048
-    resizeAlgorithm: 0
-    textureFormat: -1
-    textureCompression: 1
-    compressionQuality: 50
-    crunchedCompression: 0
-    allowsAlphaSplitting: 0
-    overridden: 0
-    ignorePlatformSupport: 0
-    androidETC2FallbackOverride: 0
-    forceMaximumCompressionQuality_BC6H_BC7: 0
   spriteSheet:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: OrbImageFill_0
+      name: OrbCloud_0
       rect:
         serializedVersion: 2
-        x: 125
-        y: 122
-        width: 506
-        height: 505
+        x: 54
+        y: 394
+        width: 285
+        height: 112
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -128,8 +118,30 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 4874c7bac0f7b6f20800000000000000
-      internalID: 3416964434684036996
+      spriteID: 102c1de8895993b70800000000000000
+      internalID: 8879292622801322497
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: OrbCloud_1
+      rect:
+        serializedVersion: 2
+        x: 348
+        y: 116
+        width: 298
+        height: 142
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c3470d012de1fcf20800000000000000
+      internalID: 3445006127535780924
       vertices: []
       indices: 
       edges: []
@@ -148,7 +160,8 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      OrbImageFill_0: 3416964434684036996
+      OrbCloud_0: 8879292622801322497
+      OrbCloud_1: 3445006127535780924
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

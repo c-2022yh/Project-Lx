@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: 7975d5f348b1fd74d811caa77131fcfe
+guid: e0fd5d34d2dec564e8cdad60c4d98738
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -3375445372007358357
-    second: wave2_0
+      213: 2305360999012041603
+    second: OrbFrame_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -100,13 +100,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: wave2_0
+      name: OrbFrame_0
       rect:
         serializedVersion: 2
-        x: 0
-        y: 0
-        width: 701
-        height: 483
+        x: 111
+        y: 105
+        width: 490
+        height: 490
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -115,8 +115,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: b60e3ca61520821d0800000000000000
-      internalID: -3375445372007358357
+      spriteID: 38307214d994eff10800000000000000
+      internalID: 2305360999012041603
       vertices: []
       indices: 
       edges: []
@@ -135,7 +135,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      wave2_0: -3375445372007358357
+      OrbFrame_0: 2305360999012041603
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
