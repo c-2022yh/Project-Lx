@@ -19,7 +19,7 @@ public class UIManager : MonoBehaviour
     // 새 유물 인벤토리(카테고리별 장착칸 + 보관함).
     // 연결되어 있으면 I키가 이쪽을 연다. 비어 있으면 기존 inventoryPanel이 그대로 열린다.
     [SerializeField] private RelicInventoryPanel relicInventoryPanel;
-    // [SerializeField] private MapPanel mapPanel;
+    [SerializeField] private MapPanel mapPanel;
     [SerializeField] private PausePanel pausePanel;
     [SerializeField] private GameOverPanel gameOverPanel;
     // [SerializeField] private NotificationPanel notificationPanel;
@@ -45,6 +45,16 @@ public class UIManager : MonoBehaviour
 
     private bool isInventoryOpen, isMapOpen, isPaused;
     public bool IsAnyPopupOpen => isInventoryOpen || isMapOpen || isPaused;
+
+    /// <summary>
+    /// 화면을 점유하는 "창"이 하나라도 떠 있는지. 맵을 막는 기준이다.
+    /// IsAnyPopupOpen과 달리 맵은 세지 않는다. 맵은 창이 아니라
+    /// 누르고 있는 동안만 겹쳐 보이는 오버레이라서 서로 막을 이유가 없다.
+    /// </summary>
+    private bool IsAnyWindowOpen =>
+        isInventoryOpen || isPaused ||
+        (controlGuidePanel != null && controlGuidePanel.gameObject.activeSelf) ||
+        (gameOverPanel != null && gameOverPanel.gameObject.activeSelf);
 
    
     //  Input System 연결
@@ -104,6 +114,12 @@ public class UIManager : MonoBehaviour
         if (Keyboard.current.digit0Key.wasPressedThisFrame) ShowGameOver();
         if (Keyboard.current.escapeKey.wasPressedThisFrame) HandleCancelKey();
         if (Keyboard.current.iKey.wasPressedThisFrame) ToggleInventory();
+
+        // 맵은 탭을 누르고 있는 동안만 보인다.
+        // 손을 떼면 조건 없이 내려가므로 켜진 채로 남는 상태가 생기지 않는다.
+        if (Keyboard.current.tabKey.wasPressedThisFrame) SetMapVisible(true);
+        if (Keyboard.current.tabKey.wasReleasedThisFrame) SetMapVisible(false);
+
         //이거는 나중에 처음 스킬 발동하면 나오게 튜토리얼 구현할건데 테스트키
         if (Keyboard.current.tKey.wasPressedThisFrame)
             tutorialTooltip.Show("Shift", "대시로 회피하세요");  
@@ -168,6 +184,9 @@ public class UIManager : MonoBehaviour
     {
         // 여는 것만 막는다. 이미 열려 있으면 언제든 닫을 수 있어야 한다.
         if (!isInventoryOpen && isPaused) return;
+
+        // 창이 뜨면 맵은 내린다. (겹침 규칙 (2))
+        SetMapVisible(false);
         isInventoryOpen = !isInventoryOpen;
         Debug.Log($"[UI] Inventory: {(isInventoryOpen ? "Open" : "Close")}");
 
@@ -180,15 +199,35 @@ public class UIManager : MonoBehaviour
 
     public void ToggleMap()
     {
-        if (!isMapOpen && (isPaused || isInventoryOpen)) return;
-        isMapOpen = !isMapOpen;
+        SetMapVisible(!isMapOpen);
+    }
+
+    /// <summary>
+    /// 맵을 켜고 끈다.
+    ///
+    /// 맵은 탭을 누르고 있는 동안만 뜨는 오버레이라 창과 겹칠 수 있다.
+    /// 규칙은 두 개뿐이다.
+    ///   (1) 창이 떠 있으면 켜지 않는다  - 여기서
+    ///   (2) 창이 열리면 내린다          - ToggleInventory / TogglePause에서
+    /// 끄는 쪽은 아무 조건도 보지 않는다. 손을 떼면 무조건 내려가야
+    /// 맵이 켜진 채 남는 상태가 생기지 않는다.
+    /// </summary>
+    public void SetMapVisible(bool visible)
+    {
+        if (visible && IsAnyWindowOpen) return;
+        if (isMapOpen == visible) return;
+
+        isMapOpen = visible;
         Debug.Log($"[UI] Map: {(isMapOpen ? "Open" : "Close")}");
-        // [TODO] mapPanel.SetVisible(isMapOpen);
+
+        if (mapPanel != null) mapPanel.SetVisible(isMapOpen);
         // [SFX_HOOK]
     }
 
     public void TogglePause()
     {
+        SetMapVisible(false);
+
         isPaused = !isPaused;
         Time.timeScale = isPaused ? 0f : 1f;
         Debug.Log($"[UI] Pause: {isPaused}");
