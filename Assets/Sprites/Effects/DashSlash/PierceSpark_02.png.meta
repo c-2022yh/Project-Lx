@@ -1,10 +1,19 @@
 fileFormatVersion: 2
-guid: e17938206cd65cd49875868bfed2cf3f
+guid: 080100e2defdcba4c9562bd2c5430737
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: 4367910026834163573
-    second: EnergyOrb_0
+      213: -2217396512540943126
+    second: PierceSpark_02_0
+  - first:
+      213: -4680765463620600987
+    second: PierceSpark_02_1
+  - first:
+      213: -9056057415344289990
+    second: PierceSpark_02_2
+  - first:
+      213: -93417058903665379
+    second: PierceSpark_02_3
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -51,7 +60,7 @@ TextureImporter:
   spriteMeshType: 1
   alignment: 0
   spritePivot: {x: 0.5, y: 0.5}
-  spritePixelsToUnits: 300
+  spritePixelsToUnits: 100
   spriteBorder: {x: 0, y: 0, z: 0, w: 0}
   spriteGenerateFallbackPhysicsShape: 1
   alphaUsage: 1
@@ -113,13 +122,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: EnergyOrb_0
+      name: PierceSpark_02_0
       rect:
         serializedVersion: 2
-        x: 59
-        y: 42
-        width: 414
-        height: 449
+        x: 358
+        y: 370
+        width: 49
+        height: 47
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -128,8 +137,74 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 5773158f60fed9c30800000000000000
-      internalID: 4367910026834163573
+      spriteID: aec9ecfbe993a31e0800000000000000
+      internalID: -2217396512540943126
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: PierceSpark_02_1
+      rect:
+        serializedVersion: 2
+        x: 404
+        y: 414
+        width: 10
+        height: 10
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 56b3aff4c949a0fb0800000000000000
+      internalID: -4680765463620600987
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: PierceSpark_02_2
+      rect:
+        serializedVersion: 2
+        x: 413
+        y: 398
+        width: 12
+        height: 13
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a378cd403cb625280800000000000000
+      internalID: -9056057415344289990
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: PierceSpark_02_3
+      rect:
+        serializedVersion: 2
+        x: 198
+        y: 113
+        width: 721
+        height: 279
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d15d51c0ead14bef0800000000000000
+      internalID: -93417058903665379
       vertices: []
       indices: 
       edges: []
@@ -148,7 +223,10 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      EnergyOrb_0: 4367910026834163573
+      PierceSpark_02_0: -2217396512540943126
+      PierceSpark_02_1: -4680765463620600987
+      PierceSpark_02_2: -9056057415344289990
+      PierceSpark_02_3: -93417058903665379
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

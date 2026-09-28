@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: e17938206cd65cd49875868bfed2cf3f
+guid: 03971e9f3dc3fae4e956c0301bd993f4
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: 4367910026834163573
-    second: EnergyOrb_0
+      213: 7808678868926608886
+    second: Slash_Travel_03_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -51,7 +51,7 @@ TextureImporter:
   spriteMeshType: 1
   alignment: 0
   spritePivot: {x: 0.5, y: 0.5}
-  spritePixelsToUnits: 300
+  spritePixelsToUnits: 100
   spriteBorder: {x: 0, y: 0, z: 0, w: 0}
   spriteGenerateFallbackPhysicsShape: 1
   alphaUsage: 1
@@ -113,13 +113,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: EnergyOrb_0
+      name: Slash_Travel_03_0
       rect:
         serializedVersion: 2
-        x: 59
-        y: 42
-        width: 414
-        height: 449
+        x: 543
+        y: 95
+        width: 445
+        height: 67
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -128,8 +128,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 5773158f60fed9c30800000000000000
-      internalID: 4367910026834163573
+      spriteID: 6f538732f000e5c60800000000000000
+      internalID: 7808678868926608886
       vertices: []
       indices: 
       edges: []
@@ -148,7 +148,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      EnergyOrb_0: 4367910026834163573
+      Slash_Travel_03_0: 7808678868926608886
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

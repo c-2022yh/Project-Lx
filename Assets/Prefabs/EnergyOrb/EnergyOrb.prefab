@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 6098234223698890012}
   - component: {fileID: 7396348064532417393}
   - component: {fileID: 8706767518568844283}
-  m_Layer: 0
+  m_Layer: 12
   m_Name: Visual
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -123,7 +123,7 @@ GameObject:
   - component: {fileID: 8049712536799405306}
   - component: {fileID: 1398017312291189154}
   - component: {fileID: 60652433999656876}
-  m_Layer: 0
+  m_Layer: 12
   m_Name: EnergyOrb
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -247,7 +247,7 @@ GameObject:
   - component: {fileID: 615051050174086926}
   - component: {fileID: 5255370677909024}
   - component: {fileID: 3539094178718562898}
-  m_Layer: 0
+  m_Layer: 12
   m_Name: Light
   m_TagString: Untagged
   m_Icon: {fileID: 0}
