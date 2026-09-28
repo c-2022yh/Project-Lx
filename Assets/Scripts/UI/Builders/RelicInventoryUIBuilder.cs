@@ -444,22 +444,37 @@ public static class RelicInventoryUIBuilder
         GameObject slot = new GameObject("RelicSlotView", typeof(RectTransform));
         slot.GetComponent<RectTransform>().sizeDelta = new Vector2(SlotSize, SlotSize);
 
-        UnityEngine.UI.Image bg = slot.AddComponent<UnityEngine.UI.Image>();
-        bg.color = new Color(0.20f, 0.20f, 0.24f, 1f);
-
-        // 마우스 이벤트는 이 Image가 받아서 RelicSlotView로 전달된다.
+        // 루트 Image는 보이지 않지만 마우스 이벤트는 받는다.
+        // (알파가 0이어도 uGUI는 사각형 안이면 레이캐스트를 받는다.)
+        // 칸 색은 아래 Background가 칠한다. 테두리들이 Background보다 먼저 그려져야
+        // 칸 바깥으로 삐져나온 부분만 띠처럼 보이기 때문에 루트에서 색을 뺐다.
         // Button을 쓰면 좌클릭만 들어오고 hover 색까지 덧칠해버려서 쓰지 않는다.
-        bg.raycastTarget = true;
+        UnityEngine.UI.Image hit = slot.AddComponent<UnityEngine.UI.Image>();
+        hit.color = new Color(1f, 1f, 1f, 0f);
+        hit.raycastTarget = true;
 
-        // 키보드 포커스 테두리 (하양). 선택 테두리보다 크고 뒤에 깔린다.
+        // 그리는 순서는 자식 순서를 따른다. 큰 사각형부터 깔고 작은 것으로 덮어서
+        // 가장자리에 3px씩 띠가 남게 만든다. (칸 88px, 칸 사이 간격 18px이라 서로 겹치지 않는다.)
+        //   FocusOutline(-9) → SelectionOutline(-6) → CategoryOutline(-3) → Background(0)
+
+        // 키보드 포커스 테두리 (하양). 가장 바깥.
         GameObject focus = K.Img("FocusOutline", slot.transform, new Color(1f, 1f, 1f, 0.75f));
-        K.Stretch(focus, -6, -6, -6, -6);
+        K.Stretch(focus, -9, -9, -9, -9);
         focus.GetComponent<UnityEngine.UI.Image>().enabled = false;
 
         // 선택 테두리 (노랑, 기본은 꺼둔다)
         GameObject outline = K.Img("SelectionOutline", slot.transform, new Color(1f, 0.85f, 0.35f, 0.55f));
-        K.Stretch(outline, -3, -3, -3, -3);
+        K.Stretch(outline, -6, -6, -6, -6);
         outline.GetComponent<UnityEngine.UI.Image>().enabled = false;
+
+        // 계열 테두리. 색은 RelicSlotView.Bind가 유물 카테고리에 맞춰 덮어쓴다.
+        // 선택·포커스보다 안쪽이라 골라도 가려지지 않는다.
+        GameObject category = K.Img("CategoryOutline", slot.transform, Color.white);
+        K.Stretch(category, -3, -3, -3, -3);
+
+        // 실제 칸 색. hover에 따라 RelicSlotView가 이 색을 바꾼다.
+        GameObject bg = K.Img("Background", slot.transform, new Color(0.20f, 0.20f, 0.24f, 1f));
+        K.Stretch(bg, 0, 0, 0, 0);
 
         GameObject icon = K.Img("Icon", slot.transform, Color.white);
         K.Stretch(icon, 10, 10, 10, 10);
@@ -472,7 +487,8 @@ public static class RelicInventoryUIBuilder
         RelicSlotView view = slot.AddComponent<RelicSlotView>();
 
         SerializedObject so = new SerializedObject(view);
-        K.SetRef(so, "background", bg);
+        K.SetRef(so, "background", bg.GetComponent<UnityEngine.UI.Image>());
+        K.SetRef(so, "categoryOutline", category.GetComponent<UnityEngine.UI.Image>());
         K.SetRef(so, "icon", icon.GetComponent<UnityEngine.UI.Image>());
         K.SetRef(so, "costText", cost.GetComponent<TextMeshProUGUI>());
         K.SetRef(so, "selectionOutline", outline.GetComponent<UnityEngine.UI.Image>());

@@ -102,20 +102,7 @@ public class UIManager : MonoBehaviour
         if (Keyboard.current.digit3Key.wasPressedThisFrame) ModifySoul(-1);
         if (Keyboard.current.digit4Key.wasPressedThisFrame) ModifySoul(+1);
         if (Keyboard.current.digit0Key.wasPressedThisFrame) ShowGameOver();
-        if (Keyboard.current.escapeKey.wasPressedThisFrame)
-        {
-            if (controlGuidePanel.gameObject.activeSelf)
-            {
-                // 조작법이 켜져 있으면 → 조작법 닫고 일시정지로 복귀
-                controlGuidePanel.SetVisible(false);
-                ShowPause();
-            }
-            else
-            {
-                // 아니면 일시정지 토글
-                TogglePause();
-            }
-        }
+        if (Keyboard.current.escapeKey.wasPressedThisFrame) HandleCancelKey();
         if (Keyboard.current.iKey.wasPressedThisFrame) ToggleInventory();
         //이거는 나중에 처음 스킬 발동하면 나오게 튜토리얼 구현할건데 테스트키
         if (Keyboard.current.tKey.wasPressedThisFrame)
@@ -146,9 +133,41 @@ public class UIManager : MonoBehaviour
 
     //  팝업 토글
 
+    /// <summary>
+    /// ESC: 지금 열려 있는 창을 닫는다. 닫을 게 없을 때만 일시정지를 연다.
+    ///
+    /// 창을 열어둔 채 습관적으로 ESC를 누르기 때문에, 그때 일시정지가 뜨면
+    /// 창이 두 겹으로 쌓인다. 위에 떠 있는 것부터 하나씩 닫는다.
+    /// </summary>
+    private void HandleCancelKey()
+    {
+        // 조작법은 일시정지 위에 떠 있으므로 가장 먼저 본다.
+        if (controlGuidePanel != null && controlGuidePanel.gameObject.activeSelf)
+        {
+            controlGuidePanel.SetVisible(false);
+            ShowPause();
+            return;
+        }
+
+        if (isInventoryOpen)
+        {
+            ToggleInventory();
+            return;
+        }
+
+        if (isMapOpen)
+        {
+            ToggleMap();
+            return;
+        }
+
+        TogglePause();
+    }
+
     public void ToggleInventory()
     {
-        if (isPaused) return;
+        // 여는 것만 막는다. 이미 열려 있으면 언제든 닫을 수 있어야 한다.
+        if (!isInventoryOpen && isPaused) return;
         isInventoryOpen = !isInventoryOpen;
         Debug.Log($"[UI] Inventory: {(isInventoryOpen ? "Open" : "Close")}");
 
@@ -161,7 +180,7 @@ public class UIManager : MonoBehaviour
 
     public void ToggleMap()
     {
-        if (isPaused || isInventoryOpen) return;
+        if (!isMapOpen && (isPaused || isInventoryOpen)) return;
         isMapOpen = !isMapOpen;
         Debug.Log($"[UI] Map: {(isMapOpen ? "Open" : "Close")}");
         // [TODO] mapPanel.SetVisible(isMapOpen);

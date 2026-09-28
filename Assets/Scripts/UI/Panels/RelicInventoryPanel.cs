@@ -58,6 +58,14 @@ public class RelicInventoryPanel : MonoBehaviour, IRelicSlotHost
     /// <summary>보관함 격자의 열 수. 빌더의 GridLayoutGroup.constraintCount와 맞춰야 한다.</summary>
     private const int StorageColumns = 6;
 
+    /// <summary>보관함을 묶어 보여주는 계열 순서. 왼쪽 장착칸 순서와 같게 맞춘다.</summary>
+    private static readonly RelicCategory[] StorageCategoryOrder =
+    {
+        RelicCategory.Sword,
+        RelicCategory.Orb,
+        RelicCategory.Body
+    };
+
     private const int RowSword = 0;
     private const int RowOrb = 1;
     private const int RowBody = 2;
@@ -203,12 +211,16 @@ public class RelicInventoryPanel : MonoBehaviour, IRelicSlotHost
         }
     }
 
-    /// <summary>보관함: 가지고 있지만 장착하지 않은 유물.</summary>
+    /// <summary>
+    /// 보관함: 가지고 있지만 장착하지 않은 유물.
+    /// 장착칸과 같은 순서(검 → 보주 → 신체)로 묶어서 보여준다.
+    /// 같은 계열 안에서는 먹은 순서를 그대로 둔다.
+    /// </summary>
     private void BuildStorage(IReadOnlyList<RelicData> equipped)
     {
         if (storageContainer == null) return;
 
-        int index = 0;
+        List<RelicData> stored = new List<RelicData>();
 
         foreach (string ownedId in RunState.Current.OwnedRelicIds)
         {
@@ -217,9 +229,23 @@ public class RelicInventoryPanel : MonoBehaviour, IRelicSlotHost
 
             if (Contains(equipped, relic)) continue;
 
-            SpawnSlot(storageContainer, relic, RelicSlotArea.Storage, relic.Category,
-                      RowStorageStart + index / StorageColumns, index % StorageColumns);
-            index++;
+            stored.Add(relic);
+        }
+
+        // 계열 순서대로 한 번씩 훑는다. List.Sort는 같은 값끼리 순서를 보장하지 않아서
+        // 먹은 순서가 뒤집히므로 쓰지 않는다.
+        int index = 0;
+
+        foreach (RelicCategory category in StorageCategoryOrder)
+        {
+            foreach (RelicData relic in stored)
+            {
+                if (relic.Category != category) continue;
+
+                SpawnSlot(storageContainer, relic, RelicSlotArea.Storage, relic.Category,
+                          RowStorageStart + index / StorageColumns, index % StorageColumns);
+                index++;
+            }
         }
     }
 
