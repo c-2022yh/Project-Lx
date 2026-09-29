@@ -1,75 +1,73 @@
-
-using UnityEngine;
+ï»¿using UnityEngine;
 
 [CreateAssetMenu(
     fileName = "RFX_Shadow",
     menuName = "Relics/Effects/Shadow"
 )]
 
-//±×¸²ÀÚ À¯¹°
-//ÀåÂø ½Ã ÁöÁ¤ÇÑ ½½·Ô¿¡ Æ¯Á¤ ½ºÅ³À» Áö±ŞÇÑ´Ù.
 public class ShadowRelicEffect : RelicEffect
 {
     [Header("Shadow Skill")]
-    [Tooltip("±×¸²ÀÚ À¯¹°ÀÌ Áö±ŞÇÒ ½ºÅ³")]
+    [Tooltip("ê·¸ë¦¼ì ìœ ë¬¼ì´ ì§€ê¸‰í•  ìŠ¤í‚¬")]
     [SerializeField]
     private SkillData shadowSkill;
 
-    [Tooltip("½ºÅ³À» Áö±ŞÇÒ ½½·Ô: 0=X, 1=A, 2=S, 3=D, 4=F")]
-    [SerializeField]
-    [Range(0, 4)]
-    private int skillSlotIndex = 4;
-
+    //í”Œë ˆì´ì–´ë³„ ìœ ë¬¼ íš¨ê³¼ Runtime ìƒì„±
     public override IRelicRuntime CreateRuntime(Player player)
     {
-        return new ShadowRelicRuntime(player, shadowSkill, skillSlotIndex);
+        return new ShadowRelicRuntime(player, shadowSkill);
     }
 
     private sealed class ShadowRelicRuntime : IRelicRuntime
     {
         private readonly Player player;
         private readonly SkillData shadowSkill;
-        private readonly int skillSlotIndex;
 
         private PlayerSkill playerSkill;
         private bool isEquipped;
 
-        public ShadowRelicRuntime(Player player, SkillData shadowSkill, int skillSlotIndex)
+        //ê·¸ë¦¼ì íš¨ê³¼ì— í•„ìš”í•œ í”Œë ˆì´ì–´ì™€ ìŠ¤í‚¬ ë³´ê´€
+        public ShadowRelicRuntime(Player player, SkillData shadowSkill)
         {
             this.player = player;
             this.shadowSkill = shadowSkill;
-            this.skillSlotIndex = skillSlotIndex;
         }
 
+        //ìŠ¤í‚¬ì„ ì§€ê¸‰í•˜ê³  ìœ ë¬¼ ê³ ìœ  íš¨ê³¼ì˜ ì´ë²¤íŠ¸ ë“±ë¡
         public void Equip()
         {
             if (isEquipped) return;
+            if (player == null) throw new System.InvalidOperationException("[Shadow] Playerê°€ ì—†ìŠµë‹ˆë‹¤.");
             playerSkill = player.GetComponent<PlayerSkill>();
 
-            bool equipped = playerSkill.EquipSkill(skillSlotIndex, shadowSkill);
+            if (playerSkill == null || shadowSkill == null)
+                throw new System.InvalidOperationException("[Shadow] ìŠ¤í‚¬ ë˜ëŠ” PlayerSkillì´ ì—†ìŠµë‹ˆë‹¤.");
+
+            if (!playerSkill.GrantSkill(shadowSkill, this))
+                throw new System.InvalidOperationException("[Shadow] ì¼ë°˜ ìŠ¤í‚¬ì„ ì§€ê¸‰í•˜ì§€ ëª»í–ˆìŠµë‹ˆë‹¤.");
 
             isEquipped = true;
 
             Debug.Log(
-                $"[Shadow] ±×¸²ÀÚ À¯¹° ÀåÂø - " +
-                $"{skillSlotIndex}¹ø ½½·Ô¿¡ ½ºÅ³ Áö±Ş"
+                $"[Shadow] ê·¸ë¦¼ì ìœ ë¬¼ ì¥ì°© - " +
+                $"{shadowSkill.name} ë³´ìœ  ë° ë¹ˆ ìŠ¬ë¡¯ ìë™ ì¥ì°©"
             );
         }
 
+        //ìœ ë¬¼ ì´ë²¤íŠ¸ì™€ ì˜ˆì•½ ì‘ì—…ì„ ì •ë¦¬í•˜ê³  ìì‹ ì´ ì§€ê¸‰í•œ ìŠ¤í‚¬ íšŒìˆ˜
         public void Unequip()
         {
             if (!isEquipped) return;
 
             if (playerSkill != null && shadowSkill != null)
             {
-                //±×¸²ÀÚ À¯¹°ÀÌ Áö±ŞÇÑ ½ºÅ³°ú ÀÏÄ¡ÇÒ ¶§¸¸ Á¦°Å
-                playerSkill.UnequipSkill(skillSlotIndex, shadowSkill);
+                playerSkill.RevokeSkill(shadowSkill, this);
             }
 
             isEquipped = false;
             playerSkill = null;
 
-            Debug.Log("[Shadow] ±×¸²ÀÚ À¯¹° ÇØÁ¦ - Áö±Ş ½ºÅ³ Á¦°Å");
+            Debug.Log("[Shadow] ê·¸ë¦¼ì ìœ ë¬¼ í•´ì œ - ì§€ê¸‰ ìŠ¤í‚¬ ì œê±°");
 
         }
     }

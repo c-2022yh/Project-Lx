@@ -12,7 +12,6 @@ public class PlayerEnergy : MonoBehaviour
     [SerializeField] private EnergyOrb orbPrefab;
     [SerializeField] private bool startWithOrb = true;
 
-    private EnergyOrb orb;
     private bool hasOrb;
     private bool isEnergyGainBlocked;
     private float energyGainMultiplier = 1f;
@@ -33,12 +32,17 @@ public class PlayerEnergy : MonoBehaviour
         if (startWithOrb) AcquireOrb();
     }
 
-    //보주를 한 번만 생성하고 현재 기력에 맞춰 외형을 갱신
+    //보주를 한 번만 생성하고 플레이어를 따라가도록 초기화
     public void AcquireOrb()
     {
         if (hasOrb || orbPrefab == null) return;
         hasOrb = true;
-        orb = Instantiate(orbPrefab, transform.position, Quaternion.identity);
+        EnergyOrb orb = Instantiate(
+            orbPrefab,
+            transform.position,
+            Quaternion.identity
+        );
+
         orb.Initialize(transform);
 
         NotifyEnergyChanged();
@@ -115,11 +119,22 @@ public class PlayerEnergy : MonoBehaviour
         return true;
     }
 
-    //기력 UI/보주와 만월의 충전 판정에 변경 사실을 동시에 전달
+    //기력을 조건 없이 감소시키고 남은 기력이 있는지 반환
+    public bool DrainEnergy(float amount)
+    {
+        if (amount <= 0f) return currentEnergy > 0f;
+        if (currentEnergy <= 0f) return false;
+
+        currentEnergy = Mathf.Max(0f, currentEnergy - amount);
+
+        NotifyEnergyChanged();
+
+        return currentEnergy > 0f;
+    }
+
+    //기력 UI와 유물 효과에 변경 사실을 전달
     private void NotifyEnergyChanged()
     {
-        if (hasOrb && orb != null) orb.SetEnergy(currentEnergy);
-
         OnEnergyChanged?.Invoke();
     }
 }

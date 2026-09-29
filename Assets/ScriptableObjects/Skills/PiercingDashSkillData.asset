@@ -15,7 +15,6 @@ MonoBehaviour:
   skillName: Dash
   icon: {fileID: 0}
   description: "\uC5D4\uBBF9\uC2A4\uB178\uB798GOAT\u314B\u314B\u314B\u314B"
-  allowedSlots: 0
   cooldownTime: 4
   soulCost: 0
   activeTime: 0.05
@@ -32,4 +31,11 @@ MonoBehaviour:
   dashDistance: 5
   dashHitBoxSize: {x: 1.4, y: 1.2}
   dashHitBoxOffset: {x: 0.7, y: 0}
-  contactIgnoreAfterDash: 0.2
+  dashEffectPrefab: {fileID: 3743958713700768615, guid: e0bdfd35540dbec43864a0b49a5aae4d, type: 3}
+  dashEffectOffset: {x: 0, y: 0}
+  dashEffectBaseScaleX: 1
+  minDashEffectDistance: 0.2
+  hitEffectPrefab: {fileID: 3791669258595038075, guid: 3f6554b28c7eeb14cb42e5f4336adcbf, type: 3}
+  criticalHitEffectPrefab: {fileID: 3791669258595038075, guid: 3f6554b28c7eeb14cb42e5f4336adcbf, type: 3}
+  hitEffectOffset: {x: 0, y: 0, z: 0}
+  contactIgnoreAfterDash: 0.3

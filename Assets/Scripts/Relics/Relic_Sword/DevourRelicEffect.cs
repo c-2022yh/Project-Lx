@@ -1,30 +1,27 @@
-using System.Collections;
+ï»¿using System.Collections;
 using UnityEngine;
-using Object = UnityEngine.Object;
 
 [CreateAssetMenu(fileName = "RFX_Devour", menuName = "Relics/Effects/Devour")]
 
-//Æ÷½Ä À¯¹° È¿°ú
 public class DevourRelicEffect : RelicEffect
 {
     [Header("Devour Skill")]
-    [Tooltip("Æ÷½Ä ÀåÂø ½Ã X ½½·Ô¿¡ Áö±ŞÇÒ ½ºÅ³")]
+    [Tooltip("í¬ì‹ ì¥ì°© ì‹œ X ìŠ¬ë¡¯ì— ì§€ê¸‰í•  ìŠ¤í‚¬")]
     [SerializeField]
     private SkillData devourSkill;
 
     [Header("Life Steal")]
-    [Tooltip("±âº»°ø°İ 1È¸ ÀûÁß ½Ã ´©ÀûµÇ´Â È¸º¹·®")]
+    [Tooltip("ê¸°ë³¸ê³µê²© 1íšŒ ì ì¤‘ ì‹œ ëˆ„ì ë˜ëŠ” íšŒë³µëŸ‰")]
     [SerializeField]
     [Range(0.01f, 1f)]
     private float healPerHit = 0.5f;
 
-    //À¯¹° ÀåÂø ½Ã ·±Å¸ÀÓ »ı¼º
+    //í”Œë ˆì´ì–´ë³„ ìœ ë¬¼ íš¨ê³¼ Runtime ìƒì„±
     public override IRelicRuntime CreateRuntime(Player p)
     {
         return new DevourRelicRuntime(p, devourSkill, healPerHit);
     }
 
-    //À¯¹° ·±Å¸ÀÓ Å¬·¡½º
     private sealed class DevourRelicRuntime : IRelicRuntime
     {
         private readonly Player player;
@@ -37,6 +34,7 @@ public class DevourRelicEffect : RelicEffect
 
         private bool isEquipped;
 
+        //í¬ì‹ íš¨ê³¼ì— í•„ìš”í•œ í”Œë ˆì´ì–´Â·ìŠ¤í‚¬Â·íšŒë³µëŸ‰ ë³´ê´€
         public DevourRelicRuntime(Player player, SkillData devourSkill, float healPerHit)
         {
             this.player = player;
@@ -44,25 +42,30 @@ public class DevourRelicEffect : RelicEffect
             this.healPerHit = healPerHit;
         }
 
+        //ìŠ¤í‚¬ì„ ì§€ê¸‰í•˜ê³  ìœ ë¬¼ ê³ ìœ  íš¨ê³¼ì˜ ì´ë²¤íŠ¸ ë“±ë¡
         public void Equip()
         {
-            if (player == null) return;
+            if (isEquipped) return;
+            if (player == null) throw new System.InvalidOperationException("[Devour] Playerê°€ ì—†ìŠµë‹ˆë‹¤.");
 
             playerSkill = player.GetComponent<PlayerSkill>();
             playerAttack = player.GetComponent<PlayerAttack>();
             playerHealth = player.GetComponent<PlayerHealth>();
 
-            //X ½½·Ô: ÀÎµ¦½º 0
-            bool skillEquipped = playerSkill.EquipSkill(0, devourSkill);
+            if (playerSkill == null || playerAttack == null || playerHealth == null || devourSkill == null)
+                throw new System.InvalidOperationException("[Devour] ìŠ¤í‚¬ ë˜ëŠ” í•„ìˆ˜ ì»´í¬ë„ŒíŠ¸ê°€ ì—†ìŠµë‹ˆë‹¤.");
+
+            if (!playerSkill.SetExclusiveSkill(devourSkill, this))
+                throw new System.InvalidOperationException("[Devour] X ìŠ¤í‚¬ì„ ì§€ê¸‰í•˜ì§€ ëª»í–ˆìŠµë‹ˆë‹¤.");
 
             isEquipped = true;
 
-            //±âº»°ø°İ ÀûÁß ÀÌº¥Æ® ±¸µ¶
             playerAttack.OnAttackHit += HandleAttackHit;
 
-            Debug.Log("[Devour] Æ÷½Ä À¯¹° ÀåÂø ¿Ï·á");
+            Debug.Log("[Devour] í¬ì‹ ìœ ë¬¼ ì¥ì°© ì™„ë£Œ");
         }
 
+        //ìœ ë¬¼ ì´ë²¤íŠ¸ì™€ ì˜ˆì•½ ì‘ì—…ì„ ì •ë¦¬í•˜ê³  ìì‹ ì´ ì§€ê¸‰í•œ ìŠ¤í‚¬ íšŒìˆ˜
         public void Unequip()
         {
             isEquipped = false;
@@ -74,26 +77,24 @@ public class DevourRelicEffect : RelicEffect
 
             if (playerSkill != null)
             {
-                playerSkill.UnequipSkill(0, devourSkill);
+                playerSkill.ClearExclusiveSkill(this);
             }
 
             playerSkill = null;
             playerAttack = null;
             playerHealth = null;
 
-            Debug.Log("[Devour] Æ÷½Ä À¯¹° ÀåÂø ÇØÁ¦");
+            Debug.Log("[Devour] í¬ì‹ ìœ ë¬¼ ì¥ì°© í•´ì œ");
         }
 
-        //ÆòÅ¸ ¶Ç´Â Æ÷½Ä X ½ºÅ³ÀÌ ÀûÁßÇÒ ¶§¸¶´Ù È£Ãâ
+        //ê³µê²© ì ì¤‘ ì‹œ ìµœëŒ€ ì²´ë ¥ ë¯¸ë§Œì´ë©´ ì„¤ì •ëœ íšŒë³µëŸ‰ ì ìš©
         private void HandleAttackHit(IDamageable target, DamageInfo damageInfo)
         {
             if (!isEquipped) return;
             if (playerHealth == null) return;
 
-            //ÇöÀç Ã¼·ÂÀÌ ÃÖ´ë Ã¼·Â ÀÌ»óÀÌ¸é È¸º¹ÇÏÁö ¾ÊÀ½
             if (playerHealth.CurrentHealth >= playerHealth.MaxHealth) return;
 
-            //È¸º¹
             playerHealth.Heal(healPerHit);
 
         }

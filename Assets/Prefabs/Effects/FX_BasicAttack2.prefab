@@ -13,8 +13,9 @@ GameObject:
   - component: {fileID: -8856714056107028753}
   - component: {fileID: -2726157942070290987}
   - component: {fileID: 3238675867616304835}
+  - component: {fileID: 5080942838043094752}
   m_Layer: 10
-  m_Name: Slash_02_big_0
+  m_Name: FX_BasicAttack2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -80,12 +81,12 @@ SpriteRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_GlobalIlluminationMeshLod: 0
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
+  m_SortingLayerID: -307728789
+  m_SortingLayer: 9
   m_SortingOrder: 0
   m_MaskInteraction: 0
-  m_Sprite: {fileID: -6649030925485574270, guid: f07854241a7780a4b8b74860f5595768, type: 3}
-  m_Color: {r: 1, g: 1, b: 1, a: 0.19607843}
+  m_Sprite: {fileID: 7961678988334264768, guid: e6a6eccacf19d98498ce7392e15208be, type: 3}
+  m_Color: {r: 1, g: 1, b: 1, a: 0.8627451}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -132,13 +133,13 @@ BoxCollider2D:
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
-    oldSize: {x: 3.84, y: 2.56}
+    oldSize: {x: 3.68, y: 2.15}
     newSize: {x: 3.84, y: 2.56}
     adaptiveTilingThreshold: 0.5
     drawMode: 0
     adaptiveTiling: 0
   m_AutoTiling: 0
-  m_Size: {x: 3.84, y: 2.56}
+  m_Size: {x: 4, y: 2}
   m_EdgeRadius: 0
 --- !u!114 &-2726157942070290987
 MonoBehaviour:
@@ -153,6 +154,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::AttackEffectHitbox
   hitCollider: {fileID: -8856714056107028753}
+  hitEffectPrefab: {fileID: 7910235883446043059, guid: f048efd419de81641a3c0184dfb1cef0, type: 3}
+  criticalHitEffectPrefab: {fileID: 7189187991172150212, guid: 26cecf195571a904c987bbbbb0f7e14b, type: 3}
 --- !u!50 &3238675867616304835
 Rigidbody2D:
   serializedVersion: 5
@@ -180,3 +183,25 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 0
+--- !u!95 &5080942838043094752
+Animator:
+  serializedVersion: 7
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2066522367392586507}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 2323f4a673484fe42867428991a7d395, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_AnimatePhysics: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0

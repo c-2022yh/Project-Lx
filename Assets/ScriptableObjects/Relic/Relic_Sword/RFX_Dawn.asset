@@ -14,11 +14,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::DawnRelicEffect
   secondAfterimageDelay: 0.2
   secondOffset: {x: 0.2, y: 0}
-  secondColor: {r: 0.65, g: 1, b: 1, a: 0.14901961}
+  secondColor: {r: 0, g: 1, b: 1, a: 0.14901961}
   destroyAfter: 0.2
   extraAttackDamageSpec:
     damageType: 0
-    damageMultiplier: 1
+    damageMultiplier: 0.3
     canCritical: 0
     bonusPenetration: 0
     bonusDamageAmplification: 0

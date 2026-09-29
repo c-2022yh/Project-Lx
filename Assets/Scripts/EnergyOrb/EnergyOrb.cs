@@ -4,7 +4,6 @@ using UnityEngine;
 public class EnergyOrb : MonoBehaviour
 {
     [Header("Orb Components")]
-    [SerializeField] private OrbVisual visual;
     [SerializeField] private OrbLight orbLight;
 
     private OrbFollower follower;
@@ -17,11 +16,6 @@ public class EnergyOrb : MonoBehaviour
     public void Initialize(Transform target)
     {
         follower.Initialize(target);
-    }
-
-    public void SetEnergy(float currentEnergy)
-    {
-        visual.SetEnergy(currentEnergy);
     }
 
     public void SetLight(float intensity, float radius, Color color)

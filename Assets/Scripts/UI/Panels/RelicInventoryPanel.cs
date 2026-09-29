@@ -10,7 +10,7 @@ using UnityEngine.InputSystem;
 /// <summary>
 /// 유물 인벤토리. 왼쪽은 카테고리별 장착칸, 오른쪽은 보관함.
 ///
-/// 장착 상태의 진짜 주인은 씬의 RelicManager다. 이 패널은 그걸 보여주고
+/// 장착 상태의 진짜 주인은 씬의 PlayerRelicManager다. 이 패널은 그걸 보여주고
 /// EquipRelic/UnequipRelic을 호출할 뿐, 자체 목록을 따로 들고 있지 않다.
 /// (기존 InventoryPanel이 자기만의 리스트를 갖고 있어서 게임과 따로 놀던 문제를 피한 것.)
 ///
@@ -65,7 +65,7 @@ public class RelicInventoryPanel : MonoBehaviour, IRelicSlotHost
 
     private readonly List<RelicSlotView> spawnedSlots = new();
 
-    private RelicManager relicManager;
+    private PlayerRelicManager relicManager;
     private RelicData selected;
 
     // 키보드 포커스. 칸은 Refresh마다 새로 만들어지므로 좌표로 기억했다가 다시 찾는다.
@@ -88,11 +88,11 @@ public class RelicInventoryPanel : MonoBehaviour, IRelicSlotHost
             return;
         }
 
-        relicManager = FindAnyObjectByType<RelicManager>();
+        relicManager = FindAnyObjectByType<PlayerRelicManager>();
 
         if (relicManager == null)
         {
-            Debug.LogWarning("[RelicInventoryPanel] 씬에서 RelicManager를 찾지 못했습니다. 플레이어가 없는 씬인가요?");
+            Debug.LogWarning("[RelicInventoryPanel] 씬에서 PlayerRelicManager를 찾지 못했습니다. 플레이어가 없는 씬인가요?");
         }
         else
         {
@@ -400,7 +400,7 @@ public class RelicInventoryPanel : MonoBehaviour, IRelicSlotHost
 
         if (relicManager == null)
         {
-            SetHint("RelicManager가 없어 장착할 수 없습니다");
+            SetHint("PlayerRelicManager가 없어 장착할 수 없습니다");
             return;
         }
 
@@ -445,7 +445,7 @@ public class RelicInventoryPanel : MonoBehaviour, IRelicSlotHost
 
         if (relicManager == null)
         {
-            SetHint("RelicManager가 없어 해제할 수 없습니다");
+            SetHint("PlayerRelicManager가 없어 해제할 수 없습니다");
             return;
         }
 

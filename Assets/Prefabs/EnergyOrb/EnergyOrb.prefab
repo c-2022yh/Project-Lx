@@ -11,13 +11,13 @@ GameObject:
   - component: {fileID: 6098234223698890012}
   - component: {fileID: 7396348064532417393}
   - component: {fileID: 8706767518568844283}
-  m_Layer: 0
+  m_Layer: 12
   m_Name: Visual
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &6098234223698890012
 Transform:
   m_ObjectHideFlags: 0
@@ -123,7 +123,7 @@ GameObject:
   - component: {fileID: 8049712536799405306}
   - component: {fileID: 1398017312291189154}
   - component: {fileID: 60652433999656876}
-  m_Layer: 0
+  m_Layer: 12
   m_Name: EnergyOrb
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -196,8 +196,8 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_MaskInteraction: 0
-  m_Sprite: {fileID: -2413806693520163455, guid: a86470a33a6bf42c4b3595704624658b, type: 3}
-  m_Color: {r: 0, g: 1, b: 1, a: 1}
+  m_Sprite: {fileID: 4367910026834163573, guid: e17938206cd65cd49875868bfed2cf3f, type: 3}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -218,7 +218,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 621f87d74f0f9b54da46e7173cfe8287, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::FollowingOrb
-  visual: {fileID: 8706767518568844283}
   orbLight: {fileID: 3539094178718562898}
 --- !u!114 &60652433999656876
 MonoBehaviour:
@@ -247,13 +246,13 @@ GameObject:
   - component: {fileID: 615051050174086926}
   - component: {fileID: 5255370677909024}
   - component: {fileID: 3539094178718562898}
-  m_Layer: 0
+  m_Layer: 12
   m_Name: Light
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &615051050174086926
 Transform:
   m_ObjectHideFlags: 0
