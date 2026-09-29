@@ -40,7 +40,7 @@ Material:
     - _StencilReadMask: 255
     - _StencilWriteMask: 255
     - _UseUIAlphaClip: 0
-    - _WaveAmplitude: 0.03
+    - _WaveAmplitude: 0.02
     - _WaveFrequency: 1.8
     - _WaveHighlightWidth: 0.006
     - _WaveSoftness: 0.003
