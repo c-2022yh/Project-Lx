@@ -22,7 +22,7 @@ TagManager:
   - FieldObject
   - EnemyProjectile
   - UI
-  - 
+  - GroundCover
   - 
   - 
   - 
@@ -54,6 +54,9 @@ TagManager:
   - name: 
     uniqueID: 3117241241
     locked: 0
+  - name: GroundCover
+    uniqueID: 1691898173
+    locked: 0
   - name: BackGround
     uniqueID: 48636321
     locked: 0
@@ -71,6 +74,9 @@ TagManager:
     locked: 0
   - name: UI
     uniqueID: 2061393111
+    locked: 0
+  - name: Orb
+    uniqueID: 4097052509
     locked: 0
   m_RenderingLayers:
   - Default
