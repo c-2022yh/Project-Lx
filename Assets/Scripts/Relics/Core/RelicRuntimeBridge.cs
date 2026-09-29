@@ -4,15 +4,15 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 
 /// <summary>
-/// RelicManager(씬마다 새로 생기는 런타임 상태)와 RunState(씬을 넘어 유지되는 진행도)를 잇는다.
+/// PlayerRelicManager(씬마다 새로 생기는 런타임 상태)와 RunState(씬을 넘어 유지되는 진행도)를 잇는다.
 ///
 /// 이게 없으면 씬을 넘어갈 때마다 Player가 새로 생기면서 장착한 유물이 전부 풀린다.
 ///
 /// 아무 프리팹에도 씬에도 붙이지 않는다. 게임이 시작되면 스스로 생겨나
-/// DontDestroyOnLoad로 살아남고, 씬이 바뀔 때마다 그 씬의 RelicManager를 찾아 붙는다.
+/// DontDestroyOnLoad로 살아남고, 씬이 바뀔 때마다 그 씬의 PlayerRelicManager를 찾아 붙는다.
 /// Player 프리팹을 포함해 남의 파일을 건드리지 않기 위해서다.
 ///
-/// RelicManager 자체도 손대지 않았다. 공개 API(EquipRelic / UnequipRelic /
+/// PlayerRelicManager 자체도 손대지 않았다. 공개 API(EquipRelic / UnequipRelic /
 /// EquippedRelics / OnRelicsChanged)만으로 충분해서다.
 /// </summary>
 public class RelicRuntimeBridge : MonoBehaviour
@@ -29,7 +29,7 @@ public class RelicRuntimeBridge : MonoBehaviour
         DontDestroyOnLoad(go);
     }
 
-    private RelicManager manager;
+    private PlayerRelicManager manager;
     private bool isRestoring;
     private bool isQuitting;
 
@@ -70,13 +70,13 @@ public class RelicRuntimeBridge : MonoBehaviour
 
     /// <summary>
     /// 씬의 다른 Start()들이 모두 끝난 뒤에 붙는다.
-    /// RelicManager.Start()가 startingRelics를 끼우는 것과 순서가 엇갈리지 않게 하려는 것.
+    /// PlayerRelicManager.Start()가 startingRelics를 끼우는 것과 순서가 엇갈리지 않게 하려는 것.
     /// </summary>
     private IEnumerator AttachAfterFrame()
     {
         yield return null;
 
-        RelicManager found = FindAnyObjectByType<RelicManager>();
+        PlayerRelicManager found = FindAnyObjectByType<PlayerRelicManager>();
 
         if (found == null)
         {
@@ -104,7 +104,7 @@ public class RelicRuntimeBridge : MonoBehaviour
         manager = null;
     }
 
-    /// <summary>진행도에 기록된 장착 상태를 이 씬의 RelicManager에 다시 입힌다.</summary>
+    /// <summary>진행도에 기록된 장착 상태를 이 씬의 PlayerRelicManager에 다시 입힌다.</summary>
     private void Restore()
     {
         if (manager == null) return;
@@ -158,7 +158,7 @@ public class RelicRuntimeBridge : MonoBehaviour
     {
         if (isRestoring || manager == null) return;
 
-        // 씬을 나갈 때 RelicManager.OnDestroy()가 UnequipAllRelics()를 부르면서
+        // 씬을 나갈 때 PlayerRelicManager.OnDestroy()가 UnequipAllRelics()를 부르면서
         // "장착 0개" 알림을 쏜다. 그걸 그대로 기록하면 진행도가 비워져,
         // 이 클래스가 막으려던 문제가 그대로 일어난다.
         if (isQuitting) return;

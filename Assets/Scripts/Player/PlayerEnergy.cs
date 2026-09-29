@@ -119,6 +119,19 @@ public class PlayerEnergy : MonoBehaviour
         return true;
     }
 
+    //기력을 조건 없이 감소시키고 남은 기력이 있는지 반환
+    public bool DrainEnergy(float amount)
+    {
+        if (amount <= 0f) return currentEnergy > 0f;
+        if (currentEnergy <= 0f) return false;
+
+        currentEnergy = Mathf.Max(0f, currentEnergy - amount);
+
+        NotifyEnergyChanged();
+
+        return currentEnergy > 0f;
+    }
+
     //기력 UI와 유물 효과에 변경 사실을 전달
     private void NotifyEnergyChanged()
     {

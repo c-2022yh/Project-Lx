@@ -56,7 +56,7 @@ public class PiercingDashSkillData : AttackSkillData
 
         p.SetPhysicsFreeze(true);
 
-        //공격 정보 생성
+        //공격 정보 생성 
         DamageInfo damageInfo = DamageInfo.Create(
             p.Stats.Offense,
             damageSpec,

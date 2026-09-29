@@ -17,36 +17,28 @@ public class PlayerAwakening : MonoBehaviour
         [Min(0f)] public float magicalPenetration;
 
         [Header("Critical")]
-        [Range(0f, 1f)]
-        public float criticalChance;
-
-        [Min(0f)]
-        public float criticalMultiplier;
+        [Range(0f, 1f)] public float criticalChance;
+        [Min(0f)] public float criticalMultiplier;
 
         [Header("Final Damage")]
-        [Min(0f)]
-        public float damageAmplification;
+        [Min(0f)] public float damageAmplification;
 
-        //현재 값을 복사해서 적용 당시 수치로 저장
+        //현재 값을 복사해서 각성 종료 시 적용 수치를 보존
         public CombatBonus Copy()
         {
             return new CombatBonus
             {
                 physicalAttack = physicalAttack,
                 magicalAttack = magicalAttack,
-
                 physicalPenetration = physicalPenetration,
                 magicalPenetration = magicalPenetration,
-
                 criticalChance = criticalChance,
                 criticalMultiplier = criticalMultiplier,
-
                 damageAmplification = damageAmplification
             };
         }
 
-
-        //전투 능력치 적용 또는 제거
+        //전투 능력치를 적용하거나 제거
         public void ApplyTo(OffensiveStats offense, float sign)
         {
             if (offense == null) return;
@@ -58,60 +50,31 @@ public class PlayerAwakening : MonoBehaviour
             offense.criticalChance += criticalChance * sign;
             offense.criticalMultiplier += criticalMultiplier * sign;
             offense.damageAmplification += damageAmplification * sign;
-
-        }
-
-
-        public void Clear()
-        {
-            physicalAttack = 0f;
-            magicalAttack = 0f;
-
-            physicalPenetration = 0f;
-            magicalPenetration = 0f;
-
-            criticalChance = 0f;
-            criticalMultiplier = 0f;
-
-            damageAmplification = 0f;
         }
     }
 
-
     [Header("Awakening Settings")]
-    [SerializeField] private float awakeningDuration = 20f;
-    [SerializeField] private float awakeningFreezeTime = 0.8f;
+    [SerializeField, Min(0f)] private float awakeningFreezeTime = 0.8f;
 
-    //일반 각성에 필요한 기력
-    [SerializeField] private float normalAwakeningEnergy = 100f;
+    //각성에 필요한 최소 기력
+    [SerializeField, Min(0f)] private float awakeningRequiredEnergy = 100f;
 
-    //강화 각성에 필요한 기력
-    [SerializeField] private float enhancedAwakeningEnergy = 200f;
-
+    //각성 중 초당 소모되는 기력
+    [SerializeField, Min(0f)] private float awakeningEnergyDrainPerSecond = 5f;
 
     [Header("Awakening Color")]
     [SerializeField] private Color normalColor = Color.green;
     [SerializeField] private Color awakenedColor = Color.red;
-    [SerializeField] private Color enhancedAwakenedColor = Color.magenta;
-
 
     [Header("Movement Bonus")]
-    [SerializeField, Min(0.01f)]
-    private float awakenedMoveMultiplier = 1.3f;
+    [SerializeField, Min(0.01f)] private float awakenedMoveMultiplier = 1.3f;
+    [SerializeField, Min(0.01f)] private float awakenedJumpMultiplier = 1.2f;
 
-    [SerializeField, Min(0.01f)]
-    private float awakenedJumpMultiplier = 1.2f;
-
-
-    [Header("Normal Awakening Combat Bonus")]
-    [SerializeField]
-    private CombatBonus normalCombatBonus = new();
-
+    [Header("Awakening Combat Bonus")]
+    [SerializeField] private CombatBonus awakeningCombatBonus = new();
 
     [Header("Effect")]
-    [SerializeField]
-    private AwakeningEffect awakeningEffect;
-
+    [SerializeField] private AwakeningEffect awakeningEffect;
 
     //현재 각성 상태
     private bool isAwakened;
@@ -119,98 +82,62 @@ public class PlayerAwakening : MonoBehaviour
     //각성 연출 중인 상태
     private bool isAwakening;
 
-    //만월 장착으로 강화 각성이 해금됐는지
-    private bool isEnhancedAwakeningUnlocked;
+    //각성 시도를 차단하는 상태
+    private bool awakeningBlocked;
 
-    //현재 발동한 각성이 강화 각성인지
-    private bool isEnhancedAwakening;
-
-    //각성이 완전히 종료됐을 때 발생
+    //각성 시작과 종료 시 발생하는 이벤트
     public event Action OnAwakeningStarted;
     public event Action OnAwakeningEnded;
 
-    //유물에서 등록한 각성 지속시간 보너스
-    private float awakeningDurationBonus;
-    private bool awakeningBlocked;
-
-    //실제로 적용한 이동 관련 배율
+    //실제로 적용한 이동 배율
     private float appliedMoveMultiplier = 1f;
     private float appliedJumpMultiplier = 1f;
 
-
-    //만월이 등록한 강화 각성 추가 전투 보너스
-    private CombatBonus enhancedCombatBonus = new();
-
-
-    //현재 실제로 적용된 전투 보너스
-    //각성 종료 시 같은 수치를 빼기 위해 복사
-    private CombatBonus appliedNormalCombatBonus;
-    private CombatBonus appliedEnhancedCombatBonus;
+    //각성 종료 시 제거할 전투 보너스
+    private CombatBonus appliedAwakeningCombatBonus;
 
     private OffensiveStats activeOffense;
     private Player activePlayer;
-
     private Coroutine awakeningCoroutine;
-
 
     public bool IsAwakened => isAwakened;
     public bool IsAwakening => isAwakening;
 
-    public bool IsEnhancedAwakening => isEnhancedAwakening;
-
-    public bool IsEnhancedAwakeningUnlocked => isEnhancedAwakeningUnlocked; 
-
-    //각성 진입 시도
+    //각성 진입을 시도
     public void TryAwaken(Player p)
     {
         if (p == null) return;
         if (p.Energy == null) return;
         if (awakeningBlocked) return;
 
-        //이미 각성 중이거나 변신 중이면 실행하지 않음
+        //이미 각성 중이거나 각성 연출 중이면 실행하지 않음
         if (isAwakened || isAwakening) return;
 
-        //최대 기력이 요구량보다 낮으면 현재 기력과 무관하게 각성 불가
-        if (p.Energy.MaxEnergy < normalAwakeningEnergy) return;
-
-        //기력 100 미만이면 일반 각성도 불가능
-        if (!p.Energy.HasEnergy(normalAwakeningEnergy)) return;
-        
-
-        //만월 장착 + 기력 200 이상이면 강화 각성
-        isEnhancedAwakening = isEnhancedAwakeningUnlocked && p.Energy.HasEnergy(enhancedAwakeningEnergy);
+        //최대 기력과 현재 기력이 모두 충분해야 각성 가능
+        if (p.Energy.MaxEnergy < awakeningRequiredEnergy) return;
+        if (!p.Energy.HasEnergy(awakeningRequiredEnergy)) return;
 
         activePlayer = p;
-            
         awakeningCoroutine = StartCoroutine(AwakeningRoutine(p));
-
     }
 
-
-    //각성 연출 및 지속시간 처리
+    //각성 연출과 기력 소모를 처리
     private IEnumerator AwakeningRoutine(Player p)
     {
         isAwakening = true;
 
         p.ActionState.EnterAwakening();
-
-        //변신 연출 중 물리 고정
         p.SetPhysicsFreeze(true);
 
         if (awakeningEffect != null)
         {
-            awakeningEffect.SetAndShow(
-                p.transform.position
-            );
+            awakeningEffect.SetAndShow(p.transform.position);
         }
 
-        yield return new WaitForSeconds(
-            awakeningFreezeTime
-        );
+        yield return new WaitForSeconds(awakeningFreezeTime);
 
         p.SetPhysicsFreeze(false);
 
-        //실제 각성 능력치 적용
         EnterAwakened(p);
 
         isAwakening = false;
@@ -220,132 +147,82 @@ public class PlayerAwakening : MonoBehaviour
             p.ActionState.EnterNormal();
         }
 
-        //장착/해제로 지속시간이 바뀌면 현재 각성에도 즉시 반영
-        float elapsed = 0f;
-        while (elapsed < Mathf.Max(0f, awakeningDuration + awakeningDurationBonus))
+        //기력이 남아 있는 동안 각성 상태 유지
+        while (isAwakened && p.Energy.CurrentEnergy > 0f)
         {
-            elapsed += Time.deltaTime;
+            p.Energy.DrainEnergy(awakeningEnergyDrainPerSecond * Time.deltaTime);
             yield return null;
         }
 
-        ExitAwakened(p);
+        if (isAwakened)
+        {
+            ExitAwakened(p);
+        }
 
         awakeningCoroutine = null;
         activePlayer = null;
     }
 
-
-    //각성 능력치 적용
+    //각성 능력치를 적용
     private void EnterAwakened(Player p)
     {
         isAwakened = true;
 
-        //이동속도와 점프력은
-        //일반/강화 각성 모두 동일하게 적용
         appliedMoveMultiplier = awakenedMoveMultiplier;
-
         appliedJumpMultiplier = awakenedJumpMultiplier;
 
         p.Move.moveSpeed *= appliedMoveMultiplier;
-
         p.Move.jumpForce *= appliedJumpMultiplier;
 
-        //기본 각성 전투 버프 적용
-        ApplyNormalCombatBonus(p);
+        ApplyAwakeningCombatBonus(p);
 
-
-        if (isEnhancedAwakening)
-        {
-            p.sr.color = enhancedAwakenedColor;
-
-            //만월의 추가 전투 버프 적용
-            ApplyEnhancedCombatBonus();
-
-        }
-        else
+        if (p.sr != null)
         {
             p.sr.color = awakenedColor;
-
         }
 
-        //기본 각성 버프가 적용된 뒤 폭주와 연소에 시작을 알린다.
         OnAwakeningStarted?.Invoke();
     }
 
-
-    //PlayerStats 연결
+    //플레이어의 공격 능력치 참조를 연결
     private bool TryGetOffensiveStats(Player p)
     {
-        PlayerStats playerStats =  p.GetComponent<PlayerStats>();
+        PlayerStats playerStats = p.GetComponent<PlayerStats>();
 
         activeOffense = playerStats != null ? playerStats.Offense : null;
 
         return activeOffense != null;
     }
 
-
-    //기본 각성 전투 버프 적용
-    private void ApplyNormalCombatBonus(Player p)
+    //각성 전투 보너스를 적용
+    private void ApplyAwakeningCombatBonus(Player p)
     {
-        if (!TryGetOffensiveStats(p))
-        {
-            return;
-        }
+        if (!TryGetOffensiveStats(p)) return;
 
-        //적용 당시 수치를 복사
-        appliedNormalCombatBonus = normalCombatBonus.Copy();
-        appliedNormalCombatBonus.ApplyTo(activeOffense, 1f);
-
-
-
+        appliedAwakeningCombatBonus = awakeningCombatBonus.Copy();
+        appliedAwakeningCombatBonus.ApplyTo(activeOffense, 1f);
     }
 
-
-    //만월 강화 각성 추가 버프 적용
-    private void ApplyEnhancedCombatBonus()
+    //각성 전투 보너스를 제거
+    private void RemoveAwakeningCombatBonus()
     {
         if (activeOffense == null) return;
+        if (appliedAwakeningCombatBonus == null) return;
 
-        //만월이 등록한 수치를 복사
-        appliedEnhancedCombatBonus = enhancedCombatBonus.Copy();
-
-        appliedEnhancedCombatBonus.ApplyTo(activeOffense, 1f);
-
+        appliedAwakeningCombatBonus.ApplyTo(activeOffense, -1f);
+        appliedAwakeningCombatBonus = null;
     }
 
-
-    //기본 각성 전투 버프 제거
-    private void RemoveNormalCombatBonus()
-    {
-        if (activeOffense == null) return;
-        if (appliedNormalCombatBonus == null) return;
-
-        appliedNormalCombatBonus.ApplyTo(activeOffense, -1f);
-
-        appliedNormalCombatBonus = null;
-    }
-
-
-    //만월 강화 각성 추가 버프 제거
-    private void RemoveEnhancedCombatBonus()
-    {
-        if (activeOffense == null) return;
-        if (appliedEnhancedCombatBonus == null) return;
-
-        appliedEnhancedCombatBonus.ApplyTo(activeOffense, -1f);
-
-        appliedEnhancedCombatBonus = null;
-    }
-
-
-    //각성 종료
+    //각성 상태를 종료하고 능력치를 복구
     private void ExitAwakened(Player p)
     {
-        bool wasEnhancedAwakening = isEnhancedAwakening;
-
         isAwakened = false;
-        p.sr.color = normalColor;
-        //이동 능력치 복구
+
+        if (p.sr != null)
+        {
+            p.sr.color = normalColor;
+        }
+
         if (appliedMoveMultiplier > 0f)
         {
             p.Move.moveSpeed /= appliedMoveMultiplier;
@@ -359,99 +236,29 @@ public class PlayerAwakening : MonoBehaviour
         appliedMoveMultiplier = 1f;
         appliedJumpMultiplier = 1f;
 
-
-        //강화 보너스를 먼저 제거
-        RemoveEnhancedCombatBonus();
-
-        //기본 각성 보너스 제거
-        RemoveNormalCombatBonus();
+        RemoveAwakeningCombatBonus();
 
         activeOffense = null;
 
-        //기력 초기화
+        //각성이 끝나면 남은 기력도 비움
         p.Energy.ResetEnergy();
 
-        //각성 종료 알림
         OnAwakeningEnded?.Invoke();
-
-        isEnhancedAwakening = false;
-
     }
 
-
-    //만월 유물이 강화 각성 추가 능력치를 등록
-    public void SetEnhancedAwakeningBonus(
-        float physicalAttackBonus,
-        float magicalAttackBonus,
-        float physicalPenetrationBonus,
-        float magicalPenetrationBonus,
-        float criticalChanceBonus,
-        float criticalMultiplierBonus,
-        float damageAmplificationBonus)
-    {
-        enhancedCombatBonus.physicalAttack = physicalAttackBonus;
-
-        enhancedCombatBonus.magicalAttack = magicalAttackBonus;
-
-        enhancedCombatBonus.physicalPenetration = physicalPenetrationBonus;
-
-        enhancedCombatBonus.magicalPenetration = magicalPenetrationBonus;
-
-        enhancedCombatBonus.criticalChance = criticalChanceBonus;
-
-        enhancedCombatBonus.criticalMultiplier = criticalMultiplierBonus;
-
-        enhancedCombatBonus.damageAmplification = damageAmplificationBonus; 
-        isEnhancedAwakeningUnlocked = true;
-
-    }
-
-
-    //만월 장착 해제
-    public void ClearEnhancedAwakeningBonus()
-    {
-        isEnhancedAwakeningUnlocked = false;
-
-        //각성 연출 도중 해제된 경우
-        //강화 각성을 일반 각성으로 변경
-        if (isAwakening && !isAwakened)
-        {
-            isEnhancedAwakening = false;
-        }
-
-        //강화 각성 도중 만월이 해제되면
-        //만월 추가 보너스만 즉시 제거
-        if (isAwakened && isEnhancedAwakening)
-        {
-            RemoveEnhancedCombatBonus();
-
-            isEnhancedAwakening = false;
-
-            if (activePlayer != null && activePlayer.sr != null)
-            {
-                activePlayer.sr.color = awakenedColor;
-            }
-        }
-
-        enhancedCombatBonus.Clear();
-
-    }
-
-    //유물 장착/해제 시 각성 지속시간의 증감분을 적용
-    //각성 코루틴이 매 프레임 종료 시점을 확인하므로 현재 각성에도 반영
-    public void ModifyAwakeningDuration(float amount)
-    {
-        awakeningDurationBonus += amount;
-    }
-
-    //그믐이 장착된 동안 각성 시도를 차단
+    //유물 등 외부에서 각성 시도를 차단
     public void SetAwakeningBlocked(bool blocked)
     {
         awakeningBlocked = blocked;
     }
 
-    //폭주의 초토화를 사용하거나 외부에서 강제 종료할 때 호출
-    //대기 연출 중에도 물리 상태를 복원하며 종료 이벤트는 한 번만 호출
+    //기존 시간제 유물 코드와의 호환을 위한 함수
+    public void ModifyAwakeningDuration(float amount)
+    {
+        //기력 기반 각성에서는 지속시간을 직접 수정하지 않음
+    }
+
+    //각성 중이거나 각성 연출 중인 상태를 강제로 종료
     public void EndAwakening()
     {
         if (!isAwakened && !isAwakening) return;
@@ -459,7 +266,6 @@ public class PlayerAwakening : MonoBehaviour
         if (awakeningCoroutine != null)
         {
             StopCoroutine(awakeningCoroutine);
-
             awakeningCoroutine = null;
         }
 
@@ -467,16 +273,19 @@ public class PlayerAwakening : MonoBehaviour
         {
             activePlayer.SetPhysicsFreeze(false);
 
-            if (activePlayer.ActionState.isAwakening) activePlayer.ActionState.EnterNormal();
+            if (activePlayer.ActionState.isAwakening)
+            {
+                activePlayer.ActionState.EnterNormal();
+            }
         }
 
         isAwakening = false;
 
-        if (isAwakened && activePlayer != null) ExitAwakened(activePlayer);
-
-        else isEnhancedAwakening = false;
+        if (isAwakened && activePlayer != null)
+        {
+            ExitAwakened(activePlayer);
+        }
 
         activePlayer = null;
     }
-
 }

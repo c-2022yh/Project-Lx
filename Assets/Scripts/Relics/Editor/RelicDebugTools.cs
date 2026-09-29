@@ -49,7 +49,7 @@ public static class RelicDebugTools
             return;
         }
 
-        RelicManager manager = Object.FindAnyObjectByType<RelicManager>();
+        PlayerRelicManager manager = Object.FindAnyObjectByType<PlayerRelicManager>();
 
         if (manager != null)
         {

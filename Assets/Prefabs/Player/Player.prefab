@@ -499,7 +499,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: d040a13b319382d44a1d14d756684e7c, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::RelicManager
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerRelicManager
   player: {fileID: 4329258634847844620}
   startingRelics:
   - {fileID: 0}
