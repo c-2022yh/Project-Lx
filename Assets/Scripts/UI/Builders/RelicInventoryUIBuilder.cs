@@ -549,17 +549,26 @@ public static class RelicInventoryUIBuilder
         GameObject bg = Shape("Background", slot.transform, new Color(0.20f, 0.20f, 0.24f, 1f), round);
         K.Stretch(bg, 0, 0, 0, 0);
 
-        float inset = circular ? size * 0.22f : 10f;
+        // 아이콘 여백은 비율로 잡는다.
+        // 픽셀로 잡으면 같은 프리팹을 신체 칸(72)으로 줄였을 때
+        // 여백만 그대로 남아서 그림이 지나치게 작아진다.
+        float margin = circular ? 0.20f : 0.12f;
 
         GameObject icon = K.Img("Icon", slot.transform, Color.white);
-        K.Stretch(icon, inset, inset, inset, inset);
+        FillRelative(icon, margin);
         icon.GetComponent<UnityEngine.UI.Image>().enabled = false;
 
         // 아이콘이 아직 없는 유물을 위한 글자 자리.
-        GameObject fallback = K.Text("IconFallback", slot.transform, "", size * 0.42f,
+        // 칸 크기가 제각각이라 글자도 자동으로 맞춘다.
+        GameObject fallback = K.Text("IconFallback", slot.transform, "", 32f,
             FontStyles.Bold, TextAlignmentOptions.Center);
-        K.Stretch(fallback, 0, 0, 0, 0);
-        fallback.GetComponent<TextMeshProUGUI>().enabled = false;
+        FillRelative(fallback, 0.16f);
+
+        TextMeshProUGUI fallbackText = fallback.GetComponent<TextMeshProUGUI>();
+        fallbackText.enableAutoSizing = true;
+        fallbackText.fontSizeMin = 12f;
+        fallbackText.fontSizeMax = 64f;
+        fallbackText.enabled = false;
 
         GameObject cost = K.Text("Cost", slot.transform, "0", 18,
             FontStyles.Bold, TextAlignmentOptions.BottomRight);
@@ -585,6 +594,20 @@ public static class RelicInventoryUIBuilder
 
         Debug.Log("[RelicInventoryUIBuilder] 칸 프리팹 생성됨: " + path);
         return saved;
+    }
+
+    /// <summary>
+    /// 부모 사각형을 비율로 채운다. margin은 각 변에서 몇 퍼센트를 비울지.
+    /// 앵커로 잡아야 칸 크기가 바뀌어도 같은 비율을 유지한다.
+    /// </summary>
+    private static void FillRelative(GameObject go, float margin)
+    {
+        RectTransform rect = go.GetComponent<RectTransform>();
+
+        rect.anchorMin = new Vector2(margin, margin);
+        rect.anchorMax = new Vector2(1f - margin, 1f - margin);
+        rect.offsetMin = Vector2.zero;
+        rect.offsetMax = Vector2.zero;
     }
 
     /// <summary>사각형이나 원형 판 하나. round가 null이면 그냥 사각형이다.</summary>
