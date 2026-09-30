@@ -220,9 +220,9 @@ PrefabInstance:
       addedObject: {fileID: 4559991101063083151}
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 8b8600d912fef0946a4b314561790aa5, type: 3}
---- !u!114 &602690229650518246 stripped
+--- !u!114 &1318674269042352641 stripped
 MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 235989382698407752, guid: 8b8600d912fef0946a4b314561790aa5, type: 3}
+  m_CorrespondingSourceObject: {fileID: 1826095055377384879, guid: 8b8600d912fef0946a4b314561790aa5, type: 3}
   m_PrefabInstance: {fileID: 800313098235439022}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 0}
@@ -877,7 +877,7 @@ PrefabInstance:
     - target: {fileID: 7598323755445276453, guid: b798dec77f88e90419825f290ebee3f7, type: 3}
       propertyPath: relicInventoryPanel
       value: 
-      objectReference: {fileID: 602690229650518246}
+      objectReference: {fileID: 1318674269042352641}
     - target: {fileID: 8264186000852862974, guid: b798dec77f88e90419825f290ebee3f7, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0

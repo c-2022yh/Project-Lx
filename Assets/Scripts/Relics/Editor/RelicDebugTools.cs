@@ -34,6 +34,21 @@ public static class RelicDebugTools
         foreach (RelicData relic in relics)
             RunState.Current.AddOwnedRelic(relic.RelicId);
 
+        // 진행도(RunState)와 씬의 PlayerRelicManager는 보유 목록을 따로 들고 있다.
+        // 진행도에만 넣으면 인벤토리에는 뜨지만 장착할 때
+        // "보유하지 않은 유물입니다"로 거절당한다. 양쪽에 다 알린다.
+        PlayerRelicManager manager = Object.FindAnyObjectByType<PlayerRelicManager>();
+
+        if (manager != null)
+        {
+            foreach (RelicData relic in relics) manager.AcquireRelic(relic);
+        }
+        else
+        {
+            Debug.LogWarning("[RelicDebugTools] 씬에서 PlayerRelicManager를 찾지 못했습니다. " +
+                             "보유 목록은 진행도에만 들어가서 장착은 안 될 수 있습니다.");
+        }
+
         RefreshOpenPanel();
 
         Debug.Log($"[RelicDebugTools] 유물 {relics.Count}개를 보유 처리했습니다. 인벤토리(I)를 열어보세요.");

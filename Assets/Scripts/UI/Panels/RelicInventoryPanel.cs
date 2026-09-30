@@ -201,7 +201,14 @@ public class RelicInventoryPanel : MonoBehaviour, IRelicSlotHost
             column++;
         }
 
+        // 남은 코스트만큼 빈 칸을 그리되, 개수 제한(5개)도 같이 본다.
+        // 코스트 1짜리만 모으면 코스트는 남는데 개수가 먼저 찬다.
         int remaining = Mathf.Max(0, RelicEquipRules.RemainingBodyCost(equipped));
+
+        if (relicManager != null)
+            remaining = Mathf.Min(remaining, relicManager.MaxBodyCount - relicManager.CurrentBodyCount);
+
+        remaining = Mathf.Max(0, remaining);
 
         // 코스트 1짜리가 최소 단위라 남은 코스트 = 더 낄 수 있는 최대 개수.
         for (int i = 0; i < remaining; i++)
@@ -430,39 +437,34 @@ public class RelicInventoryPanel : MonoBehaviour, IRelicSlotHost
             return;
         }
 
-        IReadOnlyList<RelicData> equipped = relicManager.EquippedRelics;
-
-        if (!RelicEquipRules.CanEquip(relic, equipped, out string reason, out RelicData replaces))
+        // 장착 규칙은 PlayerRelicManager가 하나로 들고 있다.
+        // UI가 따로 판정하면 신체 개수 제한처럼 한쪽에만 있는 규칙이 생겨서,
+        // 창에서는 된다고 하는데 게임이 거절하는 일이 벌어진다.
+        if (!relicManager.CanEquipRelic(relic, out string reason))
         {
             SetHint(reason);
             return;
         }
 
-        // 검/보주는 칸이 하나뿐이라 기존 것을 먼저 벗긴다.
-        // EquipRelic은 효과가 하나도 만들어지지 않으면 false를 돌려주므로,
-        // 실패하면 벗겼던 것을 되돌려야 칸이 빈 채로 남지 않는다.
-        if (replaces != null)
-        {
-            relicManager.UnequipRelic(replaces);
-
-            if (!relicManager.EquipRelic(relic))
-            {
-                relicManager.EquipRelic(replaces);
-                SetHint($"{relic.RelicName} 장착 실패 (효과가 없는 유물)");
-                return;
-            }
-
-            SetHint($"{replaces.RelicName} → {relic.RelicName} 교체됨");
-            return;
-        }
+        // 검/보주는 칸이 하나뿐이라 교체가 된다.
+        // 기존 것을 벗기는 것까지 EquipRelic이 스스로 처리하므로
+        // 여기서 미리 UnequipRelic을 부르면 안 된다 (그러면 교체 실패 시 복구도 못 한다).
+        // 안내 문구를 위해 무엇이 밀려날지 이름만 미리 챙겨둔다.
+        RelicData replaced = relic.Category == RelicCategory.Body
+            ? null
+            : relicManager.GetEquippedRelic(relic.Category);
 
         if (!relicManager.EquipRelic(relic))
         {
-            SetHint($"{relic.RelicName} 장착 실패 (효과가 없는 유물)");
+            // 여기까지 왔다면 CanEquipRelic은 통과했는데 효과 적용에서 실패한 것이다.
+            // 구체적인 이유는 PlayerRelicManager가 콘솔에 남긴다.
+            SetHint($"{relic.RelicName} 장착 실패 - 콘솔의 [PlayerRelicManager] 로그를 확인해주세요");
             return;
         }
 
-        SetHint($"{relic.RelicName} 장착됨");
+        SetHint(replaced != null
+            ? $"{replaced.RelicName} → {relic.RelicName} 교체됨"
+            : $"{relic.RelicName} 장착됨");
     }
 
     private void TryUnequip(RelicData relic)
