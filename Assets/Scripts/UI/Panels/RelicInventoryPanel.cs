@@ -38,6 +38,16 @@ public class RelicInventoryPanel : MonoBehaviour, IRelicSlotHost
     [Header("공용")]
     [SerializeField] private GameObject slotPrefab;
 
+    [Tooltip("장착칸에 쓰는 원형 칸. 비어 있으면 slotPrefab을 그대로 쓴다.")]
+    [SerializeField] private GameObject circleSlotPrefab;
+
+    [Header("보관함 필터")]
+    [SerializeField] private Button filterAllButton;
+    [SerializeField] private Button filterSwordButton;
+    [SerializeField] private Button filterOrbButton;
+    [SerializeField] private Button filterBodyButton;
+    [SerializeField] private Button sortButton;
+
     [Header("설명창")]
     [SerializeField] private Image descIcon;
     [SerializeField] private TextMeshProUGUI descName;
@@ -58,6 +68,11 @@ public class RelicInventoryPanel : MonoBehaviour, IRelicSlotHost
     /// <summary>보관함 격자의 열 수. 빌더의 GridLayoutGroup.constraintCount와 맞춰야 한다.</summary>
     private const int StorageColumns = 6;
 
+    // 장착칸은 원형이고 크기가 다르다. 빌더의 값과 맞춰야 한다.
+    private const float SwordSlotSize = 150f;
+    private const float OrbSlotSize = 120f;
+    private const float BodySlotSize = 72f;
+
     /// <summary>보관함을 묶어 보여주는 계열 순서. 왼쪽 장착칸 순서와 같게 맞춘다.</summary>
     private static readonly RelicCategory[] StorageCategoryOrder =
     {
@@ -75,6 +90,12 @@ public class RelicInventoryPanel : MonoBehaviour, IRelicSlotHost
 
     private PlayerRelicManager relicManager;
     private RelicData selected;
+
+    /// <summary>보관함에서 보여줄 계열. 비어 있으면 전체.</summary>
+    private RelicCategory? storageFilter;
+
+    /// <summary>보관함 정렬. false면 먹은 순서, true면 이름순.</summary>
+    private bool sortByName;
 
     // 키보드 포커스. 칸은 Refresh마다 새로 만들어지므로 좌표로 기억했다가 다시 찾는다.
     private int focusRow = RowStorageStart;
@@ -149,6 +170,8 @@ public class RelicInventoryPanel : MonoBehaviour, IRelicSlotHost
             ? relicManager.EquippedRelics
             : new List<RelicData>();
 
+        UpdateFilterButtons();
+
         BuildEquipRow(swordSlotContainer, equipped, RelicCategory.Sword, RowSword);
         BuildEquipRow(orbSlotContainer, equipped, RelicCategory.Orb, RowOrb);
         BuildBodyRow(equipped);
@@ -181,7 +204,8 @@ public class RelicInventoryPanel : MonoBehaviour, IRelicSlotHost
 
         for (int i = 0; i < limit; i++)
             SpawnSlot(container, i < ofCategory.Count ? ofCategory[i] : null,
-                      RelicSlotArea.Equip, category, row, i);
+                      RelicSlotArea.Equip, category, row, i, EquipPrefab(),
+                      category == RelicCategory.Sword ? SwordSlotSize : OrbSlotSize);
     }
 
     /// <summary>
@@ -197,7 +221,8 @@ public class RelicInventoryPanel : MonoBehaviour, IRelicSlotHost
 
         foreach (RelicData relic in body)
         {
-            SpawnSlot(bodySlotContainer, relic, RelicSlotArea.Equip, RelicCategory.Body, RowBody, column);
+            SpawnSlot(bodySlotContainer, relic, RelicSlotArea.Equip, RelicCategory.Body,
+                      RowBody, column, EquipPrefab(), BodySlotSize);
             column++;
         }
 
@@ -213,7 +238,8 @@ public class RelicInventoryPanel : MonoBehaviour, IRelicSlotHost
         // 코스트 1짜리가 최소 단위라 남은 코스트 = 더 낄 수 있는 최대 개수.
         for (int i = 0; i < remaining; i++)
         {
-            SpawnSlot(bodySlotContainer, null, RelicSlotArea.Equip, RelicCategory.Body, RowBody, column);
+            SpawnSlot(bodySlotContainer, null, RelicSlotArea.Equip, RelicCategory.Body,
+                      RowBody, column, EquipPrefab(), BodySlotSize);
             column++;
         }
     }
@@ -245,10 +271,23 @@ public class RelicInventoryPanel : MonoBehaviour, IRelicSlotHost
 
         foreach (RelicCategory category in StorageCategoryOrder)
         {
-            foreach (RelicData relic in stored)
-            {
-                if (relic.Category != category) continue;
+            // 필터가 걸려 있으면 그 계열만 그린다.
+            if (storageFilter.HasValue && storageFilter.Value != category) continue;
 
+            List<RelicData> ofCategory = new List<RelicData>();
+
+            foreach (RelicData relic in stored)
+                if (relic.Category == category) ofCategory.Add(relic);
+
+            // 이름순은 찾을 때, 획득순은 방금 먹은 걸 볼 때 편하다.
+            if (sortByName)
+            {
+                ofCategory.Sort((left, right) =>
+                    string.Compare(left.RelicName, right.RelicName, System.StringComparison.Ordinal));
+            }
+
+            foreach (RelicData relic in ofCategory)
+            {
                 SpawnSlot(storageContainer, relic, RelicSlotArea.Storage, relic.Category,
                           RowStorageStart + index / StorageColumns, index % StorageColumns);
                 index++;
@@ -256,13 +295,90 @@ public class RelicInventoryPanel : MonoBehaviour, IRelicSlotHost
         }
     }
 
+    // ── 보관함 필터 ─────────────────────────
+    // 버튼 onClick에 직접 걸리는 함수들이라 public이어야 한다.
+
+    public void OnFilterAll() => SetFilter(null);
+
+    public void OnFilterSword() => SetFilter(RelicCategory.Sword);
+
+    public void OnFilterOrb() => SetFilter(RelicCategory.Orb);
+
+    public void OnFilterBody() => SetFilter(RelicCategory.Body);
+
+    public void OnToggleSort()
+    {
+        sortByName = !sortByName;
+
+        SetHint(sortByName ? "이름순으로 정렬" : "획득순으로 정렬");
+        Refresh();
+    }
+
+    private void SetFilter(RelicCategory? category)
+    {
+        // 같은 버튼을 다시 누르면 전체로 돌아온다.
+        storageFilter = storageFilter == category ? null : category;
+
+        SetHint(storageFilter.HasValue
+            ? $"{RelicEquipRules.LabelOf(storageFilter.Value)} 계열만 보는 중"
+            : "전체 보는 중");
+
+        Refresh();
+    }
+
+    /// <summary>지금 켜진 필터 버튼을 밝게 해서 상태가 보이게 한다.</summary>
+    private void UpdateFilterButtons()
+    {
+        Tint(filterAllButton, !storageFilter.HasValue);
+        Tint(filterSwordButton, storageFilter == RelicCategory.Sword);
+        Tint(filterOrbButton, storageFilter == RelicCategory.Orb);
+        Tint(filterBodyButton, storageFilter == RelicCategory.Body);
+        Tint(sortButton, sortByName);
+    }
+
+    private static void Tint(Button button, bool active)
+    {
+        if (button == null) return;
+
+        Image image = button.targetGraphic as Image;
+        if (image == null) image = button.GetComponent<Image>();
+        if (image == null) return;
+
+        image.color = active
+            ? new Color(0.38f, 0.38f, 0.46f, 1f)
+            : new Color(0.22f, 0.22f, 0.25f, 1f);
+    }
+
+    /// <summary>장착칸에 쓸 프리팹. 원형이 없으면 사각 칸으로 떨어진다.</summary>
+    private GameObject EquipPrefab() => circleSlotPrefab != null ? circleSlotPrefab : slotPrefab;
+
+    /// <summary>보관함용 사각 칸.</summary>
     private void SpawnSlot(Transform parent, RelicData relic, RelicSlotArea area,
                            RelicCategory category, int row, int column)
     {
+        SpawnSlot(parent, relic, area, category, row, column, slotPrefab, 0f);
+    }
+
+    /// <summary>
+    /// 칸 하나를 만든다. 장착칸은 원형 프리팹을 쓰고 계열마다 크기가 달라서
+    /// 프리팹과 크기를 밖에서 정해 넘긴다. size가 0이면 프리팹 크기를 그대로 쓴다.
+    /// </summary>
+    private void SpawnSlot(Transform parent, RelicData relic, RelicSlotArea area,
+                           RelicCategory category, int row, int column,
+                           GameObject prefab, float size)
+    {
+        if (prefab == null) prefab = slotPrefab;
+
         // UI는 worldPositionStays를 false로 넣어야 한다.
         // true(기본값)면 월드 스케일을 보존하려고 localScale을 멋대로 바꾼다.
-        GameObject go = Instantiate(slotPrefab, parent, false);
+        GameObject go = Instantiate(prefab, parent, false);
         go.SetActive(true);
+
+        if (size > 0f)
+        {
+            RectTransform rect = go.GetComponent<RectTransform>();
+            if (rect != null) rect.sizeDelta = new Vector2(size, size);
+        }
 
         RelicSlotView view = go.GetComponent<RelicSlotView>();
 

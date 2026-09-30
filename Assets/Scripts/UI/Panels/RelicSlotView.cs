@@ -42,6 +42,9 @@ public class RelicSlotView : MonoBehaviour,
     [Tooltip("계열(검/보주/신체)을 색으로 구분하는 테두리. 항상 켜져 있다.")]
     [SerializeField] private Image categoryOutline;
 
+    [Tooltip("아이콘이 없는 유물에 이름 첫 글자를 대신 띄운다. 빈 칸으로 오해하지 않게.")]
+    [SerializeField] private TextMeshProUGUI iconFallbackText;
+
     // 창 배경(0.08)과 충분히 구분되도록 밝힌 값.
     private static readonly Color FilledBg = new Color(0.28f, 0.28f, 0.34f, 1f);
     private static readonly Color EmptyBg = new Color(0.18f, 0.18f, 0.22f, 1f);
@@ -95,11 +98,27 @@ public class RelicSlotView : MonoBehaviour,
 
         bool hasRelic = relic != null;
 
+        bool hasIcon = hasRelic && relic.Icon != null;
+
         if (icon != null)
         {
-            icon.sprite = hasRelic ? relic.Icon : null;
-            icon.enabled = hasRelic && relic.Icon != null;
+            icon.sprite = hasIcon ? relic.Icon : null;
+            icon.enabled = hasIcon;
             icon.color = Color.white;
+        }
+
+        // 아이콘이 아직 안 붙은 유물이 있다. 그냥 두면 칸이 비어 보여서
+        // "장착했는데 자리가 안 없어진다"고 오해하게 된다. 이름 첫 글자라도 띄운다.
+        if (iconFallbackText != null)
+        {
+            bool showFallback = hasRelic && !hasIcon;
+            iconFallbackText.enabled = showFallback;
+
+            if (showFallback)
+            {
+                string name = relic.RelicName;
+                iconFallbackText.text = string.IsNullOrEmpty(name) ? "?" : name.Substring(0, 1);
+            }
         }
 
         if (costText != null)
