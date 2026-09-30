@@ -146,3 +146,6 @@ crashlytics-build.properties
 
 /[Aa]ssets/[Ss]treamingAssets/aa.meta
 /[Aa]ssets/[Ss]treamingAssets/aa/*
+# UI 빌더 메뉴를 켜는 로컬 스위치 (UI 담당만 가짐)
+/Assets/csc.rsp
+/Assets/csc.rsp.meta
