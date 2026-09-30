@@ -45,6 +45,9 @@ public class UIManager : MonoBehaviour
     //  팝업 상태
 
     private bool isInventoryOpen, isSkillOpen, isMapOpen, isPaused;
+
+    /// <summary>플레이어 입력을 껐다 켜려고 들고 있는다. 씬이 바뀌면 다시 찾는다.</summary>
+    private PlayerInput playerInput;
     public bool IsAnyPopupOpen => isInventoryOpen || isSkillOpen || isMapOpen || isPaused;
 
     /// <summary>
@@ -114,8 +117,19 @@ public class UIManager : MonoBehaviour
         if (Keyboard.current.digit4Key.wasPressedThisFrame) ModifySoul(+1);
         if (Keyboard.current.digit0Key.wasPressedThisFrame) ShowGameOver();
         if (Keyboard.current.escapeKey.wasPressedThisFrame) HandleCancelKey();
-        if (Keyboard.current.iKey.wasPressedThisFrame) ToggleInventory();
-        if (Keyboard.current.kKey.wasPressedThisFrame) ToggleSkill();
+        if (Keyboard.current.iKey.wasPressedThisFrame) ShowWindowTab(UITabBar.RelicTab);
+        if (Keyboard.current.kKey.wasPressedThisFrame) ShowWindowTab(UITabBar.SkillTab);
+
+        // Q/E로 유물 ↔ 스킬 탭 이동. 창이 떠 있을 때만 본다.
+        // Q는 게임에서 각성 키라, 창이 닫혀 있을 때 가로채면 각성이 안 나간다.
+        if (isInventoryOpen || isSkillOpen)
+        {
+            if (Keyboard.current.qKey.wasPressedThisFrame ||
+                Keyboard.current.eKey.wasPressedThisFrame)
+            {
+                ShowWindowTab(isInventoryOpen ? UITabBar.SkillTab : UITabBar.RelicTab);
+            }
+        }
 
         // 맵은 탭을 누르고 있는 동안만 보인다.
         // 손을 떼면 조건 없이 내려가므로 켜진 채로 남는 상태가 생기지 않는다.
@@ -188,6 +202,47 @@ public class UIManager : MonoBehaviour
         TogglePause();
     }
 
+    /// <summary>
+    /// 유물/스킬 탭을 연다. 같은 탭을 다시 부르면 닫는다.
+    /// I·K 키와 탭 버튼, Q/E가 모두 이 함수를 지난다.
+    /// </summary>
+    public void ShowWindowTab(int tab)
+    {
+        bool wantRelic = tab == UITabBar.RelicTab;
+
+        // 이미 그 탭이 떠 있으면 토글로 닫는다. I를 두 번 누르면 닫히던 동작 유지.
+        if (wantRelic ? isInventoryOpen : isSkillOpen)
+        {
+            if (wantRelic) ToggleInventory();
+            else ToggleSkill();
+            return;
+        }
+
+        if (wantRelic) ToggleInventory();
+        else ToggleSkill();
+    }
+
+    /// <summary>
+    /// 창이 떠 있는 동안 플레이어 조작을 막는다.
+    ///
+    /// 막지 않으면 Q로 탭을 넘길 때 각성이 같이 나간다.
+    /// 창을 열면 조작이 멈춰야 한다는 건 기획에서도 정해진 사항이다.
+    /// PlayerInput의 "Player" 액션맵만 끄므로 UI 입력은 그대로 살아 있다.
+    /// </summary>
+    private void RefreshPlayerControl()
+    {
+        if (playerInput == null) playerInput = FindAnyObjectByType<PlayerInput>();
+        if (playerInput == null || playerInput.actions == null) return;
+
+        InputActionMap map = playerInput.actions.FindActionMap("Player", false);
+
+        if (map == null) return;
+
+        // 창이 하나도 없을 때만 켠다. 어떤 경로로 닫혔든 여기서 되살아난다.
+        if (IsAnyWindowOpen) map.Disable();
+        else map.Enable();
+    }
+
     public void ToggleInventory()
     {
         // 여는 것만 막는다. 이미 열려 있으면 언제든 닫을 수 있어야 한다.
@@ -206,12 +261,14 @@ public class UIManager : MonoBehaviour
             relicInventoryPanel.SetVisible(isInventoryOpen);
         else if (inventoryPanel != null)
             inventoryPanel.SetVisible(isInventoryOpen);
+
+        RefreshPlayerControl();
         // [SFX_HOOK] AudioManager.Play(isInventoryOpen ? openSfx : closeSfx);
     }
 
     /// <summary>
-    /// 스킬 창. 인벤토리와 한 번에 하나만 뜬다.
-    /// 나중에 탭 구조로 합치면 이 둘이 같은 창의 두 탭이 된다.
+    /// 스킬 창. 유물창과 같은 창의 두 탭이라 한 번에 하나만 뜬다.
+    /// 여는 쪽은 ShowWindowTab을 거치고, 여기는 실제로 켜고 끄는 일만 한다.
     /// </summary>
     public void ToggleSkill()
     {
@@ -227,6 +284,8 @@ public class UIManager : MonoBehaviour
         Debug.Log($"[UI] Skill: {(isSkillOpen ? "Open" : "Close")}");
 
         if (skillPanel != null) skillPanel.SetVisible(isSkillOpen);
+
+        RefreshPlayerControl();
         // [SFX_HOOK]
     }
 
@@ -265,7 +324,8 @@ public class UIManager : MonoBehaviour
         Time.timeScale = isPaused ? 0f : 1f;
         Debug.Log($"[UI] Pause: {isPaused}");
         pausePanel.SetVisible(isPaused);
-        // [PLAYER_HOOK] 플레이어 입력 막기: PlayerInput.actions.FindActionMap("Player").Disable();
+
+        RefreshPlayerControl();
         // [SFX_HOOK]
     }
 

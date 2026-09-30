@@ -195,8 +195,9 @@ public static class RelicInventoryUIBuilder
         K.Place(window, K.Anchor.Center, 0, 0, WindowWidth, WindowHeight);
         Transform w = window.transform;
 
-        GameObject title = K.Text("Title", w, "유물", 40, FontStyles.Bold);
-        K.Place(title, K.Anchor.TopLeft, 40, -28, 400, 54);
+        // 제목 대신 탭 줄. 스킬창과 같은 자리에 같은 모양으로 그려야
+        // Q/E로 오갈 때 위쪽이 튀지 않는다.
+        K.TabBar(w, UITabBar.RelicTab);
 
         GameObject closeHint = K.Text("CloseHint", w, "Esc  닫기", 20,
             FontStyles.Normal, TextAlignmentOptions.MidlineRight, K.MutedText);

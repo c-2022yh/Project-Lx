@@ -87,12 +87,16 @@ public static class SkillUIBuilder
         GameObject dim = K.Img("Dim", panel.transform, new Color(0f, 0f, 0f, 0.78f), true);
         K.Stretch(dim, 0, 0, 0, 0);
 
-        GameObject window = K.Img("Window", panel.transform, K.PanelBg, true);
+        // 창 테두리와 배경색을 유물창과 맞춘다. 탭으로 오가는 같은 창이라
+        // 색이 다르면 전환할 때 깜빡이는 것처럼 보인다.
+        GameObject frame = K.Img("WindowFrame", panel.transform, new Color(0.45f, 0.45f, 0.55f, 0.65f));
+        K.Place(frame, K.Anchor.Center, 0, 0, 1524, 844);
+
+        GameObject window = K.Img("Window", panel.transform, new Color(0.07f, 0.07f, 0.09f, 1f), true);
         K.Place(window, K.Anchor.Center, 0, 0, 1520, 840);
         Transform w = window.transform;
 
-        GameObject title = K.Text("Title", w, "스킬", 40, FontStyles.Bold);
-        K.Place(title, K.Anchor.TopLeft, 40, -28, 400, 54);
+        K.TabBar(w, UITabBar.SkillTab);
 
         // 장착칸
         GameObject equipHeader = K.Text("Header_Equip", w, "장착 중인 스킬", 28, FontStyles.Bold);
@@ -172,7 +176,7 @@ public static class SkillUIBuilder
         K.Place(hint, K.Anchor.BottomRight, -32, 16, 700, 30);
 
         GameObject controls = K.Text("ControlsText", w,
-            "좌클릭 선택   우클릭 장착·해제   드래그로 자리 바꾸기   ESC 닫기", 19,
+            "좌클릭 선택   우클릭 장착·해제   드래그로 자리 바꾸기   Esc 닫기", 19,
             FontStyles.Normal, TextAlignmentOptions.MidlineRight, K.MutedText);
         K.Place(controls, K.Anchor.TopRight, -40, -40, 760, 32);
 

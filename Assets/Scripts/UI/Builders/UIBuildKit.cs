@@ -328,5 +328,71 @@ public static class UIBuildKit
         }
         prop.objectReferenceValue = value;
     }
+
+    // ── 탭 줄 ────────────────────────────────
+    //
+    // 유물창과 스킬창은 같은 크기의 창 두 개이고 Q/E로 오간다.
+    // 두 창이 똑같은 탭 줄을 같은 자리에 그려야 전환할 때 튀지 않는다.
+    // 창마다 제목을 따로 쓰는 대신 이 함수를 부른다.
+
+    private static readonly Color TabActiveBg = new Color(0.26f, 0.26f, 0.32f, 1f);
+    private static readonly Color TabIdleBg = new Color(0.13f, 0.13f, 0.16f, 1f);
+    private static readonly Color TabAccent = new Color(1f, 0.82f, 0.35f, 1f);
+
+    private const float TabWidth = 150f;
+    private const float TabHeight = 48f;
+    private const float TabGap = 10f;
+
+    /// <summary>
+    /// 창 왼쪽 위에 "유물 / 스킬" 탭 줄을 그린다.
+    /// activeIndex는 UITabBar.RelicTab 또는 UITabBar.SkillTab.
+    /// </summary>
+    public static UITabBar TabBar(Transform window, int activeIndex)
+    {
+        GameObject bar = Obj("TabBar", window);
+        Place(bar, Anchor.TopLeft, 40, -24, TabWidth * 2 + TabGap + 180f, TabHeight);
+
+        UITabBar comp = bar.AddComponent<UITabBar>();
+
+        UnityEngine.UI.Button relic = TabButton(bar.transform, "Tab_Relic", "유물", 0,
+                                                activeIndex == UITabBar.RelicTab);
+        UnityEngine.UI.Button skill = TabButton(bar.transform, "Tab_Skill", "스킬", 1,
+                                                activeIndex == UITabBar.SkillTab);
+
+        UnityEditor.Events.UnityEventTools.AddPersistentListener(relic.onClick, comp.OnRelicTab);
+        UnityEditor.Events.UnityEventTools.AddPersistentListener(skill.onClick, comp.OnSkillTab);
+
+        // 탭이 눌리는 것인지 모를 수 있어서 키를 옆에 적어둔다.
+        GameObject hint = Text("TabHint", bar.transform, "Q  E  탭 이동", 18,
+                               FontStyles.Normal, TextAlignmentOptions.MidlineLeft, MutedText);
+        Place(hint, Anchor.MiddleLeft, TabWidth * 2 + TabGap + 18f, 0, 160, 26);
+
+        return comp;
+    }
+
+    private static UnityEngine.UI.Button TabButton(Transform bar, string name, string label,
+                                                   int slot, bool active)
+    {
+        GameObject go = Button(name, bar, label, 26, active ? TabActiveBg : TabIdleBg);
+        Place(go, Anchor.MiddleLeft, slot * (TabWidth + TabGap) + TabWidth / 2f, 0,
+              TabWidth, TabHeight);
+
+        TextMeshProUGUI text = go.GetComponentInChildren<TextMeshProUGUI>();
+
+        if (text != null)
+        {
+            text.color = active ? AccentText : MutedText;
+            text.fontStyle = active ? FontStyles.Bold : FontStyles.Normal;
+        }
+
+        // 활성 탭 아래에만 밑줄을 그어 어느 쪽인지 한눈에 보이게 한다.
+        if (active)
+        {
+            GameObject line = Img("Active", go.transform, TabAccent);
+            Place(line, Anchor.BottomCenter, 0, 0, TabWidth - 16f, 3);
+        }
+
+        return go.GetComponent<UnityEngine.UI.Button>();
+    }
 }
 #endif
