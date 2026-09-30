@@ -42,9 +42,13 @@ public static class RelicInventoryUIBuilder
     private const float RightWidth = 656f;
 
     // 장착칸은 원형이고, 중요한 것일수록 크다.
-    private const float SwordSlotSize = 150f;
-    private const float OrbSlotSize = 120f;
-    private const float BodySlotSize = 72f;
+    // 검과 보주는 일직선으로 쌓지 않고 좌우로 엇갈리게 놓는다 (B안).
+    // 일러스트가 들어올 자리라 가운데를 비워두는 배치다.
+    private const float DiagonalOffset = 72f;
+
+    private const float SwordSlotSize = 130f;
+    private const float OrbSlotSize = 105f;
+    private const float BodySlotSize = 66f;
 
     [MenuItem("Tools/UI/Build Relic Inventory")]
     public static void Build()
@@ -182,7 +186,12 @@ public static class RelicInventoryUIBuilder
         GameObject dim = K.Img("Dim", panel.transform, new Color(0f, 0f, 0f, 0.78f), true);
         K.Stretch(dim, 0, 0, 0, 0);
 
-        GameObject window = K.Img("Window", panel.transform, K.PanelBg, true);
+        // 창 테두리. 배경이 게임 화면과 비슷한 어두운 색이라
+        // 테두리가 없으면 창이 어디서 시작하는지 안 보인다.
+        GameObject frame = K.Img("WindowFrame", panel.transform, new Color(0.45f, 0.45f, 0.55f, 0.65f));
+        K.Place(frame, K.Anchor.Center, 0, 0, WindowWidth + 4f, WindowHeight + 4f);
+
+        GameObject window = K.Img("Window", panel.transform, new Color(0.07f, 0.07f, 0.09f, 1f), true);
         K.Place(window, K.Anchor.Center, 0, 0, WindowWidth, WindowHeight);
         Transform w = window.transform;
 
@@ -200,21 +209,21 @@ public static class RelicInventoryUIBuilder
         GameObject equipLine = K.Img("Divider_Equip", w, K.Divider);
         K.Place(equipLine, K.Anchor.TopLeft, 40, -142, LeftWidth, 2);
 
-        // 검: 가장 크게, 왼쪽 영역 한가운데 위쪽
-        Transform swordSlots = EquipSpot(w, "검", LeftCenterX, -170, SwordSlotSize,
+        // 검: 가장 크게, 왼쪽 위로
+        Transform swordSlots = EquipSpot(w, "검", LeftCenterX - DiagonalOffset, -185, SwordSlotSize,
                                          RelicDropTargetKind.SwordRow);
 
-        // 보주: 검 아래
-        Transform orbSlots = EquipSpot(w, "보주", LeftCenterX, -340, OrbSlotSize,
+        // 보주: 검의 오른쪽 아래로 엇갈리게
+        Transform orbSlots = EquipSpot(w, "보주", LeftCenterX + DiagonalOffset, -352, OrbSlotSize,
                                        RelicDropTargetKind.OrbRow);
 
         // 신체: 아래쪽 가로줄. 개수가 늘 바뀌므로 가로 레이아웃에 맡긴다.
         GameObject bodyLabel = K.Text("Label_신체", w, "신체", 22,
             FontStyles.Normal, TextAlignmentOptions.Center, K.MutedText);
-        K.Place(bodyLabel, K.Anchor.TopLeft, LeftCenterX - 100, -480, 200, 30);
+        K.Place(bodyLabel, K.Anchor.TopLeft, LeftCenterX - 100, -470, 200, 26);
 
         GameObject bodyRow = K.Obj("Slots_신체", w);
-        K.Place(bodyRow, K.Anchor.TopLeft, LeftCenterX - LeftWidth / 2f, -515, LeftWidth, BodySlotSize);
+        K.Place(bodyRow, K.Anchor.TopLeft, LeftCenterX - LeftWidth / 2f, -500, LeftWidth, BodySlotSize);
 
         HorizontalLayoutGroup bodyLayout = bodyRow.AddComponent<HorizontalLayoutGroup>();
         bodyLayout.spacing = 14f;
@@ -228,7 +237,7 @@ public static class RelicInventoryUIBuilder
 
         GameObject costText = K.Text("BodyCostText", w, "코스트  0 / 5", 22,
             FontStyles.Bold, TextAlignmentOptions.Center);
-        K.Place(costText, K.Anchor.TopLeft, LeftCenterX - 150, -595, 300, 32);
+        K.Place(costText, K.Anchor.TopLeft, LeftCenterX - 150, -578, 300, 30);
 
         // ── 가운데 세로 구분선 ───────────────
         GameObject vDivider = K.Img("Divider_Vertical", w, K.Divider);
@@ -463,7 +472,7 @@ public static class RelicInventoryUIBuilder
     {
         GameObject labelGO = K.Text("Label_" + label, window, label, 22,
             FontStyles.Normal, TextAlignmentOptions.Center, K.MutedText);
-        K.Place(labelGO, K.Anchor.TopLeft, centerX - 100, y + 32, 200, 30);
+        K.Place(labelGO, K.Anchor.TopLeft, centerX - 100, y + 28, 200, 26);
 
         GameObject container = K.Obj("Slots_" + label, window);
         K.Place(container, K.Anchor.TopLeft, centerX - size / 2f, y, size, size);
