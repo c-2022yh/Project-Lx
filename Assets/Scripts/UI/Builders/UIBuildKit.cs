@@ -349,8 +349,11 @@ public static class UIBuildKit
     /// </summary>
     public static UITabBar TabBar(Transform window, int activeIndex)
     {
+        // 키 안내는 창 오른쪽 위 WindowHint가 맡는다. 여기에 같이 두면
+        // 탭 글자와 겹친다.
+
         GameObject bar = Obj("TabBar", window);
-        Place(bar, Anchor.TopLeft, 40, -24, TabWidth * 2 + TabGap + 180f, TabHeight);
+        Place(bar, Anchor.TopLeft, 40, -24, TabWidth * 2 + TabGap, TabHeight);
 
         UITabBar comp = bar.AddComponent<UITabBar>();
 
@@ -361,11 +364,6 @@ public static class UIBuildKit
 
         UnityEditor.Events.UnityEventTools.AddPersistentListener(relic.onClick, comp.OnRelicTab);
         UnityEditor.Events.UnityEventTools.AddPersistentListener(skill.onClick, comp.OnSkillTab);
-
-        // 탭이 눌리는 것인지 모를 수 있어서 키를 옆에 적어둔다.
-        GameObject hint = Text("TabHint", bar.transform, "Q  E  탭 이동", 18,
-                               FontStyles.Normal, TextAlignmentOptions.MidlineLeft, MutedText);
-        Place(hint, Anchor.MiddleLeft, TabWidth * 2 + TabGap + 18f, 0, 160, 26);
 
         return comp;
     }

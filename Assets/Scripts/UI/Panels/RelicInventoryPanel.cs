@@ -69,9 +69,12 @@ public class RelicInventoryPanel : MonoBehaviour, IRelicSlotHost
     private const int StorageColumns = 6;
 
     // 장착칸은 원형이고 크기가 다르다. 빌더의 값과 맞춰야 한다.
-    private const float SwordSlotSize = 150f;
-    private const float OrbSlotSize = 120f;
-    private const float BodySlotSize = 72f;
+    // 빌더(RelicInventoryUIBuilder)가 만드는 칸 크기와 반드시 같아야 한다.
+    // 칸보다 원이 크면 HorizontalLayoutGroup이 가운데 정렬을 못 하고
+    // 오른쪽으로 밀어내서, 위에 붙인 이름표와 어긋나 보인다.
+    private const float SwordSlotSize = 130f;
+    private const float OrbSlotSize = 105f;
+    private const float BodySlotSize = 66f;
 
     /// <summary>보관함을 묶어 보여주는 계열 순서. 왼쪽 장착칸 순서와 같게 맞춘다.</summary>
     private static readonly RelicCategory[] StorageCategoryOrder =

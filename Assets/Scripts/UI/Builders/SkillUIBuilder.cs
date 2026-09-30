@@ -175,10 +175,9 @@ public static class SkillUIBuilder
             FontStyles.Normal, TextAlignmentOptions.MidlineRight, K.MutedText);
         K.Place(hint, K.Anchor.BottomRight, -32, 16, 700, 30);
 
-        GameObject controls = K.Text("ControlsText", w,
-            "좌클릭 선택   우클릭 장착·해제   드래그로 자리 바꾸기   Esc 닫기", 19,
+        GameObject controls = K.Text("WindowHint", w, "Q / E  전환      Esc  닫기", 20,
             FontStyles.Normal, TextAlignmentOptions.MidlineRight, K.MutedText);
-        K.Place(controls, K.Anchor.TopRight, -40, -40, 760, 32);
+        K.Place(controls, K.Anchor.TopRight, -40, -34, 360, 34);
 
         // 드래그 고스트
         SkillDragLayer dragLayer = BuildDragLayer(panel.transform);

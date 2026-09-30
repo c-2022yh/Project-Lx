@@ -44,7 +44,12 @@ public static class RelicInventoryUIBuilder
     // 장착칸은 원형이고, 중요한 것일수록 크다.
     // 검과 보주는 일직선으로 쌓지 않고 좌우로 엇갈리게 놓는다 (B안).
     // 일러스트가 들어올 자리라 가운데를 비워두는 배치다.
-    private const float DiagonalOffset = 72f;
+    /// <summary>
+    /// 검과 보주를 가운데에서 좌우로 밀어내는 양. 두 칸이 대각선으로 엇갈리게 한다.
+    /// 세로로는 이미 맞닿아 있어서, 둘이 얼마나 붙어 보이는지는 이 값이 정한다.
+    /// (72면 원 사이 틈 58, 52면 26)
+    /// </summary>
+    private const float DiagonalOffset = 52f;
 
     private const float SwordSlotSize = 130f;
     private const float OrbSlotSize = 105f;
@@ -199,32 +204,37 @@ public static class RelicInventoryUIBuilder
         // Q/E로 오갈 때 위쪽이 튀지 않는다.
         K.TabBar(w, UITabBar.RelicTab);
 
-        GameObject closeHint = K.Text("CloseHint", w, "Esc  닫기", 20,
+        GameObject closeHint = K.Text("WindowHint", w, "Q / E  전환      Esc  닫기", 20,
             FontStyles.Normal, TextAlignmentOptions.MidlineRight, K.MutedText);
-        K.Place(closeHint, K.Anchor.TopRight, -40, -36, 300, 34);
+        K.Place(closeHint, K.Anchor.TopRight, -40, -34, 360, 34);
 
         // ── 왼쪽: 장착 ──────────────────────
-        GameObject equipHeader = K.Text("Header_Equip", w, "장착 중인 유물", 28, FontStyles.Bold);
-        K.Place(equipHeader, K.Anchor.TopLeft, 40, -100, 400, 40);
-
+        // 제목 글자는 두지 않는다. 계열 이름표가 칸마다 붙어 있어서 중복이고,
+        // 그 자리를 비워야 검과 보주를 위로 당겨 붙일 수 있다.
         GameObject equipLine = K.Img("Divider_Equip", w, K.Divider);
-        K.Place(equipLine, K.Anchor.TopLeft, 40, -142, LeftWidth, 2);
+        K.Place(equipLine, K.Anchor.TopLeft, 40, -96, LeftWidth, 2);
 
         // 검: 가장 크게, 왼쪽 위로
-        Transform swordSlots = EquipSpot(w, "검", LeftCenterX - DiagonalOffset, -185, SwordSlotSize,
+        Transform swordSlots = EquipSpot(w, "검", LeftCenterX - DiagonalOffset, -368, SwordSlotSize,
                                          RelicDropTargetKind.SwordRow);
 
-        // 보주: 검의 오른쪽 아래로 엇갈리게
-        Transform orbSlots = EquipSpot(w, "보주", LeftCenterX + DiagonalOffset, -352, OrbSlotSize,
+        // 보주: 검의 오른쪽 아래로 엇갈리게.
+        //
+        // 두 칸은 세로로 겹치지만 가로로는 안 겹친다.
+        // 검은 가운데에서 왼쪽으로 72, 보주는 오른쪽으로 72 밀려 있어서
+        // 검 오른쪽 끝(-7)과 보주 왼쪽 끝(+19) 사이가 비어 있다.
+        // 그래서 두 원을 대각선으로 바짝 붙일 수 있다.
+        // 보주 이름표도 검 원 옆 빈자리로 올라간다.
+        Transform orbSlots = EquipSpot(w, "보주", LeftCenterX + DiagonalOffset, -480, OrbSlotSize,
                                        RelicDropTargetKind.OrbRow);
 
         // 신체: 아래쪽 가로줄. 개수가 늘 바뀌므로 가로 레이아웃에 맡긴다.
         GameObject bodyLabel = K.Text("Label_신체", w, "신체", 22,
             FontStyles.Normal, TextAlignmentOptions.Center, K.MutedText);
-        K.Place(bodyLabel, K.Anchor.TopLeft, LeftCenterX - 100, -470, 200, 26);
+        K.Place(bodyLabel, K.Anchor.TopLeft, LeftCenterX - 60, -642, 120, 26);
 
         GameObject bodyRow = K.Obj("Slots_신체", w);
-        K.Place(bodyRow, K.Anchor.TopLeft, LeftCenterX - LeftWidth / 2f, -500, LeftWidth, BodySlotSize);
+        K.Place(bodyRow, K.Anchor.TopLeft, LeftCenterX - LeftWidth / 2f, -672, LeftWidth, BodySlotSize);
 
         HorizontalLayoutGroup bodyLayout = bodyRow.AddComponent<HorizontalLayoutGroup>();
         bodyLayout.spacing = 14f;
@@ -238,11 +248,11 @@ public static class RelicInventoryUIBuilder
 
         GameObject costText = K.Text("BodyCostText", w, "코스트  0 / 5", 22,
             FontStyles.Bold, TextAlignmentOptions.Center);
-        K.Place(costText, K.Anchor.TopLeft, LeftCenterX - 150, -578, 300, 30);
+        K.Place(costText, K.Anchor.TopLeft, LeftCenterX - 150, -756, 300, 30);
 
         // ── 가운데 세로 구분선 ───────────────
         GameObject vDivider = K.Img("Divider_Vertical", w, K.Divider);
-        K.Place(vDivider, K.Anchor.TopLeft, RightX - 42, -100, 2, 520);
+        K.Place(vDivider, K.Anchor.TopLeft, RightX - 42, -96, 2, 704);
 
         // ── 오른쪽: 보관함 ──────────────────
         GameObject storageHeader = K.Text("Header_Storage", w, "보관함", 28, FontStyles.Bold);
@@ -254,7 +264,7 @@ public static class RelicInventoryUIBuilder
         K.Place(storageLine, K.Anchor.TopLeft, RightX, -142, RightWidth, 2);
 
         GameObject storage = K.Obj("StorageContainer", w);
-        K.Place(storage, K.Anchor.TopLeft, RightX, -160, RightWidth, 440);
+        K.Place(storage, K.Anchor.TopLeft, RightX, -160, RightWidth, 640);
 
         GridLayoutGroup grid = storage.AddComponent<GridLayoutGroup>();
         grid.cellSize = new Vector2(SlotSize, SlotSize);
@@ -269,31 +279,10 @@ public static class RelicInventoryUIBuilder
         AddDropZone(storage, RelicDropTargetKind.Storage);
 
         // ── 아래: 설명창 ────────────────────
-        GameObject desc = K.Img("DescriptionPanel", w, K.SectionBg, true);
-        K.StretchBottom(desc, 40, 30, 40, 170);
-        Transform d = desc.transform;
+        // 설명칸은 두지 않는다. 유물 위에 마우스를 올리면 RelicTooltip이
+        // 이름·계열·코스트·설명을 띄우고, 장착은 우클릭과 드래그로 한다.
+        // 아래를 비워야 왼쪽에 일러스트가 들어갈 자리가 난다.
 
-        GameObject descIcon = K.Img("Desc_Icon", d, Color.white);
-        K.Place(descIcon, K.Anchor.MiddleLeft, 28, 8, 96, 96);
-        descIcon.GetComponent<UnityEngine.UI.Image>().enabled = false;
-
-        GameObject descName = K.Text("Desc_Name", d, "유물을 선택하세요", 30, FontStyles.Bold);
-        K.Place(descName, K.Anchor.TopLeft, 148, -18, 700, 40);
-
-        GameObject descMeta = K.Text("Desc_Meta", d, "", 20,
-            FontStyles.Normal, TextAlignmentOptions.MidlineLeft, K.MutedText);
-        K.Place(descMeta, K.Anchor.TopLeft, 148, -58, 700, 30);
-
-        GameObject descText = K.Text("Desc_Text", d, "", 20,
-            FontStyles.Normal, TextAlignmentOptions.TopLeft, K.MutedText);
-        K.Place(descText, K.Anchor.TopLeft, 148, -92, 950, 60);
-
-        GameObject equipBtn = K.Button("Button_Equip", d, "장착", 26);
-        K.Place(equipBtn, K.Anchor.MiddleRight, -32, 10, 200, 58);
-
-        GameObject hint = K.Text("HintText", d, "", 19,
-            FontStyles.Normal, TextAlignmentOptions.MidlineRight, K.MutedText);
-        K.Place(hint, K.Anchor.BottomRight, -32, 12, 640, 28);
 
         // ── 툴팁 / 드래그 고스트 ────────────
         RelicTooltip tooltip = BuildTooltip(panel.transform);
@@ -312,13 +301,6 @@ public static class RelicInventoryUIBuilder
         K.SetRef(so, "storageContainer", storage.transform);
         K.SetRef(so, "slotPrefab", slotPrefab);
         K.SetRef(so, "circleSlotPrefab", circleSlotPrefab);
-        K.SetRef(so, "descIcon", descIcon.GetComponent<UnityEngine.UI.Image>());
-        K.SetRef(so, "descName", descName.GetComponent<TextMeshProUGUI>());
-        K.SetRef(so, "descMeta", descMeta.GetComponent<TextMeshProUGUI>());
-        K.SetRef(so, "descText", descText.GetComponent<TextMeshProUGUI>());
-        K.SetRef(so, "equipButton", equipBtn.GetComponent<UnityEngine.UI.Button>());
-        K.SetRef(so, "equipButtonLabel", equipBtn.transform.Find("Label").GetComponent<TextMeshProUGUI>());
-        K.SetRef(so, "hintText", hint.GetComponent<TextMeshProUGUI>());
         K.SetRef(so, "tooltip", tooltip);
         K.SetRef(so, "dragLayer", dragLayer);
         K.SetRef(so, "filterAllButton", filterBar.All);
@@ -328,8 +310,6 @@ public static class RelicInventoryUIBuilder
         K.SetRef(so, "sortButton", filterBar.Sort);
         so.ApplyModifiedPropertiesWithoutUndo();
 
-        UnityEventTools.AddPersistentListener(
-            equipBtn.GetComponent<UnityEngine.UI.Button>().onClick, comp.OnEquipButton);
 
         UnityEventTools.AddPersistentListener(filterBar.All.onClick, comp.OnFilterAll);
         UnityEventTools.AddPersistentListener(filterBar.Sword.onClick, comp.OnFilterSword);
@@ -471,9 +451,11 @@ public static class RelicInventoryUIBuilder
     private static Transform EquipSpot(Transform window, string label, float centerX, float y,
                                        float size, RelicDropTargetKind kind)
     {
+        // 이름표 상자를 넓게 잡으면 대각선으로 붙여둔 옆 칸을 침범한다.
+        // 글자가 짧으니 120이면 충분하다.
         GameObject labelGO = K.Text("Label_" + label, window, label, 22,
             FontStyles.Normal, TextAlignmentOptions.Center, K.MutedText);
-        K.Place(labelGO, K.Anchor.TopLeft, centerX - 100, y + 28, 200, 26);
+        K.Place(labelGO, K.Anchor.TopLeft, centerX - 60, y + 28, 120, 26);
 
         GameObject container = K.Obj("Slots_" + label, window);
         K.Place(container, K.Anchor.TopLeft, centerX - size / 2f, y, size, size);
@@ -520,12 +502,11 @@ public static class RelicInventoryUIBuilder
     /// 유물 한 칸 프리팹. 실행할 때마다 새로 만든다.
     /// 칸의 구조가 바뀌었는데 예전 프리팹이 그대로 남아 조용히 어긋나는 걸 막기 위해서다.
     ///
-    /// circular가 켜지면 장착칸용 원형 칸이 된다. 유니티 기본 Knob 스프라이트가
-    /// 동그라미라서 아트 없이도 원형을 만들 수 있다.
+    /// circular가 켜지면 장착칸용 원형 칸이 된다.
     /// </summary>
     private static GameObject BuildSlotPrefab(bool circular, float size, string path)
     {
-        Sprite round = circular ? K.Builtin("UI/Skin/Knob.psd") : null;
+        Sprite round = circular ? RoundSprite() : null;
 
         GameObject slot = new GameObject(circular ? "RelicSlotCircle" : "RelicSlotView",
                                          typeof(RectTransform));
@@ -822,6 +803,83 @@ public static class RelicInventoryUIBuilder
         EditorUtility.SetDirty(uiManager);
 
         return "UIManager에 자동 연결됨 (I키로 열림)";
+    }
+
+    // ── 원형 칸에 쓰는 동그라미 ─────────────
+
+    private const string RoundSpritePath = "Assets/Sprites/UI/Circle.png";
+
+    /// <summary>
+    /// 테두리가 매끈한 흰 동그라미를 만들어 둔다.
+    ///
+    /// 전에는 유니티 기본 Knob 스프라이트를 썼는데, 원본이 작아서
+    /// 장착칸 크기(130)로 키우면 가장자리가 계단처럼 깨졌다.
+    /// 256으로 크게 그려두면 줄여서 쓰게 되므로 깨끗하게 나온다.
+    ///
+    /// 가장자리는 한 점마다 4x4로 잘게 나눠 샘플링해서 부드럽게 만든다.
+    /// 색은 Image가 입히므로 흰색으로만 그린다.
+    /// </summary>
+    private static Sprite RoundSprite()
+    {
+        Sprite existing = AssetDatabase.LoadAssetAtPath<Sprite>(RoundSpritePath);
+        if (existing != null) return existing;
+
+        const int Size = 256;
+        const int Samples = 4;
+
+        // 가장자리가 텍스처 끝에 닿으면 줄일 때 잘려 보인다. 2픽셀 남긴다.
+        float radius = Size / 2f - 2f;
+        float center = Size / 2f;
+
+        Texture2D texture = new Texture2D(Size, Size, TextureFormat.RGBA32, false);
+        Color[] pixels = new Color[Size * Size];
+
+        for (int y = 0; y < Size; y++)
+        {
+            for (int x = 0; x < Size; x++)
+            {
+                int inside = 0;
+
+                for (int sy = 0; sy < Samples; sy++)
+                {
+                    for (int sx = 0; sx < Samples; sx++)
+                    {
+                        float px = x + (sx + 0.5f) / Samples - center;
+                        float py = y + (sy + 0.5f) / Samples - center;
+
+                        if (px * px + py * py <= radius * radius) inside++;
+                    }
+                }
+
+                float alpha = inside / (float)(Samples * Samples);
+                pixels[y * Size + x] = new Color(1f, 1f, 1f, alpha);
+            }
+        }
+
+        texture.SetPixels(pixels);
+        texture.Apply();
+
+        if (!AssetDatabase.IsValidFolder("Assets/Sprites")) AssetDatabase.CreateFolder("Assets", "Sprites");
+        if (!AssetDatabase.IsValidFolder("Assets/Sprites/UI")) AssetDatabase.CreateFolder("Assets/Sprites", "UI");
+
+        System.IO.File.WriteAllBytes(RoundSpritePath, texture.EncodeToPNG());
+        Object.DestroyImmediate(texture);
+
+        AssetDatabase.ImportAsset(RoundSpritePath, ImportAssetOptions.ForceUpdate);
+
+        TextureImporter importer = AssetImporter.GetAtPath(RoundSpritePath) as TextureImporter;
+
+        if (importer != null)
+        {
+            importer.textureType = TextureImporterType.Sprite;
+            importer.alphaIsTransparency = true;
+            importer.mipmapEnabled = false;
+            importer.filterMode = FilterMode.Bilinear;
+            importer.wrapMode = TextureWrapMode.Clamp;
+            importer.SaveAndReimport();
+        }
+
+        return AssetDatabase.LoadAssetAtPath<Sprite>(RoundSpritePath);
     }
 }
 #endif
