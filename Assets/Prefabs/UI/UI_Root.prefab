@@ -247,17 +247,17 @@ RectTransform:
   m_CorrespondingSourceObject: {fileID: 7670345245763944643, guid: 8b8600d912fef0946a4b314561790aa5, type: 3}
   m_PrefabInstance: {fileID: 800313098235439022}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &7259303703737730864 stripped
+--- !u!114 &8051242802152086358 stripped
 MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 8044962495919382686, guid: 8b8600d912fef0946a4b314561790aa5, type: 3}
+  m_CorrespondingSourceObject: {fileID: 7250947330773908728, guid: 8b8600d912fef0946a4b314561790aa5, type: 3}
   m_PrefabInstance: {fileID: 800313098235439022}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 153c8147086b49008607a3961cfb6b73, type: 3}
+  m_Script: {fileID: 11500000, guid: 20cc71e768e74d2aaf3faf923443c299, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::MapPanel
+  m_EditorClassIdentifier: Assembly-CSharp::SkillPanel
 --- !u!114 &8257456185794216588 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 8755886233071625506, guid: 8b8600d912fef0946a4b314561790aa5, type: 3}
@@ -269,6 +269,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 34b507712bccc1f4199b008cac11f585, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::TutorialToolTip
+--- !u!114 &8489074871973151439 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 9138938459099882849, guid: 8b8600d912fef0946a4b314561790aa5, type: 3}
+  m_PrefabInstance: {fileID: 800313098235439022}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 153c8147086b49008607a3961cfb6b73, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MapPanel
 --- !u!1001 &1089844123056081083
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -868,11 +879,15 @@ PrefabInstance:
     - target: {fileID: 7598323755445276453, guid: b798dec77f88e90419825f290ebee3f7, type: 3}
       propertyPath: mapPanel
       value: 
-      objectReference: {fileID: 7259303703737730864}
+      objectReference: {fileID: 8489074871973151439}
     - target: {fileID: 7598323755445276453, guid: b798dec77f88e90419825f290ebee3f7, type: 3}
       propertyPath: pausePanel
       value: 
       objectReference: {fileID: 4381888982785898982}
+    - target: {fileID: 7598323755445276453, guid: b798dec77f88e90419825f290ebee3f7, type: 3}
+      propertyPath: skillPanel
+      value: 
+      objectReference: {fileID: 8051242802152086358}
     - target: {fileID: 7598323755445276453, guid: b798dec77f88e90419825f290ebee3f7, type: 3}
       propertyPath: gameOverPanel
       value: 
