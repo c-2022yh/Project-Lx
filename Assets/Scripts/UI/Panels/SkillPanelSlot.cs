@@ -35,6 +35,9 @@ public class SkillPanelSlot : MonoBehaviour,
     [Tooltip("장착칸 위에 붙는 키 이름(X, A, S, D, F). 보유 목록 칸에서는 꺼둔다.")]
     [SerializeField] private TextMeshProUGUI keyText;
 
+    [Tooltip("아이콘이 없는 스킬에 이름을 대신 띄운다. 빈 칸으로 오해하지 않게.")]
+    [SerializeField] private TextMeshProUGUI iconFallbackText;
+
     private static readonly Color FilledBg = new Color(0.28f, 0.28f, 0.34f, 1f);
     private static readonly Color EmptyBg = new Color(0.18f, 0.18f, 0.22f, 1f);
     private static readonly Color HoverBg = new Color(0.38f, 0.38f, 0.46f, 1f);
@@ -76,11 +79,28 @@ public class SkillPanelSlot : MonoBehaviour,
 
         bool hasSkill = skill != null;
 
+        bool hasIcon = hasSkill && skill.icon != null;
+
         if (icon != null)
         {
-            icon.sprite = hasSkill ? skill.icon : null;
-            icon.enabled = hasSkill && skill.icon != null;
+            icon.sprite = hasIcon ? skill.icon : null;
+            icon.enabled = hasIcon;
             icon.color = Color.white;
+        }
+
+        // 지금 프로젝트의 SkillData는 여덟 개 전부 icon이 비어 있다.
+        // 그대로 두면 장착된 스킬도 빈 칸으로 보여서 "장착이 안 됐다"고 오해하게 된다.
+        // 아트가 붙기 전까지는 이름을 대신 띄운다.
+        if (iconFallbackText != null)
+        {
+            bool showFallback = hasSkill && !hasIcon;
+            iconFallbackText.enabled = showFallback;
+
+            if (showFallback)
+            {
+                string name = skill.skillName;
+                iconFallbackText.text = string.IsNullOrEmpty(name) ? skill.name : name;
+            }
         }
 
         if (keyText != null)

@@ -94,10 +94,6 @@ public static class SkillUIBuilder
         GameObject title = K.Text("Title", w, "스킬", 40, FontStyles.Bold);
         K.Place(title, K.Anchor.TopLeft, 40, -28, 400, 54);
 
-        GameObject subtitle = K.Text("Subtitle", w, "전투에 사용할 스킬을 장착하고 관리합니다", 20,
-            FontStyles.Normal, TextAlignmentOptions.MidlineLeft, K.MutedText);
-        K.Place(subtitle, K.Anchor.TopLeft, 150, -40, 700, 32);
-
         // 장착칸
         GameObject equipHeader = K.Text("Header_Equip", w, "장착 중인 스킬", 28, FontStyles.Bold);
         K.Place(equipHeader, K.Anchor.TopLeft, 40, -100, 400, 40);
@@ -143,6 +139,13 @@ public static class SkillUIBuilder
 
         // 칸과 칸 사이, 목록이 비어 있을 때도 놓을 수 있게.
         storage.AddComponent<SkillStorageDropZone>();
+
+        // 보유 목록이 비었을 때 띄울 안내. 격자의 자식으로 넣으면 GridLayoutGroup이
+        // 이것도 칸 하나로 잡아버리므로 창(w)에 직접 붙이고 보관함 영역에 겹쳐 둔다.
+        GameObject storageEmpty = K.Text("Storage_Empty", w,
+            "보유한 스킬이 없습니다\n스킬을 주는 유물을 장착하면, 장착칸에 들어가지 못한 스킬이 여기 표시됩니다",
+            21, FontStyles.Normal, TextAlignmentOptions.Top, K.MutedText);
+        K.Place(storageEmpty, K.Anchor.TopLeft, 40, -390, 1440, 120);
 
         // 설명창
         GameObject desc = K.Img("DescriptionPanel", w, K.SectionBg, true);
@@ -190,6 +193,7 @@ public static class SkillUIBuilder
         K.SetRef(so, "descMeta", descMeta.GetComponent<TextMeshProUGUI>());
         K.SetRef(so, "descText", descText.GetComponent<TextMeshProUGUI>());
         K.SetRef(so, "hintText", hint.GetComponent<TextMeshProUGUI>());
+        K.SetRef(so, "storageEmptyNotice", storageEmpty);
 
         so.ApplyModifiedPropertiesWithoutUndo();
 
@@ -249,6 +253,17 @@ public static class SkillUIBuilder
         K.Stretch(icon, 10, 10, 10, 10);
         icon.GetComponent<UnityEngine.UI.Image>().enabled = false;
 
+        // 아이콘이 없는 스킬에 이름을 대신 띄운다. 칸 안에 들어가야 하므로 자동 축소를 켠다.
+        GameObject fallback = K.Text("IconFallback", slot.transform, "", 18,
+            FontStyles.Bold, TextAlignmentOptions.Center);
+        K.Stretch(fallback, 6, 6, 6, 6);
+
+        TextMeshProUGUI fallbackTmp = fallback.GetComponent<TextMeshProUGUI>();
+        fallbackTmp.enableAutoSizing = true;
+        fallbackTmp.fontSizeMin = 10f;
+        fallbackTmp.fontSizeMax = 20f;
+        fallbackTmp.enabled = false;
+
         // 키 이름은 칸 위에 올린다. 보유 목록 칸에서는 SkillPanelSlot이 꺼버린다.
         GameObject key = K.Text("KeyText", slot.transform, "", 26,
             FontStyles.Bold, TextAlignmentOptions.Center);
@@ -261,6 +276,7 @@ public static class SkillUIBuilder
         K.SetRef(so, "icon", icon.GetComponent<UnityEngine.UI.Image>());
         K.SetRef(so, "selectionOutline", outline.GetComponent<UnityEngine.UI.Image>());
         K.SetRef(so, "keyText", key.GetComponent<TextMeshProUGUI>());
+        K.SetRef(so, "iconFallbackText", fallbackTmp);
         so.ApplyModifiedPropertiesWithoutUndo();
 
         if (!AssetDatabase.IsValidFolder("Assets/Prefabs/UI"))

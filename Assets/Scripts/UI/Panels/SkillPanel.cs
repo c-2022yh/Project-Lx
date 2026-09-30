@@ -38,6 +38,9 @@ public class SkillPanel : MonoBehaviour, ISkillSlotHost
     [SerializeField] private GameObject slotPrefab;
     [SerializeField] private SkillDragLayer dragLayer;
 
+    [Tooltip("보유 목록이 비었을 때 대신 띄울 안내문.")]
+    [SerializeField] private GameObject storageEmptyNotice;
+
     [Header("설명창")]
     [SerializeField] private Image descIcon;
     [SerializeField] private TextMeshProUGUI descName;
@@ -132,16 +135,25 @@ public class SkillPanel : MonoBehaviour, ISkillSlotHost
     /// <summary>보유 목록: 가지고 있지만 지금 칸에 들어가 있지 않은 일반 스킬.</summary>
     private void BuildStorage()
     {
-        if (storageContainer == null) return;
-        if (playerSkill == null) return;
+        int shown = 0;
 
-        foreach (SkillData skill in playerSkill.OwnedSkills)
+        if (storageContainer != null && playerSkill != null)
         {
-            if (skill == null) continue;
-            if (playerSkill.IsSkillEquipped(skill)) continue;
+            foreach (SkillData skill in playerSkill.OwnedSkills)
+            {
+                if (skill == null) continue;
+                if (playerSkill.IsSkillEquipped(skill)) continue;
 
-            SpawnSlot(storageContainer, skill, SkillSlotArea.Storage, -1, "", false);
+                SpawnSlot(storageContainer, skill, SkillSlotArea.Storage, -1, "", false);
+                shown++;
+            }
         }
+
+        // 이 목록이 비어 있는 건 대체로 정상이다. 지금 게임에서 일반 스킬을 주는
+        // 유물은 그림자 하나뿐이고, PlayerSkill.GrantSkill이 받는 즉시 A~F의 첫
+        // 빈칸에 자동 장착해버린다. 즉 "보유했지만 안 낀 스킬"이 생길 일이 거의 없다.
+        // 아무 말도 없으면 창이 고장난 것처럼 보이므로 안내를 띄운다.
+        if (storageEmptyNotice != null) storageEmptyNotice.SetActive(shown == 0);
     }
 
     private void SpawnSlot(Transform parent, SkillData skill, SkillSlotArea area,
