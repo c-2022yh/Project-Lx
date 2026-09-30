@@ -41,13 +41,23 @@ public class MapPanel : MonoBehaviour
     [SerializeField] private bool matchImageScale = true;
 
     [Header("동작")]
-    [Tooltip("제단·유물 상자·포털을 자동으로 찾아 마커로 찍는다.")]
+    [Tooltip("제단·유물 상자·포털·부술 수 있는 벽을 자동으로 찾아 마커로 찍는다.")]
     [SerializeField] private bool autoCollectMarkers = true;
+
+    [Tooltip("살아 있는 몬스터도 찍는다. 끄면 지형과 목표물만 보인다.")]
+    [SerializeField] private bool showEnemies = true;
+
+    [Tooltip("맵 이미지가 없을 때, 찍을 것들이 판 안에 다 들어오도록 자동으로 맞춘다.")]
+    [SerializeField] private bool autoFitWhenNoImage = true;
 
     /// <summary>한 번 만든 마커를 들고 있다가 닫힐 때 치운다.</summary>
     private readonly List<GameObject> spawnedMarkers = new List<GameObject>();
 
     private Transform player;
+
+    /// <summary>자동 맞춤으로 정한 중심과 배율. 배율이 0이면 자동 맞춤을 안 쓴다는 뜻.</summary>
+    private Vector2 fitCenter;
+    private float fitScale;
 
     /// <summary>수집 결과를 잠깐 담는 상자. 이름까지 들고 있어야 라벨을 찍을 수 있다.</summary>
     private struct MarkerInfo
@@ -92,6 +102,9 @@ public class MapPanel : MonoBehaviour
     /// <summary>월드 좌표를 맵 위 좌표로. 이 한 줄이 맵의 전부다.</summary>
     public Vector2 WorldToMap(Vector2 worldPosition)
     {
+        // 자동 맞춤이 켜져 있으면 인스펙터 값 대신 그때 계산한 값을 쓴다.
+        if (fitScale > 0f) return (worldPosition - fitCenter) * fitScale;
+
         return (worldPosition - worldCenter) * unitsToPixels * ImageDisplayScale;
     }
 
@@ -129,6 +142,8 @@ public class MapPanel : MonoBehaviour
 
         List<MarkerInfo> markers = new List<MarkerInfo>();
         Collect(markers);
+
+        UpdateAutoFit(markers);
 
         foreach (MarkerInfo info in markers) SpawnMarker(info);
 
@@ -169,6 +184,83 @@ public class MapPanel : MonoBehaviour
 
         foreach (AutoScenePortal portal in FindObjectsByType<AutoScenePortal>(FindObjectsSortMode.None))
             AddAuto(result, handled, portal, MapMarkerKind.Exit);
+
+        // 부술 수 있는 벽은 "지금은 못 가는 길"이라 메트로베니아에서 제일 중요한 표시다.
+        foreach (FireBreakableWall wall in FindObjectsByType<FireBreakableWall>(FindObjectsSortMode.None))
+            AddAuto(result, handled, wall, MapMarkerKind.BreakableWall);
+
+        if (!showEnemies) return;
+
+        // FindObjectsByType은 꺼져 있는 오브젝트를 빼므로 풀에 들어간 몬스터는 안 잡힌다.
+        // 죽는 중이라 아직 살아 있는 것만 걸러낸다.
+        foreach (Enemy enemy in FindObjectsByType<Enemy>(FindObjectsSortMode.None))
+        {
+            if (enemy == null || enemy.IsDead) continue;
+
+            bool isElite = enemy.GetComponent<EnemyEliteAI>() != null;
+
+            AddAuto(result, handled, enemy,
+                    isElite ? MapMarkerKind.EliteEnemy : MapMarkerKind.Enemy);
+        }
+    }
+
+    /// <summary>
+    /// 맵 이미지가 없을 때 쓰는 자동 맞춤.
+    ///
+    /// 이미지가 없으면 World Center / Units To Pixels는 기본값(0,0 / 4)이라,
+    /// 스테이지가 원점에서 멀면 마커가 전부 판 밖으로 나가 잘려버린다.
+    /// (뷰포트에 RectMask2D가 걸려 있어서 밖으로 나간 건 아예 안 보인다.)
+    /// 그래서 이미지가 없는 동안만, 찍을 것들이 다 들어오게 중심과 배율을 정한다.
+    /// 이미지를 넣으면 이 계산은 꺼지고 인스펙터 값이 그대로 쓰인다.
+    /// </summary>
+    private void UpdateAutoFit(List<MarkerInfo> markers)
+    {
+        fitScale = 0f;
+
+        if (!autoFitWhenNoImage) return;
+        if (mapImage != null && mapImage.sprite != null) return;
+        if (mapContent == null) return;
+
+        bool any = false;
+        Vector2 min = Vector2.zero;
+        Vector2 max = Vector2.zero;
+
+        foreach (MarkerInfo info in markers) Expand(info.Position, ref any, ref min, ref max);
+
+        if (player != null) Expand(player.position, ref any, ref min, ref max);
+
+        if (!any) return;
+
+        fitCenter = (min + max) * 0.5f;
+
+        Rect board = mapContent.rect;
+
+        // 창이 막 켜진 프레임에는 rect가 아직 0일 수 있다. 그럴 땐 대략치로 계산한다.
+        float boardWidth = board.width > 1f ? board.width : 1400f;
+        float boardHeight = board.height > 1f ? board.height : 660f;
+
+        float width = Mathf.Max(max.x - min.x, 1f);
+        float height = Mathf.Max(max.y - min.y, 1f);
+
+        // 85%만 쓴다. 가장자리에 붙은 마커가 판 끝에 걸려 잘리지 않도록.
+        float scale = Mathf.Min(boardWidth * 0.85f / width, boardHeight * 0.85f / height);
+
+        // 찍을 게 하나뿐이면 배율이 터무니없이 커진다. 상식적인 범위로 묶는다.
+        fitScale = Mathf.Clamp(scale, 0.5f, 24f);
+    }
+
+    private static void Expand(Vector2 point, ref bool any, ref Vector2 min, ref Vector2 max)
+    {
+        if (!any)
+        {
+            min = point;
+            max = point;
+            any = true;
+            return;
+        }
+
+        min = Vector2.Min(min, point);
+        max = Vector2.Max(max, point);
     }
 
     private static void AddAuto(List<MarkerInfo> result, HashSet<GameObject> handled,
@@ -224,7 +316,7 @@ public class MapPanel : MonoBehaviour
         {
             noticeText.text =
                 "맵 이미지가 아직 없습니다. 마커와 현재 위치만 표시합니다.\n" +
-                "(MapPanel의 World Center / Units To Pixels 값으로 위치를 맞춥니다)";
+                "(판 안에 다 들어오도록 자동으로 맞춰서 보여주는 중입니다)";
         }
     }
 

@@ -16,7 +16,19 @@ public enum MapMarkerKind
     Exit,
 
     /// <summary>그 밖에 직접 찍고 싶은 것.</summary>
-    Custom
+    Custom,
+
+    // 아래는 나중에 덧붙인 것들이다. 이미 씬에 찍어둔 MapMarkerSource의
+    // 저장값이 밀리지 않도록 중간에 끼우지 않고 항상 끝에만 추가한다.
+
+    /// <summary>일반 몬스터.</summary>
+    Enemy,
+
+    /// <summary>정예 몬스터.</summary>
+    EliteEnemy,
+
+    /// <summary>부술 수 있는 벽 (길이 막혀 있는 곳).</summary>
+    BreakableWall
 }
 
 /// <summary>

@@ -128,6 +128,21 @@ public static class TilemapSketchExporter
         File.WriteAllBytes(path, texture.EncodeToPNG());
         Object.DestroyImmediate(texture);
 
+        AssetDatabase.ImportAsset(path, ImportAssetOptions.ForceUpdate);
+
+        // 기본값(Default)으로 들어오면 Image에 끼울 수가 없다. Sprite로 바꿔준다.
+        TextureImporter importer = AssetImporter.GetAtPath(path) as TextureImporter;
+
+        if (importer != null)
+        {
+            importer.textureType = TextureImporterType.Sprite;
+            importer.spritePixelsPerUnit = PixelsPerTile;
+            importer.alphaIsTransparency = true;
+            importer.mipmapEnabled = false;
+            importer.filterMode = FilterMode.Point;
+            importer.SaveAndReimport();
+        }
+
         AssetDatabase.Refresh();
 
         // 칸 (x, y)는 월드에서 [x, x+1] 구간을 덮는다. 그래서 오른쪽 끝에 1을 더한다.
