@@ -85,12 +85,9 @@ public static class MapUIBuilder
             "- 몬스터가 너무 많으면 MapPanel의 Show Enemies를 끄세요\n" +
             "- " + note + "\n\n" +
             "맵 이미지 넣는 법\n" +
-            "  1. 맵이 있는 씬을 연 채 Tools/UI > 맵 밑그림 뽑기\n" +
-            "  2. 나온 PNG를 MapPanel > Viewport > Content > MapImage의\n" +
-            "     Source Image에 끼웁니다\n" +
-            "  3. 안내창이 알려준 World Center / Units To Pixels 두 값을\n" +
-            "     MapPanel에 그대로 적습니다\n\n" +
-            "한 번 넣어두면 이 빌더를 다시 돌려도 그 값은 유지됩니다.",
+            "  맵이 있는 씬을 연 채 Tools/UI > 맵 밑그림 뽑기 하나만 돌리면 됩니다.\n" +
+            "  이미지와 좌표가 씬 이름으로 자동 등록되고, 맵 창은 열릴 때\n" +
+            "  그 씬 항목을 찾아 끼웁니다. 씬마다 한 번씩 돌려주세요.",
             "확인");
     }
 
