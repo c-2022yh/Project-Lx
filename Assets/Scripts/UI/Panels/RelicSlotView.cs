@@ -39,10 +39,24 @@ public class RelicSlotView : MonoBehaviour,
     [Tooltip("키보드 화살표가 가리키는 칸 테두리 (하양).")]
     [SerializeField] private Image focusOutline;
 
+    [Tooltip("계열(검/보주/신체)을 색으로 구분하는 테두리. 항상 켜져 있다.")]
+    [SerializeField] private Image categoryOutline;
+
+    [Tooltip("아이콘이 없는 유물에 이름 첫 글자를 대신 띄운다. 빈 칸으로 오해하지 않게.")]
+    [SerializeField] private TextMeshProUGUI iconFallbackText;
+
     // 창 배경(0.08)과 충분히 구분되도록 밝힌 값.
     private static readonly Color FilledBg = new Color(0.28f, 0.28f, 0.34f, 1f);
     private static readonly Color EmptyBg = new Color(0.18f, 0.18f, 0.22f, 1f);
     private static readonly Color HoverBg = new Color(0.38f, 0.38f, 0.46f, 1f);
+
+    // 계열 테두리 색. 선택(노랑)·포커스(하양)와 헷갈리지 않는 색으로 골랐다.
+    private static readonly Color SwordOutline = new Color(0.90f, 0.42f, 0.38f, 1f);
+    private static readonly Color OrbOutline = new Color(0.62f, 0.52f, 0.95f, 1f);
+    private static readonly Color BodyOutline = new Color(0.38f, 0.82f, 0.70f, 1f);
+
+    /// <summary>빈 장착칸은 같은 색을 흐리게 써서 "여기는 검 칸"이라는 것만 알려준다.</summary>
+    private const float EmptyOutlineAlpha = 0.35f;
 
     /// <summary>드래그 중인 원본 칸은 흐리게 해서 "들려 있다"는 걸 보여준다.</summary>
     private const float DraggingIconAlpha = 0.25f;
@@ -84,11 +98,27 @@ public class RelicSlotView : MonoBehaviour,
 
         bool hasRelic = relic != null;
 
+        bool hasIcon = hasRelic && relic.Icon != null;
+
         if (icon != null)
         {
-            icon.sprite = hasRelic ? relic.Icon : null;
-            icon.enabled = hasRelic && relic.Icon != null;
+            icon.sprite = hasIcon ? relic.Icon : null;
+            icon.enabled = hasIcon;
             icon.color = Color.white;
+        }
+
+        // 아이콘이 아직 안 붙은 유물이 있다. 그냥 두면 칸이 비어 보여서
+        // "장착했는데 자리가 안 없어진다"고 오해하게 된다. 이름 첫 글자라도 띄운다.
+        if (iconFallbackText != null)
+        {
+            bool showFallback = hasRelic && !hasIcon;
+            iconFallbackText.enabled = showFallback;
+
+            if (showFallback)
+            {
+                string name = relic.RelicName;
+                iconFallbackText.text = string.IsNullOrEmpty(name) ? "?" : name.Substring(0, 1);
+            }
         }
 
         if (costText != null)
@@ -102,6 +132,7 @@ public class RelicSlotView : MonoBehaviour,
         SetSelected(false);
         SetFocused(false);
         RefreshBackground();
+        RefreshCategoryOutline();
     }
 
     public void SetSelected(bool selected)
@@ -134,6 +165,32 @@ public class RelicSlotView : MonoBehaviour,
 
         if (isHovered) background.color = HoverBg;
         else background.color = IsEmpty ? EmptyBg : FilledBg;
+    }
+
+    /// <summary>
+    /// 계열 테두리를 칠한다.
+    ///
+    /// 장착칸은 비어 있어도 어느 계열을 받는 칸인지 정해져 있으므로,
+    /// 빈 칸이면 같은 색을 흐리게 칠해서 칸의 용도만 알려준다.
+    /// </summary>
+    private void RefreshCategoryOutline()
+    {
+        if (categoryOutline == null) return;
+
+        Color color = OutlineColorOf(Category);
+        if (IsEmpty) color.a = EmptyOutlineAlpha;
+
+        categoryOutline.color = color;
+    }
+
+    private static Color OutlineColorOf(RelicCategory category)
+    {
+        return category switch
+        {
+            RelicCategory.Sword => SwordOutline,
+            RelicCategory.Orb => OrbOutline,
+            _ => BodyOutline
+        };
     }
 
     // ── 마우스 ─────────────────────────────
