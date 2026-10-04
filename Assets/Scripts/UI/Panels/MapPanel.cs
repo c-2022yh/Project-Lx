@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 /// <summary>
@@ -50,6 +51,10 @@ public class MapPanel : MonoBehaviour
     [Tooltip("맵 이미지가 없을 때, 찍을 것들이 판 안에 다 들어오도록 자동으로 맞춘다.")]
     [SerializeField] private bool autoFitWhenNoImage = true;
 
+    [Tooltip("열린 씬에 맞는 밑그림을 Resources의 MapSketchLibrary에서 찾아 끼운다.\n" +
+             "끄면 인스펙터에 직접 넣은 이미지와 좌표만 쓴다.")]
+    [SerializeField] private bool useSceneSketch = true;
+
     /// <summary>한 번 만든 마커를 들고 있다가 닫힐 때 치운다.</summary>
     private readonly List<GameObject> spawnedMarkers = new List<GameObject>();
 
@@ -73,8 +78,40 @@ public class MapPanel : MonoBehaviour
 
         if (!visible) return;
 
+        ApplySceneSketch();
+
         player = FindPlayer();
         Rebuild();
+    }
+
+    /// <summary>
+    /// 열린 씬에 맞는 밑그림을 끼운다.
+    ///
+    /// 맵 창은 Popup_Canvas 프리팹에 하나뿐인데 씬은 여러 개다. 이미지를 프리팹에
+    /// 박아두면 어느 씬에 들어가도 같은 지형이 나오므로, 열 때마다 씬 이름으로 찾는다.
+    /// 등록 안 된 씬이면 이미지를 비워서 아래 자동 맞춤으로 떨어뜨린다.
+    /// </summary>
+    private void ApplySceneSketch()
+    {
+        if (!useSceneSketch) return;
+
+        MapSketchLibrary library = MapSketchLibrary.Load();
+
+        // 저장소가 아예 없으면 인스펙터에 직접 넣어둔 값을 건드리지 않는다.
+        if (library == null) return;
+
+        MapSketchLibrary.Entry entry = library.Find(SceneManager.GetActiveScene().name);
+
+        if (entry == null || entry.sketch == null)
+        {
+            if (mapImage != null) mapImage.sprite = null;
+            return;
+        }
+
+        if (mapImage != null) mapImage.sprite = entry.sketch;
+
+        worldCenter = entry.worldCenter;
+        unitsToPixels = entry.unitsToPixels;
     }
 
     private void OnDisable()

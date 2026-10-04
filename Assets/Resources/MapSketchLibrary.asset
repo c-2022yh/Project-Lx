@@ -1,0 +1,47 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7b3e2c9d1a4f45c8b0d6e2f83c1a9b47, type: 3}
+  m_Name: MapSketchLibrary
+  m_EditorClassIdentifier: Assembly-CSharp::MapSketchLibrary
+  entries:
+  - sceneName: Test_Alpha
+    sketch: {fileID: -3248246483629176554, guid: 36e4da9571192574fbb7549618f15b68, type: 3}
+    worldCenter: {x: 2, y: 29}
+    unitsToPixels: 8
+  - sceneName: Area_01
+    sketch: {fileID: -2303059724589705833, guid: e36a0e8ada9d67d43b02d6030b698c03, type: 3}
+    worldCenter: {x: 13, y: 14}
+    unitsToPixels: 8
+  - sceneName: Forest01
+    sketch: {fileID: 6970736642149407602, guid: 10e85e711ea58ef448174d23cb088896, type: 3}
+    worldCenter: {x: 3.5, y: 29}
+    unitsToPixels: 8
+  - sceneName: Forest01_Entrance
+    sketch: {fileID: -1681846809357760750, guid: 2f3386ffc00773c4493e8ef172848e91, type: 3}
+    worldCenter: {x: 86.5, y: 96.5}
+    unitsToPixels: 8
+  - sceneName: Forest02
+    sketch: {fileID: 1053085924260314748, guid: ed18436f7c9d72745bdda3b52b15211b, type: 3}
+    worldCenter: {x: -5, y: 23.5}
+    unitsToPixels: 8
+  - sceneName: Forest020
+    sketch: {fileID: -2098988901245122442, guid: da8f62d190f588b40b1c18b36f1879a2, type: 3}
+    worldCenter: {x: 2, y: 29}
+    unitsToPixels: 8
+  - sceneName: GamePlay_Base
+    sketch: {fileID: 3239659170797758790, guid: ab36a54825232854c90cdd327173b3af, type: 3}
+    worldCenter: {x: -9, y: 1.5}
+    unitsToPixels: 8
+  - sceneName: Hongmin
+    sketch: {fileID: -261656940029454954, guid: 02d51c08eda51de428bc013a48908038, type: 3}
+    worldCenter: {x: 2, y: 29}
+    unitsToPixels: 8
