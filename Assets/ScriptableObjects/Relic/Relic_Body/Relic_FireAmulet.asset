@@ -10,13 +10,13 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 97e8976399dde06499934e413ed35ac2, type: 3}
-  m_Name: Relic_WindShoes
+  m_Name: Relic_FireAmulet
   m_EditorClassIdentifier: Assembly-CSharp::RelicData
-  relicId: body_windshoes
-  relicName: "\uBC14\uB78C\uC7A5\uD654"
-  icon: {fileID: -1971169554387352864, guid: 96bfc590a54f13d449e0a215eebc77c1, type: 3}
-  description: "LShift\uD0A4\uC5D0 \uB300\uC26C \uC2A4\uD0AC\uC744 \uD68D\uB4DD\uD55C\uB2E4."
+  relicId: body_fireAmulet
+  relicName: "\uD654\uC5FC\uBD80\uC801"
+  icon: {fileID: -3948904204956689733, guid: b37fb792c7c73e248bbad7f1e6cf7bcf, type: 3}
+  description: "\uC5EC\uC6B0\uBD88 \uC2A4\uD0AC\uC744 \uD68D\uB4DD\uD55C\uB2E4"
   cost: 1
   category: 2
   effects:
-  - {fileID: 11400000, guid: fe90c98aa9cd0d8439d98a1f18b7dd4c, type: 2}
+  - {fileID: 11400000, guid: a1cb78d19e2b4e24dba869d357ab4355, type: 2}

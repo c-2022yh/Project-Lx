@@ -10,13 +10,13 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 97e8976399dde06499934e413ed35ac2, type: 3}
-  m_Name: Relic_WindShoes
+  m_Name: Relic_HairPin
   m_EditorClassIdentifier: Assembly-CSharp::RelicData
-  relicId: body_windshoes
-  relicName: "\uBC14\uB78C\uC7A5\uD654"
-  icon: {fileID: -1971169554387352864, guid: 96bfc590a54f13d449e0a215eebc77c1, type: 3}
-  description: "LShift\uD0A4\uC5D0 \uB300\uC26C \uC2A4\uD0AC\uC744 \uD68D\uB4DD\uD55C\uB2E4."
+  relicId: body_hairpin
+  relicName: "\uCCAD\uC124\uB2E8\uC544"
+  icon: {fileID: 1029835235200871223, guid: 0eb6b4f56b5ed17449e0c755f2d8659f, type: 3}
+  description: "\uB9C8\uBC95 \uACF5\uACA9\uB825\uC774 \uC99D\uAC00\uD55C\uB2E4"
   cost: 1
   category: 2
   effects:
-  - {fileID: 11400000, guid: fe90c98aa9cd0d8439d98a1f18b7dd4c, type: 2}
+  - {fileID: 11400000, guid: d0d143df088c4604aa52f3749ac80248, type: 2}
