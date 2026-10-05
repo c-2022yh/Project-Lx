@@ -117,6 +117,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: f942e0ad2dad7394d8c0d1ffda71051d, type: 2}
   - {fileID: 11400000, guid: a207f8c94a23d1b419c9034ab23cfbab, type: 2}
   - {fileID: 11400000, guid: 1d1c17746030ec545b347c1ee38fa98d, type: 2}
+  - {fileID: 11400000, guid: 4dfad5c68ba3a2b48bd7eae99d6eddcf, type: 2}
 --- !u!58 &6767095945404313491
 CircleCollider2D:
   m_ObjectHideFlags: 0
