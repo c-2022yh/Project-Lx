@@ -1,13 +1,10 @@
 fileFormatVersion: 2
-guid: 22362787bcca77b41b950b3b545e66f6
+guid: d0cb098f6b3d91145aac4d139d794f12
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: 1361684169020639178
-    second: standing_3_0
-  - first:
-      213: -7457156849481835567
-    second: standing_3_1
+      213: 3715820679975843270
+    second: Attack2_3_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -49,7 +46,7 @@ TextureImporter:
   nPOTScale: 0
   lightmap: 0
   compressionQuality: 50
-  spriteMode: 2
+  spriteMode: 1
   spriteExtrude: 1
   spriteMeshType: 1
   alignment: 0
@@ -99,17 +96,30 @@ TextureImporter:
     ignorePlatformSupport: 0
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: WebGL
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
   spriteSheet:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: standing_3_0
+      name: Attack2_3_0
       rect:
         serializedVersion: 2
-        x: 64
-        y: 23
-        width: 941
-        height: 1425
+        x: 131
+        y: 9
+        width: 418
+        height: 309
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -118,30 +128,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: ac78fb6898ca5e210800000000000000
-      internalID: 1361684169020639178
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: standing_3_1
-      rect:
-        serializedVersion: 2
-        x: 609
-        y: 17
-        width: 8
-        height: 9
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 1db9348ea5bd28890800000000000000
-      internalID: -7457156849481835567
+      spriteID: 6c5b20f983f319330800000000000000
+      internalID: 3715820679975843270
       vertices: []
       indices: 
       edges: []
@@ -150,7 +138,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 
+    spriteID: 5e97eb03825dee720800000000000000
     internalID: 0
     vertices: []
     indices: 
@@ -160,8 +148,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      standing_3_0: 1361684169020639178
-      standing_3_1: -7457156849481835567
+      Attack2_3_0: 3715820679975843270
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

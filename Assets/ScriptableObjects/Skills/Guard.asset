@@ -14,7 +14,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::SkillD_Guard
   skillName: "\uAC00\uB4DC"
   icon: {fileID: 733414350923329873, guid: 08d6b9fb4764da64496c1b4bb93a0cdf, type: 3}
+<<<<<<< HEAD
   description: "\uAC00\uB4DC!"
+=======
+  description: "\uD2B9\uC815 \uBCF4\uC2A4 \uD328\uD134 \uB9C9\uAE30\uC5D0 \uC0AC\uC6A9\uB418\uB294
+    \uC2A4\uD0AC"
+>>>>>>> c389c9d1139cd5a875ce7058fcd10a9c3d248d39
   cooldownTime: 2
   soulCost: 0
   activeTime: 0.2
