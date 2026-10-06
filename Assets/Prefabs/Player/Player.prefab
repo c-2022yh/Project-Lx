@@ -82,7 +82,7 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_MaskInteraction: 0
-  m_Sprite: {fileID: -5130734051702287082, guid: edc5d4e80b1de4347b0c76ab1c58e1b7, type: 3}
+  m_Sprite: {fileID: 21300000, guid: f50a04c851e183249aba43fc452bf1a7, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -377,7 +377,7 @@ MonoBehaviour:
   - attackName: "\uB0B4\uB824 \uCE58\uAE30"
     startupTime: 0.2
     activeTime: 0.3
-    recoveryTime: 0.15
+    recoveryTime: 0.1
     damageSpec:
       damageType: 0
       damageMultiplier: 1
