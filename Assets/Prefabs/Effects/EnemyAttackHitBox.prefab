@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 6807224280637323739}
   - component: {fileID: 3678163426045505164}
   - component: {fileID: -8856714056107028753}
+  m_Layer: 14
   m_Name: EnemyAttackHitBox
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -78,6 +79,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: -307728789
+  m_SortingLayer: 10
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_Sprite: {fileID: -6649030925485574270, guid: f07854241a7780a4b8b74860f5595768, type: 3}
