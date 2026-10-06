@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: Guard
   m_EditorClassIdentifier: Assembly-CSharp::SkillD_Guard
   skillName: "\uAC00\uB4DC"
+<<<<<<< HEAD
   icon: {fileID: 733414350923329873, guid: 08d6b9fb4764da64496c1b4bb93a0cdf, type: 3}
 <<<<<<< HEAD
   description: "\uAC00\uB4DC!"
@@ -20,8 +21,20 @@ MonoBehaviour:
   description: "\uD2B9\uC815 \uBCF4\uC2A4 \uD328\uD134 \uB9C9\uAE30\uC5D0 \uC0AC\uC6A9\uB418\uB294
     \uC2A4\uD0AC"
 >>>>>>> c389c9d1139cd5a875ce7058fcd10a9c3d248d39
+=======
+>>>>>>> parent of c389c9d (261006 1819)
   cooldownTime: 2
+  manaCost: 0
   soulCost: 0
-  activeTime: 0.2
-  lockInputDuringSkill: 1
-  invincibleDuringSkill: 0
+  icon: {fileID: 0}
+  description: "\uAC00\uB4DC!"
+  compatibleSlot: 3
+  dashDistance: 0
+  duration: 1
+  startAngle: 150
+  endAngle: 220
+  effectPrefab: {fileID: 0}
+  damageMultiplier: 1
+  hitBoxSize: {x: 1.4, y: 1.4}
+  indicatorColor: {r: 0.5019608, g: 0.5019608, b: 1, a: 0.2627451}
+  indicatorOffset: {x: 1, y: 0, z: 0}

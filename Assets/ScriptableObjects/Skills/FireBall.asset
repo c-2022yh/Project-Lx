@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: FireBall
   m_EditorClassIdentifier: Assembly-CSharp::ProjectileShotSkillData
   skillName: "\uC5EC\uC6B0\uBD88"
-  icon: {fileID: 1891180607181568558, guid: 79791da8b47a70a4f86aede52e23c0c4, type: 3}
+  icon: {fileID: 0}
   description: "\uC804\uBC29\uC5D0 \uD654\uC5FC\uAD6C\uB97C \uB358\uC9C4\uB2E4"
   cooldownTime: 3
   soulCost: 10

@@ -344,8 +344,6 @@ MonoBehaviour:
   meleeAttackRange: 1.5
   chargeMinRange: 3
   chargeMaxRange: 6
-  enableMeleeAttack: 0
-  enableChargeAttack: 1
 --- !u!114 &-9172698352980354533
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -374,11 +372,6 @@ MonoBehaviour:
     hitboxScale: {x: 1, y: 1, z: 1}
     hitboxRotationZ: 0
     cooldown: 1.5
-  chargeStartupTime: 0.3
-  chargeSpeed: 20
-  chargeDuration: 0.35
-  chargeRecoveryTime: 0.5
-  chargeCooldown: 1.5
 --- !u!1 &3095458375250088132
 GameObject:
   m_ObjectHideFlags: 0

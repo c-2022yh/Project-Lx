@@ -14,32 +14,16 @@ public class EnemyEliteAI : MonoBehaviour
     private AIState currentState = AIState.Patrol;
 
     [Header("Attack Range")]
-    [Tooltip("근거리 공격이 발동되는 거리입니다.")]
-    [Min(0f)]
     [SerializeField] private float meleeAttackRange = 1.5f;
 
     [Header("Charge Range")]
-    [Tooltip("돌진을 시작할 최소 거리입니다.")]
-    [Min(0f)]
     [SerializeField] private float chargeMinRange = 3f;
-
-    [Tooltip("돌진을 시작할 최대 거리입니다.")]
-    [Min(0f)]
     [SerializeField] private float chargeMaxRange = 6f;
-
-    [Header("Attack Test")]
-    [SerializeField] private bool enableMeleeAttack = false;
-    [SerializeField] private bool enableChargeAttack = true;
 
     private EnemyAI ai;
 
     //공격 담당 스크립트
     private EnemyEliteAttack eliteAttack;
-
-    private void OnValidate()
-    {
-        chargeMaxRange = Mathf.Max(chargeMinRange, chargeMaxRange);
-    }
 
     private void Awake()
     {
@@ -113,23 +97,16 @@ public class EnemyEliteAI : MonoBehaviour
         //근거리 공격
         if (distance <= meleeAttackRange)
         {
-            if (enableMeleeAttack &&
-                eliteAttack != null &&
-                eliteAttack.CanUseMeleeAttack())
+            if (eliteAttack != null && eliteAttack.CanUseMeleeAttack())
             {
                 EnterAttack();
                 eliteAttack.StartMeleeAttack(OnAttackFinished);
                 return;
             }
-
-            ai.StopMovement();
-            return;
         }
 
         //돌진 공격
-        if (enableChargeAttack &&
-            distance >= chargeMinRange &&
-            distance <= chargeMaxRange)
+        if (distance >= chargeMinRange && distance <= chargeMaxRange)
         {
             if (eliteAttack != null && eliteAttack.CanUseChargeAttack())
             {
@@ -155,10 +132,8 @@ public class EnemyEliteAI : MonoBehaviour
 
     private void UpdateAttack()
     {
-        if (eliteAttack == null || !eliteAttack.IsCharging)
-        {
-            ai.StopMovement();
-        }
+        //실제 공격은 EnemyEliteAttack이 관리
+        ai.StopMovement();
     }
 
     private void EnterPatrol()

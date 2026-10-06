@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: PiercingDash
   m_EditorClassIdentifier: Assembly-CSharp::SkillA_Dash
 <<<<<<< HEAD
+<<<<<<< HEAD
   skillName: Dash
   icon: {fileID: 834850081774755965, guid: 345ab80737dc45a4383b8c282ba686aa, type: 3}
   description: "\uC5D4\uBBF9\uC2A4\uB178\uB798GOAT\u314B\u314B\u314B\u314B"
@@ -22,6 +23,11 @@ MonoBehaviour:
   description: "\uC804\uC9C4\uD558\uBA70 \uC804\uBC29\uC744 \uAC00\uB974\uBA70 \uACF5\uACA9\uD55C\uB2E4.
     \uC801 \uCC98\uCE58\uC2DC \uCFE8\uD0C0\uC784\uC774 \uCD08\uAE30\uD654\uB41C\uB2E4."
 >>>>>>> c389c9d1139cd5a875ce7058fcd10a9c3d248d39
+=======
+  skillName: Dash
+  icon: {fileID: 0}
+  description: "\uC5D4\uBBF9\uC2A4\uB178\uB798GOAT\u314B\u314B\u314B\u314B"
+>>>>>>> parent of c389c9d (261006 1819)
   cooldownTime: 4
   soulCost: 0
   activeTime: 0.05
@@ -35,7 +41,7 @@ MonoBehaviour:
     bonusPenetration: 0
     bonusDamageAmplification: 0
   knockbackDirection: {x: 1, y: 0}
-  dashDistance: 7
+  dashDistance: 5
   dashHitBoxSize: {x: 1.4, y: 1.2}
   dashHitBoxOffset: {x: 0.7, y: 0}
   dashEffectPrefab: {fileID: 3743958713700768615, guid: e0bdfd35540dbec43864a0b49a5aae4d, type: 3}
