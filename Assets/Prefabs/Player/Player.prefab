@@ -82,7 +82,7 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_MaskInteraction: 0
-  m_Sprite: {fileID: 21300000, guid: c128222adf88b044e80b73b2aacd0acf, type: 3}
+  m_Sprite: {fileID: -5130734051702287082, guid: edc5d4e80b1de4347b0c76ab1c58e1b7, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -227,8 +227,8 @@ CapsuleCollider2D:
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
-  m_Offset: {x: 0, y: -0.1}
-  m_Size: {x: 0.7, y: 2.5}
+  m_Offset: {x: 0, y: -0.3}
+  m_Size: {x: 0.7, y: 2.7}
   m_Direction: 0
 --- !u!114 &4329258634847844620
 MonoBehaviour:
@@ -358,9 +358,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::PlayerAttack
   groundPatterns:
   - attackName: "\uC9E7\uAC8C \uBCA0\uAE30"
-    startupTime: 0.03
-    activeTime: 0.09
-    recoveryTime: 0.04
+    startupTime: 0.05
+    activeTime: 0.1
+    recoveryTime: 0.02
     damageSpec:
       damageType: 0
       damageMultiplier: 1
@@ -368,16 +368,16 @@ MonoBehaviour:
       bonusPenetration: 0
       bonusDamageAmplification: 0
     attackEffectPrefab: {fileID: 3545481630792328146, guid: 94f295d40691486438e6c60e511b79e0, type: 3}
-    effectOffset: {x: 2, y: 0}
+    effectOffset: {x: 3, y: 0}
     effectScale: {x: 1, y: 1, z: 1}
     effectRotationZ: 0
     effectDuration: 0.3
     followPlayer: 0
     followDuration: 0.1
   - attackName: "\uB0B4\uB824 \uCE58\uAE30"
-    startupTime: 0.1
-    activeTime: 0.2
-    recoveryTime: 0.1
+    startupTime: 0.2
+    activeTime: 0.3
+    recoveryTime: 0.15
     damageSpec:
       damageType: 0
       damageMultiplier: 1
@@ -385,7 +385,7 @@ MonoBehaviour:
       bonusPenetration: 0
       bonusDamageAmplification: 0
     attackEffectPrefab: {fileID: 2066522367392586507, guid: 692a85f7206e9714c93b470598cbc6a6, type: 3}
-    effectOffset: {x: 2, y: 0}
+    effectOffset: {x: 3, y: 0}
     effectScale: {x: 1, y: 1, z: 1}
     effectRotationZ: 0
     effectDuration: 0.3
@@ -597,7 +597,7 @@ Transform:
   m_GameObject: {fileID: 5055931255594380884}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: -1.6, z: 0}
+  m_LocalPosition: {x: 0, y: -1.7, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
