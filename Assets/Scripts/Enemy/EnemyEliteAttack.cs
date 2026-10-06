@@ -35,17 +35,43 @@ public class EnemyEliteAttack : MonoBehaviour
 
     private EnemyStats enemyStats;
     private EnemyAI ai;
+    private Rigidbody2D rb;
 
     private bool isAttacking;
+    private bool isCharging;
     private float nextMeleeAttackTime;
+    private float nextChargeAttackTime;
+
+    [Header("Charge Test")]
+    [Tooltip("돌진 전에 멈춰 있는 시간입니다.")]
+    [Min(0f)]
+    [SerializeField] private float chargeStartupTime = 0.3f;
+
+    [Tooltip("돌진 속도입니다.")]
+    [Min(0f)]
+    [SerializeField] private float chargeSpeed = 12f;
+
+    [Tooltip("돌진이 유지되는 시간입니다.")]
+    [Min(0f)]
+    [SerializeField] private float chargeDuration = 0.35f;
+
+    [Tooltip("돌진 후 멈춰 있는 시간입니다.")]
+    [Min(0f)]
+    [SerializeField] private float chargeRecoveryTime = 0.5f;
+
+    [Tooltip("다음 돌진까지의 쿨타임입니다.")]
+    [Min(0f)]
+    [SerializeField] private float chargeCooldown = 1.5f;
 
     public bool IsAttacking => isAttacking;
+    public bool IsCharging => isCharging;
 
 
     private void Awake()
     {
         enemyStats = GetComponent<EnemyStats>();
         ai = GetComponent<EnemyAI>();
+        rb = GetComponent<Rigidbody2D>();
     }
 
     //근거리 공격 가능 여부
@@ -149,30 +175,95 @@ public class EnemyEliteAttack : MonoBehaviour
     }
 
 
-    // =========================
-    // 돌진 공격
-    // 나중에 구현
-
+    // Charge attack check
     public bool CanUseChargeAttack()
     {
-        return false;
+        if (isAttacking) return false;
+        if (Time.time < nextChargeAttackTime) return false;
+
+        return true;
     }
 
 
+    // Charge attack
     public void StartChargeAttack(
         int direction,
         Action onFinished)
     {
-        onFinished?.Invoke();
+        if (!CanUseChargeAttack()) return;
+
+        StartCoroutine(
+            ChargeAttackRoutine(
+                direction,
+                onFinished
+            )
+        );
     }
 
 
-    //비활성화 시 초기화
+    // Charge attack routine
+    private IEnumerator ChargeAttackRoutine(
+        int direction,
+        Action onFinished)
+    {
+        isAttacking = true;
+        isCharging = false;
+
+        float chargeDirection =
+            direction >= 0 ? 1f : -1f;
+
+        if (rb != null)
+        {
+            rb.linearVelocity = Vector2.zero;
+        }
+
+        yield return new WaitForSeconds(chargeStartupTime);
+
+        isCharging = true;
+
+        if (rb != null)
+        {
+            rb.linearVelocity =
+                new Vector2(
+                    chargeDirection * chargeSpeed,
+                    rb.linearVelocity.y
+                );
+        }
+
+        yield return new WaitForSeconds(chargeDuration);
+
+        if (rb != null)
+        {
+            rb.linearVelocity =
+                new Vector2(
+                    0f,
+                    rb.linearVelocity.y
+                );
+        }
+
+        isCharging = false;
+
+        yield return new WaitForSeconds(chargeRecoveryTime);
+
+        nextChargeAttackTime =
+            Time.time + chargeCooldown;
+
+        isAttacking = false;
+
+        onFinished?.Invoke();
+    }
+
 
     private void OnDisable()
     {
         StopAllCoroutines();
 
+        if (rb != null)
+        {
+            rb.linearVelocity = Vector2.zero;
+        }
+
+        isCharging = false;
         isAttacking = false;
     }
 }

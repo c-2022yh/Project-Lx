@@ -27,8 +27,8 @@ Transform:
   m_GameObject: {fileID: 2056732829808191594}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 0.7, z: 1}
+  m_LocalPosition: {x: -0.4, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 0.75, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 3783203440675197678}
@@ -82,12 +82,12 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_MaskInteraction: 0
-  m_Sprite: {fileID: 5651646158922815434, guid: 02678adc3b2af294280f53b2d9704dc8, type: 3}
+  m_Sprite: {fileID: 21300000, guid: c128222adf88b044e80b73b2aacd0acf, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
-  m_Size: {x: 1.6, y: 3.8}
+  m_Size: {x: 3.2, y: 4.8}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
@@ -228,7 +228,7 @@ CapsuleCollider2D:
   m_CompositeOperation: 0
   m_CompositeOrder: 0
   m_Offset: {x: 0, y: -0.1}
-  m_Size: {x: 0.7, y: 2}
+  m_Size: {x: 0.7, y: 2.3}
   m_Direction: 0
 --- !u!114 &4329258634847844620
 MonoBehaviour:
@@ -262,7 +262,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 62899f850307741f2a39c98a8b639597, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Unity.InputSystem::UnityEngine.InputSystem.PlayerInput
-  m_Actions: {fileID: -944628639613478452, guid: 2bcd2660ca9b64942af0de543d8d7100, type: 3}
+  m_Actions: {fileID: 0}
   m_NotificationBehavior: 0
   m_UIInputModule: {fileID: 0}
   m_DeviceLostEvent:
@@ -428,6 +428,7 @@ MonoBehaviour:
   - {fileID: 0}
   - {fileID: 0}
   - {fileID: 0}
+  startingSkills: []
   hudPanel: {fileID: 5405542325969778392, guid: 881165a111aad8b48984bc07a73d147b, type: 3}
 --- !u!114 &781535822289692772
 MonoBehaviour:
@@ -470,16 +471,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0903e508fb6b6604cb02da1a4d98f63e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerAwakening
-  awakeningDuration: 20
   awakeningFreezeTime: 0.8
-  normalAwakeningEnergy: 100
-  enhancedAwakeningEnergy: 200
+  awakeningRequiredEnergy: 100
+  awakeningEnergyDrainPerSecond: 5
   normalColor: {r: 1, g: 1, b: 1, a: 1}
   awakenedColor: {r: 1, g: 1, b: 1, a: 1}
-  enhancedAwakenedColor: {r: 1, g: 1, b: 1, a: 1}
   awakenedMoveMultiplier: 1.3
   awakenedJumpMultiplier: 1.2
-  normalCombatBonus:
+  awakeningCombatBonus:
     physicalAttack: 0
     magicalAttack: 0
     physicalPenetration: 0
@@ -501,6 +500,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerRelicManager
   player: {fileID: 4329258634847844620}
+  startingOwnedRelics: []
   startingRelics:
   - {fileID: 0}
 --- !u!114 &8913146774277055173
@@ -597,7 +597,7 @@ Transform:
   m_GameObject: {fileID: 5055931255594380884}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: -1.25, z: 0}
+  m_LocalPosition: {x: 0, y: -1.35, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []

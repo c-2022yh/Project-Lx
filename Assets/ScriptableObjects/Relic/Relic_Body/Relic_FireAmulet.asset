@@ -19,4 +19,4 @@ MonoBehaviour:
   cost: 1
   category: 2
   effects:
-  - {fileID: 11400000, guid: a1cb78d19e2b4e24dba869d357ab4355, type: 2}
+  - {fileID: 11400000, guid: 77cc50e81b9aa7848bb33e9e965c0ac3, type: 2}
