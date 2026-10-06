@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: PiercingDash
   m_EditorClassIdentifier: Assembly-CSharp::SkillA_Dash
   skillName: Dash
-  icon: {fileID: 0}
+  icon: {fileID: 834850081774755965, guid: 345ab80737dc45a4383b8c282ba686aa, type: 3}
   description: "\uC5D4\uBBF9\uC2A4\uB178\uB798GOAT\u314B\u314B\u314B\u314B"
   cooldownTime: 4
   soulCost: 0

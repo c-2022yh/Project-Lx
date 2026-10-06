@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: ProjectileShot
   m_EditorClassIdentifier: Assembly-CSharp::ProjectileShotSkillData
   skillName: Shot
-  icon: {fileID: 0}
+  icon: {fileID: -2471701815421610377, guid: e2e823559992f9e42a7aadf70c34e90a, type: 3}
   description: "\uD22C\uC0AC\uCCB4 \uB0A0\uB9B0"
   cooldownTime: 1
   soulCost: 0

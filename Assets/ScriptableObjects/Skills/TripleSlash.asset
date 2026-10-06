@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: TripleSlash
   m_EditorClassIdentifier: Assembly-CSharp::SkillS_Slash
   skillName: Slash
-  icon: {fileID: 0}
+  icon: {fileID: -6359371266847946882, guid: f5dc3cd1453a21f4ea3f3168643454a5, type: 3}
   description: "\uB3CC\uB3CC"
   cooldownTime: 2
   soulCost: 0
