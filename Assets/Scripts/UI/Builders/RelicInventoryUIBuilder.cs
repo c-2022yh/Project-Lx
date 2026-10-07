@@ -543,9 +543,17 @@ public static class RelicInventoryUIBuilder
         // 아이콘 여백은 비율로 잡는다.
         // 픽셀로 잡으면 같은 프리팹을 신체 칸(72)으로 줄였을 때
         // 여백만 그대로 남아서 그림이 지나치게 작아진다.
-        float margin = circular ? 0.20f : 0.12f;
+        //
+        // 원형 칸은 음수다. 유물 아이콘이 자기 테두리(모서리 마름모까지 그려진
+        // 둥근 사각형 프레임)를 달고 오기 때문에, 그대로 넣으면 칸 테두리와
+        // 두 겹으로 보인다. 칸보다 크게 넣고 원으로 잘라내면 그 프레임이
+        // 잘려나가고 칸의 원 하나만 남는다.
+        float margin = circular ? -(IconZoom - 1f) / 2f : 0.12f;
 
-        GameObject icon = K.Img("Icon", slot.transform, Color.white);
+        GameObject icon = circular
+            ? CircleMaskedIcon(slot.transform)
+            : K.Img("Icon", slot.transform, Color.white);
+
         FillRelative(icon, margin);
         icon.GetComponent<UnityEngine.UI.Image>().enabled = false;
 
@@ -585,6 +593,56 @@ public static class RelicInventoryUIBuilder
 
         Debug.Log("[RelicInventoryUIBuilder] 칸 프리팹 생성됨: " + path);
         return saved;
+    }
+
+    /// <summary>
+    /// 원으로 잘리는 아이콘 하나. 자른 자리가 매끈하도록 전용 셰이더를 쓴다.
+    ///
+    /// 유니티 기본 Mask는 스텐실이라 경계가 계단처럼 깨진다. 칸이 130px밖에
+    /// 안 되는데 그러면 눈에 띈다.
+    /// </summary>
+    private static GameObject CircleMaskedIcon(Transform parent)
+    {
+        GameObject go = K.Obj("Icon", parent);
+
+        CircleMaskedImage image = go.AddComponent<CircleMaskedImage>();
+        image.color = Color.white;
+        image.raycastTarget = false;
+        image.material = CircleMaskMaterial();
+
+        return go;
+    }
+
+    /// <summary>원 잘라내기 머티리얼. 없으면 만든다.</summary>
+    private static Material CircleMaskMaterial()
+    {
+        Material material = AssetDatabase.LoadAssetAtPath<Material>(CircleMaskMaterialPath);
+        if (material != null) return material;
+
+        Shader shader = Shader.Find(CircleMaskShaderName);
+
+        if (shader == null)
+        {
+            Debug.LogWarning("[RelicInventoryUIBuilder] " + CircleMaskShaderName +
+                             " 셰이더를 찾지 못했습니다. 아이콘이 네모로 보입니다.");
+            return null;
+        }
+
+        if (!AssetDatabase.IsValidFolder("Assets/Materials"))
+            AssetDatabase.CreateFolder("Assets", "Materials");
+        if (!AssetDatabase.IsValidFolder("Assets/Materials/UI"))
+            AssetDatabase.CreateFolder("Assets/Materials", "UI");
+
+        material = new Material(shader);
+
+        // 아이콘 네모가 칸의 IconZoom배라, 칸에 꼭 맞는 원의 반지름은 0.5 / IconZoom이다.
+        material.SetFloat("_Radius", 0.5f / IconZoom);
+        material.SetFloat("_Softness", 0.004f);
+
+        AssetDatabase.CreateAsset(material, CircleMaskMaterialPath);
+        AssetDatabase.SaveAssets();
+
+        return material;
     }
 
     /// <summary>
@@ -808,6 +866,12 @@ public static class RelicInventoryUIBuilder
     // ── 원형 칸에 쓰는 동그라미 ─────────────
 
     private const string RoundSpritePath = "Assets/Sprites/UI/Circle.png";
+
+    /// <summary>원형 칸에서 아이콘을 칸보다 몇 배로 키울지. 자기 프레임이 잘려나갈 만큼.</summary>
+    private const float IconZoom = 1.45f;
+
+    private const string CircleMaskShaderName = "UI/CircleMask";
+    private const string CircleMaskMaterialPath = "Assets/Materials/UI/RelicIconCircle.mat";
 
     /// <summary>
     /// 테두리가 매끈한 흰 동그라미를 만들어 둔다.
