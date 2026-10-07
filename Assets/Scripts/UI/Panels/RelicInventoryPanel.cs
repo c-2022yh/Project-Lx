@@ -14,8 +14,9 @@ using UnityEngine.InputSystem;
 /// EquipRelic/UnequipRelic을 호출할 뿐, 자체 목록을 따로 들고 있지 않다.
 /// (기존 InventoryPanel이 자기만의 리스트를 갖고 있어서 게임과 따로 놀던 문제를 피한 것.)
 ///
-/// 보유 목록은 RunState에서 읽는다. 이 게임은 유물을 먹으면 곧바로 장착되므로
-/// '한 번이라도 장착했던 것'이 곧 보유한 것이고, 해제하면 보관함으로 내려온다.
+/// 보유 목록도 같은 PlayerRelicManager에서 읽는다. 장착 가능 여부(CanEquipRelic)를
+/// 판단하는 것도 그 목록이라, 다른 데서 읽으면 "보관함엔 있는데 장착은 거절당하는"
+/// 상태가 생길 수 있다. 해제한 유물은 보관함으로 내려온다.
 ///
 /// 조작:
 ///   마우스 올리기  툴팁
@@ -258,14 +259,24 @@ public class RelicInventoryPanel : MonoBehaviour, IRelicSlotHost
 
         List<RelicData> stored = new List<RelicData>();
 
-        foreach (string ownedId in RunState.Current.OwnedRelicIds)
+        // 보유 목록은 PlayerRelicManager가 들고 있는 것을 그대로 쓴다.
+        //
+        // 진행도(RunState)에도 보유 칸이 있지만, 게임에서 유물을 먹는 경로인
+        // PlayerRelicManager.AcquireRelic이 거기엔 쓰지 않는다. 그쪽을 읽으면
+        // 인스펙터에 보유 유물이 5개로 떠도 보관함은 빈 채로 남는다.
+        //
+        // RelicDatabase를 거치지 않는 것도 일부러다. 그 에셋은 메뉴로 손수
+        // 갱신하는 것이라, 새 유물을 만들고 리빌드를 깜빡하면 조회가 null을 주고
+        // 그 유물이 아무 말 없이 목록에서 빠진다.
+        if (relicManager != null)
         {
-            RelicData relic = RelicDatabase.Get(ownedId);
-            if (relic == null) continue;
+            foreach (RelicData relic in relicManager.OwnedRelics)
+            {
+                if (relic == null) continue;
+                if (Contains(equipped, relic)) continue;
 
-            if (Contains(equipped, relic)) continue;
-
-            stored.Add(relic);
+                stored.Add(relic);
+            }
         }
 
         // 계열 순서대로 한 번씩 훑는다. List.Sort는 같은 값끼리 순서를 보장하지 않아서

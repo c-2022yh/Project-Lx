@@ -232,11 +232,27 @@ public class UIManager : MonoBehaviour
     private void RefreshPlayerControl()
     {
         if (playerInput == null) playerInput = FindAnyObjectByType<PlayerInput>();
-        if (playerInput == null || playerInput.actions == null) return;
+
+        if (playerInput == null)
+        {
+            Debug.LogWarning("[UI] 씬에서 PlayerInput을 찾지 못했습니다. 창을 열어도 조작이 안 막힙니다.");
+            return;
+        }
+
+        if (playerInput.actions == null)
+        {
+            Debug.LogWarning("[UI] PlayerInput에 Actions 에셋이 없습니다. 조작을 막을 수 없습니다.");
+            return;
+        }
 
         InputActionMap map = playerInput.actions.FindActionMap("Player", false);
 
-        if (map == null) return;
+        if (map == null)
+        {
+            Debug.LogWarning("[UI] Actions 에셋에 \"Player\" 액션맵이 없습니다. " +
+                             "이름이 바뀌었다면 UIManager도 같이 고쳐야 합니다.");
+            return;
+        }
 
         // 창이 하나도 없을 때만 켠다. 어떤 경로로 닫혔든 여기서 되살아난다.
         if (IsAnyWindowOpen) map.Disable();
