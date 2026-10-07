@@ -16,6 +16,7 @@ MonoBehaviour:
   icon: {fileID: 834850081774755965, guid: 345ab80737dc45a4383b8c282ba686aa, type: 3}
   description: "\uC804\uC9C4\uD558\uBA70 \uC804\uBC29\uC744 \uAC00\uB974\uBA70 \uACF5\uACA9\uD55C\uB2E4.
     \uC801 \uCC98\uCE58\uC2DC \uCFE8\uD0C0\uC784\uC774 \uCD08\uAE30\uD654\uB41C\uB2E4."
+  animationType: 7
   cooldownTime: 4
   soulCost: 0
   activeTime: 0.05
