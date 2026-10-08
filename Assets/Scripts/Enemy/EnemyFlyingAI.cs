@@ -29,12 +29,9 @@ public class EnemyFlyingAI : MonoBehaviour
 
     [Header("Patrol Area")]
 
-    // 월드 기준 사각형 영역. BoxCollider2D의 Bounds 안에서 랜덤 지점을 선택한다.
-    [SerializeField] private BoxCollider2D patrolArea;
-
-    // 영역 가장자리에서 너무 붙지 않도록 남겨두는 여백
-    [Min(0f)]
-    [SerializeField] private float patrolAreaPadding = 0.2f;
+    // 최초 스폰 위치에서 좌우/상하로 이동할 수 있는 거리 (전체 너비/높이는 값의 두 배)
+    [Tooltip("스폰 위치 기준 좌우/상하 패트롤 거리입니다. X=4, Y=2이면 전체 영역은 8 x 4입니다.")]
+    [SerializeField] private Vector2 patrolRange = new Vector2(4f, 2f);
 
     [Min(0f)]
     [SerializeField] private float patrolSpeed = 2f;
@@ -49,6 +46,10 @@ public class EnemyFlyingAI : MonoBehaviour
     [SerializeField] private float maxPatrolWaitTime = 1.2f;
 
     [Header("Chase")]
+
+    // 패트롤 영역 밖도 추적하지만 이 범위를 넘으면 감지를 무시하고 복귀한다.
+    [Tooltip("스폰 위치 기준 최대 추적 거리입니다. 패트롤 범위 이상으로 설정하세요.")]
+    [SerializeField] private Vector2 maxChaseRange = new Vector2(10f, 5f);
 
     [Min(0f)]
     [SerializeField] private float chaseSpeed = 3f;
@@ -92,7 +93,8 @@ public class EnemyFlyingAI : MonoBehaviour
     private bool hasReturnTarget;
 
     private float nextDirectionChangeTime;
-    private bool missingPatrolAreaWarningShown;
+    private Vector2 spawnPosition;
+    private bool hasSpawnPosition;
 
     private void Awake()
     {
@@ -112,7 +114,13 @@ public class EnemyFlyingAI : MonoBehaviour
         lostTargetTimer = 0f;
         lostMoveDirection = Vector2.zero;
         nextDirectionChangeTime = -999f;
-        missingPatrolAreaWarningShown = false;
+    }
+
+    // 스폰 코드가 배치한 최초 위치를 저장한다. 컴포넌트를 다시 켜도 중심은 바뀌지 않는다.
+    private void Start()
+    {
+        spawnPosition = rb.position;
+        hasSpawnPosition = true;
     }
 
     private void FixedUpdate()
@@ -120,6 +128,12 @@ public class EnemyFlyingAI : MonoBehaviour
         if (ai == null || !ai.BeginBehaviourTick())
         {
             return;
+        }
+
+        // 추적과 이탈 후 직진 모두 최대 추적 범위를 벗어나면 즉시 복귀한다.
+        if (currentState != AIState.ReturnToPatrol && IsOutsideRange(GetMaxChaseRange()))
+        {
+            EnterReturnToPatrol();
         }
 
         switch (currentState)
@@ -144,17 +158,18 @@ public class EnemyFlyingAI : MonoBehaviour
 
     private void UpdatePatrolState()
     {
+        // 넉백 등으로 패트롤 영역을 벗어난 경우에도 먼저 복귀한다.
+        if (IsOutsideRange(GetPatrolRange()))
+        {
+            EnterReturnToPatrol();
+            UpdateReturnState();
+            return;
+        }
+
         if (chaseEnabled && ai.CanDetectPlayer())
         {
             EnterChase();
             UpdateChaseState();
-            return;
-        }
-
-        if (patrolArea == null)
-        {
-            WarnMissingPatrolArea();
-            StopMovement();
             return;
         }
 
@@ -206,6 +221,13 @@ public class EnemyFlyingAI : MonoBehaviour
 
     private void UpdateLostTargetState()
     {
+        if (!chaseEnabled)
+        {
+            EnterReturnToPatrol();
+            UpdateReturnState();
+            return;
+        }
+
         if (chaseEnabled && ai.CanDetectPlayer())
         {
             EnterChase();
@@ -235,23 +257,10 @@ public class EnemyFlyingAI : MonoBehaviour
 
     private void UpdateReturnState()
     {
-        if (chaseEnabled && ai.CanDetectPlayer())
-        {
-            EnterChase();
-            UpdateChaseState();
-            return;
-        }
-
-        if (patrolArea == null)
-        {
-            WarnMissingPatrolArea();
-            EnterPatrol();
-            return;
-        }
-
+        // 복귀 중에는 감지를 무시하고 중심까지 돌아온 뒤 패트롤을 재개한다.
         if (!hasReturnTarget)
         {
-            returnTarget = GetClosestPointInsidePatrolArea(transform.position);
+            returnTarget = spawnPosition;
             hasReturnTarget = true;
         }
 
@@ -296,30 +305,35 @@ public class EnemyFlyingAI : MonoBehaviour
 
     private void SetRandomPatrolTarget()
     {
-        Bounds bounds = patrolArea.bounds;
+        Vector2 range = GetPatrolRange();
 
-        float paddingX = Mathf.Min(patrolAreaPadding, bounds.extents.x);
-        float paddingY = Mathf.Min(patrolAreaPadding, bounds.extents.y);
-
-        patrolTarget = new Vector2(
-            Random.Range(bounds.min.x + paddingX, bounds.max.x - paddingX),
-            Random.Range(bounds.min.y + paddingY, bounds.max.y - paddingY)
+        patrolTarget = spawnPosition + new Vector2(
+            Random.Range(-range.x, range.x),
+            Random.Range(-range.y, range.y)
         );
 
         hasPatrolTarget = true;
     }
 
-    private Vector2 GetClosestPointInsidePatrolArea(Vector2 position)
+    // 인스펙터를 플레이 중 변경해도 음수 범위나 패트롤보다 작은 추적 범위를 사용하지 않는다.
+    private Vector2 GetPatrolRange()
     {
-        Bounds bounds = patrolArea.bounds;
+        return new Vector2(Mathf.Max(0f, patrolRange.x), Mathf.Max(0f, patrolRange.y));
+    }
 
-        float paddingX = Mathf.Min(patrolAreaPadding, bounds.extents.x);
-        float paddingY = Mathf.Min(patrolAreaPadding, bounds.extents.y);
-
+    private Vector2 GetMaxChaseRange()
+    {
+        Vector2 range = GetPatrolRange();
         return new Vector2(
-            Mathf.Clamp(position.x, bounds.min.x + paddingX, bounds.max.x - paddingX),
-            Mathf.Clamp(position.y, bounds.min.y + paddingY, bounds.max.y - paddingY)
+            Mathf.Max(range.x, maxChaseRange.x),
+            Mathf.Max(range.y, maxChaseRange.y)
         );
+    }
+
+    private bool IsOutsideRange(Vector2 range)
+    {
+        Vector2 offset = rb.position - spawnPosition;
+        return Mathf.Abs(offset.x) > range.x || Mathf.Abs(offset.y) > range.y;
     }
 
     private float GetRandomPatrolWaitTime()
@@ -339,7 +353,8 @@ public class EnemyFlyingAI : MonoBehaviour
             return true;
         }
 
-        MoveWithVelocity(toTarget, speed);
+        // 높은 속도나 작은 도착 거리에서도 목표점을 지나쳐 왕복하지 않도록 제한한다.
+        MoveWithVelocity(toTarget, Mathf.Min(speed, toTarget.magnitude / Time.fixedDeltaTime));
         return false;
     }
 
@@ -378,21 +393,22 @@ public class EnemyFlyingAI : MonoBehaviour
         }
     }
 
-    private void WarnMissingPatrolArea()
+    private void OnValidate()
     {
-        if (missingPatrolAreaWarningShown) return;
-
-        Debug.LogWarning($"{name}: EnemyFlyingAI에 Patrol Area(BoxCollider2D)가 지정되지 않았습니다.", this);
-        missingPatrolAreaWarningShown = true;
+        patrolRange = GetPatrolRange();
+        maxChaseRange = GetMaxChaseRange();
+        hasPatrolTarget = false;
     }
 
     private void OnDrawGizmosSelected()
     {
-        if (patrolArea != null)
-        {
-            Gizmos.color = Color.cyan;
-            Gizmos.DrawWireCube(patrolArea.bounds.center, patrolArea.bounds.size);
-        }
+        Vector2 center = Application.isPlaying && hasSpawnPosition
+            ? spawnPosition
+            : (Vector2)transform.position;
+        Gizmos.color = Color.cyan;
+        Gizmos.DrawWireCube(center, GetPatrolRange() * 2f);
+        Gizmos.color = Color.red;
+        Gizmos.DrawWireCube(center, GetMaxChaseRange() * 2f);
 
         if (hasPatrolTarget)
         {

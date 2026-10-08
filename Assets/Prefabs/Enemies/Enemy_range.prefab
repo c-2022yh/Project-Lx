@@ -22,7 +22,7 @@ GameObject:
   - component: {fileID: 836209086618364678}
   - component: {fileID: 3495138512986650946}
   m_Layer: 8
-  m_Name: Enemy_range
+  m_Name: Enemy_Range
   m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -94,15 +94,15 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: 1278559193
-  m_SortingLayer: 8
+  m_SortingLayer: 9
   m_SortingOrder: 0
   m_MaskInteraction: 0
-  m_Sprite: {fileID: -5750353039905602045, guid: 0891c90c68f8dd4448d314a4d6a53e0b, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 0891c90c68f8dd4448d314a4d6a53e0b, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
-  m_Size: {x: 1, y: 1}
+  m_Size: {x: 4.375, y: 4.5625}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
@@ -264,16 +264,16 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EnemyAnimation
   walkSprites:
-  - {fileID: -5750353039905602045, guid: 0891c90c68f8dd4448d314a4d6a53e0b, type: 3}
-  - {fileID: -7371509505491802261, guid: 370762ec529b98642b30d2dc9bda3ca1, type: 3}
-  - {fileID: 2720535173406242035, guid: 0b27f4c22a1d1664491a4429d789a38b, type: 3}
-  - {fileID: 8102358098348255977, guid: 8a91556b23acc3445ae8d0f24f79c172, type: 3}
+  - {fileID: 21300000, guid: 0891c90c68f8dd4448d314a4d6a53e0b, type: 3}
+  - {fileID: 21300000, guid: 370762ec529b98642b30d2dc9bda3ca1, type: 3}
+  - {fileID: 21300000, guid: 0b27f4c22a1d1664491a4429d789a38b, type: 3}
+  - {fileID: 21300000, guid: 8a91556b23acc3445ae8d0f24f79c172, type: 3}
   walkFrameTime: 0.12
   deathSprites:
-  - {fileID: 6894999169920593895, guid: 6d5812c633aaa5a40b6b52f4b51c564d, type: 3}
-  - {fileID: -1045133410153605164, guid: 65c8f2608407f2b40b873e3e7159ea37, type: 3}
-  - {fileID: -5622901713081898559, guid: 2b307731d2fec3e4981d374d8df35857, type: 3}
-  - {fileID: -796155573255488767, guid: 982e51406033bf5438aac4dae65d7075, type: 3}
+  - {fileID: 21300000, guid: 6d5812c633aaa5a40b6b52f4b51c564d, type: 3}
+  - {fileID: 21300000, guid: 65c8f2608407f2b40b873e3e7159ea37, type: 3}
+  - {fileID: 21300000, guid: 2b307731d2fec3e4981d374d8df35857, type: 3}
+  - {fileID: 21300000, guid: 982e51406033bf5438aac4dae65d7075, type: 3}
   deathFrameTime: 0.12
   deathEndHoldTime: 0.08
 --- !u!114 &-3398159243529488567
