@@ -1,0 +1,22 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 97e8976399dde06499934e413ed35ac2, type: 3}
+  m_Name: Relic_RedDrop
+  m_EditorClassIdentifier: Assembly-CSharp::RelicData
+  relicId: body_reddrop
+  relicName: "\uBD89\uC740 \uC6B8\uB9BC"
+  icon: {fileID: -5199141553901239524, guid: 9f98da85d649a23489af10ed17d1ffb3, type: 3}
+  description: "\uC8FC\uB294 \uD53C\uD574\uB7C9\uC774 \uC99D\uAC00\uD55C\uB2E4"
+  cost: 1
+  category: 2
+  effects:
+  - {fileID: 11400000, guid: fc2ddb6dedaa4f94895a226854af5c3d, type: 2}

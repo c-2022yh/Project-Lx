@@ -1,160 +1,419 @@
-using System;
+﻿using System;
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
-//플레이어 스킬을 관리하는 스크립트
 public class PlayerSkill : MonoBehaviour
 {
-    [Header("Equipped Skills")]
+    [Header("Equipped Skills - 0:X, 1:A, 2:S, 3:D, 4:F")]
     public SkillData[] equippedSkills = new SkillData[5];
-    // 0: X Skill
-    // 1: A Skill
-    // 2: S Skill
-    // 3: D Skill
-    // 4: F Skill
+
+    [Header("Starting Skills - Test")]
+    [SerializeField] private List<SkillData> startingSkills = new();
 
     [Header("Dependencies")]
     [SerializeField] private HUDPanel hudPanel;
 
-    //스킬이 실제로 사용됐을 때 외부에 알리는 이벤트
-    public event Action<SkillData> OnSkillUsed;
+    private readonly List<SkillData> ownedSkills = new();
+    private readonly Dictionary<SkillData, HashSet<object>> skillSources = new();
+    private readonly Dictionary<SkillData, float> cooldownEnds = new();
 
-    //스킬 쿨타임
-    private bool[] cooldowns = new bool[5];
+    private Player player;
+    private SkillData exclusiveSkill;
+    private object exclusiveSource;
+    private SkillData activeSkill;
+    private bool isInitialized;
+    private bool isChangingEquipment;
+    private bool skillsChanged;
+    private readonly bool[] cooldownChanged = new bool[5];
 
-    //폭주 전용 Q 스킬. 일반 장착 슬롯이나 쿨타임 배열에 넣지않음
     private ScorchedEarthSkillData awakeningSkill;
     private bool awakeningSkillAvailable;
     private Coroutine awakeningSkillRoutine;
 
-    //스킬 연결
+    public const int SlotCount = 5;
+    public const int ExclusiveSlot = 0;
+    public const int FirstNormalSlot = 1;
+
+    public IReadOnlyList<SkillData> OwnedSkills
+    {
+        get { Initialize(); return ownedSkills.AsReadOnly(); }
+    }
+
+    public IReadOnlyList<SkillData> EquippedSkills
+    {
+        get { Initialize(); return Array.AsReadOnly(equippedSkills); }
+    }
+
+    public SkillData ExclusiveSkill => exclusiveSkill;
+    public bool IsUsingSkill => activeSkill != null || awakeningSkillRoutine != null;
+
+    public event Action OnSkillsChanged;
+    public event Action<SkillData> OnSkillUsed;
+    public event Action<int, float, float> OnSkillCooldownChanged;
+
+    //초기 데이터와 필요한 컴포넌트 연결
+    private void Awake()
+    {
+        Initialize();
+    }
+
+    //시작 일반 스킬을 한 번만 등록하고 X는 유물이 지급하도록 초기화
+    private void Initialize()
+    {
+        if (isInitialized) return;
+        isInitialized = true;
+        player = GetComponent<Player>();
+
+        if (equippedSkills == null) equippedSkills = new SkillData[SlotCount];
+        if (equippedSkills.Length != SlotCount) Array.Resize(ref equippedSkills, SlotCount);
+        equippedSkills[ExclusiveSlot] = null;
+
+        foreach (SkillData skill in startingSkills) AddSkillSource(skill, this);
+
+        for (int i = FirstNormalSlot; i < SlotCount; i++)
+        {
+            SkillData skill = equippedSkills[i];
+            if (skill == null) continue;
+            if (Array.IndexOf(equippedSkills, skill) != i)
+            {
+                equippedSkills[i] = null;
+                continue;
+            }
+            AddSkillSource(skill, this);
+        }
+    }
+
+    //일반 스킬 또는 현재 X 전용 스킬 보유 여부 확인
+    public bool HasSkill(SkillData skill)
+    {
+        Initialize();
+        return skill != null && (skill == exclusiveSkill || ownedSkills.Contains(skill));
+    }
+
+    //슬롯의 스킬 조회. 0=X, 1=A, 2=S, 3=D, 4=F
+    public SkillData GetEquippedSkill(int slotIndex)
+    {
+        Initialize();
+        if (!IsValidSlot(slotIndex)) return null;
+        return slotIndex == ExclusiveSlot ? exclusiveSkill : equippedSkills[slotIndex];
+    }
+
+    //스킬의 현재 슬롯 번호 반환. 장착되지 않았으면 -1
+    public int GetEquippedSlot(SkillData skill)
+    {
+        Initialize();
+        if (skill == null) return -1;
+        if (skill == exclusiveSkill) return ExclusiveSlot;
+        for (int i = FirstNormalSlot; i < SlotCount; i++)
+        {
+            if (equippedSkills[i] == skill) return i;
+        }
+        return -1;
+    }
+
+    //스킬 장착 여부 확인
+    public bool IsSkillEquipped(SkillData skill) => GetEquippedSlot(skill) >= 0;
+
+    //X와 ASDF를 포함한 슬롯 번호 유효성 확인
+    private bool IsValidSlot(int slotIndex) => slotIndex >= 0 && slotIndex < SlotCount;
+
+    //일반 스킬 지급권 등록. 새로 보유하면 A→S→D→F 첫 빈칸에 장착하며 꽉 차면 보유만 유지
+    public bool GrantSkill(SkillData skill, object source)
+    {
+        Initialize();
+        if (skill == null || source == null || skill == exclusiveSkill) return false;
+        if (IsUsingSkill) return false;
+
+        bool wasOwned = ownedSkills.Contains(skill);
+        bool added = AddSkillSource(skill, source);
+        if (!added) return true;
+
+        if (!wasOwned) TryAutoEquipSkill(skill);
+        NotifySkillsChanged();
+        return true;
+    }
+
+    //지급 출처를 기록하고 같은 출처의 중복 지급 방지
+    private bool AddSkillSource(SkillData skill, object source)
+    {
+        if (skill == null || source == null) return false;
+        if (!skillSources.TryGetValue(skill, out HashSet<object> sources))
+        {
+            sources = new HashSet<object>();
+            skillSources.Add(skill, sources);
+            ownedSkills.Add(skill);
+        }
+        return sources.Add(source);
+    }
+
+    //기존 배치를 유지하면서 첫 빈 ASDF 슬롯에 자동 장착
+    private void TryAutoEquipSkill(SkillData skill)
+    {
+        if (IsSkillEquipped(skill)) return;
+        for (int i = FirstNormalSlot; i < SlotCount; i++)
+        {
+            if (equippedSkills[i] != null) continue;
+            equippedSkills[i] = skill;
+            NotifyCooldown(i);
+            return;
+        }
+    }
+
+    //해당 지급권만 회수. 마지막 지급권이면 보유와 슬롯에서 제거하며 쿨타임 유지
+    public bool RevokeSkill(SkillData skill, object source)
+    {
+        Initialize();
+        if (skill == null || source == null || IsUsingSkill) return false;
+        if (!skillSources.TryGetValue(skill, out HashSet<object> sources)) return false;
+        if (!sources.Remove(source)) return false;
+
+        if (sources.Count == 0)
+        {
+            for (int i = FirstNormalSlot; i < SlotCount; i++)
+            {
+                if (equippedSkills[i] == skill) ClearSlot(i);
+            }
+            skillSources.Remove(skill);
+            ownedSkills.Remove(skill);
+        }
+        NotifySkillsChanged();
+        return true;
+    }
+
+    //유물 Runtime이 X 스킬을 등록. 일반 보유 목록에 넣지 않고 다른 지급자는 덮어쓰지 않음
+    public bool SetExclusiveSkill(SkillData skill, object source)
+    {
+        Initialize();
+        if (skill == null || source == null || IsUsingSkill) return false;
+        if (exclusiveSource != null && !ReferenceEquals(exclusiveSource, source)) return false;
+        if (ownedSkills.Contains(skill)) return false;
+        exclusiveSkill = skill;
+        exclusiveSource = source;
+        equippedSkills[ExclusiveSlot] = skill;
+        NotifySkillsChanged();
+        NotifyCooldown(ExclusiveSlot);
+        return true;
+    }
+
+    //해당 Runtime이 지급한 X 스킬만 회수
+    public bool ClearExclusiveSkill(object source)
+    {
+        Initialize();
+        if (source == null || IsUsingSkill || !ReferenceEquals(exclusiveSource, source)) return false;
+        exclusiveSkill = null;
+        exclusiveSource = null;
+        ClearSlot(ExclusiveSlot);
+        NotifySkillsChanged();
+        return true;
+    }
+
+    //일반 스킬의 ASDF 장착 조건 확인. X 수동 변경과 X 스킬의 ASDF 배치 거절
+    public bool CanEquipSkill(int slotIndex, SkillData skill, out string reason)
+    {
+        Initialize();
+        reason = null;
+        if (!IsValidSlot(slotIndex)) reason = "잘못된 스킬 슬롯입니다.";
+        else if (slotIndex == ExclusiveSlot) reason = "X 스킬은 검 유물로만 변경할 수 있습니다.";
+        else if (skill == null) reason = "스킬이 없습니다.";
+        else if (isChangingEquipment || IsUsingSkill) reason = "스킬 사용 또는 유물 변경 중입니다.";
+        else if (skill == exclusiveSkill) reason = "X 전용 스킬은 ASDF에 장착할 수 없습니다.";
+        else if (!ownedSkills.Contains(skill)) reason = "보유하지 않은 일반 스킬입니다.";
+        else if (equippedSkills[slotIndex] != null && equippedSkills[slotIndex] != skill)
+            reason = "이미 다른 스킬이 장착된 슬롯입니다.";
+        else if (IsSkillEquipped(skill) && GetEquippedSlot(skill) != slotIndex)
+            reason = "다른 슬롯에서 먼저 해제해야 합니다.";
+        return reason == null;
+    }
+
+    //보유한 일반 스킬을 빈 ASDF 슬롯에 장착. 슬롯 이동은 기존 슬롯 해제 후 호출
+    public bool EquipSkill(int slotIndex, SkillData skill)
+    {
+        if (!CanEquipSkill(slotIndex, skill, out string reason)) return false;
+        if (equippedSkills[slotIndex] == skill) return true;
+        equippedSkills[slotIndex] = skill;
+        NotifySkillsChanged();
+        NotifyCooldown(slotIndex);
+        return true;
+    }
+
+    //ASDF 슬롯만 비우고 보유·쿨타임 유지. X 수동 해제는 거절
+    public bool UnequipSkill(int slotIndex)
+    {
+        Initialize();
+        if (!IsValidSlot(slotIndex) || slotIndex == ExclusiveSlot) return false;
+        if (isChangingEquipment || IsUsingSkill || equippedSkills[slotIndex] == null) return false;
+        ClearSlot(slotIndex);
+        NotifySkillsChanged();
+        return true;
+    }
+
+    //ASDF 슬롯만 비우고 보유·쿨타임 유지. X 수동 해제는 거절
+    public bool UnequipSkill(int slotIndex, SkillData expectedSkill)
+    {
+        if (expectedSkill == null || GetEquippedSkill(slotIndex) != expectedSkill) return false;
+        return UnequipSkill(slotIndex);
+    }
+
+    //슬롯을 비우고 쿨타임 표시 변경을 알림
+    private void ClearSlot(int slotIndex)
+    {
+        equippedSkills[slotIndex] = null;
+        NotifyCooldown(slotIndex);
+    }
+
+    //유물 변경 중 수동 스킬 장착을 막고 변경 이벤트를 모음
+    internal void BeginEquipmentChange()
+    {
+        Initialize();
+        isChangingEquipment = true;
+    }
+
+    //유물 변경 완료 후 최종 스킬 목록과 쿨타임 상태를 UI에 알림
+    internal void EndEquipmentChange()
+    {
+        isChangingEquipment = false;
+        bool changed = skillsChanged;
+        skillsChanged = false;
+        if (changed) OnSkillsChanged?.Invoke();
+        for (int i = 0; i < SlotCount; i++)
+        {
+            if (!cooldownChanged[i]) continue;
+            cooldownChanged[i] = false;
+            NotifyCooldown(i);
+        }
+    }
+
+    //해당 Runtime이 지급한 일반 스킬과 X 스킬을 모두 회수
+    internal void RevokeSource(object source)
+    {
+        SkillData[] snapshot = ownedSkills.ToArray();
+        foreach (SkillData skill in snapshot) RevokeSkill(skill, source);
+        ClearExclusiveSkill(source);
+    }
+
+    //교체 실패 시 복구할 기존 슬롯 배치를 복사
+    internal SkillData[] CaptureSlots()
+    {
+        Initialize();
+        return (SkillData[])equippedSkills.Clone();
+    }
+
+    //기존 보유권 복구 후 ASDF 슬롯 배치를 되돌림
+    internal void RestoreSlots(SkillData[] snapshot)
+    {
+        if (snapshot == null || snapshot.Length != SlotCount) return;
+        for (int i = FirstNormalSlot; i < SlotCount; i++)
+        {
+            equippedSkills[i] = snapshot[i] != null && ownedSkills.Contains(snapshot[i]) ? snapshot[i] : null;
+            NotifyCooldown(i);
+        }
+        equippedSkills[ExclusiveSlot] = exclusiveSkill;
+        NotifySkillsChanged();
+    }
+
+    //일반 보유 스킬 또는 X/ASDF 장착 변경을 UI에 알림
+    private void NotifySkillsChanged()
+    {
+        if (isChangingEquipment)
+        {
+            skillsChanged = true;
+            return;
+        }
+        OnSkillsChanged?.Invoke();
+    }
+
+    //스킬 또는 해당 슬롯의 남은 쿨타임 조회. 해제·재장착해도 종료 시각 유지
+    public float GetCooldownRemaining(SkillData skill)
+    {
+        if (skill == null || !cooldownEnds.TryGetValue(skill, out float endTime)) return 0f;
+        return Mathf.Max(0f, endTime - Time.time);
+    }
+
+    //스킬 또는 해당 슬롯의 남은 쿨타임 조회. 해제·재장착해도 종료 시각 유지
+    public float GetCooldownRemaining(int slotIndex) => GetCooldownRemaining(GetEquippedSkill(slotIndex));
+
+    //해당 슬롯 스킬의 쿨타임이 남아 있는지 확인
+    public bool IsOnCooldown(int slotIndex) => GetCooldownRemaining(slotIndex) > 0f;
+
+    //슬롯 번호·남은 시간·전체 쿨타임을 UI에 전달
+    private void NotifyCooldown(int slotIndex)
+    {
+        if (isChangingEquipment)
+        {
+            cooldownChanged[slotIndex] = true;
+            return;
+        }
+        SkillData skill = GetEquippedSkill(slotIndex);
+        OnSkillCooldownChanged?.Invoke(
+            slotIndex, GetCooldownRemaining(skill), skill != null ? skill.cooldownTime : 0f);
+    }
+
+    //현재 슬롯 스킬의 쿨타임을 명시적으로 초기화
+    public void ResetCooldown(int slotIndex)
+    {
+        SkillData skill = GetEquippedSkill(slotIndex);
+        if (skill == null) return;
+        cooldownEnds.Remove(skill);
+        NotifyCooldown(slotIndex);
+    }
+
+    //X 입력을 전용 스킬 실행으로 연결
     public void ExecuteSkillX(Player p) { UseSkill(p, 0); }
+    //A 입력을 스킬 실행으로 연결
     public void ExecuteSkillA(Player p) { UseSkill(p, 1); }
+    //S 입력을 스킬 실행으로 연결
     public void ExecuteSkillS(Player p) { UseSkill(p, 2); }
+    //D 입력을 스킬 실행으로 연결
     public void ExecuteSkillD(Player p) { UseSkill(p, 3); }
+    //F 입력을 스킬 실행으로 연결
     public void ExecuteSkillF(Player p) { UseSkill(p, 4); }
 
-    //스킬 사용
+    //보유·행동 상태·쿨타임·개별 사용 조건을 검사하고 스킬 실행
     public void UseSkill(Player p, int slotIndex)
     {
-        //예외처리
-        if (p == null) return;
-        if (slotIndex < 0 || slotIndex >= equippedSkills.Length) return;
-        
-        //쿨타임이 안 돌았거나, 스킬을 사용할 수 없는 상태면 시전 x
-        if (cooldowns[slotIndex]) return;
-        if (!p.ActionState.CanSkill()) return;
-
-        //스킬 데이터를 가져와서 값이 없으면 리턴
-        SkillData skill = equippedSkills[slotIndex];
-        if (skill == null) return;
-
-        //스킬별 사용 조건 검사
-        if (!skill.CanUse(p)) return;
-
-        //코루틴 돌림
+        Initialize();
+        if (p == null || p != player || !IsValidSlot(slotIndex) || IsUsingSkill) return;
+        if (isChangingEquipment || !p.ActionState.CanSkill() || IsOnCooldown(slotIndex)) return;
+        SkillData skill = GetEquippedSkill(slotIndex);
+        if (!HasSkill(skill) || !skill.CanUse(p)) return;
         StartCoroutine(SkillRoutine(p, skill, slotIndex));
     }
 
-    //스킬 코루틴
+    //실제 스킬 실행 후 행동을 복구하고 쿨타임 시작. HUD 미연결이어도 실행 가능
     private IEnumerator SkillRoutine(Player p, SkillData skill, int slotIndex)
     {
-        //State 바꿈
+        activeSkill = skill;
         p.ActionState.EnterSkill();
-
-        //스킬 사용 이벤트 발생
-        OnSkillUsed?.Invoke(skill);
-
-        yield return StartCoroutine(skill.ProcessSkill(p)); //실제 스킬 실행
-        
-        //State 되돌림
-        if (p.ActionState.isSkillActive)
+        try
         {
-            p.ActionState.EnterNormal();
+            OnSkillUsed?.Invoke(skill);
+            yield return skill.ProcessSkill(p);
+        }
+        finally
+        {
+            if (p != null && p.ActionState.isSkillActive) p.ActionState.EnterNormal();
+            activeSkill = null;
+            cooldownEnds[skill] = Time.time + Mathf.Max(0f, skill.cooldownTime);
         }
 
-        //스킬 쿨 돌아가게
-        cooldowns[slotIndex] = true;
-        
-        //UI 작동
-        hudPanel.StartSkillCooldown(slotIndex, skill.cooldownTime);
-
-        //스킬 쿨타임만큼 기다렸다가
-        yield return new WaitForSeconds(skill.cooldownTime);
-        //쿨타임 종료시키기
-        cooldowns[slotIndex] = false;
-
+        if (hudPanel != null) hudPanel.StartSkillCooldown(slotIndex, skill.cooldownTime);
+        NotifyCooldown(slotIndex);
     }
 
-    //특정 슬롯에 스킬 자동 장착 유물이펙트 관련 
-    public bool EquipSkill(int slotIndex, SkillData skill)
+    //폭주의 Q 스킬을 일반 슬롯과 별도로 등록
+    public bool RegisterAwakeningSkill(ScorchedEarthSkillData skill)
     {
-        if (skill == null) return false;
-        if (slotIndex < 0 || slotIndex >= equippedSkills.Length) return false;
-
-        //이미 같은 스킬이 장착되어 있어도 성공
-        if (equippedSkills[slotIndex] == skill) return true;
-
-        //다른 스킬이 들어 있으면 덮어쓰지 않음
-        if (equippedSkills[slotIndex] != null)
+        if (skill == null || (awakeningSkill != null && awakeningSkill != skill))
         {
             return false;
         }
-
-        equippedSkills[slotIndex] = skill;
-        cooldowns[slotIndex] = false;
-
-        Debug.Log($"[PlayerSkill] {slotIndex}번 슬롯에 {skill.name} 장착");
-
-        // HUD에 스킬 아이콘을 표시하는 기능이 있다면 여기서 갱신
-        // hudPanel.UpdateSkillSlot(slotIndex, skill);
-
-        return true;
-    }
-
-
-    //특정 슬롯에서 유물이 지급한 스킬 자동 해제
-    public bool UnequipSkill(int slotIndex, SkillData expectedSkill)
-    {
-        if (slotIndex < 0 || slotIndex >= equippedSkills.Length) return false;
-
-        //해당 슬롯에 제거하려는 스킬이 실제로 들어 있는지 확인
-        if (equippedSkills[slotIndex] != expectedSkill) return false;
-
-        equippedSkills[slotIndex] = null;
-        cooldowns[slotIndex] = false;
-
-        Debug.Log($"[PlayerSkill] {slotIndex}번 슬롯 스킬 해제");
-
-        // HUD에서 스킬 아이콘을 비우는 기능이 있다면 여기서 갱신
-        // hudPanel.UpdateSkillSlot(slotIndex, null);
-
-        return true;
-    }
-
-    //특정 슬롯 스킬 쿨타임 초기화
-    public void ResetCooldown(int slotIndex)
-    {
-        if (slotIndex < 0 || slotIndex >= cooldowns.Length) return;
-        
-        cooldowns[slotIndex] = false;
-
-        Debug.Log( $"[PlayerSkill] {slotIndex}번 슬롯 쿨타임 초기화");
-
-        // HUD에 초기화 기능이 생기면 여기서 함께 호출
-        // hudPanel.ResetSkillCooldown(slotIndex);
-    }
-
-    //폭주 장착 시 Q 전용 스킬을 등록
-    public bool RegisterAwakeningSkill(ScorchedEarthSkillData skill)
-    {
-        if (skill == null || (awakeningSkill != null && awakeningSkill != skill)) return false;
         awakeningSkill = skill;
         awakeningSkillAvailable = false;
         return true;
     }
 
-    //폭주 해제 시 등록한 스킬만 제거하고 진행 중인 판정도 안전하게 취소
+    //등록된 Q 스킬을 해제하고 진행 중인 Q 판정 정리
     public void UnregisterAwakeningSkill(ScorchedEarthSkillData expectedSkill)
     {
         if (awakeningSkill != expectedSkill) return;
@@ -170,16 +429,16 @@ public class PlayerSkill : MonoBehaviour
         }
     }
 
-    //각성 시작 시 한 번의 사용권을 지급, 종료 시 회수
+    //각성 시작·종료에 따라 Q 스킬의 1회 사용권 설정
     public void SetAwakeningSkillAvailable(bool available)
     {
         awakeningSkillAvailable = awakeningSkill != null && available;
     }
 
-    //각성 중 Q 입력에서만 호출. 피해량은 각성 종료 전 공격 스탯으로 확정
+    //Q 스킬의 피해를 확정해 실행하고 각성 종료
     public bool TryUseAwakeningSkill(Player p)
     {
-        if (p == null || awakeningSkill == null || !awakeningSkillAvailable) return false;
+        if (p == null || isChangingEquipment || activeSkill != null || awakeningSkill == null || !awakeningSkillAvailable) return false;
         if (awakeningSkillRoutine != null || !awakeningSkill.CanUse(p)) return false;
 
         ScorchedEarthSkillData skill = awakeningSkill;
@@ -187,17 +446,15 @@ public class PlayerSkill : MonoBehaviour
         awakeningSkillAvailable = false;
         awakeningSkillRoutine = StartCoroutine(AwakeningSkillRoutine(p, skill, damageInfo));
 
-        //한 번의 초토화를 시전한 즉시 각성 효과와 남은 시간을 정리
         p.Awakening.EndAwakening();
         return true;
     }
 
-    //기존 일반 스킬과 같은 ActionState를 사용하되 별도 슬롯,쿨타임 적용x
+    //Q 스킬을 실행하고 행동 상태 복구
     private IEnumerator AwakeningSkillRoutine(Player p, ScorchedEarthSkillData skill, DamageInfo damageInfo)
     {
         p.ActionState.EnterSkill();
         OnSkillUsed?.Invoke(skill);
-        //중첩 IEnumerator로 기다려야 해제 시 외부 코루틴 하나만 멈춰도 판정 취소
         yield return skill.ProcessPreparedSkill(p, damageInfo);
         if (p != null && p.ActionState.isSkillActive) p.ActionState.EnterNormal();
         awakeningSkillRoutine = null;

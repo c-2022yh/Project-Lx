@@ -23,10 +23,10 @@ MonoBehaviour:
       canCritical: 0
       bonusPenetration: 0
       bonusDamageAmplification: 0
-    attackEffectPrefab: {fileID: 2066522367392586507, guid: 692a85f7206e9714c93b470598cbc6a6, type: 3}
+    attackEffectPrefab: {fileID: 4527161662741059127, guid: c6bbc2b809dfa9344a7718c8b0528aa4, type: 3}
     effectOffset: {x: 0.8, y: 0}
     effectScale: {x: 2, y: 2, z: 1}
     effectRotationZ: 0
-    effectDuration: 0.12
+    effectDuration: 0.3
     followPlayer: 0
     followDuration: 0.1

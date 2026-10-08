@@ -1,76 +1,17 @@
-
-using UnityEngine;
+ï»¿using UnityEngine;
 
 [CreateAssetMenu(
     fileName = "RFX_Shadow",
     menuName = "Relics/Effects/Shadow"
 )]
 
-//±×¸²ÀÚ À¯¹°
-//ÀåÂø ½Ã ÁöÁ¤ÇÑ ½½·Ô¿¡ Æ¯Á¤ ½ºÅ³À» Áö±ŞÇÑ´Ù.
-public class ShadowRelicEffect : RelicEffect
+public class ShadowRelicEffect : SkillGrantRelicEffectBase
 {
     [Header("Shadow Skill")]
-    [Tooltip("±×¸²ÀÚ À¯¹°ÀÌ Áö±ŞÇÒ ½ºÅ³")]
+    [Tooltip("ê·¸ë¦¼ì ìœ ë¬¼ì´ ì§€ê¸‰í•  ìŠ¤í‚¬")]
     [SerializeField]
     private SkillData shadowSkill;
 
-    [Tooltip("½ºÅ³À» Áö±ŞÇÒ ½½·Ô: 0=X, 1=A, 2=S, 3=D, 4=F")]
-    [SerializeField]
-    [Range(0, 4)]
-    private int skillSlotIndex = 4;
-
-    public override IRelicRuntime CreateRuntime(Player player)
-    {
-        return new ShadowRelicRuntime(player, shadowSkill, skillSlotIndex);
-    }
-
-    private sealed class ShadowRelicRuntime : IRelicRuntime
-    {
-        private readonly Player player;
-        private readonly SkillData shadowSkill;
-        private readonly int skillSlotIndex;
-
-        private PlayerSkill playerSkill;
-        private bool isEquipped;
-
-        public ShadowRelicRuntime(Player player, SkillData shadowSkill, int skillSlotIndex)
-        {
-            this.player = player;
-            this.shadowSkill = shadowSkill;
-            this.skillSlotIndex = skillSlotIndex;
-        }
-
-        public void Equip()
-        {
-            if (isEquipped) return;
-            playerSkill = player.GetComponent<PlayerSkill>();
-
-            bool equipped = playerSkill.EquipSkill(skillSlotIndex, shadowSkill);
-
-            isEquipped = true;
-
-            Debug.Log(
-                $"[Shadow] ±×¸²ÀÚ À¯¹° ÀåÂø - " +
-                $"{skillSlotIndex}¹ø ½½·Ô¿¡ ½ºÅ³ Áö±Ş"
-            );
-        }
-
-        public void Unequip()
-        {
-            if (!isEquipped) return;
-
-            if (playerSkill != null && shadowSkill != null)
-            {
-                //±×¸²ÀÚ À¯¹°ÀÌ Áö±ŞÇÑ ½ºÅ³°ú ÀÏÄ¡ÇÒ ¶§¸¸ Á¦°Å
-                playerSkill.UnequipSkill(skillSlotIndex, shadowSkill);
-            }
-
-            isEquipped = false;
-            playerSkill = null;
-
-            Debug.Log("[Shadow] ±×¸²ÀÚ À¯¹° ÇØÁ¦ - Áö±Ş ½ºÅ³ Á¦°Å");
-
-        }
-    }
+    protected override SkillData Skill => shadowSkill;
+    protected override string LogTag => "Shadow";
 }

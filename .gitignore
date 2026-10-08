@@ -146,3 +146,9 @@ crashlytics-build.properties
 
 /[Aa]ssets/[Ss]treamingAssets/aa.meta
 /[Aa]ssets/[Ss]treamingAssets/aa/*
+# UI 빌더 메뉴를 켜는 로컬 스위치 (UI 담당만 가짐)
+/Assets/csc.rsp
+/Assets/csc.rsp.meta
+
+# Claude 가 채팅으로 보낸 미리보기 파일이 저장되는 곳. 프로젝트 파일 아님
+/Claude outputs/

@@ -1,0 +1,23 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5da98eb61e2605b448406ee5774fe656, type: 3}
+  m_Name: Guard
+  m_EditorClassIdentifier: Assembly-CSharp::SkillD_Guard
+  skillName: "\uAC00\uB4DC"
+  icon: {fileID: 733414350923329873, guid: 08d6b9fb4764da64496c1b4bb93a0cdf, type: 3}
+  description: "\uD2B9\uC815 \uBCF4\uC2A4 \uD328\uD134 \uB9C9\uAE30\uC5D0 \uC0AC\uC6A9\uB418\uB294
+    \uC2A4\uD0AC"
+  cooldownTime: 2
+  soulCost: 0
+  activeTime: 0.2
+  lockInputDuringSkill: 1
+  invincibleDuringSkill: 0

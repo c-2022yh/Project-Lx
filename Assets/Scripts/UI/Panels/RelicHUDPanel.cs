@@ -6,7 +6,7 @@ using UnityEngine.UI;
 public class RelicHUDPanel : MonoBehaviour
 {
     [Header("References")]
-    [SerializeField] private RelicManager relicManager;
+    [SerializeField] private PlayerRelicManager relicManager;
     [SerializeField] private Transform iconContainer;
 
     [Header("Prefab")]

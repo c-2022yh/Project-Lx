@@ -16,6 +16,9 @@ public class AttackEffectHitbox : MonoBehaviour
     //공격 이펙트의 콜라이더 (실제 피격 판정)
     [SerializeField] private Collider2D hitCollider;
 
+    [Header("Hit Effect")]
+    [SerializeField] private GameObject hitEffectPrefab;
+    [SerializeField] private GameObject criticalHitEffectPrefab;
 
     //이 공격이 적중했을 때 실행할 선택적 콜백
     //기본공격이나 포식 X 스킬에서 사용
@@ -48,8 +51,8 @@ public class AttackEffectHitbox : MonoBehaviour
         SecretBreakableWall secretBreakableWall = other.GetComponentInParent<SecretBreakableWall>();
         if (secretBreakableWall != null)
         {
-            Vector2 hitPoint = other.ClosestPoint(transform.position);
-            secretBreakableWall.HitWallAtWorldPosition(hitPoint);
+            Vector2 wallHitPoint = other.ClosestPoint(transform.position);
+            secretBreakableWall.HitWallAtWorldPosition(wallHitPoint);
             return;
         }
 
@@ -71,8 +74,19 @@ public class AttackEffectHitbox : MonoBehaviour
         //같은 대상은 이 히트박스에 한 번만 피격
         if (!hitTargets.Add(target)) return;
 
+        //피격 위치 계산
+        Vector2 hitPoint = other.bounds.center;
+
         //피해 정보 전달
         target.TakeDamage(damageInfo, new Vector2(attackDirection, 0f));
+
+        //치명타 여부에 따라 피격 이펙트 생성
+        GameObject effectPrefab = damageInfo.isCritical ? criticalHitEffectPrefab : hitEffectPrefab;
+
+        if (effectPrefab != null)
+        {
+            Instantiate(effectPrefab, hitPoint, Quaternion.identity);
+        }
 
         onHitConfirmed?.Invoke(target, damageInfo);
 

@@ -36,7 +36,8 @@ public class PlayerAttack : MonoBehaviour
     //공격 패턴(2단계)
     [Header("Ground Combo")]
     [SerializeField] private AttackPattern[] groundPatterns;
-    [SerializeField] private float comboResetTime = 0.6f;
+    [Tooltip("Seconds after attack recovery ends to continue the combo. After this window, the next attack starts at hit 1.")]
+    [SerializeField, Min(0f)] private float comboResetTime = 0.6f;
 
     //공중 공격
     [Header("Air Attack")]

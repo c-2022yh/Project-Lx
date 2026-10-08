@@ -39,6 +39,7 @@ public class EnemyRangedAttack : MonoBehaviour
 
 
     private EnemyStats enemyStats;
+    private EnemyHealth enemyHealth;
     private EnemyAI ai;
     private EnemyRangedAI rangedAI;
 
@@ -49,6 +50,7 @@ public class EnemyRangedAttack : MonoBehaviour
     private void Awake()
     {
         enemyStats = GetComponent<EnemyStats>();
+        enemyHealth = GetComponent<EnemyHealth>();
         ai = GetComponent<EnemyAI>();
         rangedAI = GetComponent<EnemyRangedAI>();
     }
@@ -57,6 +59,7 @@ public class EnemyRangedAttack : MonoBehaviour
     private void Update()
     {
         if (ai == null || rangedAI == null || enemyStats == null) return;
+        if (enemyHealth != null && enemyHealth.IsDead) return;
         
         //이미 공격 중
         if (isAttacking) return;
@@ -88,7 +91,8 @@ public class EnemyRangedAttack : MonoBehaviour
         }
 
         //선딜 도중 플레이어가 사거리 밖으로 나갔으면 공격 취소
-        if (!rangedAI.IsInAttackRange ||
+        if ((enemyHealth != null && enemyHealth.IsDead) ||
+            !rangedAI.IsInAttackRange ||
             ai.Player == null)
         {
             isAttacking = false;
@@ -107,6 +111,7 @@ public class EnemyRangedAttack : MonoBehaviour
     private void FireProjectile()
     {
         if (projectilePrefab == null) return;
+        if (enemyHealth != null && enemyHealth.IsDead) return;
         if (ai.Player == null) return;
 
         //현재 바라보는 방향

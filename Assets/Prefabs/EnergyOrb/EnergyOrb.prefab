@@ -11,13 +11,13 @@ GameObject:
   - component: {fileID: 6098234223698890012}
   - component: {fileID: 7396348064532417393}
   - component: {fileID: 8706767518568844283}
-  m_Layer: 0
+  m_Layer: 12
   m_Name: Visual
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &6098234223698890012
 Transform:
   m_ObjectHideFlags: 0
@@ -123,7 +123,7 @@ GameObject:
   - component: {fileID: 8049712536799405306}
   - component: {fileID: 1398017312291189154}
   - component: {fileID: 60652433999656876}
-  m_Layer: 0
+  m_Layer: 12
   m_Name: EnergyOrb
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -196,8 +196,8 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_MaskInteraction: 0
-  m_Sprite: {fileID: -2413806693520163455, guid: a86470a33a6bf42c4b3595704624658b, type: 3}
-  m_Color: {r: 0, g: 1, b: 1, a: 1}
+  m_Sprite: {fileID: 4367910026834163573, guid: e17938206cd65cd49875868bfed2cf3f, type: 3}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -218,7 +218,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 621f87d74f0f9b54da46e7173cfe8287, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::FollowingOrb
-  visual: {fileID: 8706767518568844283}
   orbLight: {fileID: 3539094178718562898}
 --- !u!114 &60652433999656876
 MonoBehaviour:
@@ -233,7 +232,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::OrbFollower
   offset: {x: -0.6, y: 0.8, z: 0}
-  followSpeed: 5
+  followSpeed: 6
   floatAmplitude: 0.05
   floatFrequency: 2
 --- !u!1 &3933627197668045068
@@ -247,13 +246,13 @@ GameObject:
   - component: {fileID: 615051050174086926}
   - component: {fileID: 5255370677909024}
   - component: {fileID: 3539094178718562898}
-  m_Layer: 0
+  m_Layer: 12
   m_Name: Light
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &615051050174086926
 Transform:
   m_ObjectHideFlags: 0
@@ -285,8 +284,8 @@ MonoBehaviour:
   m_LightType: 3
   m_BlendStyleIndex: 0
   m_FalloffIntensity: 0.5
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_Intensity: 1
+  m_Color: {r: 0.7888928, g: 0.864545, b: 0.9056604, a: 1}
+  m_Intensity: 0.7
   m_LightVolumeIntensity: 1
   m_LightVolumeEnabled: 0
   m_ApplyToSortingLayers: 00000000b124e41219c07933a175834f
@@ -299,8 +298,8 @@ MonoBehaviour:
   m_NormalMapQuality: 2
   m_UseNormalMap: 0
   m_ShadowsEnabled: 1
-  m_ShadowIntensity: 0.8
-  m_ShadowSoftness: 0.1
+  m_ShadowIntensity: 0.5
+  m_ShadowSoftness: 0.55
   m_ShadowSoftnessFalloffIntensity: 0.5
   m_ShadowVolumeIntensityEnabled: 0
   m_ShadowVolumeIntensity: 0.75
@@ -309,8 +308,8 @@ MonoBehaviour:
     m_Extent: {x: 0.9985302, y: 0.99853027, z: 0}
   m_PointLightInnerAngle: 360
   m_PointLightOuterAngle: 360
-  m_PointLightInnerRadius: 0
-  m_PointLightOuterRadius: 100
+  m_PointLightInnerRadius: 1.5
+  m_PointLightOuterRadius: 10
   m_ShapeLightParametricSides: 5
   m_ShapeLightParametricAngleOffset: 0
   m_ShapeLightParametricRadius: 1

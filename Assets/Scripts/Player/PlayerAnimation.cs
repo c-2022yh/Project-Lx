@@ -5,6 +5,8 @@ using UnityEngine;
 public class PlayerAnimation : MonoBehaviour
 {
     private Player player;
+    private PlayerSkill playerSkill;
+    private bool hasSkillAnimationParameters;
     [SerializeField] private Animator animator;
 
     //애니메이션 제어 변수
@@ -22,11 +24,63 @@ public class PlayerAnimation : MonoBehaviour
 
 
 
+    private static readonly int SkillIndex = Animator.StringToHash("SkillIndex");
+    private static readonly int Skill = Animator.StringToHash("Skill");
+    private static readonly int IsSkillActive = Animator.StringToHash("IsSkillActive");
+
     private bool isDashAnimating;
 
     private void Awake()
     {
         player = GetComponent<Player>();
+        playerSkill = GetComponent<PlayerSkill>();
+        CacheSkillAnimationParameters();
+    }
+
+    private void OnEnable()
+    {
+        if (playerSkill != null) playerSkill.OnSkillUsed += HandleSkillUsed;
+    }
+
+    private void OnDisable()
+    {
+        if (playerSkill != null) playerSkill.OnSkillUsed -= HandleSkillUsed;
+        if (animator != null && hasSkillAnimationParameters)
+        {
+            animator.ResetTrigger(Skill);
+            animator.SetBool(IsSkillActive, false);
+        }
+    }
+
+    // Existing controllers remain usable until the skill parameters are added.
+    private void CacheSkillAnimationParameters()
+    {
+        if (animator == null || animator.runtimeAnimatorController == null) return;
+        bool hasIndex = false;
+        bool hasTrigger = false;
+        bool hasActive = false;
+        foreach (AnimatorControllerParameter parameter in animator.parameters)
+        {
+            if (parameter.nameHash == SkillIndex && parameter.type == AnimatorControllerParameterType.Int) hasIndex = true;
+            if (parameter.nameHash == Skill && parameter.type == AnimatorControllerParameterType.Trigger) hasTrigger = true;
+            if (parameter.nameHash == IsSkillActive && parameter.type == AnimatorControllerParameterType.Bool) hasActive = true;
+        }
+        hasSkillAnimationParameters = hasIndex && hasTrigger && hasActive;
+    }
+
+    private void HandleSkillUsed(SkillData skill)
+    {
+        if (skill != null) PlaySkill(skill.animationType);
+    }
+
+    public void PlaySkill(SkillAnimationType animationType)
+    {
+        if (animator == null || !hasSkillAnimationParameters) return;
+        animator.ResetTrigger(Skill);
+        if (animationType == SkillAnimationType.None) return;
+        animator.SetInteger(SkillIndex, (int)animationType);
+        animator.SetBool(IsSkillActive, true);
+        animator.SetTrigger(Skill);
     }
 
     private void Update()
@@ -36,6 +90,12 @@ public class PlayerAnimation : MonoBehaviour
         animator.SetFloat(VerticalVelocity, player.rb.linearVelocity.y);
         animator.SetBool(IsDashing, player.ActionState.isDashing);
         animator.SetBool(IsAttacking, player.ActionState.isAttacking);
+        if (hasSkillAnimationParameters)
+        {
+            bool isSkillActive = player.ActionState.isSkillActive;
+            animator.SetBool(IsSkillActive, isSkillActive);
+            if (!isSkillActive) animator.ResetTrigger(Skill);
+        }
     }
 
 

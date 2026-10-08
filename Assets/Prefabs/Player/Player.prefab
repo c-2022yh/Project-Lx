@@ -28,7 +28,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 0.7, z: 1}
+  m_LocalScale: {x: 1, y: 0.75, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 3783203440675197678}
@@ -82,12 +82,12 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_MaskInteraction: 0
-  m_Sprite: {fileID: 5651646158922815434, guid: 02678adc3b2af294280f53b2d9704dc8, type: 3}
+  m_Sprite: {fileID: 21300000, guid: f50a04c851e183249aba43fc452bf1a7, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
-  m_Size: {x: 1.6, y: 3.8}
+  m_Size: {x: 3.2, y: 4.8}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
@@ -227,8 +227,8 @@ CapsuleCollider2D:
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
-  m_Offset: {x: 0, y: -0.1}
-  m_Size: {x: 0.7, y: 2}
+  m_Offset: {x: 0, y: -0.3}
+  m_Size: {x: 0.7, y: 2.7}
   m_Direction: 0
 --- !u!114 &4329258634847844620
 MonoBehaviour:
@@ -358,9 +358,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::PlayerAttack
   groundPatterns:
   - attackName: "\uC9E7\uAC8C \uBCA0\uAE30"
-    startupTime: 0.03
-    activeTime: 0.09
-    recoveryTime: 0.04
+    startupTime: 0.05
+    activeTime: 0.1
+    recoveryTime: 0.02
     damageSpec:
       damageType: 0
       damageMultiplier: 1
@@ -368,15 +368,15 @@ MonoBehaviour:
       bonusPenetration: 0
       bonusDamageAmplification: 0
     attackEffectPrefab: {fileID: 3545481630792328146, guid: 94f295d40691486438e6c60e511b79e0, type: 3}
-    effectOffset: {x: 0.8, y: 0}
+    effectOffset: {x: 3, y: 0}
     effectScale: {x: 1, y: 1, z: 1}
-    effectRotationZ: 20
-    effectDuration: 0.12
+    effectRotationZ: 0
+    effectDuration: 0.3
     followPlayer: 0
     followDuration: 0.1
   - attackName: "\uB0B4\uB824 \uCE58\uAE30"
-    startupTime: 0.1
-    activeTime: 0.2
+    startupTime: 0.2
+    activeTime: 0.3
     recoveryTime: 0.1
     damageSpec:
       damageType: 0
@@ -385,10 +385,10 @@ MonoBehaviour:
       bonusPenetration: 0
       bonusDamageAmplification: 0
     attackEffectPrefab: {fileID: 2066522367392586507, guid: 692a85f7206e9714c93b470598cbc6a6, type: 3}
-    effectOffset: {x: 0.8, y: 0}
+    effectOffset: {x: 3, y: 0}
     effectScale: {x: 1, y: 1, z: 1}
-    effectRotationZ: -10
-    effectDuration: 0.2
+    effectRotationZ: 0
+    effectDuration: 0.3
     followPlayer: 0
     followDuration: 0.1
   comboResetTime: 0.2
@@ -403,11 +403,11 @@ MonoBehaviour:
       canCritical: 1
       bonusPenetration: 0
       bonusDamageAmplification: 0
-    attackEffectPrefab: {fileID: 3545481630792328146, guid: 94f295d40691486438e6c60e511b79e0, type: 3}
-    effectOffset: {x: 0.8, y: 0}
-    effectScale: {x: 1, y: 1, z: 1}
+    attackEffectPrefab: {fileID: 2066522367392586507, guid: 692a85f7206e9714c93b470598cbc6a6, type: 3}
+    effectOffset: {x: 1.5, y: 0}
+    effectScale: {x: 0.8, y: 0.8, z: 1}
     effectRotationZ: 0
-    effectDuration: 0.12
+    effectDuration: 0.3
     followPlayer: 1
     followDuration: 0.1
 --- !u!114 &671875408835303829
@@ -428,6 +428,7 @@ MonoBehaviour:
   - {fileID: 0}
   - {fileID: 0}
   - {fileID: 0}
+  startingSkills: []
   hudPanel: {fileID: 5405542325969778392, guid: 881165a111aad8b48984bc07a73d147b, type: 3}
 --- !u!114 &781535822289692772
 MonoBehaviour:
@@ -470,16 +471,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0903e508fb6b6604cb02da1a4d98f63e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerAwakening
-  awakeningDuration: 20
   awakeningFreezeTime: 0.8
-  normalAwakeningEnergy: 100
-  enhancedAwakeningEnergy: 200
+  awakeningRequiredEnergy: 100
+  awakeningEnergyDrainPerSecond: 5
   normalColor: {r: 1, g: 1, b: 1, a: 1}
   awakenedColor: {r: 1, g: 1, b: 1, a: 1}
-  enhancedAwakenedColor: {r: 1, g: 1, b: 1, a: 1}
   awakenedMoveMultiplier: 1.3
   awakenedJumpMultiplier: 1.2
-  normalCombatBonus:
+  awakeningCombatBonus:
     physicalAttack: 0
     magicalAttack: 0
     physicalPenetration: 0
@@ -499,8 +498,9 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: d040a13b319382d44a1d14d756684e7c, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::RelicManager
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerRelicManager
   player: {fileID: 4329258634847844620}
+  startingOwnedRelics: []
   startingRelics:
   - {fileID: 0}
 --- !u!114 &8913146774277055173
@@ -597,7 +597,7 @@ Transform:
   m_GameObject: {fileID: 5055931255594380884}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: -1.25, z: 0}
+  m_LocalPosition: {x: 0, y: -1.7, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []

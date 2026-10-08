@@ -2456,9 +2456,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: UIManager, Assembly-CSharp
-        m_MethodName: ShowControlGuide
+      - m_Target: {fileID: 3029731682717637290}
+        m_TargetAssemblyTypeName: PausePanel, Assembly-CSharp
+        m_MethodName: OnControlGuideButton
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}

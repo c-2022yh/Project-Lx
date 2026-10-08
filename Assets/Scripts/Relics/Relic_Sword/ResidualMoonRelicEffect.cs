@@ -1,25 +1,21 @@
-using System.Collections;
+ï»¿using System.Collections;
 using UnityEngine;
-using Object = UnityEngine.Object;
 
 [CreateAssetMenu(fileName = "RFX_ResidualMoon", menuName = "Relics/Effects/Residual Moon")]
 
-//ÀÜ¿ù À¯¹° È¿°ú
 public class ResidualMoonRelicEffect : RelicEffect
 {
     [Header("Granted Skill")]
-    [Tooltip("ÀÜ¿ù ÀåÂø ½Ã X ½½·Ô¿¡ Áö±ŞÇÒ ´ë½Ã ½ºÅ³")]
+    [Tooltip("ì”ì›” ì¥ì°© ì‹œ X ìŠ¬ë¡¯ì— ì§€ê¸‰í•  ëŒ€ì‹œ ìŠ¤í‚¬")]
     [SerializeField]
     private SkillData dashSkill;
 
-
-    //À¯¹° ÀåÂø ½Ã ·±Å¸ÀÓ »ı¼º
+    //í”Œë ˆì´ì–´ë³„ ìœ ë¬¼ íš¨ê³¼ Runtime ìƒì„±
     public override IRelicRuntime CreateRuntime(Player p)
     {
         return new ResidualMoonRelicRuntime(p, dashSkill);
     }
 
-    //À¯¹° ·±Å¸ÀÓ Å¬·¡½º
     private sealed class ResidualMoonRelicRuntime : IRelicRuntime
     {
         private const int XSkillSlot = 0;
@@ -29,69 +25,78 @@ public class ResidualMoonRelicEffect : RelicEffect
 
         private PlayerSkill playerSkill;
 
-        //Àû Ã³Ä¡ °¨Áö¿ë Æ®·¡Ä¿
         private PlayerKillTracker playerKillTracker;
         private Coroutine resetCooldownCoroutine;
 
         private bool isEquipped;
 
+        //ì”ì›” íš¨ê³¼ì— í•„ìš”í•œ í”Œë ˆì´ì–´ì™€ ìŠ¤í‚¬ ë³´ê´€
         public ResidualMoonRelicRuntime(Player player, SkillData dashSkill)
         {
             this.player = player;
             this.dashSkill = dashSkill;
         }
 
+        //ìŠ¤í‚¬ì„ ì§€ê¸‰í•˜ê³  ìœ ë¬¼ ê³ ìœ  íš¨ê³¼ì˜ ì´ë²¤íŠ¸ ë“±ë¡
         public void Equip()
         {
-            if (player == null) return;
+            if (isEquipped) return;
+            if (player == null) throw new System.InvalidOperationException("[ResidualMoon] Playerê°€ ì—†ìŠµë‹ˆë‹¤.");
 
             playerSkill = player.GetComponent<PlayerSkill>();
             playerKillTracker = player.GetComponent<PlayerKillTracker>();
 
-            bool equipped = playerSkill.EquipSkill(XSkillSlot, dashSkill);
+            if (playerSkill == null || playerKillTracker == null || dashSkill == null)
+                throw new System.InvalidOperationException("[ResidualMoon] ìŠ¤í‚¬ ë˜ëŠ” í•„ìˆ˜ ì»´í¬ë„ŒíŠ¸ê°€ ì—†ìŠµë‹ˆë‹¤.");
 
-            if (!equipped) return;
-            
+            if (!playerSkill.SetExclusiveSkill(dashSkill, this))
+                throw new System.InvalidOperationException("[ResidualMoon] X ìŠ¤í‚¬ì„ ì§€ê¸‰í•˜ì§€ ëª»í–ˆìŠµë‹ˆë‹¤.");
+
             isEquipped = true;
 
-            // ¸ğµç Àû Ã³Ä¡ °¨Áö
             playerKillTracker.OnEnemyKilled += HandleEnemyKilled;
 
-            Debug.Log("[ResidualMoon] ÀÜ¿ù ÀåÂø ¿Ï·á");
+            Debug.Log("[ResidualMoon] ì”ì›” ì¥ì°© ì™„ë£Œ");
         }
 
+        //ìœ ë¬¼ ì´ë²¤íŠ¸ì™€ ì˜ˆì•½ ì‘ì—…ì„ ì •ë¦¬í•˜ê³  ìì‹ ì´ ì§€ê¸‰í•œ ìŠ¤í‚¬ íšŒìˆ˜
         public void Unequip()
         {
             isEquipped = false;
 
-            playerKillTracker.OnEnemyKilled -= HandleEnemyKilled;
+            if (playerKillTracker != null) playerKillTracker.OnEnemyKilled -= HandleEnemyKilled;
+            if (resetCooldownCoroutine != null && player != null)
+            {
+                player.StopCoroutine(resetCooldownCoroutine);
+                resetCooldownCoroutine = null;
+            }
 
             if (playerSkill != null)
             {
-                playerSkill.UnequipSkill(XSkillSlot, dashSkill);
+                playerSkill.ClearExclusiveSkill(this);
             }
 
             playerSkill = null;
         }
 
+        //ì  ì²˜ì¹˜ ì‹œ ìŠ¤í‚¬ ì¢…ë£Œ í›„ ì¿¨íƒ€ì„ ì´ˆê¸°í™”ë¥¼ ì˜ˆì•½
         private void HandleEnemyKilled(GameObject killedEnemy)
         {
             if (!isEquipped) return;
             if (playerSkill == null) return;
 
-            //½ºÅ³ Á¾·á ÈÄ ÄğÅ¸ÀÓÀÌ ¼³Á¤µÈ ´ÙÀ½ ÃÊ±âÈ­
-            player.StartCoroutine(ResetDashCooldownRoutine());
+            if (resetCooldownCoroutine == null)
+                resetCooldownCoroutine = player.StartCoroutine(ResetDashCooldownRoutine());
         }
 
+        //ìŠ¤í‚¬ ì¢…ë£Œì™€ ì¿¨íƒ€ì„ ì„¤ì •ì„ ê¸°ë‹¤ë¦° ë’¤ ì”ì›” Xì˜ ì¿¨íƒ€ì„ ì´ˆê¸°í™”
         private IEnumerator ResetDashCooldownRoutine()
         {
-            // ÇöÀç ´ë½Ã ½ºÅ³ ½ÇÇàÀÌ ³¡³¯ ¶§±îÁö ´ë±â
             while (player != null && player.ActionState.isSkillActive)
             {
                 yield return null;
             }
 
-            //ÇÑ ÇÁ·¹ÀÓ ´Ê°Ô ÃÊ±âÈ­, ±×·¡¾ß Á¤»óÀûÀ¸·Î ÄğÅ¸ÀÓÀÌ ÃÊ±âÈ­µÊ
             yield return null;
 
             if (!isEquipped || playerSkill == null)
@@ -99,9 +104,10 @@ public class ResidualMoonRelicEffect : RelicEffect
                 yield break;
             }
 
-            playerSkill.ResetCooldown(XSkillSlot);
+            if (playerSkill.ExclusiveSkill == dashSkill) playerSkill.ResetCooldown(XSkillSlot);
+            resetCooldownCoroutine = null;
 
-            Debug.Log("[ResidualMoon] Àû Ã³Ä¡: ´ë½Ã ½ºÅ³ ÄğÅ¸ÀÓ ÃÊ±âÈ­");
+            Debug.Log("[ResidualMoon] ì  ì²˜ì¹˜: ëŒ€ì‹œ ìŠ¤í‚¬ ì¿¨íƒ€ì„ ì´ˆê¸°í™”");
 
         }
     }

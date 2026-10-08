@@ -1,4 +1,4 @@
-#if UNITY_EDITOR
+﻿#if UNITY_EDITOR && LUDENS_UI_TOOLS
 using UnityEditor;
 using UnityEditor.Events;
 using UnityEngine;

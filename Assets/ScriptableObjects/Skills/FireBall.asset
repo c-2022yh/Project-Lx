@@ -1,0 +1,36 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ddc94237142a7e5489410f10d5bdf475, type: 3}
+  m_Name: FireBall
+  m_EditorClassIdentifier: Assembly-CSharp::ProjectileShotSkillData
+  skillName: "\uC5EC\uC6B0\uBD88"
+  icon: {fileID: 1891180607181568558, guid: 79791da8b47a70a4f86aede52e23c0c4, type: 3}
+  description: "\uC804\uBC29\uC5D0 \uD654\uC5FC\uAD6C\uB97C \uB358\uC9C4\uB2E4"
+  cooldownTime: 3
+  soulCost: 10
+  activeTime: 1
+  enemyLayer:
+    serializedVersion: 2
+    m_Bits: 256
+  damageSpec:
+    damageType: 1
+    damageMultiplier: 1
+    canCritical: 0
+    bonusPenetration: 0
+    bonusDamageAmplification: 0
+  knockbackDirection: {x: 1, y: 0}
+  projectilePrefab: {fileID: 5221978126097955985, guid: 542a30f2e85c7c84f97a8aed8fe95956, type: 3}
+  spawnOffset: {x: 0.8, y: 0}
+  projectileSpeed: 20
+  maxDistance: 10
+  rotationSpeed: -1080
+  destroyOnEnemyHit: 1
