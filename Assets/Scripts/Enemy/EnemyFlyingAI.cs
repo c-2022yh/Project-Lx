@@ -1,7 +1,7 @@
 using UnityEngine;
 
-// 공중 몬스터의 패트롤과 플레이어 추적을 담당하는 AI
-// EnemyAI는 플레이어 감지, 방향, 사망/넉백 상태를 재사용하고 실제 이동은 이 스크립트가 처리한다.
+// 공중 몬스터는 좌우 패트롤에 상하 물결 움직임을 더한다.
+// 생명/넉백 상태와 스프라이트 방향은 기존 EnemyAI를 재사용한다.
 [RequireComponent(typeof(Rigidbody2D))]
 [RequireComponent(typeof(EnemyAI))]
 [RequireComponent(typeof(EnemyHealth))]
@@ -11,112 +11,70 @@ using UnityEngine;
 [RequireComponent(typeof(EnemyContactAttack))]
 public class EnemyFlyingAI : MonoBehaviour
 {
-    private enum AIState
-    {
-        Patrol,
-        Chase,
-        LostTarget,
-        ReturnToPatrol
-    }
-
-    private AIState currentState = AIState.Patrol;
-
-    [Header("Mode")]
-
-    // 켜져 있으면 EnemyAI의 감지/해제 거리로 플레이어를 추적한다.
-    // 끄면 플레이어를 무시하는 공중 패트롤 몬스터가 된다.
-    [SerializeField] private bool chaseEnabled = true;
-
     [Header("Patrol Area")]
 
-    // 최초 스폰 위치에서 좌우/상하로 이동할 수 있는 거리 (전체 너비/높이는 값의 두 배)
-    [Tooltip("스폰 위치 기준 좌우/상하 패트롤 거리입니다. X=4, Y=2이면 전체 영역은 8 x 4입니다.")]
+    // 스폰 위치 기준 좌우 이동 범위와 상하 이동 최대 범위
+    [Tooltip("X는 좌우 패트롤 거리, Y는 상하 움직임의 최대 거리입니다.")]
     [SerializeField] private Vector2 patrolRange = new Vector2(4f, 2f);
 
     [Min(0f)]
     [SerializeField] private float patrolSpeed = 2f;
 
+    [Header("Vertical Wave")]
+
+    [Tooltip("스폰 높이를 기준으로 위아래로 움직이는 거리입니다. Patrol Range Y 이하로 제한됩니다.")]
     [Min(0f)]
-    [SerializeField] private float patrolArrivalDistance = 0.15f;
+    [SerializeField] private float verticalAmplitude = 0.5f;
 
+    [Tooltip("위아래 움직임 한 바퀴에 걸리는 시간입니다. 짧을수록 자주 오르내립니다.")]
+    [Min(0.1f)]
+    [SerializeField] private float verticalPeriod = 2f;
+
+    [Tooltip("상하 이동 속도 제한입니다. 넉백 후에도 원래 높이로 순간 이동하지 않습니다.")]
     [Min(0f)]
-    [SerializeField] private float minPatrolWaitTime = 0.4f;
+    [SerializeField] private float maxVerticalSpeed = 3f;
 
+    [Header("Turn")]
+
+    // 좌우 끝에 도착하면 잠시 기다렸다가 방향을 바꾼다. 대기 중에도 상하로 떠다닌다.
     [Min(0f)]
-    [SerializeField] private float maxPatrolWaitTime = 1.2f;
-
-    [Header("Chase")]
-
-    // 패트롤 영역 밖도 추적하지만 이 범위를 넘으면 감지를 무시하고 복귀한다.
-    [Tooltip("스폰 위치 기준 최대 추적 거리입니다. 패트롤 범위 이상으로 설정하세요.")]
-    [SerializeField] private Vector2 maxChaseRange = new Vector2(10f, 5f);
-
-    [Min(0f)]
-    [SerializeField] private float chaseSpeed = 3f;
-
-    // 0에 가까울수록 플레이어에게 더 가까이 붙는다.
-    [Min(0f)]
-    [SerializeField] private float chaseStopDistance = 0.1f;
-
-    [Header("Direction")]
-
-    // 플레이어 추적이나 패트롤 지점 변경 시 좌우 방향을 너무 자주 바꾸지 않도록 하는 내부 쿨타임
-    [Min(0f)]
-    [SerializeField] private float directionChangeCooldown = 0.25f;
-
-    [Header("Lost Target")]
-
-    // 플레이어를 놓친 직후 기존 이동 방향을 유지하는 시간
-    [Min(0f)]
-    [SerializeField] private float continueDirectionTime = 0.75f;
+    [SerializeField] private float minPatrolWaitTime = 0.2f;
 
     [Min(0f)]
-    [SerializeField] private float lostTargetSpeed = 2.5f;
+    [SerializeField] private float maxPatrolWaitTime = 0.5f;
 
     [Min(0f)]
-    [SerializeField] private float returnSpeed = 2.5f;
-
-    [Min(0f)]
-    [SerializeField] private float returnArrivalDistance = 0.15f;
+    [SerializeField] private float directionChangeCooldown = 0.5f;
 
     private Rigidbody2D rb;
     private EnemyAI ai;
+    private EnemyKnockback knockback;
 
-    private Vector2 patrolTarget;
-    private bool hasPatrolTarget;
-    private float patrolWaitTimer;
-
-    private Vector2 lostMoveDirection;
-    private float lostTargetTimer;
-
-    private Vector2 returnTarget;
-    private bool hasReturnTarget;
-
-    private float nextDirectionChangeTime;
     private Vector2 spawnPosition;
     private bool hasSpawnPosition;
+    private float waveTime;
+    private float patrolWaitTimer;
+    private int pendingDirection;
+    private float nextDirectionChangeTime;
 
     private void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
         ai = GetComponent<EnemyAI>();
+        knockback = GetComponent<EnemyKnockback>();
 
-        // 공중 몬스터는 중력으로 떨어지지 않고 AI가 모든 이동을 제어한다.
         rb.gravityScale = 0f;
     }
 
     private void OnEnable()
     {
-        currentState = AIState.Patrol;
-        hasPatrolTarget = false;
-        hasReturnTarget = false;
+        waveTime = 0f;
         patrolWaitTimer = 0f;
-        lostTargetTimer = 0f;
-        lostMoveDirection = Vector2.zero;
+        pendingDirection = 0;
         nextDirectionChangeTime = -999f;
     }
 
-    // 스폰 코드가 배치한 최초 위치를 저장한다. 컴포넌트를 다시 켜도 중심은 바뀌지 않는다.
+    // 최초 배치 위치를 고정 패트롤 중심으로 저장한다.
     private void Start()
     {
         spawnPosition = rb.position;
@@ -125,279 +83,112 @@ public class EnemyFlyingAI : MonoBehaviour
 
     private void FixedUpdate()
     {
-        if (ai == null || !ai.BeginBehaviourTick())
+        if (!hasSpawnPosition || ai == null) return;
+
+        if (!ai.BeginBehaviourTick())
         {
-            return;
-        }
-
-        // 추적과 이탈 후 직진 모두 최대 추적 범위를 벗어나면 즉시 복귀한다.
-        if (currentState != AIState.ReturnToPatrol && IsOutsideRange(GetMaxChaseRange()))
-        {
-            EnterReturnToPatrol();
-        }
-
-        switch (currentState)
-        {
-            case AIState.Patrol:
-                UpdatePatrolState();
-                break;
-
-            case AIState.Chase:
-                UpdateChaseState();
-                break;
-
-            case AIState.LostTarget:
-                UpdateLostTargetState();
-                break;
-
-            case AIState.ReturnToPatrol:
-                UpdateReturnState();
-                break;
-        }
-    }
-
-    private void UpdatePatrolState()
-    {
-        // 넉백 등으로 패트롤 영역을 벗어난 경우에도 먼저 복귀한다.
-        if (IsOutsideRange(GetPatrolRange()))
-        {
-            EnterReturnToPatrol();
-            UpdateReturnState();
-            return;
-        }
-
-        if (chaseEnabled && ai.CanDetectPlayer())
-        {
-            EnterChase();
-            UpdateChaseState();
-            return;
-        }
-
-        if (!hasPatrolTarget)
-        {
-            SetRandomPatrolTarget();
-        }
-
-        if (patrolWaitTimer > 0f)
-        {
-            patrolWaitTimer -= Time.fixedDeltaTime;
-            StopMovement();
-            return;
-        }
-
-        if (MoveTowards(patrolTarget, patrolSpeed, patrolArrivalDistance))
-        {
-            patrolWaitTimer = GetRandomPatrolWaitTime();
-            hasPatrolTarget = false;
-            StopMovement();
-        }
-    }
-
-    private void UpdateChaseState()
-    {
-        if (!chaseEnabled || ai.Player == null)
-        {
-            EnterReturnToPatrol();
-            return;
-        }
-
-        if (ai.ShouldStopChasing())
-        {
-            EnterLostTarget();
-            UpdateLostTargetState();
-            return;
-        }
-
-        Vector2 toPlayer = (Vector2)ai.Player.position - rb.position;
-
-        if (toPlayer.magnitude <= chaseStopDistance)
-        {
-            StopMovement();
-            return;
-        }
-
-        MoveWithVelocity(toPlayer, chaseSpeed);
-    }
-
-    private void UpdateLostTargetState()
-    {
-        if (!chaseEnabled)
-        {
-            EnterReturnToPatrol();
-            UpdateReturnState();
-            return;
-        }
-
-        if (chaseEnabled && ai.CanDetectPlayer())
-        {
-            EnterChase();
-            UpdateChaseState();
-            return;
-        }
-
-        if (lostTargetTimer > 0f)
-        {
-            lostTargetTimer -= Time.fixedDeltaTime;
-
-            if (lostMoveDirection.sqrMagnitude > 0.0001f)
+            // 넉백 중에는 넉백 컴포넌트가 속도를 제어한다. 사망/AI 정지 시에는 상하 이동도 멈춘다.
+            if (knockback == null || !knockback.IsKnockbackActive)
             {
-                MoveWithVelocity(lostMoveDirection, lostTargetSpeed);
-            }
-            else
-            {
-                StopMovement();
+                rb.linearVelocity = Vector2.zero;
             }
 
             return;
         }
 
-        EnterReturnToPatrol();
-        UpdateReturnState();
+        float deltaTime = Time.fixedDeltaTime;
+        waveTime = Mathf.Repeat(waveTime + deltaTime, Mathf.Max(0.1f, verticalPeriod));
+
+        float horizontalVelocity = UpdateHorizontalPatrol(deltaTime);
+        float verticalVelocity = GetVerticalVelocity(deltaTime);
+        rb.linearVelocity = new Vector2(horizontalVelocity, verticalVelocity);
     }
 
-    private void UpdateReturnState()
+    // 좌우 경계에서 대기 후 반전한다. 넉백으로 영역을 벗어나면 안쪽을 향해 복귀한다.
+    private float UpdateHorizontalPatrol(float deltaTime)
     {
-        // 복귀 중에는 감지를 무시하고 중심까지 돌아온 뒤 패트롤을 재개한다.
-        if (!hasReturnTarget)
+        float rangeX = Mathf.Max(0f, patrolRange.x);
+        float minX = spawnPosition.x - rangeX;
+        float maxX = spawnPosition.x + rangeX;
+        float positionX = rb.position.x;
+
+        if (rangeX <= 0.001f)
         {
-            returnTarget = spawnPosition;
-            hasReturnTarget = true;
+            pendingDirection = 0;
+            return GetHorizontalVelocity(spawnPosition.x, deltaTime);
         }
 
-        if (MoveTowards(returnTarget, returnSpeed, returnArrivalDistance))
+        if (positionX < minX - 0.01f || positionX > maxX + 0.01f)
         {
-            hasReturnTarget = false;
-            EnterPatrol();
-        }
-    }
+            int inwardDirection = positionX < minX ? 1 : -1;
+            pendingDirection = 0;
+            patrolWaitTimer = 0f;
 
-    private void EnterChase()
-    {
-        currentState = AIState.Chase;
-        hasPatrolTarget = false;
-        hasReturnTarget = false;
-    }
+            if (!TrySetDirection(inwardDirection)) return 0f;
 
-    private void EnterLostTarget()
-    {
-        currentState = AIState.LostTarget;
-        lostTargetTimer = continueDirectionTime;
-        lostMoveDirection = rb.linearVelocity.sqrMagnitude > 0.0001f
-            ? rb.linearVelocity.normalized
-            : new Vector2(ai.Direction, 0f);
-    }
-
-    private void EnterReturnToPatrol()
-    {
-        currentState = AIState.ReturnToPatrol;
-        hasPatrolTarget = false;
-        hasReturnTarget = false;
-        StopMovement();
-    }
-
-    private void EnterPatrol()
-    {
-        currentState = AIState.Patrol;
-        hasPatrolTarget = false;
-        patrolWaitTimer = 0f;
-        StopMovement();
-    }
-
-    private void SetRandomPatrolTarget()
-    {
-        Vector2 range = GetPatrolRange();
-
-        patrolTarget = spawnPosition + new Vector2(
-            Random.Range(-range.x, range.x),
-            Random.Range(-range.y, range.y)
-        );
-
-        hasPatrolTarget = true;
-    }
-
-    // 인스펙터를 플레이 중 변경해도 음수 범위나 패트롤보다 작은 추적 범위를 사용하지 않는다.
-    private Vector2 GetPatrolRange()
-    {
-        return new Vector2(Mathf.Max(0f, patrolRange.x), Mathf.Max(0f, patrolRange.y));
-    }
-
-    private Vector2 GetMaxChaseRange()
-    {
-        Vector2 range = GetPatrolRange();
-        return new Vector2(
-            Mathf.Max(range.x, maxChaseRange.x),
-            Mathf.Max(range.y, maxChaseRange.y)
-        );
-    }
-
-    private bool IsOutsideRange(Vector2 range)
-    {
-        Vector2 offset = rb.position - spawnPosition;
-        return Mathf.Abs(offset.x) > range.x || Mathf.Abs(offset.y) > range.y;
-    }
-
-    private float GetRandomPatrolWaitTime()
-    {
-        float min = Mathf.Max(0f, minPatrolWaitTime);
-        float max = Mathf.Max(min, maxPatrolWaitTime);
-
-        return Random.Range(min, max);
-    }
-
-    private bool MoveTowards(Vector2 target, float speed, float arrivalDistance)
-    {
-        Vector2 toTarget = target - rb.position;
-
-        if (toTarget.magnitude <= arrivalDistance)
-        {
-            return true;
+            return GetHorizontalVelocity(inwardDirection > 0 ? maxX : minX, deltaTime);
         }
 
-        // 높은 속도나 작은 도착 거리에서도 목표점을 지나쳐 왕복하지 않도록 제한한다.
-        MoveWithVelocity(toTarget, Mathf.Min(speed, toTarget.magnitude / Time.fixedDeltaTime));
-        return false;
-    }
-
-    private void MoveWithVelocity(Vector2 direction, float speed)
-    {
-        if (direction.sqrMagnitude <= 0.0001f || speed <= 0f)
+        if (pendingDirection != 0)
         {
-            StopMovement();
-            return;
+            patrolWaitTimer = Mathf.Max(0f, patrolWaitTimer - deltaTime);
+
+            if (patrolWaitTimer > 0f || !TrySetDirection(pendingDirection))
+            {
+                return 0f;
+            }
+
+            pendingDirection = 0;
         }
 
-        Vector2 normalizedDirection = direction.normalized;
-        rb.linearVelocity = normalizedDirection * speed;
-        UpdateFacing(normalizedDirection.x);
-    }
+        float targetX = ai.Direction > 0 ? maxX : minX;
 
-    private void StopMovement()
-    {
-        if (rb == null) return;
-
-        rb.linearVelocity = Vector2.zero;
-    }
-
-    private void UpdateFacing(float horizontalDirection)
-    {
-        if (Mathf.Abs(horizontalDirection) <= 0.01f) return;
-        if (Time.time < nextDirectionChangeTime) return;
-
-        int newDirection = horizontalDirection > 0f ? 1 : -1;
-
-        if (ai.Direction == newDirection) return;
-
-        if (ai.TrySetDirection(newDirection))
+        if (Mathf.Abs(targetX - positionX) <= 0.01f)
         {
-            nextDirectionChangeTime = Time.time + directionChangeCooldown;
+            pendingDirection = -ai.Direction;
+            float minWait = Mathf.Max(0f, minPatrolWaitTime);
+            patrolWaitTimer = Random.Range(minWait, Mathf.Max(minWait, maxPatrolWaitTime));
+            return 0f;
         }
+
+        return GetHorizontalVelocity(targetX, deltaTime);
+    }
+
+    // 한 틱에 목표 경계를 지나치지 않도록 속도를 제한한다.
+    private float GetHorizontalVelocity(float targetX, float deltaTime)
+    {
+        float nextX = Mathf.MoveTowards(rb.position.x, targetX, Mathf.Max(0f, patrolSpeed) * deltaTime);
+        return (nextX - rb.position.x) / deltaTime;
+    }
+
+    // 위/아래 전환이 부드러운 사인파를 사용하며 좌우 반전 시에도 파동은 이어진다.
+    private float GetVerticalVelocity(float deltaTime)
+    {
+        float amplitude = Mathf.Min(Mathf.Max(0f, verticalAmplitude), Mathf.Max(0f, patrolRange.y));
+        float phase = waveTime / Mathf.Max(0.1f, verticalPeriod) * Mathf.PI * 2f;
+        float targetY = spawnPosition.y + Mathf.Sin(phase) * amplitude;
+        float nextY = Mathf.MoveTowards(rb.position.y, targetY, Mathf.Max(0f, maxVerticalSpeed) * deltaTime);
+
+        return (nextY - rb.position.y) / deltaTime;
+    }
+
+    // 기존 AI의 방향 및 애니메이션 동기화를 사용한다.
+    private bool TrySetDirection(int direction)
+    {
+        if (ai.Direction == direction) return true;
+        if (Time.time < nextDirectionChangeTime) return false;
+        if (!ai.TrySetDirection(direction)) return false;
+
+        nextDirectionChangeTime = Time.time + Mathf.Max(0f, directionChangeCooldown);
+        return true;
     }
 
     private void OnValidate()
     {
-        patrolRange = GetPatrolRange();
-        maxChaseRange = GetMaxChaseRange();
-        hasPatrolTarget = false;
+        patrolRange = new Vector2(Mathf.Max(0f, patrolRange.x), Mathf.Max(0f, patrolRange.y));
+        verticalAmplitude = Mathf.Max(0f, verticalAmplitude);
+        verticalPeriod = Mathf.Max(0.1f, verticalPeriod);
+        maxPatrolWaitTime = Mathf.Max(minPatrolWaitTime, maxPatrolWaitTime);
     }
 
     private void OnDrawGizmosSelected()
@@ -405,21 +196,14 @@ public class EnemyFlyingAI : MonoBehaviour
         Vector2 center = Application.isPlaying && hasSpawnPosition
             ? spawnPosition
             : (Vector2)transform.position;
+        Vector2 range = new Vector2(Mathf.Max(0f, patrolRange.x), Mathf.Max(0f, patrolRange.y));
+
         Gizmos.color = Color.cyan;
-        Gizmos.DrawWireCube(center, GetPatrolRange() * 2f);
-        Gizmos.color = Color.red;
-        Gizmos.DrawWireCube(center, GetMaxChaseRange() * 2f);
+        Gizmos.DrawWireCube(center, range * 2f);
 
-        if (hasPatrolTarget)
-        {
-            Gizmos.color = Color.yellow;
-            Gizmos.DrawSphere(patrolTarget, 0.12f);
-        }
-
-        if (hasReturnTarget)
-        {
-            Gizmos.color = Color.green;
-            Gizmos.DrawSphere(returnTarget, 0.12f);
-        }
+        // 실제 상하 파동 폭도 표시한다.
+        float amplitude = Mathf.Min(Mathf.Max(0f, verticalAmplitude), range.y);
+        Gizmos.color = Color.yellow;
+        Gizmos.DrawWireCube(center, new Vector3(range.x * 2f, amplitude * 2f, 0f));
     }
 }
