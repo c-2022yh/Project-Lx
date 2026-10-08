@@ -2,6 +2,19 @@ using UnityEngine;
 using System.Collections;
 
 //프로젝트에서 스킬데이터 SO를 만들수 있도록 설정
+public enum SkillAnimationType
+{
+    None = 0,
+    Thrust = 1,
+    TripleSlash = 2,
+    Projectile = 3,
+    Guard = 4,
+    ShadowSwap = 5,
+    VitalConversion = 6,
+    PiercingDash = 7,
+    ScorchedEarth = 8
+}
+
 public abstract class SkillData : ScriptableObject
 {
     [Header("Basic Info")]
@@ -11,6 +24,10 @@ public abstract class SkillData : ScriptableObject
     [TextArea(2, 4)]
     public string description;
 
+
+    [Header("Animation")]
+    [Tooltip("Motion played when this skill is used. None skips skill animation. Keep existing enum values unchanged when extending.")]
+    public SkillAnimationType animationType = SkillAnimationType.None;
 
     [Header("Cost")]
     public float cooldownTime = 1f;

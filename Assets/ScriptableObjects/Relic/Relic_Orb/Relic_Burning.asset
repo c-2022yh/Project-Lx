@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::RelicData
   relicId: orb_burning
   relicName: "\uC5F0\uC18C"
-  icon: {fileID: 0}
+  icon: {fileID: -4800866328533570399, guid: 8fdcaaf4ff7e21b418129177d092655b, type: 3}
   description: "\uAC01\uC131 \uC720\uC9C0\uC2DC\uAC04\uC774 \uC99D\uAC00\uD55C\uB2E4.\r\n\uAC01\uC131
     \uC911 \uB9E4 \uCD08 \uACF5\uACA9\uB825\uC774 \uC99D\uAC00\uD55C\uB2E4.\r\n"
   cost: 1

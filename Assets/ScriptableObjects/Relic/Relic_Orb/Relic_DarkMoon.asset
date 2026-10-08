@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::RelicData
   relicId: orb_darkmoon
   relicName: "\uADF8\uBBD0"
-  icon: {fileID: -6719378672079971446, guid: 4405c0ea72e50184a81fd85931c3db33, type: 3}
+  icon: {fileID: 2260928287186502679, guid: 78414d891c3cdb94c9f70b355f1d1969, type: 3}
   description: "\uCD5C\uB300 \uD68D\uB4DD \uAC00\uB2A5\uD55C \uAE30\uB825\uC774 \uAC10\uC18C\uD558\uC9C0\uB9CC
     \uD53C\uD574\uB7C9\uC774 \uC99D\uAC00\uD55C\uB2E4."
   cost: 1

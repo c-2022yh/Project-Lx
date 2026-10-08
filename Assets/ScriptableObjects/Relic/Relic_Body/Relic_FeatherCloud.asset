@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::RelicData
   relicId: body_feathercloud
   relicName: "\uAE43\uD138\uAD6C\uB984"
-  icon: {fileID: -2943642136348153751, guid: 296c298373c9b0f49aaa1fa1bde1fae0, type: 3}
+  icon: {fileID: -7147029530958185297, guid: 6c7a9802fedce754e8ca3c4f7903041a, type: 3}
   description: "\uCD5C\uB300 \uC810\uD504 \uD69F\uC218\uAC00 1 \uC99D\uAC00\uD55C\uB2E4."
   cost: 1
   category: 2

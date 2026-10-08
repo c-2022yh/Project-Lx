@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::RelicData
   relicId: orb_berserk
   relicName: "\uD3ED\uC8FC"
-  icon: {fileID: 0}
+  icon: {fileID: -2190772498747621175, guid: 61df5cdf78400ca4390fa6f1b85d7dde, type: 3}
   description: "\uAC01\uC131 \uC0C1\uD0DC\uC5D0\uC11C Q\uB97C \uB2E4\uC2DC \uB204\uB974\uBA74
     \uD55C \uBC88 \uC0AC\uC6A9\uD560 \uC218 \uC788\uB294 `\uCD08\uD1A0\uD654` \uC2A4\uD0AC\uC744
     \uC0AC\uC6A9\uD55C\uB2E4.\r\n\uCD08\uD1A0\uD654 \uC0AC\uC6A9 \uD6C4 \uAC01\uC131
