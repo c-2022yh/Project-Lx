@@ -18,6 +18,10 @@ public class ParallaxLayer : MonoBehaviour
     [Tooltip("시작할 때 배경 중심을 카메라 중심에 맞춥니다.")]
     [SerializeField] private bool centerOnCameraAtStart = true;
 
+    [Tooltip("카메라가 한 프레임에 이 거리보다 많이 움직이면 순간이동으로 보고 기준점을 다시 잡습니다.")]
+    [Min(1f)]
+    [SerializeField] private float recenterDistance = 20f;
+
     [Header("X Axis")]
     [SerializeField] private AxisMode xMode = AxisMode.Parallax;
 
@@ -39,6 +43,8 @@ public class ParallaxLayer : MonoBehaviour
 
     private Vector3 initialPosition;
     private Vector3 initialCameraPosition;
+    private Vector3 lastCameraPosition;
+    private bool initialized;
 
     private void Start()
     {
@@ -51,9 +57,12 @@ public class ParallaxLayer : MonoBehaviour
         {
             Debug.LogError("ParallaxLayer: Camera not found.", this);
             enabled = false;
-            return;
         }
+    }
 
+    //카메라 위치를 기준점으로 설정
+    private void Initialize()
+    {
         Vector3 position = transform.position;
 
         if (centerOnCameraAtStart)
@@ -73,6 +82,15 @@ public class ParallaxLayer : MonoBehaviour
 
         initialPosition = position;
         initialCameraPosition = targetCamera.position;
+        lastCameraPosition = targetCamera.position;
+
+        initialized = true;
+    }
+
+    //외부에서 배경을 다시 카메라 중심으로 맞출 때 호출
+    public void Recenter()
+    {
+        initialized = false;
     }
 
     private void LateUpdate()
@@ -81,6 +99,16 @@ public class ParallaxLayer : MonoBehaviour
         {
             return;
         }
+
+        //처음이거나, 카메라가 순간이동했으면 기준점을 다시 잡기
+        float jump = (targetCamera.position - lastCameraPosition).sqrMagnitude;
+
+        if (!initialized || jump > recenterDistance * recenterDistance)
+        {
+            Initialize();
+        }
+
+        lastCameraPosition = targetCamera.position;
 
         Vector3 cameraDelta =
             targetCamera.position - initialCameraPosition;

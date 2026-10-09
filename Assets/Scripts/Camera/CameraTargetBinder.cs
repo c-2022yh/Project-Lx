@@ -16,5 +16,6 @@ public class CameraTargetBinder : MonoBehaviour
         }
 
         cinemachineCamera.Follow = player.transform;
+        cinemachineCamera.PreviousStateIsValid = false; //첫 프레임에 바로 플레이어 위치로 이동
     }
 }
