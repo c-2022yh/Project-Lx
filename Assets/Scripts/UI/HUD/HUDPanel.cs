@@ -1,6 +1,5 @@
-﻿using UnityEngine;
+using UnityEngine;
 using UnityEngine.UI;
-using System.Collections.Generic;
 
 /// <summary>
 /// HUD: 체력바, 5칸 기력 게이지, 스킬 슬롯.
@@ -21,6 +20,8 @@ public class HUDPanel : MonoBehaviour
     [Header("Skill Slots")]
     [SerializeField] private SkillSlotUI[] skillSlots;
 
+    private PlayerSkill playerSkill;
+
     void OnEnable()
     {
         if (UIManager.Instance != null)
@@ -34,6 +35,7 @@ public class HUDPanel : MonoBehaviour
 
     void OnDisable()
     {
+        UnsubscribeSkills();
         if (UIManager.Instance != null)
         {
             UIManager.Instance.OnHealthChanged -= UpdateHealth;
@@ -43,6 +45,7 @@ public class HUDPanel : MonoBehaviour
 
     void Start()
     {
+        ConnectPlayerSkills();
         // UIManager.Start()가 먼저 호출됐을 수 있으므로 시작 시 한번 직접 갱신
         if (UIManager.Instance != null)
         {
@@ -70,36 +73,53 @@ public class HUDPanel : MonoBehaviour
     }
 
 
-    //스킬 쿨타임 돌리기
-    public void StartSkillCooldown(int slotIndex, float cooldownTime)
+    // 플레이어가 늦게 생성되거나 HUD가 다시 켜져도 실제 상태로 복구한다.
+    private void LateUpdate()
     {
-        if (skillSlots == null)
+        if (playerSkill == null) ConnectPlayerSkills();
+        RefreshCooldowns();
+    }
+
+    private void ConnectPlayerSkills()
+    {
+        UnsubscribeSkills();
+        playerSkill = FindAnyObjectByType<PlayerSkill>();
+        if (playerSkill != null) playerSkill.OnSkillsChanged += RefreshSkills;
+        RefreshSkills();
+    }
+
+    private void UnsubscribeSkills()
+    {
+        if (playerSkill != null) playerSkill.OnSkillsChanged -= RefreshSkills;
+        playerSkill = null;
+    }
+
+    private void RefreshSkills()
+    {
+        if (skillSlots == null) return;
+        foreach (SkillSlotUI slot in skillSlots)
         {
-            Debug.LogWarning("[HUDPanel] skillSlots 배열이 비어있음");
-            return;
+            if (slot == null) continue;
+            slot.BindSkill(playerSkill != null
+                ? playerSkill.GetEquippedSkill((int)slot.SlotType) : null);
         }
+        RefreshCooldowns();
+    }
 
-        if (slotIndex < 0 || slotIndex >= skillSlots.Length)
+    private void RefreshCooldowns()
+    {
+        if (playerSkill == null || skillSlots == null) return;
+        foreach (SkillSlotUI slot in skillSlots)
         {
-            Debug.LogWarning($"[HUDPanel] 잘못된 슬롯 인덱스: {slotIndex}");
-            return;
+            if (slot == null) continue;
+            SkillData skill = playerSkill.GetEquippedSkill((int)slot.SlotType);
+            slot.SetCooldown(playerSkill.GetCooldownRemaining(skill),
+                skill != null ? skill.cooldownTime : 0f);
         }
-
-        SkillSlotUI slotUI = skillSlots[slotIndex];
-
-        if (slotUI == null)
-        {
-            Debug.LogWarning($"[HUDPanel] {slotIndex}번 슬롯 UI가 연결되지 않음");
-            return;
-        }
-
-        slotUI.StartCooldown(cooldownTime);
     }
 
 
 
 
 
-
 }
-
