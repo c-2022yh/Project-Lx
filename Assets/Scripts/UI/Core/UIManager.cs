@@ -110,12 +110,6 @@ public class UIManager : MonoBehaviour
     {
       
 
-        // [DEBUG_ONLY] 플레이어 붙으면 제거
-        if (Keyboard.current.digit1Key.wasPressedThisFrame) ModifyHealth(-15);
-        if (Keyboard.current.digit2Key.wasPressedThisFrame) ModifyHealth(+20);
-        if (Keyboard.current.digit3Key.wasPressedThisFrame) ModifySoul(-1);
-        if (Keyboard.current.digit4Key.wasPressedThisFrame) ModifySoul(+1);
-        if (Keyboard.current.digit0Key.wasPressedThisFrame) ShowGameOver();
         if (Keyboard.current.escapeKey.wasPressedThisFrame) HandleCancelKey();
         if (Keyboard.current.iKey.wasPressedThisFrame) ShowWindowTab(UITabBar.RelicTab);
         if (Keyboard.current.kKey.wasPressedThisFrame) ShowWindowTab(UITabBar.SkillTab);
@@ -136,9 +130,6 @@ public class UIManager : MonoBehaviour
         if (Keyboard.current.tabKey.wasPressedThisFrame) SetMapVisible(true);
         if (Keyboard.current.tabKey.wasReleasedThisFrame) SetMapVisible(false);
 
-        //이거는 나중에 처음 스킬 발동하면 나오게 튜토리얼 구현할건데 테스트키
-        if (Keyboard.current.tKey.wasPressedThisFrame)
-            tutorialTooltip.Show("Shift", "대시로 회피하세요");  
     }
 
     //  스탯 조작
