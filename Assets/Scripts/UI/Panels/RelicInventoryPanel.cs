@@ -140,6 +140,8 @@ public class RelicInventoryPanel : MonoBehaviour, IRelicSlotHost
         hasFocus = false;
 
         Refresh();
+
+        if (!ShrineAccess.CanEditLoadout) SetHint(ShrineAccess.ViewOnlyMessage);
     }
 
     private void OnDisable()
@@ -448,6 +450,7 @@ public class RelicInventoryPanel : MonoBehaviour, IRelicSlotHost
     public void OnSlotBeginDrag(RelicSlotView slot, PointerEventData eventData)
     {
         if (slot == null || slot.IsEmpty || dragLayer == null) return;
+        if (!CheckShrine()) return;
 
         // 키보드로 들고 있던 게 있으면 마우스 쪽을 우선한다.
         CancelCarry(false);
@@ -560,6 +563,7 @@ public class RelicInventoryPanel : MonoBehaviour, IRelicSlotHost
     private void TryEquip(RelicData relic)
     {
         if (relic == null) return;
+        if (!CheckShrine()) return;
 
         if (relicManager == null)
         {
@@ -600,6 +604,7 @@ public class RelicInventoryPanel : MonoBehaviour, IRelicSlotHost
     private void TryUnequip(RelicData relic)
     {
         if (relic == null) return;
+        if (!CheckShrine()) return;
 
         if (relicManager == null)
         {
@@ -676,6 +681,7 @@ public class RelicInventoryPanel : MonoBehaviour, IRelicSlotHost
         if (carried == null)
         {
             if (slot.IsEmpty) return;
+            if (!CheckShrine()) return;
 
             carried = slot.Relic;
             Select(carried);
@@ -896,6 +902,15 @@ public class RelicInventoryPanel : MonoBehaviour, IRelicSlotHost
 
         if (equipButtonLabel != null)
             equipButtonLabel.text = has && Contains(equipped, selected) ? "해제" : "장착";
+    }
+
+    /// <summary>제단 밖이면 안내하고 false. 바꾸는 동작마다 맨 앞에서 부른다.</summary>
+    private bool CheckShrine()
+    {
+        if (ShrineAccess.CanEditLoadout) return true;
+
+        SetHint(ShrineAccess.LockedHint);
+        return false;
     }
 
     private void SetHint(string message)

@@ -79,6 +79,8 @@ public class SkillPanel : MonoBehaviour, ISkillSlotHost
 
         selected = null;
         Refresh();
+
+        if (!ShrineAccess.CanEditLoadout) SetHint(ShrineAccess.ViewOnlyMessage);
     }
 
     private void OnDisable()
@@ -227,6 +229,8 @@ public class SkillPanel : MonoBehaviour, ISkillSlotHost
             return;
         }
 
+        if (!CheckShrine()) return;
+
         if (playerSkill == null)
         {
             SetHint("PlayerSkill을 찾지 못했습니다");
@@ -257,6 +261,7 @@ public class SkillPanel : MonoBehaviour, ISkillSlotHost
     public void OnSkillSlotBeginDrag(SkillPanelSlot slot, PointerEventData eventData)
     {
         if (dragLayer == null || slot == null || slot.IsEmpty || slot.IsLocked) return;
+        if (!CheckShrine()) return;
 
         dragLayer.Begin(slot, slot.Skill, eventData.position);
         slot.SetDraggingFrom(true);
@@ -441,6 +446,15 @@ public class SkillPanel : MonoBehaviour, ISkillSlotHost
         }
 
         if (descText != null) descText.text = has ? skill.description : "";
+    }
+
+    /// <summary>제단 밖이면 안내하고 false. 바꾸는 동작마다 맨 앞에서 부른다.</summary>
+    private bool CheckShrine()
+    {
+        if (ShrineAccess.CanEditLoadout) return true;
+
+        SetHint(ShrineAccess.LockedHint);
+        return false;
     }
 
     private void SetHint(string message)

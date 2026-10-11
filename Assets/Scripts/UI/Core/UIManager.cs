@@ -130,6 +130,13 @@ public class UIManager : MonoBehaviour
         if (Keyboard.current.tabKey.wasPressedThisFrame) SetMapVisible(true);
         if (Keyboard.current.tabKey.wasReleasedThisFrame) SetMapVisible(false);
 
+        // 제단 앞에서 상호작용(↑)을 누르면 유물창을 연다.
+        // 제단 활성화(리스폰·회복)는 Player.OnInteract가 따로 처리하므로 여기서는 창만 연다.
+        if (!IsAnyPopupOpen && InteractPressedThisFrame() && ShrineAccess.NearbyShrine != null)
+        {
+            ShowWindowTab(UITabBar.RelicTab);
+        }
+
     }
 
     //  스탯 조작
@@ -211,6 +218,19 @@ public class UIManager : MonoBehaviour
 
         if (wantRelic) ToggleInventory();
         else ToggleSkill();
+    }
+
+    /// <summary>
+    /// PlayerInput의 Interact 액션을 그대로 읽는다. 키를 직접 박지 않아서
+    /// 바인딩이 ↑에서 바뀌어도 따라간다.
+    /// </summary>
+    private bool InteractPressedThisFrame()
+    {
+        if (playerInput == null) playerInput = FindAnyObjectByType<PlayerInput>();
+        if (playerInput == null || playerInput.actions == null) return false;
+
+        InputAction interact = playerInput.actions.FindAction("Interact", false);
+        return interact != null && interact.WasPressedThisFrame();
     }
 
     /// <summary>
