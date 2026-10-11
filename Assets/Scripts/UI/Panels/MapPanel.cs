@@ -216,11 +216,12 @@ public class MapPanel : MonoBehaviour
         foreach (RelicChest chest in FindObjectsByType<RelicChest>())
             AddAuto(result, handled, chest, MapMarkerKind.RelicChest);
 
+        // 안 가본 곳으로 가는 포탈에는 "?"를 단다. 가본 곳이면 그냥 출구로 찍는다.
         foreach (ScenePortal portal in FindObjectsByType<ScenePortal>())
-            AddAuto(result, handled, portal, MapMarkerKind.Exit);
+            AddAuto(result, handled, portal, MapMarkerKind.Exit, ExitLabel(portal));
 
         foreach (AutoScenePortal portal in FindObjectsByType<AutoScenePortal>())
-            AddAuto(result, handled, portal, MapMarkerKind.Exit);
+            AddAuto(result, handled, portal, MapMarkerKind.Exit, ExitLabel(portal));
 
         // 부술 수 있는 벽은 "지금은 못 가는 길"이라 메트로베니아에서 제일 중요한 표시다.
         foreach (FireBreakableWall wall in FindObjectsByType<FireBreakableWall>())
@@ -301,7 +302,7 @@ public class MapPanel : MonoBehaviour
     }
 
     private static void AddAuto(List<MarkerInfo> result, HashSet<GameObject> handled,
-                                Component component, MapMarkerKind kind)
+                                Component component, MapMarkerKind kind, string label = "")
     {
         if (component == null) return;
         if (!handled.Add(component.gameObject)) return;
@@ -309,9 +310,19 @@ public class MapPanel : MonoBehaviour
         result.Add(new MarkerInfo
         {
             Kind = kind,
-            Label = "",
+            Label = label,
             Position = component.transform.position
         });
+    }
+
+    /// <summary>포탈이 가는 씬에 아직 안 가봤으면 "?". 목적지를 모르면 빈칸.</summary>
+    private static string ExitLabel(Component portal)
+    {
+        string target = PortalTarget.SceneOf(portal);
+
+        if (string.IsNullOrEmpty(target)) return "";
+
+        return VisitedScenes.HasVisited(target) ? "" : "?";
     }
 
     private void SpawnMarker(MarkerInfo info)
