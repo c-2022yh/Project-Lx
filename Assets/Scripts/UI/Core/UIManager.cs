@@ -50,6 +50,14 @@ public class UIManager : MonoBehaviour
     private PlayerInput playerInput;
     public bool IsAnyPopupOpen => isInventoryOpen || isSkillOpen || isMapOpen || isPaused;
 
+    // TutorialDirector가 읽는다.
+    public TutorialTooltip Tooltip => tutorialTooltip;
+    public bool IsRelicWindowOpen => isInventoryOpen;
+    public bool IsMapOpen => isMapOpen;
+
+    /// <summary>화면을 가리는 창(유물·스킬·일시정지·조작법·게임오버)이 떠 있는지.</summary>
+    public bool IsBlockingWindowOpen => IsAnyWindowOpen;
+
     /// <summary>
     /// 화면을 점유하는 "창"이 하나라도 떠 있는지. 맵을 막는 기준이다.
     /// IsAnyPopupOpen과 달리 맵은 세지 않는다. 맵은 창이 아니라

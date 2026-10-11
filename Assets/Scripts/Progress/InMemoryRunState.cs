@@ -10,10 +10,12 @@ public class InMemoryRunState : IRunState
     private readonly HashSet<string> owned = new();
     private readonly List<string> equipped = new();
     private readonly HashSet<string> visited = new();
+    private readonly HashSet<string> flags = new();
 
     public IReadOnlyCollection<string> OwnedRelicIds => owned;
     public IReadOnlyList<string> EquippedRelicIds => equipped;
     public IReadOnlyCollection<string> VisitedRoomIds => visited;
+    public IReadOnlyCollection<string> Flags => flags;
 
     public event Action OnChanged;
 
@@ -60,11 +62,22 @@ public class InMemoryRunState : IRunState
         OnChanged?.Invoke();
     }
 
+    public bool HasFlag(string flag) => !string.IsNullOrEmpty(flag) && flags.Contains(flag);
+
+    public void SetFlag(string flag)
+    {
+        if (string.IsNullOrEmpty(flag)) return;
+        if (!flags.Add(flag)) return;
+
+        OnChanged?.Invoke();
+    }
+
     public void Clear()
     {
         owned.Clear();
         equipped.Clear();
         visited.Clear();
+        flags.Clear();
 
         OnChanged?.Invoke();
     }
