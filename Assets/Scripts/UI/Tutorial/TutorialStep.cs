@@ -9,6 +9,7 @@ public enum TutorialPreset
     Dash,
     Skill,
     Shrine,
+    Chest,
     Awaken,
     RelicWindow,
     Map,
@@ -37,6 +38,12 @@ public class TutorialStep
 
     /// <summary>0보다 크면 이 시간이 지나면 행동을 안 해도 닫는다.</summary>
     public float Timeout;
+
+    /// <summary>
+    /// 그 자리에서만 의미 있는 안내(제단·상자)용. false가 되면 내리고 다른 안내에게 순서를 넘긴다.
+    /// 다시 true가 되면 이어서 띄운다. 비우면 항상 보인다.
+    /// </summary>
+    public Func<bool> Visible;
 }
 
 /// <summary>
@@ -66,7 +73,28 @@ public static class TutorialSteps
                 return Action("skill", "스킬을 사용하세요", "SkillA", "SkillS", "SkillD", "SkillF");
 
             case TutorialPreset.Shrine:
-                return Action("shrine", "제단을 활성화하고 유물을 바꾸세요", "Interact");
+            {
+                TutorialStep step = Action("shrine", "제단을 활성화하고 유물을 바꾸세요", "Interact");
+                step.Visible = () => TutorialDirector.IsNearShrine;
+                return step;
+            }
+
+            case TutorialPreset.Chest:
+            {
+                // ↑만 눌러서는 닫지 않는다. 유물을 실제로 하나 얻어야 끝난다.
+                // 기준은 안내를 요청한 순간의 획득 횟수다. 선택창이 떠 있는 동안
+                // 안내가 잠깐 내려가 있어도 그 사이 얻은 것까지 센다.
+                int acquiredBefore = TutorialDirector.RelicsAcquired;
+
+                return new TutorialStep
+                {
+                    Id = "chest",
+                    Message = "상자를 열어 유물을 고르세요",
+                    KeyActions = new[] { "Interact" },
+                    Done = () => TutorialDirector.RelicsAcquired > acquiredBefore,
+                    Visible = () => TutorialDirector.CanOpenChest,
+                };
+            }
 
             case TutorialPreset.Awaken:
                 // 키만 눌러서는 닫지 않는다. 보주가 없으면 눌러도 각성이 안 되기 때문이다.

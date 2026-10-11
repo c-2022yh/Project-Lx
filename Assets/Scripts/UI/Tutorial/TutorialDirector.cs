@@ -16,8 +16,8 @@ using UnityEditor;
 ///   RelicRuntimeBridge와 같은 방식이고, 남의 프리팹을 건드리지 않기 위해서다.
 ///
 /// 안내가 뜨는 경우:
-///   1) 플레이어가 있는 첫 씬: 이동 → 점프 → (장착한 스킬이 있으면) 스킬
-///   2) 게임 알림: 제단 근처, 새 유물 획득, 기력 가득, 두 번째 씬 도착(지도)
+///   1) 플레이어가 있는 첫 씬: 이동 → 점프 → 지도 → (장착한 스킬이 있으면) 스킬
+///   2) 게임 알림: 제단 근처, 유물 상자 근처, 새 유물 획득, 기력 가득
 ///   3) TutorialTrigger 영역에 들어갔을 때 (맵에 놓는 건 맵 담당)
 ///
 /// 플레이어 쪽 코드는 고치지 않았다. 공개 이벤트와 PlayerInput 액션만 읽는다.
@@ -28,7 +28,7 @@ public class TutorialDirector : MonoBehaviour
     private const float StartDelay = 1f;        // 씬이 뜨자마자 덮지 않게
     private const float MinShowTime = 0.5f;     // 들고 있던 키 때문에 바로 닫히지 않게
     private const float GapBetweenSteps = 0.6f;
-    private const float ShrinePollInterval = 0.25f;
+    private const float NearbyPollInterval = 0.25f;
 
     private static TutorialDirector instance;
 
@@ -58,19 +58,32 @@ public class TutorialDirector : MonoBehaviour
     /// <summary>안내가 뜬 뒤로 각성을 했는지. 각성 안내가 닫히는 조건이다.</summary>
     public static bool HasAwakened => instance != null && instance.awakened;
 
+    /// <summary>이번 판에 새로 얻은 유물 수 (시작 유물은 빼고).</summary>
+    public static int RelicsAcquired => instance != null ? instance.relicsAcquired : 0;
+
+    /// <summary>플레이어가 제단 범위 안에 있는지. 0.25초마다 갱신한다.</summary>
+    public static bool IsNearShrine => instance != null && instance.nearShrine;
+
+    /// <summary>지금 ↑로 상자를 열 수 있는지: 상자 범위 안이고 선택창이 떠 있지 않다.</summary>
+    public static bool CanOpenChest => instance != null && instance.nearChest;
+
     // ── 상태 ────────────────────────────────
 
     private readonly List<TutorialStep> queue = new List<TutorialStep>();
     private TutorialStep current;
     private float shownAt;
     private float nextAllowedAt;
-    private float nextShrinePollAt;
+    private float nextNearbyPollAt;
     private bool awakened;
     private int playerScenesLoaded;
     private int knownRelicCount = -1;
+    private int relicsAcquired;
+    private bool nearShrine;
+    private bool nearChest;
 
     private TutorialTooltip tooltip;
     private PlayerInput playerInput;
+    private Collider2D[] playerColliders;
     private PlayerRelicManager relicManager;
     private PlayerEnergy energy;
     private PlayerAwakening awakening;
@@ -118,6 +131,9 @@ public class TutorialDirector : MonoBehaviour
         playerInput = FindAnyObjectByType<PlayerInput>();
         if (playerInput == null) yield break;   // 타이틀처럼 플레이어가 없는 씬
 
+        Player player = FindAnyObjectByType<Player>();
+        playerColliders = player != null ? player.GetComponentsInChildren<Collider2D>() : null;
+
         relicManager = FindAnyObjectByType<PlayerRelicManager>();
         energy = FindAnyObjectByType<PlayerEnergy>();
         awakening = FindAnyObjectByType<PlayerAwakening>();
@@ -142,11 +158,8 @@ public class TutorialDirector : MonoBehaviour
             nextAllowedAt = Time.time + StartDelay;
             Request(TutorialPreset.Move);
             Request(TutorialPreset.Jump);
-            OnSkillsChanged();
-        }
-        else if (playerScenesLoaded == 2)
-        {
             Request(TutorialPreset.Map);
+            OnSkillsChanged();
         }
     }
 
@@ -170,7 +183,12 @@ public class TutorialDirector : MonoBehaviour
         if (relicManager == null) return;
 
         int count = relicManager.OwnedRelics.Count;
-        if (count > knownRelicCount) Request(TutorialPreset.RelicWindow);
+
+        if (count > knownRelicCount)
+        {
+            relicsAcquired += count - knownRelicCount;
+            Request(TutorialPreset.RelicWindow);
+        }
 
         knownRelicCount = count;
     }
@@ -217,7 +235,7 @@ public class TutorialDirector : MonoBehaviour
 
     private void Update()
     {
-        PollShrine();
+        PollNearby();
 
         if (tooltip == null) tooltip = FindTooltip();
         if (tooltip == null) return;
@@ -226,17 +244,10 @@ public class TutorialDirector : MonoBehaviour
 
         if (current == null)
         {
-            if (blocked || Time.time < nextAllowedAt || queue.Count == 0) return;
+            if (blocked || Time.time < nextAllowedAt) return;
 
-            current = queue[0];
-            queue.RemoveAt(0);
-
-            // 줄 서 있는 사이에 다른 경로로 이미 봤을 수 있다.
-            if (HasSeen(current.Id))
-            {
-                current = null;
-                return;
-            }
+            current = TakeNextReady();
+            if (current == null) return;
 
             if (current.Id == "awaken") awakened = false;
 
@@ -259,9 +270,53 @@ public class TutorialDirector : MonoBehaviour
             return;
         }
 
+        // 제단·상자에서 벗어나면 내리고 순서를 넘긴다. 돌아오면 다시 뜬다.
+        if (!IsVisible(current))
+        {
+            tooltip.Hide();
+            queue.Insert(0, current);
+            current = null;
+            return;
+        }
+
         if (blocked && tooltip.IsShowing) tooltip.Hide();
         else if (!blocked && !tooltip.IsShowing) ShowCurrent();
     }
+
+    /// <summary>
+    /// 줄에서 지금 띄울 수 있는 첫 안내를 꺼낸다.
+    /// 지금 자리에서 의미 없는 안내(제단·상자 밖)는 줄에 남겨두고 다음 것을 본다.
+    /// </summary>
+    private TutorialStep TakeNextReady()
+    {
+        for (int i = 0; i < queue.Count; i++)
+        {
+            TutorialStep step = queue[i];
+
+            // 줄 서 있는 사이에 이미 봤거나, 이미 해냈으면 띄우지 않는다.
+            if (HasSeen(step.Id))
+            {
+                queue.RemoveAt(i--);
+                continue;
+            }
+
+            if (step.Done != null && step.Done())
+            {
+                queue.RemoveAt(i--);
+                RunState.Current.SetFlag(FlagPrefix + step.Id);
+                continue;
+            }
+
+            if (!IsVisible(step)) continue;
+
+            queue.RemoveAt(i);
+            return step;
+        }
+
+        return null;
+    }
+
+    private static bool IsVisible(TutorialStep step) => step.Visible == null || step.Visible();
 
     private void ShowCurrent()
     {
@@ -304,14 +359,48 @@ public class TutorialDirector : MonoBehaviour
         return ui != null && (ui.IsBlockingWindowOpen || ui.IsMapOpen);
     }
 
-    private void PollShrine()
+    /// <summary>제단·유물 상자 근처에 처음 갔을 때. 둘 다 ↑로 쓰는 물건이다.</summary>
+    private void PollNearby()
     {
-        if (playerInput == null || Time.time < nextShrinePollAt) return;
+        if (playerInput == null || Time.time < nextNearbyPollAt) return;
 
-        nextShrinePollAt = Time.time + ShrinePollInterval;
+        nextNearbyPollAt = Time.time + NearbyPollInterval;
 
-        if (HasSeen("shrine")) return;
-        if (ShrineAccess.NearbyShrine != null) Request(TutorialPreset.Shrine);
+        bool needShrine = !HasSeen("shrine");
+        bool needChest = !HasSeen("chest");
+
+        nearShrine = needShrine && ShrineAccess.NearbyShrine != null;
+
+        // 선택창이 떠 있는 동안은 카드를 가리지 않게 상자 안내를 내린다.
+        nearChest = needChest && IsTouchingChest() && FindAnyObjectByType<RelicSelectionPanelUI>() == null;
+
+        if (nearShrine) Request(TutorialPreset.Shrine);
+        if (nearChest) Request(TutorialPreset.Chest);
+    }
+
+    /// <summary>
+    /// 플레이어가 유물 상자의 상호작용 영역에 닿아 있는지.
+    /// RelicChest(관용님 파일)에는 범위 안인지 알려주는 값이 없어서,
+    /// 상자가 SetInteractable을 부르는 것과 같은 기준(트리거 접촉)으로 직접 본다.
+    /// </summary>
+    private bool IsTouchingChest()
+    {
+        if (playerColliders == null || playerColliders.Length == 0) return false;
+
+        foreach (RelicChest chest in FindObjectsByType<RelicChest>())
+        {
+            foreach (Collider2D area in chest.GetComponents<Collider2D>())
+            {
+                if (!area.enabled) continue;
+
+                foreach (Collider2D body in playerColliders)
+                {
+                    if (body != null && body.enabled && area.IsTouching(body)) return true;
+                }
+            }
+        }
+
+        return false;
     }
 
     private static TutorialTooltip FindTooltip()
