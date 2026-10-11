@@ -40,6 +40,7 @@ public class GameSettingsData
 
     public bool cameraShake = true;
     public bool screenFlash = true;
+    // 설정창에서는 뺐다. 이미 저장된 설정 파일을 읽을 때 문제없도록 필드만 남겨둔다.
     public bool showDamageNumbers = true;
 
     public GameSettingsData Clone()

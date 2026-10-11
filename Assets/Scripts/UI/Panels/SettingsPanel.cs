@@ -36,7 +36,6 @@ public class SettingsPanel : MonoBehaviour
     [SerializeField] private TMP_Dropdown languageDropdown;
     [SerializeField] private SettingsArrowSelector cameraShakeSelector;
     [SerializeField] private SettingsArrowSelector screenFlashSelector;
-    [SerializeField] private SettingsArrowSelector damageNumberSelector;
 
     [Header("스크롤 / 탭")]
     [SerializeField] private ScrollRect scrollRect;
@@ -142,9 +141,6 @@ public class SettingsPanel : MonoBehaviour
 
         if (screenFlashSelector != null)
             screenFlashSelector.OnIndexChanged += i => { if (!isBinding) draft.screenFlash = i == 1; };
-
-        if (damageNumberSelector != null)
-            damageNumberSelector.OnIndexChanged += i => { if (!isBinding) draft.showDamageNumbers = i == 1; };
     }
 
     private void BindSlider(Slider slider, TextMeshProUGUI valueText, System.Action<float> setter)
@@ -189,7 +185,6 @@ public class SettingsPanel : MonoBehaviour
         frameLimitSelector?.Setup(GameSettings.FrameLimitLabels, draft.frameLimitIndex);
         cameraShakeSelector?.Setup(new[] { "OFF", "ON" }, draft.cameraShake ? 1 : 0);
         screenFlashSelector?.Setup(new[] { "OFF", "ON" }, draft.screenFlash ? 1 : 0);
-        damageNumberSelector?.Setup(new[] { "OFF", "ON" }, draft.showDamageNumbers ? 1 : 0);
 
         isBinding = false;
 
@@ -238,7 +233,6 @@ public class SettingsPanel : MonoBehaviour
         target.languageIndex = draft.languageIndex;
         target.cameraShake = draft.cameraShake;
         target.screenFlash = draft.screenFlash;
-        target.showDamageNumbers = draft.showDamageNumbers;
 
         GameSettings.Apply();
 

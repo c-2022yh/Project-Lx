@@ -1597,7 +1597,6 @@ MonoBehaviour:
   languageDropdown: {fileID: 285419501}
   cameraShakeSelector: {fileID: 217704762}
   screenFlashSelector: {fileID: 323899748}
-  damageNumberSelector: {fileID: 814076031}
   scrollRect: {fileID: 1999723287}
   sectionVideo: {fileID: 591725295}
   sectionAudio: {fileID: 1032429382}
@@ -13482,7 +13481,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1346779917
 RectTransform:
   m_ObjectHideFlags: 0

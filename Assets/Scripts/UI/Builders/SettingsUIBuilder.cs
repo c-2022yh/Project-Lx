@@ -95,7 +95,6 @@ public static class SettingsUIBuilder
         TMP_Dropdown languageDd = DropdownRow(secEtc.transform, "언어");
         SettingsArrowSelector cameraShake = ArrowRow(secEtc.transform, "카메라 흔들림");
         SettingsArrowSelector screenFlash = ArrowRow(secEtc.transform, "화면 플래시 효과");
-        SettingsArrowSelector damageNumbers = ArrowRow(secEtc.transform, "데미지 숫자 표시");
 
         // 마지막 섹션도 맨 위까지 스크롤되도록 하는 빈 공간.
         // 실제 높이는 SettingsPanel이 뷰포트 크기에 맞춰 런타임에 정한다.
@@ -135,7 +134,6 @@ public static class SettingsUIBuilder
         K.SetRef(so, "languageDropdown", languageDd);
         K.SetRef(so, "cameraShakeSelector", cameraShake);
         K.SetRef(so, "screenFlashSelector", screenFlash);
-        K.SetRef(so, "damageNumberSelector", damageNumbers);
 
         K.SetRef(so, "scrollRect", scroll.scrollRect);
         K.SetRef(so, "sectionVideo", secVideo.GetComponent<RectTransform>());

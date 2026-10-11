@@ -20,7 +20,7 @@ public static class SettingsApplier
         ApplyBrightness(d);
         ApplyAudio(d);
         ApplyLanguage(d);
-        // 카메라 흔들림 / 화면 플래시 / 데미지 숫자는 "밀어넣는" 값이 아니라
+        // 카메라 흔들림 / 화면 플래시는 "밀어넣는" 값이 아니라
         // 각 시스템이 GameSettings에서 "읽어가는" 값이라 여기서 할 일이 없다.
     }
 
