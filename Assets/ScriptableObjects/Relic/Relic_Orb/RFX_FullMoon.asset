@@ -13,4 +13,4 @@ MonoBehaviour:
   m_Name: RFX_FullMoon
   m_EditorClassIdentifier: Assembly-CSharp::FullMoonRelicEffect
   energyGainBonus: 0.5
-  fullEnergyBasicAttackBonus: 0.2
+  fullEnergyBasicAttackBonus: 0.4
