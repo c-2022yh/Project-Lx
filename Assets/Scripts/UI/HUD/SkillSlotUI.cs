@@ -11,6 +11,9 @@ public class SkillSlotUI : MonoBehaviour
     [SerializeField] private Image iconImage;
     [SerializeField] private Image cooldownOverlay; // Filled Radial 360
 
+    [Header("Empty Slot")]
+    [SerializeField] private Sprite emptySlotSprite; // 미장착 시 표시할 빈 프레임
+
     private SkillData currentSkill;
     private bool isOnCooldown;
     private bool isActive;
@@ -19,8 +22,9 @@ public class SkillSlotUI : MonoBehaviour
     {
         if (iconImage != null)
         {
-            iconImage.sprite = icon;
-            iconImage.enabled = icon != null;
+            // 스킬 아이콘이 없으면 빈 프레임을 표시한다.
+            iconImage.sprite = icon != null ? icon : emptySlotSprite;
+            iconImage.enabled = iconImage.sprite != null;
         }
         isActive = true;
         SetCooldown(0f, cooldown);
@@ -40,8 +44,9 @@ public class SkillSlotUI : MonoBehaviour
         SetCooldown(0f, 0f);
         if (iconImage != null)
         {
-            iconImage.sprite = null;
-            iconImage.enabled = false;
+            // 스킬을 해제해도 슬롯 테두리는 유지한다.
+            iconImage.sprite = emptySlotSprite;
+            iconImage.enabled = emptySlotSprite != null;
         }
     }
 
