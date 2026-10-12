@@ -8,12 +8,23 @@ public class OrbHUD : MonoBehaviour
 
     private PlayerEnergy playerEnergy;
     private PlayerRelicManager relicManager;
+    private PlayerAwakening playerAwakening;
 
     [Header("Orb Design")]
     [SerializeField] private Image emptyImage;
     [SerializeField] private Image fullEffectImage;
 
     private OrbHUDStyle defaultStyle;
+    private OrbHUDStyle activeStyle;
+    private RelicData displayedRelic;
+    private bool hasAppliedStyle;
+    private GameObject persistentEffectInstance;
+    private GameObject fullChargeBurstInstance;
+    private float burstTimeRemaining;
+    private bool wasEnergyFull;
+
+    [Tooltip("Optional UI effect parent outside InnerMask. Defaults to this HUD's RectTransform.")]
+    [SerializeField] private RectTransform effectRoot;
 
     [Header("Energy Fill")]
     [SerializeField] private Image orbImageFill;
@@ -71,6 +82,7 @@ public class OrbHUD : MonoBehaviour
         playerEnergy.OnEnergyChanged += UpdateEnergyTarget;
 
         relicManager = playerEnergy.GetComponent<PlayerRelicManager>();
+        playerAwakening = playerEnergy.GetComponent<PlayerAwakening>();
         if (relicManager != null)
         {
             relicManager.OnRelicsChanged += RefreshOrbDesign;
@@ -87,6 +99,7 @@ public class OrbHUD : MonoBehaviour
 
     private void OnDestroy()
     {
+        DestroyRelicEffects();
         if (relicManager != null)
         {
             relicManager.OnRelicsChanged -= RefreshOrbDesign;
@@ -137,8 +150,15 @@ public class OrbHUD : MonoBehaviour
     private void RefreshOrbDesign()
     {
         RelicData relic = relicManager != null ? relicManager.EquippedOrbRelic : null;
+        // Ownership changes also emit this event; do not restart an unchanged equipped orb.
+        if (hasAppliedStyle && displayedRelic == relic) return;
+
+        DestroyRelicEffects();
+        displayedRelic = relic;
+        hasAppliedStyle = true;
         OrbHUDStyle style = relic != null && relic.OrbHUDStyle != null
             ? relic.OrbHUDStyle : defaultStyle;
+        activeStyle = style;
 
         if (emptyImage != null)
             emptyImage.sprite = style.emptySprite != null ? style.emptySprite : defaultStyle.emptySprite;
@@ -156,6 +176,121 @@ public class OrbHUD : MonoBehaviour
         fullEffectFadeSpeed = Mathf.Max(0f, style.fadeSpeed);
         fullEffectPulseSpeed = Mathf.Max(0f, style.pulseSpeed);
         fullEffectPulseScale = Mathf.Max(0f, style.pulseScale);
+
+        if (fullEnergyEffect != null)
+        {
+            fullEnergyEffect.alpha = 0f;
+            fullEnergyEffect.transform.localScale = fullEffectStartScale;
+        }
+
+        persistentEffectInstance = CreateRelicEffect(style.persistentEffectPrefab);
+        fullChargeBurstInstance = CreateRelicEffect(style.fullChargeBurstPrefab);
+        UpdateEnergyTarget();
+        // A reduced capacity must never retain a previously full visual gauge.
+        displayedEnergyRatio = Mathf.Min(displayedEnergyRatio, targetEnergyRatio);
+        // Equipping an already full orb restores its sustained effect, without a fake charge event.
+        wasEnergyFull = isEnergyFull;
+    }
+
+    private GameObject CreateRelicEffect(GameObject prefab)
+    {
+        if (prefab == null) return null;
+        if (prefab.GetComponent<RectTransform>() == null)
+        {
+            Debug.LogWarning("OrbHUD: HUD effect prefabs need a RectTransform (UI prefab).", this);
+            return null;
+        }
+
+        GameObject instance = Instantiate(prefab, effectRoot != null ? effectRoot : transform, false);
+        instance.SetActive(false);
+        // Decorative effects must not intercept HUD clicks or drags.
+        foreach (Graphic graphic in instance.GetComponentsInChildren<Graphic>(true))
+            graphic.raycastTarget = false;
+        CanvasGroup group = instance.GetComponent<CanvasGroup>();
+        if (group == null) group = instance.AddComponent<CanvasGroup>();
+        group.interactable = false;
+        group.blocksRaycasts = false;
+        return instance;
+    }
+
+    private void DestroyRelicEffects()
+    {
+        if (persistentEffectInstance != null)
+        {
+            persistentEffectInstance.SetActive(false);
+            Destroy(persistentEffectInstance);
+        }
+        if (fullChargeBurstInstance != null)
+        {
+            fullChargeBurstInstance.SetActive(false);
+            Destroy(fullChargeBurstInstance);
+        }
+        persistentEffectInstance = null;
+        fullChargeBurstInstance = null;
+        burstTimeRemaining = 0f;
+    }
+
+    private void OnDisable()
+    {
+        if (persistentEffectInstance != null) persistentEffectInstance.SetActive(false);
+        if (fullChargeBurstInstance != null) fullChargeBurstInstance.SetActive(false);
+        burstTimeRemaining = 0f;
+        if (fullEnergyEffect != null) fullEnergyEffect.alpha = 0f;
+    }
+
+    private void OnEnable()
+    {
+        // Reopening the HUD is not a new full-charge event.
+        if (playerEnergy != null) wasEnergyFull = playerEnergy.HasOrb && playerEnergy.IsFull;
+    }
+
+    private float GetEnergyDisplayRatio()
+    {
+        if (playerEnergy == null || !playerEnergy.HasOrb) return 0f;
+        float capacity = activeStyle != null && activeStyle.displayEnergyCapacity > 0f
+            ? activeStyle.displayEnergyCapacity : playerEnergy.MaxEnergy;
+        return capacity > 0f ? Mathf.Clamp01(playerEnergy.CurrentEnergy / capacity) : 0f;
+    }
+
+    private bool ShouldShowPersistentEffect()
+    {
+        if (activeStyle == null || playerEnergy == null || !playerEnergy.HasOrb) return false;
+        switch (activeStyle.persistentEffectCondition)
+        {
+            case OrbHUDEffectCondition.Always:
+                return true;
+            case OrbHUDEffectCondition.FullEnergy:
+                return isEnergyFull;
+            case OrbHUDEffectCondition.Awakened:
+                return playerAwakening != null && playerAwakening.IsAwakened;
+            case OrbHUDEffectCondition.AwakeningEnergyDrain:
+                return playerAwakening != null && playerAwakening.IsDrainingEnergy;
+            default:
+                return false;
+        }
+    }
+
+    private void UpdateRelicEffects()
+    {
+        if (activeStyle == null) return;
+        bool showPersistent = ShouldShowPersistentEffect();
+        if (persistentEffectInstance != null && persistentEffectInstance.activeSelf != showPersistent)
+            persistentEffectInstance.SetActive(showPersistent);
+
+        if (activeStyle.playFullChargeBurst && isEnergyFull && !wasEnergyFull && fullChargeBurstInstance != null)
+        {
+            fullChargeBurstInstance.SetActive(false);
+            fullChargeBurstInstance.SetActive(true);
+            burstTimeRemaining = Mathf.Max(0.01f, activeStyle.fullChargeBurstDuration);
+        }
+        wasEnergyFull = isEnergyFull;
+
+        if (fullChargeBurstInstance != null && fullChargeBurstInstance.activeSelf)
+        {
+            burstTimeRemaining -= Time.unscaledDeltaTime;
+            if (!isEnergyFull || burstTimeRemaining <= 0f)
+                fullChargeBurstInstance.SetActive(false);
+        }
     }
 
     private void Update()
@@ -163,9 +298,7 @@ public class OrbHUD : MonoBehaviour
         if (playerEnergy == null) return;
 
         //Inspector에서 Current Energy를 직접 바꾼 경우에도 HUD가 즉시 따라가게 함
-        float currentEnergyRatio = playerEnergy.HasOrb
-            ? Mathf.Clamp01(playerEnergy.EnergyRatio)
-            : 0f;
+        float currentEnergyRatio = GetEnergyDisplayRatio();
 
         bool currentEnergyFull = playerEnergy.HasOrb && playerEnergy.IsFull;
 
@@ -183,6 +316,7 @@ public class OrbHUD : MonoBehaviour
         );
 
         UpdateEnergyFill();
+        UpdateRelicEffects();
         UpdateFullEnergyEffect();
     }
 
@@ -224,9 +358,7 @@ public class OrbHUD : MonoBehaviour
     {
         if (playerEnergy == null) return;
 
-        targetEnergyRatio = playerEnergy.HasOrb
-            ? Mathf.Clamp01(playerEnergy.EnergyRatio)
-            : 0f;
+        targetEnergyRatio = GetEnergyDisplayRatio();
 
         isEnergyFull = playerEnergy.HasOrb && playerEnergy.IsFull;
 
@@ -261,8 +393,15 @@ public class OrbHUD : MonoBehaviour
     {
         if (fullEnergyEffect == null) return;
 
-        bool showFullEffect = isEnergyFull && displayedEnergyRatio >= 0.999f;
+        bool showFullEffect = activeStyle != null
+            && ((activeStyle.showFullEnergyEffect && isEnergyFull && displayedEnergyRatio >= 0.999f)
+                || (persistentEffectInstance == null && ShouldShowPersistentEffect()));
         float targetAlpha = showFullEffect ? 1f : 0f;
+        if (showFullEffect)
+        {
+            float shimmer = (Mathf.Sin(Time.unscaledTime * fullEffectPulseSpeed) + 1f) * 0.5f;
+            targetAlpha -= Mathf.Clamp01(activeStyle.pulseAlphaAmount) * shimmer;
+        }
 
         fullEnergyEffect.alpha = Mathf.MoveTowards(
             fullEnergyEffect.alpha,

@@ -21,5 +21,21 @@ MonoBehaviour:
     \uC0C1\uD0DC\uAC00 \uC885\uB8CC\uB41C\uB2E4."
   cost: 1
   category: 1
+  orbHUDStyle:
+    emptySprite: {fileID: 0}
+    fillSprite: {fileID: 0}
+    fullEffectSprite: {fileID: 0}
+    effectColor: {r: 1, g: 1, b: 1, a: 1}
+    fadeSpeed: 5
+    pulseSpeed: 2
+    pulseScale: 0.04
+    pulseAlphaAmount: 0.35
+    showFullEnergyEffect: 1
+    playFullChargeBurst: 1
+    persistentEffectCondition: 3
+    persistentEffectPrefab: {fileID: 0}
+    fullChargeBurstPrefab: {fileID: 0}
+    fullChargeBurstDuration: 1
+    displayEnergyCapacity: 0
   effects:
   - {fileID: 11400000, guid: 9d78682739e09d942975826ed46073b8, type: 2}
