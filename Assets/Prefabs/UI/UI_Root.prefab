@@ -398,10 +398,26 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 2746805734961889801}
     m_Modifications:
+    - target: {fileID: 189110036206575912, guid: 881165a111aad8b48984bc07a73d147b, type: 3}
+      propertyPath: emptySlotSprite
+      value: 
+      objectReference: {fileID: 21300000, guid: 535f6f2d7475e6b4c84d909cd419da84, type: 3}
+    - target: {fileID: 531126549502353940, guid: 881165a111aad8b48984bc07a73d147b, type: 3}
+      propertyPath: emptySlotSprite
+      value: 
+      objectReference: {fileID: 21300000, guid: 535f6f2d7475e6b4c84d909cd419da84, type: 3}
     - target: {fileID: 1577150254281571955, guid: 881165a111aad8b48984bc07a73d147b, type: 3}
       propertyPath: m_Name
       value: HUD_Canvas
       objectReference: {fileID: 0}
+    - target: {fileID: 4221512888127066921, guid: 881165a111aad8b48984bc07a73d147b, type: 3}
+      propertyPath: emptySlotSprite
+      value: 
+      objectReference: {fileID: 21300000, guid: 535f6f2d7475e6b4c84d909cd419da84, type: 3}
+    - target: {fileID: 4820581199549389063, guid: 881165a111aad8b48984bc07a73d147b, type: 3}
+      propertyPath: emptySlotSprite
+      value: 
+      objectReference: {fileID: 21300000, guid: 535f6f2d7475e6b4c84d909cd419da84, type: 3}
     - target: {fileID: 8242097740609765128, guid: 881165a111aad8b48984bc07a73d147b, type: 3}
       propertyPath: m_Pivot.x
       value: 0
@@ -482,6 +498,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 8991228657496012085, guid: 881165a111aad8b48984bc07a73d147b, type: 3}
+      propertyPath: emptySlotSprite
+      value: 
+      objectReference: {fileID: 21300000, guid: 535f6f2d7475e6b4c84d909cd419da84, type: 3}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
