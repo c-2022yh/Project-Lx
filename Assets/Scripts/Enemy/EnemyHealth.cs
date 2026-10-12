@@ -169,7 +169,10 @@ public class EnemyHealth : MonoBehaviour
 
         hitFeedbackCoroutine = StartCoroutine(HitFeedbackRoutine());
 
-        knockback?.ApplyKnockback(hitDirection);
+        if (!damageInfo.suppressKnockback)
+        {
+            knockback?.ApplyKnockback(hitDirection);
+        }
     }
 
     //피격에 따른 hp감소 체력바 보여주기
