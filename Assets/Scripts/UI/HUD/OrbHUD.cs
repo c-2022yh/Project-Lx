@@ -7,6 +7,13 @@ public class OrbHUD : MonoBehaviour
     private static readonly int FillAmountId = Shader.PropertyToID("_FillAmount");
 
     private PlayerEnergy playerEnergy;
+    private PlayerRelicManager relicManager;
+
+    [Header("Orb Design")]
+    [SerializeField] private Image emptyImage;
+    [SerializeField] private Image fullEffectImage;
+
+    private OrbHUDStyle defaultStyle;
 
     [Header("Energy Fill")]
     [SerializeField] private Image orbImageFill;
@@ -42,6 +49,7 @@ public class OrbHUD : MonoBehaviour
     //플레이어 기력을 찾고 변경 이벤트를 구독
     private void Start()
     {
+        CaptureDefaultStyle();
         InitializeWaveFillMaterial();
 
         playerEnergy = FindAnyObjectByType<PlayerEnergy>();
@@ -62,6 +70,14 @@ public class OrbHUD : MonoBehaviour
 
         playerEnergy.OnEnergyChanged += UpdateEnergyTarget;
 
+        relicManager = playerEnergy.GetComponent<PlayerRelicManager>();
+        if (relicManager != null)
+        {
+            relicManager.OnRelicsChanged += RefreshOrbDesign;
+        }
+
+        RefreshOrbDesign();
+
         UpdateEnergyTarget();
 
         //게임 시작 시에는 현재 기력 위치에서 바로 시작
@@ -71,6 +87,11 @@ public class OrbHUD : MonoBehaviour
 
     private void OnDestroy()
     {
+        if (relicManager != null)
+        {
+            relicManager.OnRelicsChanged -= RefreshOrbDesign;
+        }
+
         if (playerEnergy != null)
         {
             playerEnergy.OnEnergyChanged -= UpdateEnergyTarget;
@@ -87,6 +108,54 @@ public class OrbHUD : MonoBehaviour
         {
             Destroy(waveFillMaterial);
         }
+    }
+
+    private void CaptureDefaultStyle()
+    {
+        // Also support existing HUD instances that have not assigned the new fields.
+        if (emptyImage == null || fullEffectImage == null)
+        {
+            foreach (Image image in GetComponentsInChildren<Image>(true))
+            {
+                if (emptyImage == null && image.name == "EmptyImage") emptyImage = image;
+                if (fullEffectImage == null && image.name == "FullEnergyEffect") fullEffectImage = image;
+            }
+        }
+
+        defaultStyle = new OrbHUDStyle
+        {
+            emptySprite = emptyImage != null ? emptyImage.sprite : null,
+            fillSprite = orbImageFill != null ? orbImageFill.sprite : null,
+            fullEffectSprite = fullEffectImage != null ? fullEffectImage.sprite : null,
+            effectColor = fullEffectImage != null ? fullEffectImage.color : Color.white,
+            fadeSpeed = fullEffectFadeSpeed,
+            pulseSpeed = fullEffectPulseSpeed,
+            pulseScale = fullEffectPulseScale
+        };
+    }
+
+    private void RefreshOrbDesign()
+    {
+        RelicData relic = relicManager != null ? relicManager.EquippedOrbRelic : null;
+        OrbHUDStyle style = relic != null && relic.OrbHUDStyle != null
+            ? relic.OrbHUDStyle : defaultStyle;
+
+        if (emptyImage != null)
+            emptyImage.sprite = style.emptySprite != null ? style.emptySprite : defaultStyle.emptySprite;
+
+        if (orbImageFill != null)
+            orbImageFill.sprite = style.fillSprite != null ? style.fillSprite : defaultStyle.fillSprite;
+
+        if (fullEffectImage != null)
+        {
+            fullEffectImage.sprite = style.fullEffectSprite != null
+                ? style.fullEffectSprite : defaultStyle.fullEffectSprite;
+            fullEffectImage.color = style.effectColor;
+        }
+
+        fullEffectFadeSpeed = Mathf.Max(0f, style.fadeSpeed);
+        fullEffectPulseSpeed = Mathf.Max(0f, style.pulseSpeed);
+        fullEffectPulseScale = Mathf.Max(0f, style.pulseScale);
     }
 
     private void Update()

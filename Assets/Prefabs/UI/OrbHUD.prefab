@@ -219,6 +219,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::OrbHUD
   orbImageFill: {fileID: 6741867551763563343}
+  emptyImage: {fileID: 6257100723543433008}
+  fullEffectImage: {fileID: 2369408785921726432}
   fullEnergyEffect: {fileID: 3805575349752255480}
   fullEffectFadeSpeed: 5
   fullEffectPulseSpeed: 2
