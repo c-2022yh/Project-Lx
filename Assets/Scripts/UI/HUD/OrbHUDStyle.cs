@@ -9,6 +9,13 @@ public class OrbHUDStyle
     public Sprite fillSprite;
     public Sprite fullEffectSprite;
 
+    [Header("Orb Decorations")]
+    public Sprite frameSprite;
+    public Sprite cloudSprite;
+    public Sprite backdropSprite;
+    [Tooltip("Enable when the backdrop is a charged color layer, so it fills with energy instead of always looking full.")]
+    public bool backdropUsesEnergyFill;
+
     public Color effectColor = Color.white;
 
     [Min(0f)] public float fadeSpeed = 5f;

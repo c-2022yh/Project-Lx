@@ -15,13 +15,18 @@ MonoBehaviour:
   relicId: orb_fullmoon
   relicName: "\uB9CC\uC6D4"
   icon: {fileID: -6793532019306449160, guid: 634dcff5a03bb4d4c95dacc208de7289, type: 3}
-  description: 기력 획득량이 증가하고 기력이 최대일 때 기본 공격 피해량이 증가한다.
+  description: "\uAE30\uB825 \uD68D\uB4DD\uB7C9\uC774 \uC99D\uAC00\uD558\uACE0 \uAE30\uB825\uC774
+    \uCD5C\uB300\uC77C \uB54C \uAE30\uBCF8 \uACF5\uACA9 \uD53C\uD574\uB7C9\uC774
+    \uC99D\uAC00\uD55C\uB2E4."
   cost: 1
   category: 1
   orbHUDStyle:
-    emptySprite: {fileID: 0}
-    fillSprite: {fileID: 0}
-    fullEffectSprite: {fileID: 0}
+    emptySprite: {fileID: 21300000, guid: fc00b4c934ada7e4d9ab2814a164dd1b, type: 3}
+    fillSprite: {fileID: 21300000, guid: 203d68fa66acd7d45b7206d2f1f0857d, type: 3}
+    fullEffectSprite: {fileID: 21300000, guid: 12619603fed8c3346b167ba04cacf3e7, type: 3}
+    frameSprite: {fileID: 21300000, guid: 32070d8a460485048a3153d48f384712, type: 3}
+    cloudSprite: {fileID: 21300000, guid: 2f3c977158852394381926bbb5f04bac, type: 3}
+    backdropSprite: {fileID: 21300000, guid: 301410f475aa54a4cbba1569cc741d90, type: 3}
     effectColor: {r: 1, g: 1, b: 1, a: 1}
     fadeSpeed: 5
     pulseSpeed: 2

@@ -13,6 +13,9 @@ public class OrbHUD : MonoBehaviour
     [Header("Orb Design")]
     [SerializeField] private Image emptyImage;
     [SerializeField] private Image fullEffectImage;
+    [SerializeField] private Image frameImage;
+    [SerializeField] private Image cloudImage;
+    [SerializeField] private Image backdropImage;
 
     private OrbHUDStyle defaultStyle;
     private OrbHUDStyle activeStyle;
@@ -55,6 +58,7 @@ public class OrbHUD : MonoBehaviour
     private Vector3 fullEffectStartScale = Vector3.one;
 
     private Material originalOrbMaterial;
+    private Material originalBackdropMaterial;
     private Material waveFillMaterial;
 
     //플레이어 기력을 찾고 변경 이벤트를 구독
@@ -62,6 +66,7 @@ public class OrbHUD : MonoBehaviour
     {
         CaptureDefaultStyle();
         InitializeWaveFillMaterial();
+        Canvas.willRenderCanvases += UpdateEnergyFill;
 
         playerEnergy = FindAnyObjectByType<PlayerEnergy>();
 
@@ -99,6 +104,7 @@ public class OrbHUD : MonoBehaviour
 
     private void OnDestroy()
     {
+        Canvas.willRenderCanvases -= UpdateEnergyFill;
         DestroyRelicEffects();
         if (relicManager != null)
         {
@@ -117,6 +123,12 @@ public class OrbHUD : MonoBehaviour
             orbImageFill.material = originalOrbMaterial;
         }
 
+        if (backdropImage != null && waveFillMaterial != null
+            && backdropImage.material == waveFillMaterial)
+        {
+            backdropImage.material = originalBackdropMaterial;
+        }
+
         if (waveFillMaterial != null)
         {
             Destroy(waveFillMaterial);
@@ -126,20 +138,30 @@ public class OrbHUD : MonoBehaviour
     private void CaptureDefaultStyle()
     {
         // Also support existing HUD instances that have not assigned the new fields.
-        if (emptyImage == null || fullEffectImage == null)
+        if (orbImageFill == null || emptyImage == null || fullEffectImage == null
+            || frameImage == null || cloudImage == null || backdropImage == null)
         {
             foreach (Image image in GetComponentsInChildren<Image>(true))
             {
+                if (orbImageFill == null && image.name == "FullImage") orbImageFill = image;
                 if (emptyImage == null && image.name == "EmptyImage") emptyImage = image;
                 if (fullEffectImage == null && image.name == "FullEnergyEffect") fullEffectImage = image;
+                if (frameImage == null && image.name == "OrbFrame") frameImage = image;
+                if (cloudImage == null && image.name == "OrbCloud") cloudImage = image;
+                if (backdropImage == null && image.name == "OrbBackDrop") backdropImage = image;
             }
         }
+
+        originalBackdropMaterial = backdropImage != null ? backdropImage.material : null;
 
         defaultStyle = new OrbHUDStyle
         {
             emptySprite = emptyImage != null ? emptyImage.sprite : null,
             fillSprite = orbImageFill != null ? orbImageFill.sprite : null,
             fullEffectSprite = fullEffectImage != null ? fullEffectImage.sprite : null,
+            frameSprite = frameImage != null ? frameImage.sprite : null,
+            cloudSprite = cloudImage != null ? cloudImage.sprite : null,
+            backdropSprite = backdropImage != null ? backdropImage.sprite : null,
             effectColor = fullEffectImage != null ? fullEffectImage.color : Color.white,
             fadeSpeed = fullEffectFadeSpeed,
             pulseSpeed = fullEffectPulseSpeed,
@@ -173,6 +195,20 @@ public class OrbHUD : MonoBehaviour
             fullEffectImage.color = style.effectColor;
         }
 
+        if (frameImage != null)
+            frameImage.sprite = style.frameSprite != null ? style.frameSprite : defaultStyle.frameSprite;
+
+        if (cloudImage != null)
+            cloudImage.sprite = style.cloudSprite != null ? style.cloudSprite : defaultStyle.cloudSprite;
+
+        if (backdropImage != null)
+        {
+            backdropImage.sprite = style.backdropSprite != null ? style.backdropSprite : defaultStyle.backdropSprite;
+            backdropImage.material = style.backdropUsesEnergyFill && waveFillMaterial != null
+                ? waveFillMaterial : originalBackdropMaterial;
+            backdropImage.SetMaterialDirty();
+        }
+
         fullEffectFadeSpeed = Mathf.Max(0f, style.fadeSpeed);
         fullEffectPulseSpeed = Mathf.Max(0f, style.pulseSpeed);
         fullEffectPulseScale = Mathf.Max(0f, style.pulseScale);
@@ -190,6 +226,7 @@ public class OrbHUD : MonoBehaviour
         displayedEnergyRatio = Mathf.Min(displayedEnergyRatio, targetEnergyRatio);
         // Equipping an already full orb restores its sustained effect, without a fake charge event.
         wasEnergyFull = isEnergyFull;
+        UpdateEnergyFill();
     }
 
     private GameObject CreateRelicEffect(GameObject prefab)
@@ -232,6 +269,7 @@ public class OrbHUD : MonoBehaviour
 
     private void OnDisable()
     {
+        Canvas.willRenderCanvases -= UpdateEnergyFill;
         if (persistentEffectInstance != null) persistentEffectInstance.SetActive(false);
         if (fullChargeBurstInstance != null) fullChargeBurstInstance.SetActive(false);
         burstTimeRemaining = 0f;
@@ -240,6 +278,11 @@ public class OrbHUD : MonoBehaviour
 
     private void OnEnable()
     {
+        if (waveFillMaterial != null)
+        {
+            Canvas.willRenderCanvases -= UpdateEnergyFill;
+            Canvas.willRenderCanvases += UpdateEnergyFill;
+        }
         // Reopening the HUD is not a new full-charge event.
         if (playerEnergy != null) wasEnergyFull = playerEnergy.HasOrb && playerEnergy.IsFull;
     }
@@ -325,31 +368,39 @@ public class OrbHUD : MonoBehaviour
     {
         if (orbImageFill == null)
         {
-            Debug.LogError("OrbHUD: Orb Image Fill이 연결되지 않았습니다.", this);
+            Debug.LogError("OrbHUD: Assign the FullImage Image to Orb Image Fill.", this);
             return;
         }
 
         originalOrbMaterial = orbImageFill.material;
+        bool validSource = originalOrbMaterial != null
+            && originalOrbMaterial.shader != null
+            && originalOrbMaterial.shader.name == "UI/WaveFill"
+            && originalOrbMaterial.HasProperty(FillAmountId);
 
-        if (originalOrbMaterial == null
-            || !originalOrbMaterial.HasProperty(FillAmountId))
+        if (validSource)
         {
-            Debug.LogError(
-                "OrbHUD: Orb Image Fill에 UI/WaveFill Material을 설정해야 합니다.",
-                this
-            );
-            return;
+            waveFillMaterial = new Material(originalOrbMaterial);
+        }
+        else
+        {
+            Shader shader = Shader.Find("UI/WaveFill");
+            if (shader == null || !shader.isSupported)
+            {
+                // Do not display a misleading full image if the shader cannot be loaded.
+                orbImageFill.enabled = false;
+                if (backdropImage != null && activeStyle != null && activeStyle.backdropUsesEnergyFill)
+                    backdropImage.enabled = false;
+                Debug.LogError("OrbHUD: UI/WaveFill shader is missing or unsupported. Charge image hidden.", this);
+                return;
+            }
+            waveFillMaterial = new Material(shader);
+            Debug.LogWarning("OrbHUD: FullImage did not have UI/WaveFill. Applied it at runtime.", this);
         }
 
-        waveFillMaterial = new Material(originalOrbMaterial)
-        {
-            name = originalOrbMaterial.name + " (Runtime)"
-        };
-
-        orbImageFill.material = waveFillMaterial;
+        waveFillMaterial.name = "OrbHUD WaveFill (Runtime)";
         waveFillMaterial.SetFloat(FillAmountId, 0f);
-
-        //부모 Mask가 실제 렌더링용 Stencil Material을 다시 만들도록 갱신
+        orbImageFill.material = waveFillMaterial;
         orbImageFill.SetMaterialDirty();
     }
 
@@ -376,16 +427,32 @@ public class OrbHUD : MonoBehaviour
     {
         if (waveFillMaterial == null || orbImageFill == null) return;
 
+        // Reapply if an animation or another UI script replaced the runtime material.
+        if (orbImageFill.material != waveFillMaterial)
+        {
+            orbImageFill.material = waveFillMaterial;
+            orbImageFill.SetMaterialDirty();
+        }
+        if (backdropImage != null && activeStyle != null && activeStyle.backdropUsesEnergyFill
+            && backdropImage.material != waveFillMaterial)
+        {
+            backdropImage.material = waveFillMaterial;
+            backdropImage.SetMaterialDirty();
+        }
         waveFillMaterial.SetFloat(FillAmountId, displayedEnergyRatio);
 
         //UI Mask 아래의 Image는 Unity가 Stencil Material을 별도로 만들어 사용한다.
         //원본 Material만 수정하면 화면에 반영되지 않으므로 실제 렌더링본도 갱신한다.
-        Material renderMaterial = orbImageFill.materialForRendering;
+        UpdateRenderedFill(orbImageFill);
+        if (backdropImage != null && backdropImage.material == waveFillMaterial)
+            UpdateRenderedFill(backdropImage);
+    }
 
+    private void UpdateRenderedFill(Image image)
+    {
+        Material renderMaterial = image.materialForRendering;
         if (renderMaterial != null && renderMaterial.HasProperty(FillAmountId))
-        {
             renderMaterial.SetFloat(FillAmountId, displayedEnergyRatio);
-        }
     }
 
     //기력이 가득 차면 전용 이펙트를 표시하고 천천히 맥동시킴
