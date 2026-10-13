@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using UnityEngine;
+using System.Collections.Generic;
 using UnityEngine.InputSystem;
 
 //플레이어 전체 통제하는 스크립트
@@ -20,8 +21,9 @@ public class Player : MonoBehaviour
     //땅에 닿았는지 확인하는 변수
     [Header("Ground Check")]
     public Transform groundCheck;
-    Vector2 boxSize = new Vector2(0.7f, 0.1f); //캐릭터 너비에 맞춘 납작한 박스
     public LayerMask groundLayer;
+    [SerializeField, Range(0f, 80f)] private float maxGroundAngle = 50f;
+    private readonly List<ContactPoint2D> groundContacts = new List<ContactPoint2D>(16);
 
     //중력 값을 저장하는 변수 freeze 함수 내부에서 사용
     private float originalGravity;
@@ -78,12 +80,63 @@ public class Player : MonoBehaviour
     void FixedUpdate()
     {
         //땅에 닿았는지 체크
-        isGrounded = Physics2D.OverlapBox(groundCheck.position, boxSize, 0f, groundLayer);
+        isGrounded = CheckGrounded();
 
         Move.ExecuteMove();
         Move.ExecuteJump();
 
         //currentState?.DoFixedUpdate();
+    }
+
+    private bool CheckGrounded()
+    {
+        //점프 직후 남아 있는 접촉으로 착지/공중 점프가 다시 충전되지 않게 한다.
+        groundContacts.Clear();
+        if (rb.linearVelocity.y > 0.01f) return false;
+
+        ContactFilter2D filter = new ContactFilter2D();
+        filter.SetLayerMask(groundLayer);
+        filter.useTriggers = false;
+        rb.GetContacts(filter, groundContacts);
+
+        float minGroundNormalY = Mathf.Cos(maxGroundAngle * Mathf.Deg2Rad);
+        foreach (ContactPoint2D contact in groundContacts)
+        {
+            //같은 Ground 타일이어도 옆면/천장은 착지로 인정하지 않는다.
+            if (contact.normal.y >= minGroundNormalY &&
+                !Move.IsIgnoringPlatform(GetGroundCollider(contact))) return true;
+        }
+
+        return false;
+    }
+
+    private Collider2D GetGroundCollider(ContactPoint2D contact)
+    {
+        return contact.collider.attachedRigidbody == rb ? contact.otherCollider : contact.collider;
+    }
+
+    public bool TryGetDropPlatforms(List<Collider2D> platforms)
+    {
+        platforms.Clear();
+        if (!isGrounded) return false;
+
+        float minGroundNormalY = Mathf.Cos(maxGroundAngle * Mathf.Deg2Rad);
+        foreach (ContactPoint2D contact in groundContacts)
+        {
+            if (contact.normal.y < minGroundNormalY) continue;
+            Collider2D platform = GetGroundCollider(contact);
+            if (Move.IsIgnoringPlatform(platform)) continue;
+            PlatformEffector2D effector = platform.GetComponent<PlatformEffector2D>();
+            //일반 바닥도 동시에 밟고 있다면 하단 점프를 허용하지 않는다.
+            if (!platform.usedByEffector || effector == null ||
+                !effector.isActiveAndEnabled || !effector.useOneWay)
+            {
+                platforms.Clear();
+                return false;
+            }
+            if (!platforms.Contains(platform)) platforms.Add(platform);
+        }
+        return platforms.Count > 0;
     }
 
 
@@ -131,10 +184,11 @@ public class Player : MonoBehaviour
 
     private void OnDrawGizmos()
     {
-        if (groundCheck != null)
+        float minGroundNormalY = Mathf.Cos(maxGroundAngle * Mathf.Deg2Rad);
+        foreach (ContactPoint2D contact in groundContacts)
         {
-            Gizmos.color = isGrounded ? Color.blue : Color.red;
-            Gizmos.DrawWireCube(groundCheck.position, boxSize);
+            Gizmos.color = contact.normal.y >= minGroundNormalY ? Color.blue : Color.red;
+            Gizmos.DrawRay(contact.point, contact.normal * 0.4f);
         }
     }
 
