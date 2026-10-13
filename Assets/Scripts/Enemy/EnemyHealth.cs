@@ -154,7 +154,7 @@ public class EnemyHealth : MonoBehaviour
         currentHp = Mathf.Max(0f, currentHp - finalDamage);
 
 
-        ShowDamageFeedback(finalDamage);
+        ShowDamageFeedback(finalDamage, damageInfo.damageType, damageInfo.isCritical);
 
         if (currentHp <= 0f)
         {
@@ -176,7 +176,7 @@ public class EnemyHealth : MonoBehaviour
     }
 
     //피격에 따른 hp감소 체력바 보여주기
-    private void ShowDamageFeedback(float finalDamage)
+    private void ShowDamageFeedback(float finalDamage, DamageType damageType, bool isCritical)
     {
         if (healthBar != null)
         {
@@ -204,7 +204,7 @@ public class EnemyHealth : MonoBehaviour
                 Quaternion.identity
             );
 
-            popup.Show(finalDamage);
+            popup.Show(finalDamage, damageType, isCritical);
 
             damagePopupIndex++;
             lastDamagePopupTime = Time.time;

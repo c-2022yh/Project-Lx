@@ -254,6 +254,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::DamagePopup
   damageText: {fileID: 1438088892398770882}
+  physicalDamageColor: {r: 1, g: 0.94, b: 0.8, a: 1}
+  magicalDamageColor: {r: 0.4, g: 0.8, b: 1, a: 1}
+  criticalSizeMultiplier: 1.3
+  criticalPopMultiplier: 1.2
+  criticalPopDuration: 0.15
   lifeTime: 0.7
   moveSpeed: 1.2
   randomXOffset: 0.15
