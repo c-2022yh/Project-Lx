@@ -12,9 +12,8 @@ public class OrbHUDStyle
     [Header("Orb Decorations")]
     public Sprite frameSprite;
     public Sprite cloudSprite;
-    public Sprite backdropSprite;
-    [Tooltip("Enable when the backdrop is a charged color layer, so it fills with energy instead of always looking full.")]
-    public bool backdropUsesEnergyFill;
+    [Tooltip("Color of the shared OrbBackDrop. Its sprite and material stay fixed; only this tint changes with the equipped relic.")]
+    public Color backdropColor = Color.white;
 
     public Color effectColor = Color.white;
 

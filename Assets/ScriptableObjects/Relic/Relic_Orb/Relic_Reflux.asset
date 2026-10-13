@@ -23,13 +23,18 @@ MonoBehaviour:
     emptySprite: {fileID: 0}
     fillSprite: {fileID: 0}
     fullEffectSprite: {fileID: 0}
+    frameSprite: {fileID: 0}
+    cloudSprite: {fileID: 0}
+    backdropSprite: {fileID: 0}
+    backdropColor: {r: 0.9098039, g: 0.9254902, b: 0.9647059, a: 1}
+    backdropUsesEnergyFill: 1
     effectColor: {r: 1, g: 1, b: 1, a: 1}
     fadeSpeed: 5
     pulseSpeed: 2
     pulseScale: 0.04
     pulseAlphaAmount: 0
-    showFullEnergyEffect: 0
-    playFullChargeBurst: 0
+    showFullEnergyEffect: 1
+    playFullChargeBurst: 1
     persistentEffectCondition: 0
     persistentEffectPrefab: {fileID: 0}
     fullChargeBurstPrefab: {fileID: 0}

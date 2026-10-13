@@ -218,12 +218,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f7acc7379178d004a92f65efd90dc3d8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::OrbHUD
-  orbImageFill: {fileID: 6741867551763563343}
   emptyImage: {fileID: 6257100723543433008}
   fullEffectImage: {fileID: 2369408785921726432}
   frameImage: {fileID: 952820287566153405}
   cloudImage: {fileID: 3491658165902645290}
   backdropImage: {fileID: 5934023718741891267}
+  effectRoot: {fileID: 0}
+  orbImageFill: {fileID: 6741867551763563343}
   fullEnergyEffect: {fileID: 3805575349752255480}
   fullEffectFadeSpeed: 5
   fullEffectPulseSpeed: 2
@@ -465,14 +466,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 0.9450981, g: 0.9607844, b: 1, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 998238a6713f419418e62b9d33a737b3, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 9221e2bc6a283bd48be9af72229795b9, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1

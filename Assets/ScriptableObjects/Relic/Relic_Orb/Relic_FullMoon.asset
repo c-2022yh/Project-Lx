@@ -27,6 +27,8 @@ MonoBehaviour:
     frameSprite: {fileID: 21300000, guid: 32070d8a460485048a3153d48f384712, type: 3}
     cloudSprite: {fileID: 21300000, guid: 2f3c977158852394381926bbb5f04bac, type: 3}
     backdropSprite: {fileID: 21300000, guid: 301410f475aa54a4cbba1569cc741d90, type: 3}
+    backdropColor: {r: 0.93333334, g: 0.90588236, b: 0.8352941, a: 1}
+    backdropUsesEnergyFill: 1
     effectColor: {r: 1, g: 1, b: 1, a: 1}
     fadeSpeed: 5
     pulseSpeed: 2

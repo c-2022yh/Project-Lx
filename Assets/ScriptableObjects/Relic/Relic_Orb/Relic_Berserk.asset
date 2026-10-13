@@ -22,9 +22,14 @@ MonoBehaviour:
   cost: 1
   category: 1
   orbHUDStyle:
-    emptySprite: {fileID: 0}
-    fillSprite: {fileID: 0}
-    fullEffectSprite: {fileID: 0}
+    emptySprite: {fileID: 21300000, guid: a44041f626000864a84cda855e391731, type: 3}
+    fillSprite: {fileID: 21300000, guid: 4f361784a46891d41a34712541e61ee5, type: 3}
+    fullEffectSprite: {fileID: 21300000, guid: e070f6ef7f1c0264488c8f4a0a0c8812, type: 3}
+    frameSprite: {fileID: 21300000, guid: 88857c5d17129924bad10f98d93815af, type: 3}
+    cloudSprite: {fileID: 21300000, guid: dfa6514bf70dd8c45a0bb65e428d7f7c, type: 3}
+    backdropSprite: {fileID: 21300000, guid: a34ccbe58f08b5d46a57b4a407ed2bb4, type: 3}
+    backdropColor: {r: 0.88235295, g: 0.90588236, b: 0.9490196, a: 1}
+    backdropUsesEnergyFill: 1
     effectColor: {r: 1, g: 1, b: 1, a: 1}
     fadeSpeed: 5
     pulseSpeed: 2
