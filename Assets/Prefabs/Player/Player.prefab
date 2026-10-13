@@ -250,6 +250,7 @@ MonoBehaviour:
   groundLayer:
     serializedVersion: 2
     m_Bits: 64
+  maxGroundAngle: 50
 --- !u!114 &4954982494915989086
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -310,6 +311,8 @@ MonoBehaviour:
   jumpForce: 20
   jumpCooldown: 0.2
   maxAirJumps: 1
+  dropSpeed: 5
+  dropMinimumDuration: 0.15
   coyoteTime: 0.15
   bufferTime: 0.15
   dashSpeed: 70
@@ -429,7 +432,6 @@ MonoBehaviour:
   - {fileID: 0}
   - {fileID: 0}
   startingSkills: []
-  hudPanel: {fileID: 5405542325969778392, guid: 881165a111aad8b48984bc07a73d147b, type: 3}
 --- !u!114 &781535822289692772
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -459,6 +461,7 @@ MonoBehaviour:
   maxEnergy: 100
   orbPrefab: {fileID: 1398017312291189154, guid: 1e46b67fbb54b8141ac54cc7a030d053, type: 3}
   startWithOrb: 1
+  orbAcquisitionSkill: {fileID: 11400000, guid: 77befe7e460c3ea4ab40d37d14391ee2, type: 2}
 --- !u!114 &2921268448612659600
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -515,6 +518,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 382b0b4b35cffc644bb7ee9727496b73, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerAnimation
+  respawnStateName: Base Layer.Player_Idle
   animator: {fileID: 1525868767661395568}
 --- !u!114 &8811411989047366458
 MonoBehaviour:
@@ -559,6 +563,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerRespawn
   respawnDelay: 0.7
+  deathFadeDuration: 0.4
   sr: {fileID: 7915228961384660491}
 --- !u!114 &9034583387251907042
 MonoBehaviour:
