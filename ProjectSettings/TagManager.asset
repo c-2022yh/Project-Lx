@@ -60,9 +60,6 @@ TagManager:
   - name: GroundCover
     uniqueID: 1691898173
     locked: 0
-  - name: BackGround
-    uniqueID: 48636321
-    locked: 0
   - name: Ground
     uniqueID: 3979320971
     locked: 0
