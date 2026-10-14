@@ -66,14 +66,14 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b00045f12942b46c698459096c89274e, type: 3}
-  m_Name: FullScreenPassRendererFeature
-  m_EditorClassIdentifier: Unity.RenderPipelines.Universal.Runtime::UnityEngine.Rendering.Universal.FullScreenPassRendererFeature
+  m_Script: {fileID: 11500000, guid: 943074a1b2664f3a9d6c0b51bc4878f8, type: 3}
+  m_Name: Player Awakening Edge
+  m_EditorClassIdentifier: Assembly-CSharp::ScreenAwakeningEdgeFeature
   m_Active: 1
   injectionPoint: 550
   fetchColorBuffer: 1
-  requirements: 4
-  passMaterial: {fileID: 2100000, guid: 4a853462c1b8faa40b30b34916f0cb8d, type: 2}
+  requirements: 0
+  passMaterial: {fileID: 2100000, guid: 9421ca414d5f40b40b60328f1e956fab, type: 2}
   passIndex: 0
   bindDepthStencilAttachment: 0
   m_Version: 1

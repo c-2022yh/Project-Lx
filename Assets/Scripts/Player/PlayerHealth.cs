@@ -7,6 +7,8 @@ public class PlayerHealth : MonoBehaviour, IDamageable
     //체력 변화와 사망 이벤트
     public event Action<float, float> OnHealthChanged;
     public event Action OnDied;
+    //무적 검사를 통과하고 실제 체력이 감소했을 때 화면 효과에 알림
+    public event Action<float> OnDamaged;
     
     public float CurrentHealth => currentHealth;
     public float MaxHealth => maxHealth;
@@ -54,8 +56,11 @@ public class PlayerHealth : MonoBehaviour, IDamageable
 
         if (hitReaction != null && !hitReaction.CanTakeDamage()) return;
 
+        float appliedDamage = Mathf.Min(damage, currentHealth);
         currentHealth -= damage;
         currentHealth = Mathf.Clamp(currentHealth, 0f, maxHealth);
+
+        OnDamaged?.Invoke(appliedDamage);
 
         Debug.Log("Player damaged. HP: " + currentHealth);
 

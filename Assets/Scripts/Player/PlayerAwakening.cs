@@ -270,6 +270,8 @@ public class PlayerAwakening : MonoBehaviour
     {
         if (!isAwakened && !isAwakening) return;
 
+        if (awakeningEffect != null) awakeningEffect.Hide();
+
         if (awakeningCoroutine != null)
         {
             StopCoroutine(awakeningCoroutine);
