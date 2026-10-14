@@ -33,6 +33,9 @@ public class OrbHUDStyle
     [Tooltip("Optional UI prefab played once on entering full energy, separately from the persistent effect.")]
     public GameObject fullChargeBurstPrefab;
     [Min(0.01f)] public float fullChargeBurstDuration = 1f;
+    [Tooltip("Expansion of the eye-image burst used when no burst prefab is assigned.")]
+    [Min(1f)] public float fullChargeBurstScale = 1.5f;
+    [Range(0f, 1f)] public float fullChargeBurstAlpha = 0.8f;
 
     [Header("Gauge Display")]
     [Tooltip("0 uses the current maximum energy. Use 100 to display a reduced capacity such as Dark Moon's 50/100. Display only; does not change gameplay capacity.")]

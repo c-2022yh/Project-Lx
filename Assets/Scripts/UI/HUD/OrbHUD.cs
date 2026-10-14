@@ -25,6 +25,8 @@ public class OrbHUD : MonoBehaviour
     private GameObject fullChargeBurstInstance;
     private float burstTimeRemaining;
     private bool wasEnergyFull;
+    private bool chargeBurstPending;
+    private Image fallbackBurstImage;
 
     [Tooltip("Optional UI effect parent outside InnerMask. Defaults to this HUD's RectTransform.")]
     [SerializeField] private RectTransform effectRoot;
@@ -213,6 +215,9 @@ public class OrbHUD : MonoBehaviour
 
         persistentEffectInstance = CreateRelicEffect(style.persistentEffectPrefab);
         fullChargeBurstInstance = CreateRelicEffect(style.fullChargeBurstPrefab);
+        if (fullChargeBurstInstance == null && style.fullChargeBurstPrefab == null
+            && style.playFullChargeBurst)
+            fullChargeBurstInstance = CreateFallbackChargeBurst();
         UpdateEnergyTarget();
         // A reduced capacity must never retain a previously full visual gauge.
         displayedEnergyRatio = Mathf.Min(displayedEnergyRatio, targetEnergyRatio);
@@ -265,6 +270,35 @@ public class OrbHUD : MonoBehaviour
         return instance;
     }
 
+    //전용 프리팹이 없으면 현재 눈 이미지와 같은 위치에 완충 연출을 생성
+    private GameObject CreateFallbackChargeBurst()
+    {
+        if (fullEffectImage == null) return null;
+
+        GameObject instance = new GameObject("FullChargeBurst", typeof(RectTransform),
+            typeof(CanvasRenderer), typeof(Image));
+        RectTransform source = fullEffectImage.rectTransform;
+        RectTransform rect = instance.GetComponent<RectTransform>();
+        rect.SetParent(source.parent, false);
+        rect.anchorMin = source.anchorMin;
+        rect.anchorMax = source.anchorMax;
+        rect.pivot = source.pivot;
+        rect.sizeDelta = source.sizeDelta;
+        rect.anchoredPosition3D = source.anchoredPosition3D;
+        rect.localRotation = source.localRotation;
+        rect.localScale = fullEffectStartScale;
+        rect.SetSiblingIndex(source.GetSiblingIndex() + 1);
+        instance.layer = fullEffectImage.gameObject.layer;
+
+        fallbackBurstImage = instance.GetComponent<Image>();
+        fallbackBurstImage.sprite = fullEffectImage.sprite;
+        fallbackBurstImage.material = fullEffectImage.material;
+        fallbackBurstImage.preserveAspect = fullEffectImage.preserveAspect;
+        fallbackBurstImage.raycastTarget = false;
+        instance.SetActive(false);
+        return instance;
+    }
+
     private void DestroyRelicEffects()
     {
         if (persistentEffectInstance != null)
@@ -279,6 +313,8 @@ public class OrbHUD : MonoBehaviour
         }
         persistentEffectInstance = null;
         fullChargeBurstInstance = null;
+        fallbackBurstImage = null;
+        chargeBurstPending = false;
         burstTimeRemaining = 0f;
     }
 
@@ -289,6 +325,7 @@ public class OrbHUD : MonoBehaviour
         if (fullChargeBurstInstance != null) fullChargeBurstInstance.SetActive(false);
         burstTimeRemaining = 0f;
         if (fullEnergyEffect != null) fullEnergyEffect.alpha = 0f;
+        chargeBurstPending = false;
     }
 
     private void OnEnable()
@@ -335,8 +372,16 @@ public class OrbHUD : MonoBehaviour
         if (persistentEffectInstance != null && persistentEffectInstance.activeSelf != showPersistent)
             persistentEffectInstance.SetActive(showPersistent);
 
-        if (activeStyle.playFullChargeBurst && isEnergyFull && !wasEnergyFull && fullChargeBurstInstance != null)
+        if (activeStyle.playFullChargeBurst && isEnergyFull && !wasEnergyFull)
+            chargeBurstPending = true;
+        if (!isEnergyFull || !activeStyle.playFullChargeBurst)
+            chargeBurstPending = false;
+
+        //표시 게이지가 목표까지 찬 뒤 재생. 암월의 50/100 표시도 같은 기준 사용.
+        if (chargeBurstPending && displayedEnergyRatio >= targetEnergyRatio - 0.001f
+            && fullChargeBurstInstance != null)
         {
+            chargeBurstPending = false;
             fullChargeBurstInstance.SetActive(false);
             fullChargeBurstInstance.SetActive(true);
             burstTimeRemaining = Mathf.Max(0.01f, activeStyle.fullChargeBurstDuration);
@@ -346,9 +391,24 @@ public class OrbHUD : MonoBehaviour
         if (fullChargeBurstInstance != null && fullChargeBurstInstance.activeSelf)
         {
             burstTimeRemaining -= Time.unscaledDeltaTime;
+            UpdateFallbackChargeBurst();
             if (!isEnergyFull || burstTimeRemaining <= 0f)
                 fullChargeBurstInstance.SetActive(false);
         }
+    }
+
+    //완충 눈 이미지를 한 번 확대하고 부드럽게 사라지게 함
+    private void UpdateFallbackChargeBurst()
+    {
+        if (fallbackBurstImage == null) return;
+        float duration = Mathf.Max(0.01f, activeStyle.fullChargeBurstDuration);
+        float progress = Mathf.Clamp01(1f - burstTimeRemaining / duration);
+        float expansion = Mathf.Lerp(1f, Mathf.Max(1f, activeStyle.fullChargeBurstScale),
+            1f - Mathf.Pow(1f - progress, 2f));
+        fallbackBurstImage.rectTransform.localScale = fullEffectStartScale * expansion;
+        Color color = activeStyle.effectColor;
+        color.a *= Mathf.Clamp01(activeStyle.fullChargeBurstAlpha) * Mathf.Sin(progress * Mathf.PI);
+        fallbackBurstImage.color = color;
     }
 
     private void Update()
