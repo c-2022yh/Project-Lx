@@ -1,7 +1,7 @@
-using System.Collections;
+ï»¿using System.Collections;
 using UnityEngine;
 
-//ÇÃ·¹ÀÌ¾î ÇÇ°İ °æÁ÷, ³Ë¹é, ¹«Àû, ´ë½¬ Áß Á¢ÃË ¹«½Ã µîÀ» Ã³¸®ÇÏ´Â ½ºÅ©¸³Æ®
+//í”Œë ˆì´ì–´ í”¼ê²© ê²½ì§, ë„‰ë°±, ë¬´ì , ëŒ€ì‰¬ ì¤‘ ì ‘ì´‰ ë¬´ì‹œ ë“±ì„ ì²˜ë¦¬í•˜ëŠ” ìŠ¤í¬ë¦½íŠ¸
 public class PlayerHitReaction : MonoBehaviour
 {
     [Header("Invincible")]
@@ -18,13 +18,14 @@ public class PlayerHitReaction : MonoBehaviour
     [Header("Enemy Contact Ignore")]
     [SerializeField] private float defaultEnemyContactIgnoreTime = 0.2f;
 
-    //´ë½¬ Áß Àû Á¢ÃË ¹«½Ã ¿©ºÎ
+    //ëŒ€ì‰¬ ì¤‘ ì  ì ‘ì´‰ ë¬´ì‹œ ì—¬ë¶€
     public bool IsIgnoringEnemyContact { get; private set; }
 
     private Coroutine enemyContactIgnoreRoutine;
 
     private Rigidbody2D rb;
     private PlayerActionState playerActionState;
+    private PlayerAnimation playerAnimation;
 
     [SerializeField] private SpriteRenderer sr;
 
@@ -32,9 +33,10 @@ public class PlayerHitReaction : MonoBehaviour
     {
         rb = GetComponent<Rigidbody2D>();
         playerActionState = GetComponent<PlayerActionState>();
+        playerAnimation = GetComponent<PlayerAnimation>();
     }
 
-    //ÇöÀç µ¥¹ÌÁö¸¦ ¹ŞÀ» ¼ö ÀÖ´ÂÁö È®ÀÎÇÏ±â
+    //í˜„ì¬ ë°ë¯¸ì§€ë¥¼ ë°›ì„ ìˆ˜ ìˆëŠ”ì§€ í™•ì¸í•˜ê¸°
     public bool CanTakeDamage()
     {
         if (isInvincible) return false;
@@ -43,7 +45,7 @@ public class PlayerHitReaction : MonoBehaviour
         return true;
     }
 
-    //ÇÇ°İ ¹İÀÀ ½ÃÀÛ
+    //í”¼ê²© ë°˜ì‘ ì‹œì‘
     public void PlayHitReaction(Vector2 damageSourcePosition)
     {
         if (isInvincible) return;
@@ -51,7 +53,7 @@ public class PlayerHitReaction : MonoBehaviour
         StartCoroutine(HitRoutine(damageSourcePosition));
     }
 
-    //ÇÇ°İ ¹İÀÀ ÄÚ·çÆ¾
+    //í”¼ê²© ë°˜ì‘ ì½”ë£¨í‹´
     private IEnumerator HitRoutine(Vector2 damageSourcePosition)
     {
         isInvincible = true;
@@ -60,6 +62,7 @@ public class PlayerHitReaction : MonoBehaviour
             playerActionState.EnterHitStun();
         }
 
+        if (playerAnimation != null) playerAnimation.PlayHit();
         ApplyKnockback(damageSourcePosition);
         yield return new WaitForSeconds(hitStunTime);
 
@@ -73,7 +76,7 @@ public class PlayerHitReaction : MonoBehaviour
         isInvincible = false;
     }
 
-    //³Ë¹é Àû¿ë
+    //ë„‰ë°± ì ìš©
     private void ApplyKnockback(Vector2 damageSourcePosition)
     {
         if (rb == null) return;
@@ -85,7 +88,7 @@ public class PlayerHitReaction : MonoBehaviour
 
     }
 
-    //¹«Àû »óÅÂ¿¡¼­ ±ôºıÀÓ È¿°ú
+    //ë¬´ì  ìƒíƒœì—ì„œ ê¹œë¹¡ì„ íš¨ê³¼
     private IEnumerator InvincibleBlinkRoutine()
     {
         float timer = 0f;
@@ -109,7 +112,7 @@ public class PlayerHitReaction : MonoBehaviour
         }
     }
 
-    //´ë½¬ ½ÃÀÛ ½Ã Àû Á¢ÃË ¹«½Ã
+    //ëŒ€ì‰¬ ì‹œì‘ ì‹œ ì  ì ‘ì´‰ ë¬´ì‹œ
     public void BeginEnemyContactIgnore()
     {
         if (enemyContactIgnoreRoutine != null)
@@ -121,13 +124,13 @@ public class PlayerHitReaction : MonoBehaviour
         IsIgnoringEnemyContact = true;
     }
 
-    //´ë½¬ Á¾·á ÈÄ Àû Á¢ÃË ¹«½Ã ÇØÁ¦
+    //ëŒ€ì‰¬ ì¢…ë£Œ í›„ ì  ì ‘ì´‰ ë¬´ì‹œ í•´ì œ
     public void EndEnemyContactIgnoreAfterDelay()
     {
         EndEnemyContactIgnoreAfterDelay(defaultEnemyContactIgnoreTime);
     }
 
-    //´ë½¬ Á¾·á ÈÄ Àû Á¢ÃË ¹«½Ã ÇØÁ¦ (Áö¿¬ ½Ã°£ ÁöÁ¤)
+    //ëŒ€ì‰¬ ì¢…ë£Œ í›„ ì  ì ‘ì´‰ ë¬´ì‹œ í•´ì œ (ì§€ì—° ì‹œê°„ ì§€ì •)
     public void EndEnemyContactIgnoreAfterDelay(float delay)
     {
         if (enemyContactIgnoreRoutine != null)
@@ -138,7 +141,7 @@ public class PlayerHitReaction : MonoBehaviour
         enemyContactIgnoreRoutine = StartCoroutine(EnemyContactIgnoreDelayRoutine(delay));
     }
 
-    //Àû Á¢ÃË ¹«½Ã ÇØÁ¦ Áö¿¬ ÄÚ·çÆ¾
+    //ì  ì ‘ì´‰ ë¬´ì‹œ í•´ì œ ì§€ì—° ì½”ë£¨í‹´
     private IEnumerator EnemyContactIgnoreDelayRoutine(float delay)
     {
         IsIgnoringEnemyContact = true;
@@ -149,13 +152,24 @@ public class PlayerHitReaction : MonoBehaviour
         enemyContactIgnoreRoutine = null;
     }
 
-    //¸®½ºÆù Á÷ÈÄ ¹«Àû
+    // ì‚¬ë§/ë¦¬ìŠ¤í° ì‹œ ì´ì „ ê²½ì§, ê¹œë¹¡ì„, ì ‘ì´‰ ë¬´ì‹œ íƒ€ì´ë¨¸ ì •ë¦¬.
+    public void ResetReaction()
+    {
+        StopAllCoroutines();
+        enemyContactIgnoreRoutine = null;
+        IsIgnoringEnemyContact = false;
+        isInvincible = false;
+        if (sr != null) sr.enabled = true;
+    }
+
+    //ë¦¬ìŠ¤í° ì§í›„ ë¬´ì 
     public void StartRespawnInvincible()
     {
+        ResetReaction();
         StartCoroutine(RespawnInvincibleRoutine());
     }
 
-    //¸®½ºÆù Á÷ÈÄ ¹«Àû ÄÚ·çÆ¾
+    //ë¦¬ìŠ¤í° ì§í›„ ë¬´ì  ì½”ë£¨í‹´
     private IEnumerator RespawnInvincibleRoutine()
     {
         isInvincible = true;

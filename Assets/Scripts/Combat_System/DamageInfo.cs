@@ -9,6 +9,8 @@ public struct DamageInfo
 
     public float penetration;       //관통력, 방어력 무시 정도
 
+    public bool suppressKnockback;
+
     public bool isCritical;         //치명타 여부
 
     public float damageAmplification; //피해 증폭
@@ -30,6 +32,7 @@ public struct DamageInfo
         this.damageAmplification = damageAmplification;
 
         this.attacker = attacker;
+        this.suppressKnockback = false;
     }
 
 

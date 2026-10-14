@@ -192,6 +192,7 @@ public class DawnRelicEffect : RelicEffect
                  player.gameObject);
 
             //추가 공격에 피해 정보 전달
+            damageInfo.suppressKnockback = true;
             hitbox.SetAttackInfo(damageInfo, dir);
 
             //activeTime이 지나면 공격 판정 종료

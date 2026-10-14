@@ -103,6 +103,13 @@ public class PlayerAwakening : MonoBehaviour
     public bool IsAwakened => isAwakened;
     public bool IsAwakening => isAwakening;
 
+    // HUD effects follow the active drain phase, after the awakening intro.
+    public bool IsDrainingEnergy => isAwakened
+        && awakeningEnergyDrainPerSecond > 0f
+        && activePlayer != null
+        && activePlayer.Energy != null
+        && activePlayer.Energy.CurrentEnergy > 0f;
+
     //각성 진입을 시도
     public void TryAwaken(Player p)
     {

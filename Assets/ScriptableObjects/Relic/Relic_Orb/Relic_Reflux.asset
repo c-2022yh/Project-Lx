@@ -19,5 +19,28 @@ MonoBehaviour:
     \uD68C\uBCF5\uD55C\uB2E4."
   cost: 1
   category: 1
+  orbHUDStyle:
+    emptySprite: {fileID: 0}
+    fillSprite: {fileID: 0}
+    fullEffectSprite: {fileID: 0}
+    frameSprite: {fileID: 0}
+    cloudSprite: {fileID: 0}
+    backdropSprite: {fileID: 0}
+    backdropColor: {r: 0.9098039, g: 0.9254902, b: 0.9647059, a: 1}
+    backdropUsesEnergyFill: 1
+    effectColor: {r: 1, g: 1, b: 1, a: 1}
+    fadeSpeed: 5
+    pulseSpeed: 2
+    pulseScale: 0.04
+    pulseAlphaAmount: 0
+    showFullEnergyEffect: 1
+    playFullChargeBurst: 1
+    persistentEffectCondition: 0
+    persistentEffectPrefab: {fileID: 0}
+    fullChargeBurstPrefab: {fileID: 0}
+    fullChargeBurstDuration: 1
+    fullChargeBurstScale: 1.5
+    fullChargeBurstAlpha: 0.8
+    displayEnergyCapacity: 0
   effects:
   - {fileID: 11400000, guid: 212fe7dc06323ad4988095fc7c0f4cd6, type: 2}

@@ -21,5 +21,28 @@ MonoBehaviour:
     \uC0C1\uD0DC\uAC00 \uC885\uB8CC\uB41C\uB2E4."
   cost: 1
   category: 1
+  orbHUDStyle:
+    emptySprite: {fileID: 21300000, guid: a44041f626000864a84cda855e391731, type: 3}
+    fillSprite: {fileID: 21300000, guid: 4f361784a46891d41a34712541e61ee5, type: 3}
+    fullEffectSprite: {fileID: 21300000, guid: e070f6ef7f1c0264488c8f4a0a0c8812, type: 3}
+    frameSprite: {fileID: 21300000, guid: 88857c5d17129924bad10f98d93815af, type: 3}
+    cloudSprite: {fileID: 21300000, guid: dfa6514bf70dd8c45a0bb65e428d7f7c, type: 3}
+    backdropSprite: {fileID: 21300000, guid: a34ccbe58f08b5d46a57b4a407ed2bb4, type: 3}
+    backdropColor: {r: 0.88235295, g: 0.90588236, b: 0.9490196, a: 1}
+    backdropUsesEnergyFill: 1
+    effectColor: {r: 1, g: 1, b: 1, a: 1}
+    fadeSpeed: 5
+    pulseSpeed: 2
+    pulseScale: 0.04
+    pulseAlphaAmount: 0.35
+    showFullEnergyEffect: 1
+    playFullChargeBurst: 1
+    persistentEffectCondition: 3
+    persistentEffectPrefab: {fileID: 0}
+    fullChargeBurstPrefab: {fileID: 0}
+    fullChargeBurstDuration: 1
+    fullChargeBurstScale: 1.5
+    fullChargeBurstAlpha: 0.8
+    displayEnergyCapacity: 0
   effects:
   - {fileID: 11400000, guid: 9d78682739e09d942975826ed46073b8, type: 2}

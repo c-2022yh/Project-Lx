@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using UnityEngine;
+using System.Collections.Generic;
 using UnityEngine.InputSystem;
 
 //플레이어 전체 통제하는 스크립트
@@ -20,8 +21,20 @@ public class Player : MonoBehaviour
     //땅에 닿았는지 확인하는 변수
     [Header("Ground Check")]
     public Transform groundCheck;
-    Vector2 boxSize = new Vector2(0.7f, 0.1f); //캐릭터 너비에 맞춘 납작한 박스
     public LayerMask groundLayer;
+    [SerializeField, Range(0f, 80f)] private float maxGroundAngle = 50f;
+    [Tooltip("Short downward cast used when physical ground contacts are missing.")]
+    [SerializeField, Min(0f)] private float groundProbeDistance = 0.08f;
+    [Tooltip("Allow small upward motion for the fallback probe, but not airborne ascent.")]
+    [SerializeField, Min(0f)] private float groundProbeMaxUpwardSpeed = 0.5f;
+    [Tooltip("Minimum time to ignore grounding after a jump. Ascent stays excluded afterward.")]
+    [SerializeField, Min(0f)] private float jumpGroundIgnoreDuration = 0.08f;
+    private Collider2D[] bodyColliders;
+    private readonly List<RaycastHit2D> groundProbeHits = new List<RaycastHit2D>(16);
+    private readonly List<Collider2D> supportingGround = new List<Collider2D>(4);
+    private bool jumpGroundingBlocked;
+    private float ignoreGroundUntil;
+    private readonly List<ContactPoint2D> groundContacts = new List<ContactPoint2D>(16);
 
     //중력 값을 저장하는 변수 freeze 함수 내부에서 사용
     private float originalGravity;
@@ -54,6 +67,7 @@ public class Player : MonoBehaviour
     {
         rb = GetComponent<Rigidbody2D>();
         rb.freezeRotation = true;
+        bodyColliders = GetComponentsInChildren<Collider2D>();
 
         //스크립트 연결
         Move = GetComponent<PlayerMove>();
@@ -78,12 +92,105 @@ public class Player : MonoBehaviour
     void FixedUpdate()
     {
         //땅에 닿았는지 체크
-        isGrounded = Physics2D.OverlapBox(groundCheck.position, boxSize, 0f, groundLayer);
+        isGrounded = CheckGrounded();
 
         Move.ExecuteMove();
         Move.ExecuteJump();
 
         //currentState?.DoFixedUpdate();
+    }
+
+    public void NotifyJumpStarted()
+    {
+        isGrounded = false;
+        jumpGroundingBlocked = true;
+        ignoreGroundUntil = Time.time + jumpGroundIgnoreDuration;
+        supportingGround.Clear();
+    }
+
+    private bool CheckGrounded()
+    {
+        groundContacts.Clear();
+        supportingGround.Clear();
+
+        // Explicit jumps cannot re-ground from residual contacts or the nearby floor.
+        if (jumpGroundingBlocked)
+        {
+            if (Time.time < ignoreGroundUntil || rb.linearVelocity.y > 0.01f) return false;
+            jumpGroundingBlocked = false;
+        }
+
+        ContactFilter2D filter = new ContactFilter2D();
+        filter.SetLayerMask(groundLayer);
+        filter.useTriggers = false;
+        rb.GetContacts(filter, groundContacts);
+
+        float minGroundNormalY = Mathf.Cos(maxGroundAngle * Mathf.Deg2Rad);
+        foreach (ContactPoint2D contact in groundContacts)
+        {
+            Collider2D ground = GetGroundCollider(contact);
+            if (contact.normal.y >= minGroundNormalY && !Move.IsIgnoringPlatform(ground))
+            {
+                AddSupportingGround(ground);
+            }
+        }
+
+        // Real contacts also count while moving upward along a slope.
+        if (supportingGround.Count > 0) return true;
+        if (groundProbeDistance <= 0f || rb.linearVelocity.y > groundProbeMaxUpwardSpeed)
+            return false;
+
+        foreach (Collider2D body in bodyColliders)
+        {
+            if (!body.isActiveAndEnabled || body.isTrigger || body.attachedRigidbody != rb)
+                continue;
+
+            groundProbeHits.Clear();
+            body.Cast(Vector2.down, filter, groundProbeHits, groundProbeDistance, true);
+            foreach (RaycastHit2D hit in groundProbeHits)
+            {
+                // Initial overlaps have a synthetic normal opposite the cast direction.
+                // They must not make the underside of a one-way platform into ground.
+                if (hit.collider == null || hit.distance <= 0f || hit.normal.y < minGroundNormalY ||
+                    Move.IsIgnoringPlatform(hit.collider) || Physics2D.GetIgnoreCollision(body, hit.collider))
+                    continue;
+
+                AddSupportingGround(hit.collider);
+            }
+        }
+
+        return supportingGround.Count > 0;
+    }
+
+    private void AddSupportingGround(Collider2D ground)
+    {
+        if (!supportingGround.Contains(ground)) supportingGround.Add(ground);
+    }
+
+    private Collider2D GetGroundCollider(ContactPoint2D contact)
+    {
+        return contact.collider.attachedRigidbody == rb ? contact.otherCollider : contact.collider;
+    }
+
+    public bool TryGetDropPlatforms(List<Collider2D> platforms)
+    {
+        platforms.Clear();
+        if (!isGrounded) return false;
+
+        foreach (Collider2D platform in supportingGround)
+        {
+            if (Move.IsIgnoringPlatform(platform)) continue;
+            PlatformEffector2D effector = platform.GetComponent<PlatformEffector2D>();
+            //일반 바닥도 동시에 밟고 있다면 하단 점프를 허용하지 않는다.
+            if (!platform.usedByEffector || effector == null ||
+                !effector.isActiveAndEnabled || !effector.useOneWay)
+            {
+                platforms.Clear();
+                return false;
+            }
+            if (!platforms.Contains(platform)) platforms.Add(platform);
+        }
+        return platforms.Count > 0;
     }
 
 
@@ -131,10 +238,11 @@ public class Player : MonoBehaviour
 
     private void OnDrawGizmos()
     {
-        if (groundCheck != null)
+        float minGroundNormalY = Mathf.Cos(maxGroundAngle * Mathf.Deg2Rad);
+        foreach (ContactPoint2D contact in groundContacts)
         {
-            Gizmos.color = isGrounded ? Color.blue : Color.red;
-            Gizmos.DrawWireCube(groundCheck.position, boxSize);
+            Gizmos.color = contact.normal.y >= minGroundNormalY ? Color.blue : Color.red;
+            Gizmos.DrawRay(contact.point, contact.normal * 0.4f);
         }
     }
 

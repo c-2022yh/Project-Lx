@@ -1,5 +1,6 @@
 using System.Collections;
 using UnityEngine;
+using System.Collections.Generic;
 
 //플레이어 움직임 (이동, 점프, 대쉬) 구현한 스크립트
 public class PlayerMove : MonoBehaviour
@@ -18,6 +19,20 @@ public class PlayerMove : MonoBehaviour
     private float lastJumpTime = -999f;
     [SerializeField] private int maxAirJumps = 1;
     private int remainingAirJumps;
+
+    [Header("Drop Through")]
+    [SerializeField, Min(0.1f)] private float dropSpeed = 5f;
+    [SerializeField, Min(0.02f)] private float dropMinimumDuration = 0.15f;
+    private bool jumpRequestedDown;
+    private float dropStartTime;
+    private readonly List<Collider2D> dropPlatforms = new List<Collider2D>(4);
+    private readonly List<IgnoredPlatformCollision> ignoredPlatformCollisions = new List<IgnoredPlatformCollision>(4);
+
+    private struct IgnoredPlatformCollision
+    {
+        public Collider2D playerCollider;
+        public Collider2D platform;
+    }
 
     //코요태 타임 관련 세팅
     [Header("Jump Juice")]
@@ -102,14 +117,26 @@ public class PlayerMove : MonoBehaviour
 
 
     ///점프 함수
-    public void RequestJump() { lastJumpRequestTime = Time.time; }
+    public void RequestJump()
+    {
+        lastJumpRequestTime = Time.time;
+        jumpRequestedDown = player.moveInput.y < -0.5f;
+    }
     public void ExecuteJump()
     {
+        UpdateDropCollisions();
+        if (ignoredPlatformCollisions.Count > 0)
+        {
+            lastJumpRequestTime = -999f;
+            lastGroundedTime = -999f;
+            return;
+        }
+
         //액션 불가능 상태
         if (!player.ActionState.CanMove()) return;
 
         //땅에 닿으면 초기화
-        if (player.isGrounded && player.rb.linearVelocity.y <= 0.01f)
+        if (player.isGrounded)
         {
             lastGroundedTime = Time.time;
             remainingAirJumps = maxAirJumps;
@@ -117,6 +144,8 @@ public class PlayerMove : MonoBehaviour
 
         //필터링: 선입력이 없거나 유효시간이 지나면 끝
         if (Time.time - lastJumpRequestTime > bufferTime) return;
+
+        if (jumpRequestedDown && TryDropThrough()) return;
         
         //(지상:코요태 vs 공중)
         bool isCoyoteValid = (Time.time - lastGroundedTime <= coyoteTime);
@@ -143,7 +172,81 @@ public class PlayerMove : MonoBehaviour
             lastJumpTime = Time.time;
 
             player.rb.linearVelocity = new Vector2(player.rb.linearVelocity.x, jumpForce );
+            player.NotifyJumpStarted();
         }
+    }
+
+    private bool TryDropThrough()
+    {
+        if (!player.TryGetDropPlatforms(dropPlatforms)) return false;
+
+        foreach (Collider2D playerCollider in GetComponentsInChildren<Collider2D>())
+        {
+            if (playerCollider.attachedRigidbody != rb || playerCollider.isTrigger ||
+                !playerCollider.isActiveAndEnabled) continue;
+            foreach (Collider2D platform in dropPlatforms)
+            {
+                //다른 시스템이 이미 무시한 충돌은 복구 대상으로 소유하지 않는다.
+                if (Physics2D.GetIgnoreCollision(playerCollider, platform)) continue;
+                Physics2D.IgnoreCollision(playerCollider, platform, true);
+                ignoredPlatformCollisions.Add(new IgnoredPlatformCollision
+                {
+                    playerCollider = playerCollider,
+                    platform = platform
+                });
+            }
+        }
+
+        if (ignoredPlatformCollisions.Count == 0) return false;
+        dropStartTime = Time.time;
+        lastJumpRequestTime = -999f;
+        lastGroundedTime = -999f;
+        lastJumpTime = Time.time;
+        player.isGrounded = false;
+        rb.linearVelocity = new Vector2(rb.linearVelocity.x, -dropSpeed);
+        return true;
+    }
+
+    public bool IsIgnoringPlatform(Collider2D platform)
+    {
+        foreach (IgnoredPlatformCollision collision in ignoredPlatformCollisions)
+        {
+            if (collision.platform == platform) return true;
+        }
+        return false;
+    }
+
+    private void UpdateDropCollisions()
+    {
+        for (int i = ignoredPlatformCollisions.Count - 1; i >= 0; i--)
+        {
+            IgnoredPlatformCollision collision = ignoredPlatformCollisions[i];
+            if (collision.playerCollider != null && collision.platform != null &&
+                collision.playerCollider.isActiveAndEnabled && collision.platform.isActiveAndEnabled)
+            {
+                if (Time.time - dropStartTime < dropMinimumDuration) continue;
+                //고정 시간만으로 복구하면 두꺼운 발판 안에서 다시 걸릴 수 있다.
+                if (collision.playerCollider.Distance(collision.platform).isOverlapped) continue;
+            }
+
+            RestorePlatformCollision(collision);
+            ignoredPlatformCollisions.RemoveAt(i);
+        }
+    }
+
+    private void RestorePlatformCollision(IgnoredPlatformCollision collision)
+    {
+        if (collision.playerCollider != null && collision.platform != null)
+            Physics2D.IgnoreCollision(collision.playerCollider, collision.platform, false);
+    }
+
+    private void OnDisable()
+    {
+        foreach (IgnoredPlatformCollision collision in ignoredPlatformCollisions)
+            RestorePlatformCollision(collision);
+        ignoredPlatformCollisions.Clear();
+        lastJumpRequestTime = -999f;
+        lastGroundedTime = -999f;
     }
 
     //현재 최대 공중 점프 횟수
