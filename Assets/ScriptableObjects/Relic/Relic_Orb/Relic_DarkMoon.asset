@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::RelicData
   relicId: orb_darkmoon
   relicName: "\uADF8\uBBD0"
-  icon: {fileID: 2260928287186502679, guid: 78414d891c3cdb94c9f70b355f1d1969, type: 3}
+  icon: {fileID: 21300000, guid: 78414d891c3cdb94c9f70b355f1d1969, type: 3}
   description: "\uCD5C\uB300 \uD68D\uB4DD \uAC00\uB2A5\uD55C \uAE30\uB825\uC774 \uAC10\uC18C\uD558\uC9C0\uB9CC
     \uD53C\uD574\uB7C9\uC774 \uC99D\uAC00\uD55C\uB2E4."
   cost: 1
@@ -25,9 +25,7 @@ MonoBehaviour:
     fullEffectSprite: {fileID: 21300000, guid: 6fd8de41c98df0642b3c79d3ca7af027, type: 3}
     frameSprite: {fileID: 21300000, guid: 6691d20c9a5acf14c9dcdc8786a514f0, type: 3}
     cloudSprite: {fileID: 21300000, guid: b92d6313d29edc84d8a56525792d1d33, type: 3}
-    backdropSprite: {fileID: 21300000, guid: 451789da4c834284ba3d75c3c7a08a46, type: 3}
     backdropColor: {r: 0.8352941, g: 0.80784315, b: 0.9019608, a: 1}
-    backdropUsesEnergyFill: 1
     effectColor: {r: 1, g: 1, b: 1, a: 1}
     fadeSpeed: 5
     pulseSpeed: 2
