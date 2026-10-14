@@ -55,6 +55,17 @@ public class MapPanel : MonoBehaviour
              "끄면 인스펙터에 직접 넣은 이미지와 좌표만 쓴다.")]
     [SerializeField] private bool useSceneSketch = true;
 
+    [Header("안개")]
+    [Tooltip("아직 걸어가 보지 않은 곳을 덮는 색. 알파가 진할수록 안 보인다.")]
+    [SerializeField] private Color fogColor = new Color(0.03f, 0.05f, 0.06f, 0.94f);
+
+    /// <summary>안개를 다시 그리는 간격(초). 지도를 연 채로 걸어도 따라 걷힌다.</summary>
+    private const float FogRefreshInterval = 0.25f;
+
+    private RawImage fogImage;
+    private Texture2D fogTexture;
+    private float nextFogAt;
+
     /// <summary>한 번 만든 마커를 들고 있다가 닫힐 때 치운다.</summary>
     private readonly List<GameObject> spawnedMarkers = new List<GameObject>();
 
@@ -82,6 +93,7 @@ public class MapPanel : MonoBehaviour
 
         player = FindPlayer();
         Rebuild();
+        RefreshFog();
     }
 
     /// <summary>
@@ -121,6 +133,8 @@ public class MapPanel : MonoBehaviour
 
     private void Update()
     {
+        if (Time.unscaledTime >= nextFogAt) RefreshFog();
+
         if (playerDot == null) return;
 
         // 씬을 넘어오면 플레이어가 바뀌므로 없으면 다시 찾는다.
@@ -184,8 +198,122 @@ public class MapPanel : MonoBehaviour
 
         foreach (MarkerInfo info in markers) SpawnMarker(info);
 
+        // 안개는 마커 위를 덮고(안 가본 곳의 상자·적은 안 보이게), 플레이어 점은 그 위에 둔다.
+        EnsureFogImage();
+        if (fogImage != null) fogImage.transform.SetAsLastSibling();
+
         // 마커를 나중에 만들면 플레이어 점 위에 덮인다. 점을 맨 위로 올린다.
         if (playerDot != null) playerDot.SetAsLastSibling();
+    }
+
+    // ── 안개 ────────────────────────────────
+
+    /// <summary>
+    /// 지도 판 전체를 덮는 안개 텍스처를 다시 그린다.
+    /// 텍스처 한 칸 = 탐험 기록 한 칸이라 작고, 이중선형 필터로 경계가 부드럽게 번진다.
+    /// </summary>
+    private void RefreshFog()
+    {
+        nextFogAt = Time.unscaledTime + FogRefreshInterval;
+
+        if (mapContent == null) return;
+
+        EnsureFogImage();
+        if (fogImage == null) return;
+
+        if (!MapExploration.FogEnabled)
+        {
+            fogImage.enabled = false;
+            return;
+        }
+
+        GetMapTransform(out Vector2 center, out float scale);
+        if (scale <= 0f) return;
+
+        Rect board = mapContent.rect;
+        if (board.width < 1f || board.height < 1f) return;
+
+        // 판의 네 귀퉁이를 월드 좌표로 되돌린다. WorldToMap의 역변환이다.
+        Vector2 worldMin = board.min / scale + center;
+        Vector2 worldMax = board.max / scale + center;
+        Vector2 worldSize = worldMax - worldMin;
+
+        float cell = MapExploration.CellSize;
+        int width = Mathf.Clamp(Mathf.CeilToInt(worldSize.x / cell), 2, 256);
+        int height = Mathf.Clamp(Mathf.CeilToInt(worldSize.y / cell), 2, 256);
+
+        if (fogTexture == null || fogTexture.width != width || fogTexture.height != height)
+        {
+            if (fogTexture != null) Destroy(fogTexture);
+
+            fogTexture = new Texture2D(width, height, TextureFormat.RGBA32, false)
+            {
+                filterMode = FilterMode.Bilinear,
+                wrapMode = TextureWrapMode.Clamp,
+                name = "MapFog"
+            };
+        }
+
+        string sceneId = SceneManager.GetActiveScene().name;
+        Color32 fog = fogColor;
+        Color32 clear = new Color32(fog.r, fog.g, fog.b, 0);
+        Color32[] pixels = new Color32[width * height];
+
+        for (int y = 0; y < height; y++)
+        {
+            for (int x = 0; x < width; x++)
+            {
+                Vector2 world = new Vector2(
+                    worldMin.x + (x + 0.5f) / width * worldSize.x,
+                    worldMin.y + (y + 0.5f) / height * worldSize.y);
+
+                pixels[y * width + x] = MapExploration.IsExplored(sceneId, world) ? clear : fog;
+            }
+        }
+
+        fogTexture.SetPixels32(pixels);
+        fogTexture.Apply(false);
+
+        fogImage.texture = fogTexture;
+        fogImage.enabled = true;
+    }
+
+    /// <summary>안개 그림을 mapContent 아래에 한 번만 만든다. 프리팹은 건드리지 않는다.</summary>
+    private void EnsureFogImage()
+    {
+        if (fogImage != null || mapContent == null) return;
+
+        GameObject go = new GameObject("Fog", typeof(RectTransform), typeof(RawImage));
+        RectTransform rect = go.GetComponent<RectTransform>();
+        rect.SetParent(mapContent, false);
+        rect.anchorMin = Vector2.zero;
+        rect.anchorMax = Vector2.one;
+        rect.pivot = new Vector2(0.5f, 0.5f);
+        rect.offsetMin = Vector2.zero;
+        rect.offsetMax = Vector2.zero;
+
+        fogImage = go.GetComponent<RawImage>();
+        fogImage.raycastTarget = false;
+        fogImage.enabled = false;
+    }
+
+    /// <summary>WorldToMap과 같은 기준. 월드 → 맵: (월드 - center) * scale.</summary>
+    private void GetMapTransform(out Vector2 center, out float scale)
+    {
+        if (fitScale > 0f)
+        {
+            center = fitCenter;
+            scale = fitScale;
+            return;
+        }
+
+        center = worldCenter;
+        scale = unitsToPixels * ImageDisplayScale;
+    }
+
+    private void OnDestroy()
+    {
+        if (fogTexture != null) Destroy(fogTexture);
     }
 
     private void Collect(List<MarkerInfo> result)
