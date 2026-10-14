@@ -136,7 +136,7 @@ public class PlayerMove : MonoBehaviour
         if (!player.ActionState.CanMove()) return;
 
         //땅에 닿으면 초기화
-        if (player.isGrounded && player.rb.linearVelocity.y <= 0.01f)
+        if (player.isGrounded)
         {
             lastGroundedTime = Time.time;
             remainingAirJumps = maxAirJumps;
@@ -172,6 +172,7 @@ public class PlayerMove : MonoBehaviour
             lastJumpTime = Time.time;
 
             player.rb.linearVelocity = new Vector2(player.rb.linearVelocity.x, jumpForce );
+            player.NotifyJumpStarted();
         }
     }
 

@@ -23,6 +23,17 @@ public class Player : MonoBehaviour
     public Transform groundCheck;
     public LayerMask groundLayer;
     [SerializeField, Range(0f, 80f)] private float maxGroundAngle = 50f;
+    [Tooltip("Short downward cast used when physical ground contacts are missing.")]
+    [SerializeField, Min(0f)] private float groundProbeDistance = 0.08f;
+    [Tooltip("Allow small upward motion for the fallback probe, but not airborne ascent.")]
+    [SerializeField, Min(0f)] private float groundProbeMaxUpwardSpeed = 0.5f;
+    [Tooltip("Minimum time to ignore grounding after a jump. Ascent stays excluded afterward.")]
+    [SerializeField, Min(0f)] private float jumpGroundIgnoreDuration = 0.08f;
+    private Collider2D[] bodyColliders;
+    private readonly List<RaycastHit2D> groundProbeHits = new List<RaycastHit2D>(16);
+    private readonly List<Collider2D> supportingGround = new List<Collider2D>(4);
+    private bool jumpGroundingBlocked;
+    private float ignoreGroundUntil;
     private readonly List<ContactPoint2D> groundContacts = new List<ContactPoint2D>(16);
 
     //중력 값을 저장하는 변수 freeze 함수 내부에서 사용
@@ -56,6 +67,7 @@ public class Player : MonoBehaviour
     {
         rb = GetComponent<Rigidbody2D>();
         rb.freezeRotation = true;
+        bodyColliders = GetComponentsInChildren<Collider2D>();
 
         //스크립트 연결
         Move = GetComponent<PlayerMove>();
@@ -88,11 +100,25 @@ public class Player : MonoBehaviour
         //currentState?.DoFixedUpdate();
     }
 
+    public void NotifyJumpStarted()
+    {
+        isGrounded = false;
+        jumpGroundingBlocked = true;
+        ignoreGroundUntil = Time.time + jumpGroundIgnoreDuration;
+        supportingGround.Clear();
+    }
+
     private bool CheckGrounded()
     {
-        //점프 직후 남아 있는 접촉으로 착지/공중 점프가 다시 충전되지 않게 한다.
         groundContacts.Clear();
-        if (rb.linearVelocity.y > 0.01f) return false;
+        supportingGround.Clear();
+
+        // Explicit jumps cannot re-ground from residual contacts or the nearby floor.
+        if (jumpGroundingBlocked)
+        {
+            if (Time.time < ignoreGroundUntil || rb.linearVelocity.y > 0.01f) return false;
+            jumpGroundingBlocked = false;
+        }
 
         ContactFilter2D filter = new ContactFilter2D();
         filter.SetLayerMask(groundLayer);
@@ -102,12 +128,43 @@ public class Player : MonoBehaviour
         float minGroundNormalY = Mathf.Cos(maxGroundAngle * Mathf.Deg2Rad);
         foreach (ContactPoint2D contact in groundContacts)
         {
-            //같은 Ground 타일이어도 옆면/천장은 착지로 인정하지 않는다.
-            if (contact.normal.y >= minGroundNormalY &&
-                !Move.IsIgnoringPlatform(GetGroundCollider(contact))) return true;
+            Collider2D ground = GetGroundCollider(contact);
+            if (contact.normal.y >= minGroundNormalY && !Move.IsIgnoringPlatform(ground))
+            {
+                AddSupportingGround(ground);
+            }
         }
 
-        return false;
+        // Real contacts also count while moving upward along a slope.
+        if (supportingGround.Count > 0) return true;
+        if (groundProbeDistance <= 0f || rb.linearVelocity.y > groundProbeMaxUpwardSpeed)
+            return false;
+
+        foreach (Collider2D body in bodyColliders)
+        {
+            if (!body.isActiveAndEnabled || body.isTrigger || body.attachedRigidbody != rb)
+                continue;
+
+            groundProbeHits.Clear();
+            body.Cast(Vector2.down, filter, groundProbeHits, groundProbeDistance, true);
+            foreach (RaycastHit2D hit in groundProbeHits)
+            {
+                // Initial overlaps have a synthetic normal opposite the cast direction.
+                // They must not make the underside of a one-way platform into ground.
+                if (hit.collider == null || hit.distance <= 0f || hit.normal.y < minGroundNormalY ||
+                    Move.IsIgnoringPlatform(hit.collider) || Physics2D.GetIgnoreCollision(body, hit.collider))
+                    continue;
+
+                AddSupportingGround(hit.collider);
+            }
+        }
+
+        return supportingGround.Count > 0;
+    }
+
+    private void AddSupportingGround(Collider2D ground)
+    {
+        if (!supportingGround.Contains(ground)) supportingGround.Add(ground);
     }
 
     private Collider2D GetGroundCollider(ContactPoint2D contact)
@@ -120,11 +177,8 @@ public class Player : MonoBehaviour
         platforms.Clear();
         if (!isGrounded) return false;
 
-        float minGroundNormalY = Mathf.Cos(maxGroundAngle * Mathf.Deg2Rad);
-        foreach (ContactPoint2D contact in groundContacts)
+        foreach (Collider2D platform in supportingGround)
         {
-            if (contact.normal.y < minGroundNormalY) continue;
-            Collider2D platform = GetGroundCollider(contact);
             if (Move.IsIgnoringPlatform(platform)) continue;
             PlatformEffector2D effector = platform.GetComponent<PlatformEffector2D>();
             //일반 바닥도 동시에 밟고 있다면 하단 점프를 허용하지 않는다.

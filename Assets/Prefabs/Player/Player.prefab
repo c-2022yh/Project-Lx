@@ -251,6 +251,9 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 64
   maxGroundAngle: 50
+  groundProbeDistance: 0.08
+  groundProbeMaxUpwardSpeed: 0.5
+  jumpGroundIgnoreDuration: 0.08
 --- !u!114 &4954982494915989086
 MonoBehaviour:
   m_ObjectHideFlags: 0
