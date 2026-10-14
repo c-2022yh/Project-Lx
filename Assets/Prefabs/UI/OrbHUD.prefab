@@ -1,80 +1,5 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!1 &626625452206188891
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 6945523798899535553}
-  - component: {fileID: 361074994616030977}
-  - component: {fileID: 2084363193392012221}
-  m_Layer: 5
-  m_Name: OrbCloud1
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 0
---- !u!224 &6945523798899535553
-RectTransform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 626625452206188891}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 1620680126662491426}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0.5}
-  m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -63, y: 40}
-  m_SizeDelta: {x: 30, y: 20}
-  m_Pivot: {x: 0.5, y: 0.5}
---- !u!222 &361074994616030977
-CanvasRenderer:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 626625452206188891}
-  m_CullTransparentMesh: 1
---- !u!114 &2084363193392012221
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 626625452206188891}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
-  m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_RaycastTarget: 1
-  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
-  m_Maskable: 1
-  m_OnCullStateChanged:
-    m_PersistentCalls:
-      m_Calls: []
-  m_Sprite: {fileID: 8879292622801322497, guid: 1d147034c50369d428f857c29d555f91, type: 3}
-  m_Type: 0
-  m_PreserveAspect: 0
-  m_FillCenter: 1
-  m_FillMethod: 4
-  m_FillAmount: 1
-  m_FillClockwise: 1
-  m_FillOrigin: 0
-  m_UseSpriteMesh: 0
-  m_PixelsPerUnitMultiplier: 1
 --- !u!1 &3745799659179666289
 GameObject:
   m_ObjectHideFlags: 0
@@ -140,7 +65,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 2305360999012041603, guid: e0fd5d34d2dec564e8cdad60c4d98738, type: 3}
+  m_Sprite: {fileID: 21300000, guid: e0fd5d34d2dec564e8cdad60c4d98738, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -228,7 +153,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: -8530974593503625227, guid: e205bd7bbd90d004cbe94200db10436d, type: 3}
+  m_Sprite: {fileID: 21300000, guid: e205bd7bbd90d004cbe94200db10436d, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -265,7 +190,7 @@ RectTransform:
   m_GameObject: {fileID: 5231161017809279232}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 1.4, y: 1.4, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 5706637989565721773}
@@ -273,8 +198,7 @@ RectTransform:
   - {fileID: 411794107977547187}
   - {fileID: 4609789340010265350}
   - {fileID: 5420282622506513242}
-  - {fileID: 6945523798899535553}
-  - {fileID: 1316381563572611111}
+  - {fileID: 1928851885615528782}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
@@ -294,16 +218,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f7acc7379178d004a92f65efd90dc3d8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::OrbHUD
-  blueBackgroundFill: {fileID: 0}
+  emptyImage: {fileID: 6257100723543433008}
+  fullEffectImage: {fileID: 2369408785921726432}
+  frameImage: {fileID: 952820287566153405}
+  cloudImage: {fileID: 3491658165902645290}
+  backdropImage: {fileID: 5934023718741891267}
+  effectRoot: {fileID: 0}
   orbImageFill: {fileID: 6741867551763563343}
-  waveRoot: {fileID: 0}
-  wave1: {fileID: 0}
-  wave2: {fileID: 0}
-  emptyWaveY: -70
-  fullWaveY: 70
-  waveMoveRange: 10
-  wave1MoveSpeed: 5
-  wave2MoveSpeed: 3
   fullEnergyEffect: {fileID: 3805575349752255480}
   fullEffectFadeSpeed: 5
   fullEffectPulseSpeed: 2
@@ -387,7 +308,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 2466598026655934483, guid: 0a97b532cac88b743af5e2fc4002a982, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 0a97b532cac88b743af5e2fc4002a982, type: 3}
   m_Type: 0
   m_PreserveAspect: 1
   m_FillCenter: 1
@@ -477,7 +398,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 4730677000080296349, guid: 11443da938c95b24c979c252a0cfddf2, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 11443da938c95b24c979c252a0cfddf2, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -545,14 +466,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 0.9450981, g: 0.9607844, b: 1, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: -1819342943152447568, guid: 998238a6713f419418e62b9d33a737b3, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 9221e2bc6a283bd48be9af72229795b9, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -562,7 +483,7 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
---- !u!1 &7993047544929461375
+--- !u!1 &7690137339488378045
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -570,23 +491,24 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 1316381563572611111}
-  - component: {fileID: 4280288621389684509}
-  - component: {fileID: 664094145226659914}
+  - component: {fileID: 1928851885615528782}
+  - component: {fileID: 2790350097837881663}
+  - component: {fileID: 8297257820288754663}
+  - component: {fileID: 3491658165902645290}
   m_Layer: 5
-  m_Name: OrbCloud2
+  m_Name: OrbCloud
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
---- !u!224 &1316381563572611111
+  m_IsActive: 1
+--- !u!224 &1928851885615528782
 RectTransform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7993047544929461375}
+  m_GameObject: {fileID: 7690137339488378045}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
@@ -596,24 +518,36 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 56, y: -50}
-  m_SizeDelta: {x: 30, y: 20}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 150, y: 150}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!222 &4280288621389684509
+--- !u!225 &2790350097837881663
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7690137339488378045}
+  m_Enabled: 1
+  m_Alpha: 1
+  m_Interactable: 1
+  m_BlocksRaycasts: 1
+  m_IgnoreParentGroups: 0
+--- !u!222 &8297257820288754663
 CanvasRenderer:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7993047544929461375}
+  m_GameObject: {fileID: 7690137339488378045}
   m_CullTransparentMesh: 1
---- !u!114 &664094145226659914
+--- !u!114 &3491658165902645290
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7993047544929461375}
+  m_GameObject: {fileID: 7690137339488378045}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
@@ -627,7 +561,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 3445006127535780924, guid: 1d147034c50369d428f857c29d555f91, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 1d147034c50369d428f857c29d555f91, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -702,7 +636,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: -1008294324084481806, guid: 63fbee66d11c55f4a89f2a89a64f8bff, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 63fbee66d11c55f4a89f2a89a64f8bff, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1

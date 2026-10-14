@@ -1,15 +1,20 @@
-using System.Collections;
+Ôªøusing System.Collections;
 using UnityEngine;
 
-//«√∑π¿ÃæÓ¿« æ÷¥œ∏ﬁ¿Ãº« √‚∑¬¿ª √≥∏Æ«œ¥¬ Ω∫≈©∏≥∆Æ
+//ÌîåÎ†àÏù¥Ïñ¥Ïùò Ïï†ÎãàÎ©îÏù¥ÏÖò Ï∂úÎ†•ÏùÑ Ï≤òÎ¶¨ÌïòÎäî Ïä§ÌÅ¨Î¶ΩÌä∏
 public class PlayerAnimation : MonoBehaviour
 {
     private Player player;
     private PlayerSkill playerSkill;
+    private PlayerHealth playerHealth;
+    private bool hasReactionAnimationParameters;
+
+    [Header("Respawn Animation") ]
+    [SerializeField] private string respawnStateName = "Base Layer.Player_Idle";
     private bool hasSkillAnimationParameters;
     [SerializeField] private Animator animator;
 
-    //æ÷¥œ∏ﬁ¿Ãº« ¡¶æÓ ∫Øºˆ
+    //Ïï†ÎãàÎ©îÏù¥ÏÖò Ï†úÏñ¥ Î≥ÄÏàò
     private static readonly int Speed = Animator.StringToHash("Speed");
     private static readonly int IsGrounded = Animator.StringToHash("IsGrounded");
     private static readonly int VerticalVelocity = Animator.StringToHash("VerticalVelocity");
@@ -28,13 +33,25 @@ public class PlayerAnimation : MonoBehaviour
     private static readonly int Skill = Animator.StringToHash("Skill");
     private static readonly int IsSkillActive = Animator.StringToHash("IsSkillActive");
 
+    private static readonly int Hit = Animator.StringToHash("Hit");
+    private static readonly int IsHitStunned = Animator.StringToHash("IsHitStunned");
+    private static readonly int IsDead = Animator.StringToHash("IsDead");
+
     private bool isDashAnimating;
+
+    private bool IsDeadNow => (playerHealth != null && playerHealth.IsDead)
+        || (player != null && player.ActionState != null && player.ActionState.isDead);
+    private bool IsHitStunnedNow => player != null && player.ActionState != null
+        && player.ActionState.isHitStunned;
+
 
     private void Awake()
     {
         player = GetComponent<Player>();
         playerSkill = GetComponent<PlayerSkill>();
+        playerHealth = GetComponent<PlayerHealth>();
         CacheSkillAnimationParameters();
+        CacheReactionAnimationParameters();
     }
 
     private void OnEnable()
@@ -68,6 +85,82 @@ public class PlayerAnimation : MonoBehaviour
         hasSkillAnimationParameters = hasIndex && hasTrigger && hasActive;
     }
 
+    private void CacheReactionAnimationParameters()
+    {
+        if (animator == null || animator.runtimeAnimatorController == null) return;
+        bool hasHit = false, hasStun = false, hasDead = false;
+        foreach (AnimatorControllerParameter parameter in animator.parameters)
+        {
+            if (parameter.nameHash == Hit && parameter.type == AnimatorControllerParameterType.Trigger) hasHit = true;
+            if (parameter.nameHash == IsHitStunned && parameter.type == AnimatorControllerParameterType.Bool) hasStun = true;
+            if (parameter.nameHash == IsDead && parameter.type == AnimatorControllerParameterType.Bool) hasDead = true;
+        }
+        hasReactionAnimationParameters = hasHit && hasStun && hasDead;
+        if (!hasReactionAnimationParameters)
+            Debug.LogWarning("Add Animator parameters: Hit (Trigger), IsHitStunned (Bool), IsDead (Bool).", this);
+    }
+
+    private void CancelActionAnimation()
+    {
+        StopAllCoroutines();
+        isDashAnimating = false;
+        if (animator == null) return;
+        animator.ResetTrigger(Attack);
+        animator.SetBool(IsAttacking, false);
+        animator.SetBool(IsDashing, false);
+        animator.SetBool(IsDashAnimating, false);
+        if (hasSkillAnimationParameters)
+        {
+            animator.ResetTrigger(Skill);
+            animator.SetBool(IsSkillActive, false);
+        }
+    }
+
+    public void PlayHit()
+    {
+        if (IsDeadNow) return;
+        CancelActionAnimation();
+        if (animator == null || !hasReactionAnimationParameters) return;
+        animator.SetBool(IsDead, false);
+        animator.SetBool(IsHitStunned, true);
+        animator.ResetTrigger(Hit);
+        animator.SetTrigger(Hit);
+    }
+
+    public void PlayDeath()
+    {
+        CancelActionAnimation();
+        if (animator == null || !hasReactionAnimationParameters) return;
+        animator.ResetTrigger(Hit);
+        animator.SetBool(IsHitStunned, false);
+        animator.SetBool(IsDead, true);
+    }
+
+    public void ResetOnRespawn()
+    {
+        CancelActionAnimation();
+        if (animator == null) return;
+        foreach (AnimatorControllerParameter parameter in animator.parameters)
+            if (parameter.type == AnimatorControllerParameterType.Trigger)
+                animator.ResetTrigger(parameter.nameHash);
+        if (hasReactionAnimationParameters)
+        {
+            animator.SetBool(IsHitStunned, false);
+            animator.SetBool(IsDead, false);
+        }
+        animator.SetFloat(Speed, 0f);
+        animator.SetFloat(VerticalVelocity, 0f);
+        animator.SetBool(IsGrounded, player != null && player.isGrounded);
+        int stateHash = Animator.StringToHash(respawnStateName);
+        if (animator.HasState(0, stateHash))
+        {
+            animator.Play(stateHash, 0, 0f);
+            animator.Update(0f);
+        }
+        else
+            Debug.LogWarning("Respawn state not found. Set Respawn State Name to the full Idle state path: " + respawnStateName, this);
+    }
+
     private void HandleSkillUsed(SkillData skill)
     {
         if (skill != null) PlaySkill(skill.animationType);
@@ -75,7 +168,7 @@ public class PlayerAnimation : MonoBehaviour
 
     public void PlaySkill(SkillAnimationType animationType)
     {
-        if (animator == null || !hasSkillAnimationParameters) return;
+        if (animator == null || !hasSkillAnimationParameters || IsDeadNow || IsHitStunnedNow) return;
         animator.ResetTrigger(Skill);
         if (animationType == SkillAnimationType.None) return;
         animator.SetInteger(SkillIndex, (int)animationType);
@@ -85,23 +178,31 @@ public class PlayerAnimation : MonoBehaviour
 
     private void Update()
     {
+        if (animator == null || player == null || player.rb == null || player.ActionState == null) return;
+        bool blocked = IsDeadNow || IsHitStunnedNow;
+        if (hasReactionAnimationParameters)
+        {
+            animator.SetBool(IsDead, IsDeadNow);
+            animator.SetBool(IsHitStunned, !IsDeadNow && IsHitStunnedNow);
+        }
         animator.SetFloat(Speed, Mathf.Abs(player.rb.linearVelocity.x));
         animator.SetBool(IsGrounded, player.isGrounded);
         animator.SetFloat(VerticalVelocity, player.rb.linearVelocity.y);
-        animator.SetBool(IsDashing, player.ActionState.isDashing);
-        animator.SetBool(IsAttacking, player.ActionState.isAttacking);
+        animator.SetBool(IsDashing, !blocked && player.ActionState.isDashing);
+        animator.SetBool(IsAttacking, !blocked && player.ActionState.isAttacking);
         if (hasSkillAnimationParameters)
         {
-            bool isSkillActive = player.ActionState.isSkillActive;
+            bool isSkillActive = !blocked && player.ActionState.isSkillActive;
             animator.SetBool(IsSkillActive, isSkillActive);
             if (!isSkillActive) animator.ResetTrigger(Skill);
         }
     }
 
 
-    //¥ÎΩ¨ Ω√∞£ »ƒø°µµ ¥ÎΩ¨∏º«¿ª ¿Ø¡ˆ«œ±‚ ¿ß«— «‘ºˆ
+    //ÎåÄÏâ¨ ÏãúÍ∞Ñ ÌõÑÏóêÎèÑ ÎåÄÏâ¨Î™®ÏÖòÏùÑ Ïú†ÏßÄÌïòÍ∏∞ ÏúÑÌïú Ìï®Ïàò
     public void PlayDash(float holdTime)
     {
+        if (animator == null || IsDeadNow || IsHitStunnedNow) return;
         StopAllCoroutines();
         StartCoroutine(DashAnimationRoutine(holdTime));
     }
@@ -117,9 +218,10 @@ public class PlayerAnimation : MonoBehaviour
         animator.SetBool(IsDashAnimating, false);
     }
 
-    //∞¯∞› æ÷¥œ∏ﬁ¿Ãº« ¿Áª˝ «‘ºˆ
+    //Í≥µÍ≤© Ïï†ÎãàÎ©îÏù¥ÏÖò Ïû¨ÏÉù Ìï®Ïàò
     public void PlayAttack(int index)
     {
+        if (animator == null || IsDeadNow || IsHitStunnedNow) return;
         animator.SetInteger(AttackIndex, index);
         animator.SetTrigger(Attack);
     }

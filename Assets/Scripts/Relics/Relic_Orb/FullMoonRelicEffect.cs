@@ -1,21 +1,23 @@
 using UnityEngine;
+using UnityEngine.Serialization;
 
 [CreateAssetMenu(fileName = "RFX_FullMoon", menuName = "Relics/Effects/Full Moon")]
 
 //만월
-//기력 획득을 늘리고 게이지가 가득 찼을 때만 피해량을 높인다.
+//기력 획득을 늘리고 게이지가 가득 찼을 때만 기본 공격 피해량을 높인다.
 public class FullMoonRelicEffect : RelicEffect
 {
     [Header("Full Moon Settings")]
     [SerializeField, Min(0f), Tooltip("기력 추가 획득 비율. 0.5는 획득량 50% 증가")]
     private float energyGainBonus = 0.5f;
 
-    [SerializeField, Min(0f), Tooltip("기력이 최대일 때의 최종 피해량 보너스")]
-    private float fullEnergyDamageBonus = 0.2f;
+    [FormerlySerializedAs("fullEnergyDamageBonus")]
+    [SerializeField, Min(0f), Tooltip("기력이 최대일 때 기본 공격 피해 증가 비율. 0.2는 20% 증가. 지상/공중 기본 공격에만 적용")]
+    private float fullEnergyBasicAttackBonus = 0.2f;
 
     public override IRelicRuntime CreateRuntime(Player player)
     {
-        return new FullMoonRuntime(player, energyGainBonus, fullEnergyDamageBonus);
+        return new FullMoonRuntime(player, energyGainBonus, fullEnergyBasicAttackBonus);
     }
 
     private sealed class FullMoonRuntime : IRelicRuntime
@@ -24,7 +26,7 @@ public class FullMoonRelicEffect : RelicEffect
         private readonly float gainBonus;
         private readonly float damageBonus;
         private PlayerEnergy energy;
-        private OffensiveStats offense;
+        private PlayerAttack attack;
         private bool equipped;
         private bool damageApplied;
 
@@ -41,9 +43,9 @@ public class FullMoonRelicEffect : RelicEffect
             if (equipped || player == null) return;
 
             energy = player.Energy;
-            offense = player.Stats != null ? player.Stats.Offense : null;
+            attack = player.GetComponent<PlayerAttack>();
 
-            if (energy == null || offense == null) return;
+            if (energy == null || attack == null) return;
 
             equipped = true;
 
@@ -64,25 +66,25 @@ public class FullMoonRelicEffect : RelicEffect
                 energy.ModifyEnergyGainMultiplier(-gainBonus);
             }
 
-            if (damageApplied && offense != null) offense.damageAmplification -= damageBonus;
+            if (damageApplied && attack != null) attack.ModifyBasicAttackDamageBonus(-damageBonus);
 
             damageApplied = false;
             equipped = false;
             energy = null;
-            offense = null;
+            attack = null;
 
         }
 
         //최대 기력에 도달하면 보너스를 더하고 소모하면 정확히 한 번 제거
         private void UpdateFullEnergyBonus()
         {
-            if (!equipped || energy == null || offense == null) return;
+            if (!equipped || energy == null || attack == null) return;
 
             bool shouldApply = energy.IsFull;
 
             if (shouldApply == damageApplied) return;
 
-            offense.damageAmplification += shouldApply ? damageBonus : -damageBonus;
+            attack.ModifyBasicAttackDamageBonus(shouldApply ? damageBonus : -damageBonus);
 
             damageApplied = shouldApply;
         }

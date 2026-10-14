@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using UnityEngine;
 
 //플레이어의 기력과 보주 표시를 관리하는 스크립트
@@ -10,7 +11,8 @@ public class PlayerEnergy : MonoBehaviour
 
     [Header("Orb")]
     [SerializeField] private EnergyOrb orbPrefab;
-    [SerializeField] private bool startWithOrb = true;
+    [SerializeField] private bool startWithOrb = false;
+    [SerializeField] private VitalConversionSkillData orbAcquisitionSkill;
 
     private bool hasOrb;
     private bool isEnergyGainBlocked;
@@ -44,8 +46,25 @@ public class PlayerEnergy : MonoBehaviour
         );
 
         orb.Initialize(transform);
+        StartCoroutine(GrantOrbAcquisitionSkill());
 
         NotifyEnergyChanged();
+    }
+
+    // Wait for an active skill to finish so acquiring the orb never loses its reward.
+    private IEnumerator GrantOrbAcquisitionSkill()
+    {
+        PlayerSkill playerSkill = GetComponent<PlayerSkill>();
+        if (playerSkill == null || orbAcquisitionSkill == null)
+        {
+            Debug.LogWarning("[PlayerEnergy] Assign PlayerSkill and Orb Acquisition Skill to grant the orb reward.", this);
+            yield break;
+        }
+
+        while (playerSkill.IsUsingSkill) yield return null;
+
+        if (!playerSkill.GrantSkill(orbAcquisitionSkill, this))
+            Debug.LogWarning("[PlayerEnergy] Could not grant the orb acquisition skill.", this);
     }
 
     //획득 배율을 적용한 뒤 기력을 최대치 안에서 증가

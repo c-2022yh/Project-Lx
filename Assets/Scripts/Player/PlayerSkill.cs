@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -10,9 +10,6 @@ public class PlayerSkill : MonoBehaviour
 
     [Header("Starting Skills - Test")]
     [SerializeField] private List<SkillData> startingSkills = new();
-
-    [Header("Dependencies")]
-    [SerializeField] private HUDPanel hudPanel;
 
     private readonly List<SkillData> ownedSkills = new();
     private readonly Dictionary<SkillData, HashSet<object>> skillSources = new();
@@ -397,7 +394,6 @@ public class PlayerSkill : MonoBehaviour
             cooldownEnds[skill] = Time.time + Mathf.Max(0f, skill.cooldownTime);
         }
 
-        if (hudPanel != null) hudPanel.StartSkillCooldown(slotIndex, skill.cooldownTime);
         NotifyCooldown(slotIndex);
     }
 

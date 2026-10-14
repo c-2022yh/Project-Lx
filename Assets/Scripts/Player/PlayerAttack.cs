@@ -46,6 +46,14 @@ public class PlayerAttack : MonoBehaviour
     private Player player;
     private PlayerStats playerStats;
 
+    // Runtime bonuses affect basic attacks only; skills share no state here.
+    private float basicAttackDamageBonus;
+
+    public void ModifyBasicAttackDamageBonus(float bonus)
+    {
+        basicAttackDamageBonus += bonus;
+    }
+
     private int comboIndex = 0;
     private float lastAttackEndTime;
     private Coroutine attackCoroutine;
@@ -162,7 +170,9 @@ public class PlayerAttack : MonoBehaviour
     //데미지 정보 생성
     private DamageInfo CreateDamageInfo(AttackPattern pattern)
     {
-        return DamageInfo.Create(playerStats.Offense, pattern.damageSpec, gameObject);
+        DamageInfo damageInfo = DamageInfo.Create(playerStats.Offense, pattern.damageSpec, gameObject);
+        damageInfo.damage *= Mathf.Max(0f, 1f + basicAttackDamageBonus);
+        return damageInfo;
     }
 
     

@@ -19,5 +19,28 @@ MonoBehaviour:
     \uC911 \uB9E4 \uCD08 \uACF5\uACA9\uB825\uC774 \uC99D\uAC00\uD55C\uB2E4.\r\n"
   cost: 1
   category: 1
+  orbHUDStyle:
+    emptySprite: {fileID: 21300000, guid: 3a7053875863f034fb527e195b96b9d3, type: 3}
+    fillSprite: {fileID: 21300000, guid: 492430f1d8a8c8c4cb971b6f47ebaf16, type: 3}
+    fullEffectSprite: {fileID: 21300000, guid: 9944de7deced09645849547a091ad7b3, type: 3}
+    frameSprite: {fileID: 21300000, guid: 03cf4327ad7a95a46bb469f80a688cf2, type: 3}
+    cloudSprite: {fileID: 21300000, guid: d2dc5a32ff8d8f8419a504c3f98c258d, type: 3}
+    backdropSprite: {fileID: 21300000, guid: ba9186e91a72bab46a54374c2e44483b, type: 3}
+    backdropColor: {r: 0.87058824, g: 0.93333334, b: 0.9137255, a: 1}
+    backdropUsesEnergyFill: 1
+    effectColor: {r: 1, g: 1, b: 1, a: 1}
+    fadeSpeed: 5
+    pulseSpeed: 2
+    pulseScale: 0.04
+    pulseAlphaAmount: 0.2
+    showFullEnergyEffect: 1
+    playFullChargeBurst: 1
+    persistentEffectCondition: 4
+    persistentEffectPrefab: {fileID: 0}
+    fullChargeBurstPrefab: {fileID: 0}
+    fullChargeBurstDuration: 1
+    fullChargeBurstScale: 1.5
+    fullChargeBurstAlpha: 0.8
+    displayEnergyCapacity: 0
   effects:
   - {fileID: 11400000, guid: a6563db56d9958c4094f3ea74f2fef18, type: 2}

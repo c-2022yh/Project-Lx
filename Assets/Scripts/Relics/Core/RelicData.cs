@@ -27,9 +27,13 @@ public class RelicData : ScriptableObject
     [Header("Info")]
     [SerializeField] public RelicCategory category;
 
+    [Header("Orb HUD")]
+    [SerializeField] private OrbHUDStyle orbHUDStyle;
+
     [Header("Effects")]
     [SerializeField] private List<RelicEffect> effects = new();
 
+    public OrbHUDStyle OrbHUDStyle => orbHUDStyle;
     public string RelicId => relicId;
     public string RelicName => relicName;
     public Sprite Icon => icon;
