@@ -50,7 +50,7 @@ public static class TilemapSketchExporter
     [MenuItem("Tools/UI/맵 밑그림 뽑기 (열린 씬 타일맵 → PNG)")]
     public static void Export()
     {
-        Tilemap[] tilemaps = Object.FindObjectsByType<Tilemap>(FindObjectsSortMode.None);
+        Tilemap[] tilemaps = Object.FindObjectsByType<Tilemap>();
 
         if (tilemaps.Length == 0)
         {

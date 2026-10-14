@@ -32,7 +32,6 @@ public static class GameSettings
     // 다른 시스템이 GameSettings.CameraShake 처럼 짧게 읽도록.
     public static bool CameraShake => Current.cameraShake;
     public static bool ScreenFlash => Current.screenFlash;
-    public static bool ShowDamageNumbers => Current.showDamageNumbers;
 
     // ── 선택지 목록 ────────────────────────
     public static readonly string[] ScreenModeLabels = { "전체 화면", "전체 창 모드", "창 모드" };

@@ -50,6 +50,14 @@ public class UIManager : MonoBehaviour
     private PlayerInput playerInput;
     public bool IsAnyPopupOpen => isInventoryOpen || isSkillOpen || isMapOpen || isPaused;
 
+    // TutorialDirector가 읽는다.
+    public TutorialTooltip Tooltip => tutorialTooltip;
+    public bool IsRelicWindowOpen => isInventoryOpen;
+    public bool IsMapOpen => isMapOpen;
+
+    /// <summary>화면을 가리는 창(유물·스킬·일시정지·조작법·게임오버)이 떠 있는지.</summary>
+    public bool IsBlockingWindowOpen => IsAnyWindowOpen;
+
     /// <summary>
     /// 화면을 점유하는 "창"이 하나라도 떠 있는지. 맵을 막는 기준이다.
     /// IsAnyPopupOpen과 달리 맵은 세지 않는다. 맵은 창이 아니라
@@ -110,12 +118,6 @@ public class UIManager : MonoBehaviour
     {
       
 
-        // [DEBUG_ONLY] 플레이어 붙으면 제거
-        if (Keyboard.current.digit1Key.wasPressedThisFrame) ModifyHealth(-15);
-        if (Keyboard.current.digit2Key.wasPressedThisFrame) ModifyHealth(+20);
-        if (Keyboard.current.digit3Key.wasPressedThisFrame) ModifySoul(-1);
-        if (Keyboard.current.digit4Key.wasPressedThisFrame) ModifySoul(+1);
-        if (Keyboard.current.digit0Key.wasPressedThisFrame) ShowGameOver();
         if (Keyboard.current.escapeKey.wasPressedThisFrame) HandleCancelKey();
         if (Keyboard.current.iKey.wasPressedThisFrame) ShowWindowTab(UITabBar.RelicTab);
         if (Keyboard.current.kKey.wasPressedThisFrame) ShowWindowTab(UITabBar.SkillTab);
@@ -136,9 +138,13 @@ public class UIManager : MonoBehaviour
         if (Keyboard.current.tabKey.wasPressedThisFrame) SetMapVisible(true);
         if (Keyboard.current.tabKey.wasReleasedThisFrame) SetMapVisible(false);
 
-        //이거는 나중에 처음 스킬 발동하면 나오게 튜토리얼 구현할건데 테스트키
-        if (Keyboard.current.tKey.wasPressedThisFrame)
-            tutorialTooltip.Show("Shift", "대시로 회피하세요");  
+        // 제단 앞에서 상호작용(↑)을 누르면 유물창을 연다.
+        // 제단 활성화(리스폰·회복)는 Player.OnInteract가 따로 처리하므로 여기서는 창만 연다.
+        if (!IsAnyPopupOpen && InteractPressedThisFrame() && ShrineAccess.NearbyShrine != null)
+        {
+            ShowWindowTab(UITabBar.RelicTab);
+        }
+
     }
 
     //  스탯 조작
@@ -220,6 +226,19 @@ public class UIManager : MonoBehaviour
 
         if (wantRelic) ToggleInventory();
         else ToggleSkill();
+    }
+
+    /// <summary>
+    /// PlayerInput의 Interact 액션을 그대로 읽는다. 키를 직접 박지 않아서
+    /// 바인딩이 ↑에서 바뀌어도 따라간다.
+    /// </summary>
+    private bool InteractPressedThisFrame()
+    {
+        if (playerInput == null) playerInput = FindAnyObjectByType<PlayerInput>();
+        if (playerInput == null || playerInput.actions == null) return false;
+
+        InputAction interact = playerInput.actions.FindAction("Interact", false);
+        return interact != null && interact.WasPressedThisFrame();
     }
 
     /// <summary>

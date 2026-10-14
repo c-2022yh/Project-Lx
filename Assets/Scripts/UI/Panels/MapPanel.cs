@@ -194,7 +194,7 @@ public class MapPanel : MonoBehaviour
 
         // 직접 붙인 것이 우선이다. 자동 수집과 겹치면 이쪽만 남는다.
         foreach (MapMarkerSource source in
-                 FindObjectsByType<MapMarkerSource>(FindObjectsSortMode.None))
+                 FindObjectsByType<MapMarkerSource>())
         {
             if (source == null) continue;
 
@@ -210,27 +210,27 @@ public class MapPanel : MonoBehaviour
 
         if (!autoCollectMarkers) return;
 
-        foreach (Shrine shrine in FindObjectsByType<Shrine>(FindObjectsSortMode.None))
+        foreach (Shrine shrine in FindObjectsByType<Shrine>())
             AddAuto(result, handled, shrine, MapMarkerKind.Shrine);
 
-        foreach (RelicChest chest in FindObjectsByType<RelicChest>(FindObjectsSortMode.None))
+        foreach (RelicChest chest in FindObjectsByType<RelicChest>())
             AddAuto(result, handled, chest, MapMarkerKind.RelicChest);
 
-        foreach (ScenePortal portal in FindObjectsByType<ScenePortal>(FindObjectsSortMode.None))
+        foreach (ScenePortal portal in FindObjectsByType<ScenePortal>())
             AddAuto(result, handled, portal, MapMarkerKind.Exit);
 
-        foreach (AutoScenePortal portal in FindObjectsByType<AutoScenePortal>(FindObjectsSortMode.None))
+        foreach (AutoScenePortal portal in FindObjectsByType<AutoScenePortal>())
             AddAuto(result, handled, portal, MapMarkerKind.Exit);
 
         // 부술 수 있는 벽은 "지금은 못 가는 길"이라 메트로베니아에서 제일 중요한 표시다.
-        foreach (FireBreakableWall wall in FindObjectsByType<FireBreakableWall>(FindObjectsSortMode.None))
+        foreach (FireBreakableWall wall in FindObjectsByType<FireBreakableWall>())
             AddAuto(result, handled, wall, MapMarkerKind.BreakableWall);
 
         if (!showEnemies) return;
 
         // FindObjectsByType은 꺼져 있는 오브젝트를 빼므로 풀에 들어간 몬스터는 안 잡힌다.
         // 죽는 중이라 아직 살아 있는 것만 걸러낸다.
-        foreach (Enemy enemy in FindObjectsByType<Enemy>(FindObjectsSortMode.None))
+        foreach (Enemy enemy in FindObjectsByType<Enemy>())
         {
             if (enemy == null || enemy.IsDead) continue;
 

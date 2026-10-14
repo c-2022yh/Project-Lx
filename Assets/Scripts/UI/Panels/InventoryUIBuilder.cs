@@ -11,14 +11,14 @@ using TMPro;
 ///
 /// [코스트제 버전]
 /// - A/S/D/F 고정 슬롯 없음. 장착/해제 버튼 2개 + 코스트 예산 표시.
-/// - 모든 TMP 텍스트에 한글 폰트(TerrarumSans)를 자동으로 지정.
+/// - 모든 TMP 텍스트에 한글 폰트(나눔스퀘어)를 자동으로 지정.
 /// - InventoryPanel 컴포넌트를 붙이고 인스펙터 참조까지 자동 연결.
 /// - UIManager의 inventoryPanel 참조도 자동 재연결.
 /// </summary>
 public static class InventoryUIBuilder
 {
     // 한글 폰트 에셋 경로
-    private const string KoreanFontPath = "Assets/TextMesh Pro/Fonts/TerrarumSansBitmap SDF.asset";
+    private const string KoreanFontPath = "Assets/TextMesh Pro/Fonts/NanumSquare_acB SDF.asset";
 
     // 유물 칸 프리팹 경로 (없으면 자동 생성)
     private const string RelicSlotPrefabPath = "Assets/Prefabs/UI/RelicSlot.prefab";

@@ -95,7 +95,6 @@ public static class SettingsUIBuilder
         TMP_Dropdown languageDd = DropdownRow(secEtc.transform, "언어");
         SettingsArrowSelector cameraShake = ArrowRow(secEtc.transform, "카메라 흔들림");
         SettingsArrowSelector screenFlash = ArrowRow(secEtc.transform, "화면 플래시 효과");
-        SettingsArrowSelector damageNumbers = ArrowRow(secEtc.transform, "데미지 숫자 표시");
 
         // 마지막 섹션도 맨 위까지 스크롤되도록 하는 빈 공간.
         // 실제 높이는 SettingsPanel이 뷰포트 크기에 맞춰 런타임에 정한다.
@@ -135,7 +134,6 @@ public static class SettingsUIBuilder
         K.SetRef(so, "languageDropdown", languageDd);
         K.SetRef(so, "cameraShakeSelector", cameraShake);
         K.SetRef(so, "screenFlashSelector", screenFlash);
-        K.SetRef(so, "damageNumberSelector", damageNumbers);
 
         K.SetRef(so, "scrollRect", scroll.scrollRect);
         K.SetRef(so, "sectionVideo", secVideo.GetComponent<RectTransform>());
@@ -162,7 +160,7 @@ public static class SettingsUIBuilder
     // ── 조각들 ─────────────────────────────
 
     /// <summary>
-    /// 좌측 탭 버튼. 시안에는 아이콘이 있지만 한글 폰트(TerrarumSans)에 이모지 글리프가
+    /// 좌측 탭 버튼. 시안에는 아이콘이 있지만 한글 폰트(나눔스퀘어)에 이모지 글리프가
     /// 없어 네모로 나오므로 글자만 쓴다. 아이콘 스프라이트가 준비되면
     /// 여기에 Image 자식을 하나 추가하면 된다.
     /// </summary>

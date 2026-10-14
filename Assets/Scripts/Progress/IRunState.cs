@@ -31,6 +31,16 @@ public interface IRunState
     bool HasVisited(string roomId);
     void MarkVisited(string roomId);
 
+    // ── 플래그 ─────────────────────────────
+    /// <summary>
+    /// 한 번 일어난 일을 기억한다. 예: "tutorial.jump" (점프 안내를 이미 봤다).
+    /// 세이브할 때는 문자열 목록 그대로 저장하면 된다.
+    /// </summary>
+    IReadOnlyCollection<string> Flags { get; }
+
+    bool HasFlag(string flag);
+    void SetFlag(string flag);
+
     // ── 공통 ───────────────────────────────
     /// <summary>무엇이든 바뀌면 발행. UI가 여기 구독해서 갱신하면 된다.</summary>
     event Action OnChanged;

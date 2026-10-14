@@ -11,7 +11,7 @@ using TMPro;
 /// </summary>
 public static class UIBuildKit
 {
-    public const string KoreanFontPath = "Assets/TextMesh Pro/Fonts/TerrarumSansBitmap SDF.asset";
+    public const string KoreanFontPath = "Assets/TextMesh Pro/Fonts/NanumSquare_acB SDF.asset";
 
     private static TMP_FontAsset koreanFont;
 
