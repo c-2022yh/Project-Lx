@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::RelicData
   relicId: orb_berserk
   relicName: "\uD3ED\uC8FC"
-  icon: {fileID: -2190772498747621175, guid: 61df5cdf78400ca4390fa6f1b85d7dde, type: 3}
+  icon: {fileID: 21300000, guid: 61df5cdf78400ca4390fa6f1b85d7dde, type: 3}
   description: "\uAC01\uC131 \uC0C1\uD0DC\uC5D0\uC11C Q\uB97C \uB2E4\uC2DC \uB204\uB974\uBA74
     \uD55C \uBC88 \uC0AC\uC6A9\uD560 \uC218 \uC788\uB294 `\uCD08\uD1A0\uD654` \uC2A4\uD0AC\uC744
     \uC0AC\uC6A9\uD55C\uB2E4.\r\n\uCD08\uD1A0\uD654 \uC0AC\uC6A9 \uD6C4 \uAC01\uC131
@@ -27,9 +27,7 @@ MonoBehaviour:
     fullEffectSprite: {fileID: 21300000, guid: e070f6ef7f1c0264488c8f4a0a0c8812, type: 3}
     frameSprite: {fileID: 21300000, guid: 88857c5d17129924bad10f98d93815af, type: 3}
     cloudSprite: {fileID: 21300000, guid: dfa6514bf70dd8c45a0bb65e428d7f7c, type: 3}
-    backdropSprite: {fileID: 21300000, guid: a34ccbe58f08b5d46a57b4a407ed2bb4, type: 3}
     backdropColor: {r: 0.88235295, g: 0.90588236, b: 0.9490196, a: 1}
-    backdropUsesEnergyFill: 1
     effectColor: {r: 1, g: 1, b: 1, a: 1}
     fadeSpeed: 5
     pulseSpeed: 2

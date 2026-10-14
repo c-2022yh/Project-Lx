@@ -14,20 +14,18 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::RelicData
   relicId: orb_reflux
   relicName: "\uD658\uB958"
-  icon: {fileID: -9048045757144610971, guid: a22b99eda6aec4a4f9d3b947dd55837c, type: 3}
+  icon: {fileID: 21300000, guid: a22b99eda6aec4a4f9d3b947dd55837c, type: 3}
   description: "\uAC01\uC131\uC774 \uB05D\uB098\uBA74 \uAE30\uB825\uC744 \uC77C\uC815\uB7C9
     \uD68C\uBCF5\uD55C\uB2E4."
   cost: 1
   category: 1
   orbHUDStyle:
-    emptySprite: {fileID: 0}
-    fillSprite: {fileID: 0}
-    fullEffectSprite: {fileID: 0}
-    frameSprite: {fileID: 0}
-    cloudSprite: {fileID: 0}
-    backdropSprite: {fileID: 0}
+    emptySprite: {fileID: 21300000, guid: 98e08935e9e52f744bdc7fd13c6c464b, type: 3}
+    fillSprite: {fileID: 21300000, guid: 48f6391074a5e03408722ed0137f9fb1, type: 3}
+    fullEffectSprite: {fileID: 21300000, guid: 944ff2499cb0fc64597b5a3481feb09f, type: 3}
+    frameSprite: {fileID: 21300000, guid: b2c8ac7a8195d8c46b924ec1a7ac96a6, type: 3}
+    cloudSprite: {fileID: 21300000, guid: 725f713ef60dfe94395db4fc862e8f36, type: 3}
     backdropColor: {r: 0.9098039, g: 0.9254902, b: 0.9647059, a: 1}
-    backdropUsesEnergyFill: 1
     effectColor: {r: 1, g: 1, b: 1, a: 1}
     fadeSpeed: 5
     pulseSpeed: 2
