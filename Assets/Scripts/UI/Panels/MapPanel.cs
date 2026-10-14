@@ -55,9 +55,11 @@ public class MapPanel : MonoBehaviour
              "끄면 인스펙터에 직접 넣은 이미지와 좌표만 쓴다.")]
     [SerializeField] private bool useSceneSketch = true;
 
-    [Header("안개")]
-    [Tooltip("아직 걸어가 보지 않은 곳을 덮는 색. 알파가 진할수록 안 보인다.")]
-    [SerializeField] private Color fogColor = new Color(0.03f, 0.05f, 0.06f, 0.94f);
+    /// <summary>
+    /// 아직 걸어가 보지 않은 곳을 덮는 색. 완전히 불투명해서 지형이 전혀 안 보인다.
+    /// 마커(상자·제단·출구·적)는 안개 위에 그리므로 안 가본 곳에서도 보인다.
+    /// </summary>
+    private static readonly Color FogColor = new Color(0.035f, 0.045f, 0.055f, 1f);
 
     /// <summary>안개를 다시 그리는 간격(초). 지도를 연 채로 걸어도 따라 걷힌다.</summary>
     private const float FogRefreshInterval = 0.25f;
@@ -198,9 +200,16 @@ public class MapPanel : MonoBehaviour
 
         foreach (MarkerInfo info in markers) SpawnMarker(info);
 
-        // 안개는 마커 위를 덮고(안 가본 곳의 상자·적은 안 보이게), 플레이어 점은 그 위에 둔다.
+        // 순서: 지형 그림 → 안개 → 마커 → 플레이어 점.
+        // 안 가본 곳은 지형만 가리고, 마커는 안개 위에 보이게 한다.
         EnsureFogImage();
-        if (fogImage != null) fogImage.transform.SetAsLastSibling();
+        if (fogImage != null)
+        {
+            int index = mapImage != null && mapImage.transform.parent == mapContent
+                ? mapImage.transform.GetSiblingIndex() + 1
+                : 0;
+            fogImage.transform.SetSiblingIndex(index);
+        }
 
         // 마커를 나중에 만들면 플레이어 점 위에 덮인다. 점을 맨 위로 올린다.
         if (playerDot != null) playerDot.SetAsLastSibling();
@@ -255,7 +264,7 @@ public class MapPanel : MonoBehaviour
         }
 
         string sceneId = SceneManager.GetActiveScene().name;
-        Color32 fog = fogColor;
+        Color32 fog = FogColor;
         Color32 clear = new Color32(fog.r, fog.g, fog.b, 0);
         Color32[] pixels = new Color32[width * height];
 
