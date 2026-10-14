@@ -1,8 +1,20 @@
 using UnityEngine;
 
-//상호작용하면 유물 선택창을 여는 보물상자
+//상호작용 시 랜덤 선택 또는 지정 유물을 지급하는 보물상자
 public class RelicChest : MonoBehaviour, IInteractable
 {
+    public enum RewardMode
+    {
+        RandomChoice = 0,
+        FixedRelic = 1
+    }
+
+    [Header("Reward")]
+    [Tooltip("RandomChoice: 풀에서 최대 3개 중 선택. FixedRelic: 지정한 유물 하나를 바로 획득.")]
+    [SerializeField] private RewardMode rewardMode = RewardMode.RandomChoice;
+    [Tooltip("FixedRelic 방식에서 지급할 유물 SO. 자동 장착하지 않고 보유 목록에 추가합니다.")]
+    [SerializeField] private RelicData fixedRelic;
+
     [Header("UI")]
     [SerializeField] private RelicSelectionPanelUI relicSelectionPanel;
 
@@ -26,7 +38,7 @@ public class RelicChest : MonoBehaviour, IInteractable
 
     private void Awake()
     {
-        if (relicSelectionPanel == null)
+        if (rewardMode == RewardMode.RandomChoice && relicSelectionPanel == null)
         {
             relicSelectionPanel = FindFirstObjectByType<RelicSelectionPanelUI>(FindObjectsInactive.Include);
         }
@@ -38,7 +50,12 @@ public class RelicChest : MonoBehaviour, IInteractable
 
     public void Interact(Player player)
     {
-        if (!isActiveAndEnabled || isOpened) return;
+        if (!isActiveAndEnabled || isOpened || player == null) return;
+        if (rewardMode == RewardMode.FixedRelic)
+        {
+            AcquireFixedRelic(player);
+            return;
+        }
         if (relicSelectionPanel == null) return;
 
         bool opened = relicSelectionPanel.OpenSelection(relicPool);
@@ -53,6 +70,37 @@ public class RelicChest : MonoBehaviour, IInteractable
         ClearNearbyPlayer();
 
         Debug.Log("Relic Chest Opened : " + gameObject.name);
+    }
+
+    private void AcquireFixedRelic(Player player)
+    {
+        if (fixedRelic == null)
+        {
+            Debug.LogWarning("[RelicChest] Fixed Relic에 지급할 유물 SO를 지정해 주세요.", this);
+            return;
+        }
+
+        PlayerRelicManager manager = player.GetComponent<PlayerRelicManager>();
+        if (manager == null) return;
+        if (manager.HasRelic(fixedRelic))
+        {
+            Debug.LogWarning("[RelicChest] 이미 보유한 유물이므로 상자를 열지 않습니다.", this);
+            return;
+        }
+
+        //획득 이벤트에서 다시 상호작용하더라도 중복 지급하지 않도록 먼저 잠금.
+        isOpened = true;
+        if (!manager.AcquireRelic(fixedRelic))
+        {
+            isOpened = false;
+            Debug.LogWarning("[RelicChest] 유물을 획득하지 못했습니다. 다시 상호작용할 수 있습니다.", this);
+            return;
+        }
+
+        SetSprite(openedSprite != null ? openedSprite : selectingSprite);
+        player.ClearInteractable(this);
+        ClearNearbyPlayer();
+        Debug.Log("Relic Chest Reward Acquired : " + fixedRelic.RelicName, this);
     }
 
     private void HandleSelectionClosed()
