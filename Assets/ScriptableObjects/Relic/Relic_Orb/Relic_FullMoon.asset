@@ -20,6 +20,7 @@ MonoBehaviour:
     \uC99D\uAC00\uD55C\uB2E4."
   cost: 1
   category: 1
+  orbSprite: {fileID: 21300000, guid: 18171dd6e73140644943cc6e5882b10d, type: 3}
   orbHUDStyle:
     emptySprite: {fileID: 21300000, guid: fc00b4c934ada7e4d9ab2814a164dd1b, type: 3}
     fillSprite: {fileID: 21300000, guid: 203d68fa66acd7d45b7206d2f1f0857d, type: 3}

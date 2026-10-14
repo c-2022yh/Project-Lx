@@ -15,6 +15,8 @@ public class RelicSelectionPanelUI : MonoBehaviour
     private bool isSelectionOpen;
     private bool isSelecting;
 
+    public event System.Action OnSelectionClosed;
+
     //연결된 유물 관리자가 없으면 씬에서 찾아 연결
     private void Awake()
     {
@@ -155,15 +157,21 @@ public class RelicSelectionPanelUI : MonoBehaviour
     //선택 상태를 종료하고 창 숨김
     public void CloseSelection()
     {
-        isSelectionOpen = false;
-        displayedRelics.Clear();
+        EndSelection();
         gameObject.SetActive(false);
     }
 
     //외부에서 창이 비활성화된 경우에도 선택 상태 정리
     private void OnDisable()
     {
+        EndSelection();
+    }
+
+    private void EndSelection()
+    {
+        bool wasOpen = isSelectionOpen;
         isSelectionOpen = false;
         displayedRelics.Clear();
+        if (wasOpen) OnSelectionClosed?.Invoke();
     }
 }

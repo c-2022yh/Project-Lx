@@ -64,6 +64,16 @@ public class OrbHUD : MonoBehaviour
     private Sprite originalBackdropSprite;
     private Material waveFillMaterial;
 
+    private void Awake()
+    {
+        if (orbHUDGroup == null) orbHUDGroup = GetComponent<CanvasGroup>();
+        if (orbHUDGroup == null) orbHUDGroup = gameObject.AddComponent<CanvasGroup>();
+        // Stay hidden until Start resolves the player's orb ownership.
+        orbHUDGroup.alpha = 0f;
+        orbHUDGroup.interactable = false;
+        orbHUDGroup.blocksRaycasts = false;
+    }
+
     //플레이어 기력을 찾고 변경 이벤트를 구독
     private void Start()
     {
@@ -488,8 +498,8 @@ public class OrbHUD : MonoBehaviour
 
         if (orbHUDGroup != null)
         {
-            //보주가 없어도 빈 HUD의 프레임과 구름은 항상 표시
-            orbHUDGroup.alpha = 1f;
+            // Show the entire orb HUD only after acquiring the orb.
+            orbHUDGroup.alpha = playerEnergy.HasOrb ? 1f : 0f;
             orbHUDGroup.interactable = false;
             orbHUDGroup.blocksRaycasts = false;
         }
