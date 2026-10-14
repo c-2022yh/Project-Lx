@@ -41,6 +41,16 @@ public interface IRunState
     bool HasFlag(string flag);
     void SetFlag(string flag);
 
+    // ── 지도 안개 ───────────────────────────
+    /// <summary>
+    /// 씬마다 걸어서 밝혀진 칸. 칸 번호는 MapExploration.CellKey로 만든다.
+    /// 아주 자주 불리므로 OnChanged는 발행하지 않는다. 지도는 열 때 직접 읽어 간다.
+    /// </summary>
+    bool IsExplored(string sceneId, long cell);
+
+    /// <summary>새로 밝혔으면 true.</summary>
+    bool MarkExplored(string sceneId, long cell);
+
     // ── 공통 ───────────────────────────────
     /// <summary>무엇이든 바뀌면 발행. UI가 여기 구독해서 갱신하면 된다.</summary>
     event Action OnChanged;

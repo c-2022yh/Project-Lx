@@ -11,6 +11,7 @@ public class InMemoryRunState : IRunState
     private readonly List<string> equipped = new();
     private readonly HashSet<string> visited = new();
     private readonly HashSet<string> flags = new();
+    private readonly Dictionary<string, HashSet<long>> explored = new();
 
     public IReadOnlyCollection<string> OwnedRelicIds => owned;
     public IReadOnlyList<string> EquippedRelicIds => equipped;
@@ -72,12 +73,34 @@ public class InMemoryRunState : IRunState
         OnChanged?.Invoke();
     }
 
+    public bool IsExplored(string sceneId, long cell)
+    {
+        if (string.IsNullOrEmpty(sceneId)) return false;
+
+        return explored.TryGetValue(sceneId, out HashSet<long> cells) && cells.Contains(cell);
+    }
+
+    public bool MarkExplored(string sceneId, long cell)
+    {
+        if (string.IsNullOrEmpty(sceneId)) return false;
+
+        if (!explored.TryGetValue(sceneId, out HashSet<long> cells))
+        {
+            cells = new HashSet<long>();
+            explored[sceneId] = cells;
+        }
+
+        // 너무 자주 불려서 OnChanged는 부르지 않는다.
+        return cells.Add(cell);
+    }
+
     public void Clear()
     {
         owned.Clear();
         equipped.Clear();
         visited.Clear();
         flags.Clear();
+        explored.Clear();
 
         OnChanged?.Invoke();
     }

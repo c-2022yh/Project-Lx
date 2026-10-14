@@ -186,8 +186,8 @@ public class TutorialDirector : MonoBehaviour
 
         if (count > knownRelicCount)
         {
+            // 유물창 안내는 획득 알림창(AcquirePopup)의 [유물창 보기]가 대신한다.
             relicsAcquired += count - knownRelicCount;
-            Request(TutorialPreset.RelicWindow);
         }
 
         knownRelicCount = count;

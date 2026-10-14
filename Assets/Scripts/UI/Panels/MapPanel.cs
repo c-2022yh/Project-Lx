@@ -55,6 +55,19 @@ public class MapPanel : MonoBehaviour
              "끄면 인스펙터에 직접 넣은 이미지와 좌표만 쓴다.")]
     [SerializeField] private bool useSceneSketch = true;
 
+    /// <summary>
+    /// 아직 걸어가 보지 않은 곳을 덮는 색. 완전히 불투명해서 지형이 전혀 안 보인다.
+    /// 마커(상자·제단·출구·적)는 안개 위에 그리므로 안 가본 곳에서도 보인다.
+    /// </summary>
+    private static readonly Color FogColor = new Color(0.035f, 0.045f, 0.055f, 1f);
+
+    /// <summary>안개를 다시 그리는 간격(초). 지도를 연 채로 걸어도 따라 걷힌다.</summary>
+    private const float FogRefreshInterval = 0.25f;
+
+    private RawImage fogImage;
+    private Texture2D fogTexture;
+    private float nextFogAt;
+
     /// <summary>한 번 만든 마커를 들고 있다가 닫힐 때 치운다.</summary>
     private readonly List<GameObject> spawnedMarkers = new List<GameObject>();
 
@@ -82,6 +95,7 @@ public class MapPanel : MonoBehaviour
 
         player = FindPlayer();
         Rebuild();
+        RefreshFog();
     }
 
     /// <summary>
@@ -121,6 +135,8 @@ public class MapPanel : MonoBehaviour
 
     private void Update()
     {
+        if (Time.unscaledTime >= nextFogAt) RefreshFog();
+
         if (playerDot == null) return;
 
         // 씬을 넘어오면 플레이어가 바뀌므로 없으면 다시 찾는다.
@@ -184,8 +200,129 @@ public class MapPanel : MonoBehaviour
 
         foreach (MarkerInfo info in markers) SpawnMarker(info);
 
+        // 순서: 지형 그림 → 안개 → 마커 → 플레이어 점.
+        // 안 가본 곳은 지형만 가리고, 마커는 안개 위에 보이게 한다.
+        EnsureFogImage();
+        if (fogImage != null)
+        {
+            int index = mapImage != null && mapImage.transform.parent == mapContent
+                ? mapImage.transform.GetSiblingIndex() + 1
+                : 0;
+            fogImage.transform.SetSiblingIndex(index);
+        }
+
         // 마커를 나중에 만들면 플레이어 점 위에 덮인다. 점을 맨 위로 올린다.
         if (playerDot != null) playerDot.SetAsLastSibling();
+    }
+
+    // ── 안개 ────────────────────────────────
+
+    /// <summary>
+    /// 지도 판 전체를 덮는 안개 텍스처를 다시 그린다.
+    /// 텍스처 한 칸 = 탐험 기록 한 칸이라 작고, 이중선형 필터로 경계가 부드럽게 번진다.
+    /// </summary>
+    private void RefreshFog()
+    {
+        nextFogAt = Time.unscaledTime + FogRefreshInterval;
+
+        if (mapContent == null) return;
+
+        EnsureFogImage();
+        if (fogImage == null) return;
+
+        if (!MapExploration.FogEnabled)
+        {
+            fogImage.enabled = false;
+            return;
+        }
+
+        GetMapTransform(out Vector2 center, out float scale);
+        if (scale <= 0f) return;
+
+        Rect board = mapContent.rect;
+        if (board.width < 1f || board.height < 1f) return;
+
+        // 판의 네 귀퉁이를 월드 좌표로 되돌린다. WorldToMap의 역변환이다.
+        Vector2 worldMin = board.min / scale + center;
+        Vector2 worldMax = board.max / scale + center;
+        Vector2 worldSize = worldMax - worldMin;
+
+        float cell = MapExploration.CellSize;
+        int width = Mathf.Clamp(Mathf.CeilToInt(worldSize.x / cell), 2, 256);
+        int height = Mathf.Clamp(Mathf.CeilToInt(worldSize.y / cell), 2, 256);
+
+        if (fogTexture == null || fogTexture.width != width || fogTexture.height != height)
+        {
+            if (fogTexture != null) Destroy(fogTexture);
+
+            fogTexture = new Texture2D(width, height, TextureFormat.RGBA32, false)
+            {
+                filterMode = FilterMode.Bilinear,
+                wrapMode = TextureWrapMode.Clamp,
+                name = "MapFog"
+            };
+        }
+
+        string sceneId = SceneManager.GetActiveScene().name;
+        Color32 fog = FogColor;
+        Color32 clear = new Color32(fog.r, fog.g, fog.b, 0);
+        Color32[] pixels = new Color32[width * height];
+
+        for (int y = 0; y < height; y++)
+        {
+            for (int x = 0; x < width; x++)
+            {
+                Vector2 world = new Vector2(
+                    worldMin.x + (x + 0.5f) / width * worldSize.x,
+                    worldMin.y + (y + 0.5f) / height * worldSize.y);
+
+                pixels[y * width + x] = MapExploration.IsExplored(sceneId, world) ? clear : fog;
+            }
+        }
+
+        fogTexture.SetPixels32(pixels);
+        fogTexture.Apply(false);
+
+        fogImage.texture = fogTexture;
+        fogImage.enabled = true;
+    }
+
+    /// <summary>안개 그림을 mapContent 아래에 한 번만 만든다. 프리팹은 건드리지 않는다.</summary>
+    private void EnsureFogImage()
+    {
+        if (fogImage != null || mapContent == null) return;
+
+        GameObject go = new GameObject("Fog", typeof(RectTransform), typeof(RawImage));
+        RectTransform rect = go.GetComponent<RectTransform>();
+        rect.SetParent(mapContent, false);
+        rect.anchorMin = Vector2.zero;
+        rect.anchorMax = Vector2.one;
+        rect.pivot = new Vector2(0.5f, 0.5f);
+        rect.offsetMin = Vector2.zero;
+        rect.offsetMax = Vector2.zero;
+
+        fogImage = go.GetComponent<RawImage>();
+        fogImage.raycastTarget = false;
+        fogImage.enabled = false;
+    }
+
+    /// <summary>WorldToMap과 같은 기준. 월드 → 맵: (월드 - center) * scale.</summary>
+    private void GetMapTransform(out Vector2 center, out float scale)
+    {
+        if (fitScale > 0f)
+        {
+            center = fitCenter;
+            scale = fitScale;
+            return;
+        }
+
+        center = worldCenter;
+        scale = unitsToPixels * ImageDisplayScale;
+    }
+
+    private void OnDestroy()
+    {
+        if (fogTexture != null) Destroy(fogTexture);
     }
 
     private void Collect(List<MarkerInfo> result)
@@ -216,11 +353,12 @@ public class MapPanel : MonoBehaviour
         foreach (RelicChest chest in FindObjectsByType<RelicChest>())
             AddAuto(result, handled, chest, MapMarkerKind.RelicChest);
 
+        // 안 가본 곳으로 가는 포탈에는 "?"를 단다. 가본 곳이면 그냥 출구로 찍는다.
         foreach (ScenePortal portal in FindObjectsByType<ScenePortal>())
-            AddAuto(result, handled, portal, MapMarkerKind.Exit);
+            AddAuto(result, handled, portal, MapMarkerKind.Exit, ExitLabel(portal));
 
         foreach (AutoScenePortal portal in FindObjectsByType<AutoScenePortal>())
-            AddAuto(result, handled, portal, MapMarkerKind.Exit);
+            AddAuto(result, handled, portal, MapMarkerKind.Exit, ExitLabel(portal));
 
         // 부술 수 있는 벽은 "지금은 못 가는 길"이라 메트로베니아에서 제일 중요한 표시다.
         foreach (FireBreakableWall wall in FindObjectsByType<FireBreakableWall>())
@@ -301,7 +439,7 @@ public class MapPanel : MonoBehaviour
     }
 
     private static void AddAuto(List<MarkerInfo> result, HashSet<GameObject> handled,
-                                Component component, MapMarkerKind kind)
+                                Component component, MapMarkerKind kind, string label = "")
     {
         if (component == null) return;
         if (!handled.Add(component.gameObject)) return;
@@ -309,9 +447,19 @@ public class MapPanel : MonoBehaviour
         result.Add(new MarkerInfo
         {
             Kind = kind,
-            Label = "",
+            Label = label,
             Position = component.transform.position
         });
+    }
+
+    /// <summary>포탈이 가는 씬에 아직 안 가봤으면 "?". 목적지를 모르면 빈칸.</summary>
+    private static string ExitLabel(Component portal)
+    {
+        string target = PortalTarget.SceneOf(portal);
+
+        if (string.IsNullOrEmpty(target)) return "";
+
+        return VisitedScenes.HasVisited(target) ? "" : "?";
     }
 
     private void SpawnMarker(MarkerInfo info)

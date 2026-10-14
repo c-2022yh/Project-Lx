@@ -66,7 +66,8 @@ public class UIManager : MonoBehaviour
     private bool IsAnyWindowOpen =>
         isInventoryOpen || isSkillOpen || isPaused ||
         (controlGuidePanel != null && controlGuidePanel.gameObject.activeSelf) ||
-        (gameOverPanel != null && gameOverPanel.gameObject.activeSelf);
+        (gameOverPanel != null && gameOverPanel.gameObject.activeSelf) ||
+        AcquirePopup.IsOpen;
 
    
     //  Input System 연결
@@ -117,6 +118,13 @@ public class UIManager : MonoBehaviour
 
     {
       
+
+        // 획득 알림창이 떠 있으면 키는 알림창 몫이다. 맵만 손을 떼면 내린다.
+        if (AcquirePopup.BlocksInput)
+        {
+            if (Keyboard.current.tabKey.wasReleasedThisFrame) SetMapVisible(false);
+            return;
+        }
 
         if (Keyboard.current.escapeKey.wasPressedThisFrame) HandleCancelKey();
         if (Keyboard.current.iKey.wasPressedThisFrame) ShowWindowTab(UITabBar.RelicTab);
@@ -248,6 +256,9 @@ public class UIManager : MonoBehaviour
     /// 창을 열면 조작이 멈춰야 한다는 건 기획에서도 정해진 사항이다.
     /// PlayerInput의 "Player" 액션맵만 끄므로 UI 입력은 그대로 살아 있다.
     /// </summary>
+    /// <summary>창 밖에서 뜨는 것(획득 알림창 등)이 열리고 닫힐 때 조작 잠금을 다시 맞춘다.</summary>
+    public void RefreshInputBlock() => RefreshPlayerControl();
+
     private void RefreshPlayerControl()
     {
         if (playerInput == null) playerInput = FindAnyObjectByType<PlayerInput>();
