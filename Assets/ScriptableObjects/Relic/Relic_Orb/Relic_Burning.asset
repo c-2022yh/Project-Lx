@@ -39,6 +39,8 @@ MonoBehaviour:
     persistentEffectPrefab: {fileID: 0}
     fullChargeBurstPrefab: {fileID: 0}
     fullChargeBurstDuration: 1
+    fullChargeBurstScale: 1.5
+    fullChargeBurstAlpha: 0.8
     displayEnergyCapacity: 0
   effects:
   - {fileID: 11400000, guid: a6563db56d9958c4094f3ea74f2fef18, type: 2}
