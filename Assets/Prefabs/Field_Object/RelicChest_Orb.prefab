@@ -83,8 +83,8 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_MaskInteraction: 0
-  m_Sprite: {fileID: -712631045867808456, guid: b670ab75dde984907b8570040daa08c5, type: 3}
-  m_Color: {r: 1, g: 0.84313726, b: 0.90827614, a: 1}
+  m_Sprite: {fileID: 21300000, guid: a9a5397c62a6541428d6a361fd618a6d, type: 3}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -112,6 +112,10 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 974811fac3648cc4385fa4bfa630517c, type: 2}
   - {fileID: 11400000, guid: 1c7b6a00faece5449a676bf4fd6426c4, type: 2}
   - {fileID: 11400000, guid: 7ca990d4b05cfb04fa6f6e8735eddc46, type: 2}
+  spriteRenderer: {fileID: 0}
+  closedSprite: {fileID: 21300000, guid: a9a5397c62a6541428d6a361fd618a6d, type: 3}
+  selectingSprite: {fileID: 21300000, guid: 20a964e5c083aa640832ddfc2744238c, type: 3}
+  openedSprite: {fileID: 21300000, guid: 8953628e4416b7541baf4bbf47cd90ca, type: 3}
 --- !u!58 &6767095945404313491
 CircleCollider2D:
   m_ObjectHideFlags: 0

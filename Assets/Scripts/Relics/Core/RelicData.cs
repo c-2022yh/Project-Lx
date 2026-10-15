@@ -27,12 +27,17 @@ public class RelicData : ScriptableObject
     [Header("Info")]
     [SerializeField] public RelicCategory category;
 
+    [Header("In-Game Orb")]
+    [Tooltip("보주 유물 장착 시 인게임 EnergyOrb에 표시할 스프라이트. 비워두면 기본 이미지를 사용합니다.")]
+    [SerializeField] private Sprite orbSprite;
+
     [Header("Orb HUD")]
     [SerializeField] private OrbHUDStyle orbHUDStyle;
 
     [Header("Effects")]
     [SerializeField] private List<RelicEffect> effects = new();
 
+    public Sprite OrbSprite => orbSprite;
     public OrbHUDStyle OrbHUDStyle => orbHUDStyle;
     public string RelicId => relicId;
     public string RelicName => relicName;

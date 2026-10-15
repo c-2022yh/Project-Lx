@@ -21,6 +21,7 @@ MonoBehaviour:
     \uC0C1\uD0DC\uAC00 \uC885\uB8CC\uB41C\uB2E4."
   cost: 1
   category: 1
+  orbSprite: {fileID: 21300000, guid: aa4fd4d299cfadc4eb8bac21f1467d6c, type: 3}
   orbHUDStyle:
     emptySprite: {fileID: 21300000, guid: a44041f626000864a84cda855e391731, type: 3}
     fillSprite: {fileID: 21300000, guid: 4f361784a46891d41a34712541e61ee5, type: 3}

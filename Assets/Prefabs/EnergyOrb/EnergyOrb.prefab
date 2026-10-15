@@ -219,6 +219,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::FollowingOrb
   orbLight: {fileID: 3539094178718562898}
+  orbSpriteRenderer: {fileID: 0}
 --- !u!114 &60652433999656876
 MonoBehaviour:
   m_ObjectHideFlags: 0
