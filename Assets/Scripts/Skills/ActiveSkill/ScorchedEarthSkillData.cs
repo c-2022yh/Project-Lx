@@ -11,10 +11,6 @@ public class ScorchedEarthSkillData : AttackSkillData
     [SerializeField] private Vector2 hitboxOffset = new Vector2(1f, 0f);
     [SerializeField] private Vector2 hitboxSize = new Vector2(3f, 2f);
 
-    [Header("Scorched Earth Timing")]
-    [SerializeField, Min(0f)] private float windup = 0.3f;
-    [SerializeField, Min(0f)] private float recovery = 0.2f;
-
     [Header("Effect")]
     [SerializeField] private GameObject effectPrefab;
     [SerializeField, Min(0f)] private float effectLifetime = 1f;
@@ -45,8 +41,6 @@ public class ScorchedEarthSkillData : AttackSkillData
     public IEnumerator ProcessPreparedSkill(Player p, DamageInfo preparedDamage)
     {
         if (p == null) yield break;
-        if (windup > 0f) yield return new WaitForSeconds(windup);
-        if (p == null) yield break;
 
         float direction = p.isFacingRight ? 1f : -1f;
         Vector2 center = (Vector2)p.transform.position
@@ -67,6 +61,6 @@ public class ScorchedEarthSkillData : AttackSkillData
             TryDamageEnemy(hit, hitEnemies, direction, preparedDamage);
         }
 
-        if (recovery > 0f) yield return new WaitForSeconds(recovery);
+        yield break;
     }
 }

@@ -15,6 +15,7 @@ MonoBehaviour:
   skillName: "\uADF8\uB9BC\uC790"
   icon: {fileID: -6192746434826769595, guid: 6622c3043ec0f644f8c9f5923df5de82, type: 3}
   description: "\uC0E4\uC0E4\uC0E5"
+  animationType: 5
   cooldownTime: 1
   soulCost: 0
   activeTime: 0.2

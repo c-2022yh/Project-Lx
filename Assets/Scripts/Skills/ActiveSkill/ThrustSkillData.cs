@@ -7,10 +7,6 @@ using System.Collections;
 public class ThrustSkillData : AttackSkillData
 {
 
-    [Header("Thrust Timing")]
-    public float startupTime = 0.1f;   //찌르기 전 준비 시간
-    public float recoveryTime = 0.08f; //찌른 후 후딜
-
     [Header("Thrust Effect")] //찌르기 이펙트 표시
     public GameObject thrustEffectPrefab;
     public Vector2 effectOffset = new Vector2(1.2f, 0f);
@@ -19,25 +15,40 @@ public class ThrustSkillData : AttackSkillData
     public float effectLifeTime = 0.18f;
 
 
+    // Preserve the thrust's physics freeze throughout all three phases.
+    protected override IEnumerator WaitForWindup(Player p)
+    {
+        p.SetPhysicsFreeze(true);
+        float windupTimer = 0f;
+        while (windupTimer < windupTime)
+        {
+            p.rb.linearVelocity = Vector2.zero;
+
+            windupTimer += Time.fixedDeltaTime;
+            yield return new WaitForFixedUpdate();
+        }
+    }
+
+    protected override IEnumerator WaitForRecovery(Player p)
+    {
+        float recoveryTimer = 0f;
+        while (recoveryTimer < recoveryTime)
+        {
+            p.rb.linearVelocity = Vector2.zero;
+
+            recoveryTimer += Time.fixedDeltaTime;
+            yield return new WaitForFixedUpdate();
+        }
+        p.SetPhysicsFreeze(false);
+    }
+
     public override IEnumerator ProcessSkill(Player p)
     {
         //공격 방향 설정
         float dir = p.isFacingRight ? 1f : -1f;
 
-        //중력 정지
-        p.SetPhysicsFreeze(true);
 
-        //선딜: 찌르기 준비
-        float startupTimer = 0f;
-        while (startupTimer < startupTime)
-        {
-            p.rb.linearVelocity = Vector2.zero;
 
-            startupTimer += Time.fixedDeltaTime;
-            yield return new WaitForFixedUpdate();
-        }
-        
-        
         //공격 정보 생성
         DamageInfo damageInfo = DamageInfo.Create(p.Stats.Offense, damageSpec, p.gameObject);
 
@@ -53,21 +64,6 @@ public class ThrustSkillData : AttackSkillData
             timer += Time.fixedDeltaTime;
             yield return new WaitForFixedUpdate();
         }
-
-        //후딜
-        float recoveryTimer = 0f;
-        while (recoveryTimer < recoveryTime)
-        {
-            p.rb.linearVelocity = Vector2.zero;
-
-            recoveryTimer += Time.fixedDeltaTime;
-            yield return new WaitForFixedUpdate();
-        }
-
-        //중력 재가동
-        p.SetPhysicsFreeze(false);
-
-
     }
 
     

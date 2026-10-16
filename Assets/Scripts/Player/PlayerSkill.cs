@@ -385,7 +385,7 @@ public class PlayerSkill : MonoBehaviour
         try
         {
             OnSkillUsed?.Invoke(skill);
-            yield return skill.ProcessSkill(p);
+            yield return skill.ExecuteWithTiming(p, skill.ProcessSkill(p));
         }
         finally
         {
@@ -451,7 +451,7 @@ public class PlayerSkill : MonoBehaviour
     {
         p.ActionState.EnterSkill();
         OnSkillUsed?.Invoke(skill);
-        yield return skill.ProcessPreparedSkill(p, damageInfo);
+        yield return skill.ExecuteWithTiming(p, skill.ProcessPreparedSkill(p, damageInfo));
         if (p != null && p.ActionState.isSkillActive) p.ActionState.EnterNormal();
         awakeningSkillRoutine = null;
     }
