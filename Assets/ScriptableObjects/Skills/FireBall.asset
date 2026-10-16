@@ -18,7 +18,9 @@ MonoBehaviour:
   animationType: 3
   cooldownTime: 3
   soulCost: 10
+  windupTime: 0.33
   activeTime: 1
+  recoveryTime: 0.33
   enemyLayer:
     serializedVersion: 2
     m_Bits: 256

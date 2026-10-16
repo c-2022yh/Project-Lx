@@ -135,6 +135,7 @@ public class PlayerAwakening : MonoBehaviour
 
         p.ActionState.EnterAwakening();
         p.SetPhysicsFreeze(true);
+        p.Animation?.PlayAwakening();
 
         if (awakeningEffect != null)
         {
