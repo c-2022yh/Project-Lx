@@ -5,12 +5,14 @@ using UnityEngine.UI;
 public partial class OrbHUD
 {
     private static readonly int FillAmountId = Shader.PropertyToID("_FillAmount");
-    private static readonly int FillRectId = Shader.PropertyToID("_FillRect");
+    private static readonly int SpriteUVRectId = Shader.PropertyToID("_SpriteUVRect");
     private float targetEnergyRatio;
     private float displayedEnergyRatio;
     private bool isEnergyFull;
     private Material originalOrbMaterial;
     private Material waveFillMaterial;
+    private OrbHUDGaugeMode appliedGaugeMode;
+    private Material appliedGaugeSource;
 
     private void ApplyEnergySprite(Image image, Sprite sprite)
     {
@@ -53,6 +55,8 @@ public partial class OrbHUD
     private void ConfigureGaugeMaterial(OrbHUDStyle style)
     {
         if (orbImageFill == null) return;
+        appliedGaugeMode = style.gaugeMode;
+        appliedGaugeSource = style.gaugeMaterial;
         string shaderName = style.gaugeMode == OrbHUDGaugeMode.Crescent ? "UI/OrbCrescentFill" : "UI/WaveFill";
         Material source = style.gaugeMaterial != null ? style.gaugeMaterial : originalOrbMaterial;
         bool validSource = source != null && source.shader != null
@@ -90,6 +94,10 @@ public partial class OrbHUD
 
     private void UpdateEnergyFill()
     {
+        // Mode/material edits on the equipped SO must not require re-equipping.
+        if (activeStyle != null && (activeStyle.gaugeMode != appliedGaugeMode
+            || activeStyle.gaugeMaterial != appliedGaugeSource))
+            ConfigureGaugeMaterial(activeStyle);
         if (waveFillMaterial == null || orbImageFill == null) return;
         if (orbImageFill.material != waveFillMaterial)
         {
@@ -104,10 +112,33 @@ public partial class OrbHUD
     private void WriteGaugeProperties(Material material)
     {
         material.SetFloat(FillAmountId, displayedEnergyRatio);
-        if (!material.HasProperty(FillRectId)) return;
-        Rect rect = orbImageFill.GetPixelAdjustedRect();
-        material.SetVector(FillRectId, new Vector4(rect.xMin, rect.yMin, rect.width, rect.height));
+        if (!material.HasProperty(SpriteUVRectId)) return;
+        Sprite sprite = orbImageFill.overrideSprite != null ? orbImageFill.overrideSprite : orbImageFill.sprite;
+        Vector4 uv = sprite != null ? UnityEngine.Sprites.DataUtility.GetOuterUV(sprite) : new Vector4(0f, 0f, 1f, 1f);
+        material.SetVector(SpriteUVRectId, uv);
+        Vector4 canvasRect = new Vector4(0f, 0f, 1f, 1f);
+        if (sprite != null)
+        {
+            Vector4 padding = UnityEngine.Sprites.DataUtility.GetPadding(sprite);
+            Vector2 size = sprite.rect.size;
+            canvasRect = new Vector4(padding.x / Mathf.Max(1f, size.x), padding.y / Mathf.Max(1f, size.y),
+                1f - padding.z / Mathf.Max(1f, size.x), 1f - padding.w / Mathf.Max(1f, size.y));
+        }
+        material.SetVector("_SpriteCanvasRect", canvasRect);
+        Vector2 center = activeStyle != null ? activeStyle.crescentCenter : new Vector2(0.5f, 0.5f);
+        material.SetVector("_CircleCenter", new Vector4(center.x, center.y, 0f, 0f));
         material.SetFloat("_CircleRadius", activeStyle != null ? activeStyle.crescentRadius : 0.38f);
         material.SetFloat("_CrescentWidth", activeStyle != null ? activeStyle.crescentWidth : 0.3f);
+    }
+
+    [ContextMenu("Log Gauge Rendering State")]
+    private void LogGaugeRenderingState()
+    {
+        Material rendered = orbImageFill != null ? orbImageFill.materialForRendering : null;
+        string shader = rendered != null && rendered.shader != null ? rendered.shader.name : "None";
+        float fill = rendered != null && rendered.HasProperty(FillAmountId) ? rendered.GetFloat(FillAmountId) : -1f;
+        Debug.Log($"OrbHUD Gauge: relic={displayedRelic?.RelicId}, mode={activeStyle?.gaugeMode}, "
+            + $"energy={playerEnergy?.CurrentEnergy}/{playerEnergy?.MaxEnergy}, "
+            + $"shader={shader}, fill={fill}, enabled={orbImageFill?.enabled}", this);
     }
 }

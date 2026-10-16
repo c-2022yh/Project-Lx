@@ -33,10 +33,24 @@ MonoBehaviour:
     pulseScale: 0.04
     pulseAlphaAmount: 0
     showFullEnergyEffect: 1
+    eyeEffectCondition: 2
     playFullChargeBurst: 1
+    fullChargeEyeEnergy: 100
     persistentEffectCondition: 0
     persistentEffectPrefab: {fileID: 0}
     persistentEffectLayer: 0
+    persistentAnimation: 0
+    persistentEffectSprite: {fileID: 0}
+    persistentEffectFrames: []
+    persistentEffectColor: {r: 1, g: 1, b: 1, a: 1}
+    persistentSizeMultiplier: 1
+    persistentPulsePeriod: 2.4
+    persistentAlphaRange: {x: 0.38, y: 0.8}
+    persistentFrameRate: 8
+    persistentFrameCrossFade: 1
+    persistentFlashInterval: {x: 0.6, y: 1.8}
+    persistentFlashDuration: 0.3
+    persistentFadeSpeed: 5
     fullChargeBurstPrefab: {fileID: 0}
     fullChargeBurstLayer: 0
     fullChargeBurstDuration: 1
@@ -46,11 +60,17 @@ MonoBehaviour:
     awakeningEndEffectPrefab: {fileID: 6710509852941101176, guid: 08f92f992a49b174091f78fa956da391, type: 3}
     awakeningEndEffectLayer: 1
     awakeningEndDuration: 1
-    awakeningEndSprite: {fileID: 0}
+    awakeningEndSprite: {fileID: 21300000, guid: 4c199f7ee831d0c47bd2ca70c6673d0c, type: 3}
     awakeningEndColor: {r: 1, g: 1, b: 1, a: 1}
     awakeningEndSizeMultiplier: 1
+    awakeningEndFromScale: 1
     awakeningEndScale: 1.5
+    awakeningEndFadeInFraction: 0.2
     awakeningEndAlpha: 0.8
     displayEnergyCapacity: 0
+    gaugeMode: 0
+    gaugeMaterial: {fileID: 2100000, guid: df8d6b4dce269c74fb779fe300733e73, type: 2}
+    crescentRadius: 0.38
+    crescentWidth: 0.3
   effects:
   - {fileID: 11400000, guid: 212fe7dc06323ad4988095fc7c0f4cd6, type: 2}

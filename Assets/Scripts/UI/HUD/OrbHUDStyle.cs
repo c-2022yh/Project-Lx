@@ -89,6 +89,8 @@ public class OrbHUDStyle
     public Material gaugeMaterial;
     [Tooltip("Circle radius in the untrimmed image canvas, not the HUD rectangle size.")]
     [Range(0.01f, 0.5f)] public float crescentRadius = 0.38f;
+    [Tooltip("Circle center in the original PNG canvas: (0.5, 0.5) is centered. Adjust only if the artwork itself is offset.")]
+    public Vector2 crescentCenter = new Vector2(0.5f, 0.5f);
     [Tooltip("Maximum left crescent width as a fraction of the circle diameter. Energy progress controls growth to this shape.")]
     [Range(0.01f, 0.95f)] public float crescentWidth = 0.3f;
 }

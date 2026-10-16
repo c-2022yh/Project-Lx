@@ -5,7 +5,9 @@ Shader "UI/OrbCrescentFill"
         [PerRendererData] _MainTex ("Sprite Texture", 2D) = "white" {}
         _Color ("Tint", Color) = (1, 1, 1, 1)
         _FillAmount ("Energy Progress", Range(0, 1)) = 0
-        _FillRect ("Image Local Rect", Vector) = (-0.5, -0.5, 1, 1)
+        _SpriteUVRect ("Sprite UV Bounds", Vector) = (0, 0, 1, 1)
+        _SpriteCanvasRect ("Visible Region In Original Sprite", Vector) = (0, 0, 1, 1)
+        _CircleCenter ("Circle Center", Vector) = (0.5, 0.5, 0, 0)
         _CircleRadius ("Circle Radius", Range(0.01, 0.5)) = 0.38
         _CrescentWidth ("Maximum Crescent Width", Range(0.01, 0.95)) = 0.3
         _EdgeSoftness ("Edge Softness", Range(0.0001, 0.02)) = 0.002
@@ -68,7 +70,9 @@ Shader "UI/OrbCrescentFill"
             fixed4 _TextureSampleAdd;
             float4 _ClipRect;
             float4 _MainTex_ST;
-            float4 _FillRect;
+            float4 _SpriteUVRect;
+            float4 _SpriteCanvasRect;
+            float4 _CircleCenter;
             float _FillAmount;
             float _CircleRadius;
             float _CrescentWidth;
@@ -84,8 +88,13 @@ Shader "UI/OrbCrescentFill"
                 output.worldPosition = input.vertex;
                 output.vertex = UnityObjectToClipPos(input.vertex);
                 output.texcoord = TRANSFORM_TEX(input.texcoord, _MainTex);
-                // Shape coordinates are independent of sprite atlas texture UVs.
-                output.fillUV = (input.vertex.xy - _FillRect.xy) / max(_FillRect.zw, float2(0.0001, 0.0001));
+                // Canvas batching transforms vertex positions into canvas space.
+                // Sprite UVs stay unchanged: normalize them to the sprite's atlas bounds.
+                output.fillUV = (input.texcoord - _SpriteUVRect.xy)
+                    / max(_SpriteUVRect.zw - _SpriteUVRect.xy, float2(0.0001, 0.0001));
+                // UGUI trims transparent sprite padding from both its mesh and outer UVs.
+                // Restore the original PNG canvas before measuring the circle radius.
+                output.fillUV = lerp(_SpriteCanvasRect.xy, _SpriteCanvasRect.zw, output.fillUV);
                 output.color = input.color * _Color;
                 return output;
             }
@@ -96,7 +105,7 @@ Shader "UI/OrbCrescentFill"
                 float amount = saturate(_FillAmount);
                 float radius = clamp(_CircleRadius, 0.01, 0.5);
                 float softness = max(_EdgeSoftness, 0.0001);
-                float2 circlePosition = input.fillUV - float2(0.5, 0.5);
+                float2 circlePosition = input.fillUV - _CircleCenter.xy;
                 float outerDistance = length(circlePosition);
                 // Move the subtracting circle rightward: reveal a crescent from the left.
                 float offset = 2 * radius * saturate(_CrescentWidth) * amount;
