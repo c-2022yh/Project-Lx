@@ -31,8 +31,23 @@ public abstract class SkillData : ScriptableObject
     public SkillAnimationType animationType = SkillAnimationType.None;
 
     [Header("Cost")]
-    public float cooldownTime = 1f;
-    public int soulCost = 0;
+    [Min(0f)] public float cooldownTime = 1f;
+    [FormerlySerializedAs("soulCost")]
+    [Min(0f), Tooltip("Energy spent once when casting starts. 0 is free; a positive cost requires an owned orb and enough energy.")]
+    public float energyCost = 0f;
+
+    public bool CanPayCost(Player p)
+    {
+        return p != null && (energyCost <= 0f
+            || (p.Energy != null && p.Energy.CanSpendEnergy(energyCost)));
+    }
+
+    public bool TryPayCost(Player p)
+    {
+        if (p == null) return false;
+        if (energyCost <= 0f) return true;
+        return p.Energy != null && p.Energy.TrySpendEnergy(energyCost);
+    }
 
     [Header("Timing")]
     [FormerlySerializedAs("startupTime"), FormerlySerializedAs("windup")]
@@ -68,7 +83,7 @@ public abstract class SkillData : ScriptableObject
     }
 
     //현재 상태에서 스킬을 사용할 수 있는지 확인
-    public virtual bool CanUse(Player p) => p != null;
+    public virtual bool CanUse(Player p) => CanPayCost(p);
     
     //스킬 실행하는 가상 함수
     public abstract IEnumerator ProcessSkill(Player p);

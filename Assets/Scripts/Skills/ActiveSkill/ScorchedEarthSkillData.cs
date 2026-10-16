@@ -18,7 +18,7 @@ public class ScorchedEarthSkillData : AttackSkillData
     //각성 상태와 스킬 시전 가능 상태를 함께 확인한다.
     public override bool CanUse(Player p)
     {
-        return p != null && p.Awakening != null && p.Awakening.IsAwakened
+        return base.CanUse(p) && p.Awakening != null && p.Awakening.IsAwakened
             && p.ActionState != null && p.ActionState.CanSkill();
     }
 

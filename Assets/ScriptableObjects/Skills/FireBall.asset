@@ -17,7 +17,7 @@ MonoBehaviour:
   description: "\uC804\uBC29\uC5D0 \uD654\uC5FC\uAD6C\uB97C \uB358\uC9C4\uB2E4"
   animationType: 3
   cooldownTime: 3
-  soulCost: 10
+  energyCost: 10
   windupTime: 0.33
   activeTime: 1
   recoveryTime: 0.33

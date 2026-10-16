@@ -17,7 +17,7 @@ MonoBehaviour:
   description: "\uD22C\uC0AC\uCCB4 \uB0A0\uB9B0"
   animationType: 3
   cooldownTime: 1
-  soulCost: 0
+  energyCost: 0
   activeTime: 1
   enemyLayer:
     serializedVersion: 2

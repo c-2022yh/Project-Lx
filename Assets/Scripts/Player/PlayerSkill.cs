@@ -374,6 +374,7 @@ public class PlayerSkill : MonoBehaviour
         if (isChangingEquipment || !p.ActionState.CanSkill() || IsOnCooldown(slotIndex)) return;
         SkillData skill = GetEquippedSkill(slotIndex);
         if (!HasSkill(skill) || !skill.CanUse(p)) return;
+        if (!skill.TryPayCost(p)) return;
         StartCoroutine(SkillRoutine(p, skill, slotIndex));
     }
 
@@ -439,6 +440,7 @@ public class PlayerSkill : MonoBehaviour
 
         ScorchedEarthSkillData skill = awakeningSkill;
         DamageInfo damageInfo = skill.PrepareDamage(p);
+        if (!skill.TryPayCost(p)) return false;
         awakeningSkillAvailable = false;
         awakeningSkillRoutine = StartCoroutine(AwakeningSkillRoutine(p, skill, damageInfo));
 

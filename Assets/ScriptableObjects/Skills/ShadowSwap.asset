@@ -17,7 +17,7 @@ MonoBehaviour:
   description: "\uC0E4\uC0E4\uC0E5"
   animationType: 5
   cooldownTime: 1
-  soulCost: 0
+  energyCost: 0
   activeTime: 0.2
   lockInputDuringSkill: 1
   invincibleDuringSkill: 0
