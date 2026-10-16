@@ -46,6 +46,8 @@ public class PlayerSkill : MonoBehaviour
 
     public SkillData ExclusiveSkill => exclusiveSkill;
     public bool IsUsingSkill => activeSkill != null || awakeningSkillRoutine != null;
+    // One-use awakening entitlement, independent of temporary action/input locks.
+    public bool HasAwakeningSkillCharge => awakeningSkill != null && awakeningSkillAvailable;
 
     public event Action OnSkillsChanged;
     public event Action<SkillData> OnSkillUsed;

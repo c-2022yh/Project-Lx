@@ -9,7 +9,7 @@ public partial class OrbHUD
     private GameObject awakeningEndEffectInstance;
     private float awakeningEndTimeRemaining;
     private float burstTimeRemaining;
-    private bool wasEnergyFull;
+    private bool wasChargeBurstReady;
     private bool chargeBurstPending;
 
     private void EnsureEffectRoots()
@@ -68,6 +68,7 @@ public partial class OrbHUD
 
     private void DestroyRelicEffects()
     {
+        StopPersistentEffect();
         if (persistentEffectInstance != null)
         {
             persistentEffectInstance.SetActive(false);
@@ -84,6 +85,7 @@ public partial class OrbHUD
         awakeningEndEffectInstance = null;
         awakeningEndImage = null;
         persistentEffectInstance = null;
+        ResetPersistentImages();
         fullChargeBurstInstance = null;
         fallbackBurstImage = null;
         chargeBurstPending = false;
@@ -138,9 +140,12 @@ public partial class OrbHUD
     }
 
     private bool ShouldShowPersistentEffect()
+        => activeStyle != null && EvaluateEffectCondition(activeStyle.persistentEffectCondition);
+
+    private bool EvaluateEffectCondition(OrbHUDEffectCondition condition)
     {
         if (activeStyle == null || playerEnergy == null || !playerEnergy.HasOrb) return false;
-        switch (activeStyle.persistentEffectCondition)
+        switch (condition)
         {
             case OrbHUDEffectCondition.Always:
                 return true;
@@ -150,6 +155,9 @@ public partial class OrbHUD
                 return playerAwakening != null && playerAwakening.IsAwakened;
             case OrbHUDEffectCondition.AwakeningEnergyDrain:
                 return playerAwakening != null && playerAwakening.IsDrainingEnergy;
+            case OrbHUDEffectCondition.AwakeningSkillReady:
+                return playerAwakening != null && playerAwakening.IsAwakened
+                    && playerSkill != null && playerSkill.HasAwakeningSkillCharge;
             default:
                 return false;
         }
@@ -159,13 +167,12 @@ public partial class OrbHUD
     {
         if (activeStyle == null) return;
         UpdateAwakeningEndEffect();
-        bool showPersistent = ShouldShowPersistentEffect();
-        if (persistentEffectInstance != null && persistentEffectInstance.activeSelf != showPersistent)
-            persistentEffectInstance.SetActive(showPersistent);
+        UpdatePersistentEffect();
 
-        if (activeStyle.playFullChargeBurst && isEnergyFull && !wasEnergyFull)
+        bool chargeReady = IsChargeBurstReady();
+        if (activeStyle.playFullChargeBurst && chargeReady && !wasChargeBurstReady)
             chargeBurstPending = true;
-        if (!isEnergyFull || !activeStyle.playFullChargeBurst)
+        if (!chargeReady || !activeStyle.playFullChargeBurst)
             chargeBurstPending = false;
 
         //표시 게이지가 목표까지 찬 뒤 재생. 암월의 50/100 표시도 같은 기준 사용.
@@ -177,13 +184,13 @@ public partial class OrbHUD
             fullChargeBurstInstance.SetActive(true);
             burstTimeRemaining = Mathf.Max(0.01f, activeStyle.fullChargeBurstDuration);
         }
-        wasEnergyFull = isEnergyFull;
+        wasChargeBurstReady = chargeReady;
 
         if (fullChargeBurstInstance != null && fullChargeBurstInstance.activeSelf)
         {
             burstTimeRemaining -= Time.unscaledDeltaTime;
             UpdateFallbackChargeBurst();
-            if (!isEnergyFull || burstTimeRemaining <= 0f)
+            if (!chargeReady || burstTimeRemaining <= 0f)
                 fullChargeBurstInstance.SetActive(false);
         }
     }

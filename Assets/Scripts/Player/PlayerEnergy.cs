@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
 //플레이어의 기력과 보주 표시를 관리하는 스크립트
@@ -17,14 +18,23 @@ public class PlayerEnergy : MonoBehaviour
     private bool hasOrb;
     private bool isEnergyGainBlocked;
     private float energyGainMultiplier = 1f;
+    private readonly Dictionary<object, float> maxEnergyLimits = new();
 
     //현재 기력 또는 최대 기력이 바뀌면 유물 효과에 알림
     public event Action OnEnergyChanged;
 
     public float CurrentEnergy => currentEnergy;
-    public float MaxEnergy => maxEnergy;
-    public float EnergyRatio => maxEnergy <= 0f ? 0f : currentEnergy / maxEnergy;
-    public bool IsFull => maxEnergy > 0f && currentEnergy >= maxEnergy;
+    public float MaxEnergy
+    {
+        get
+        {
+            float maximum = maxEnergy;
+            foreach (float limit in maxEnergyLimits.Values) maximum = Mathf.Min(maximum, limit);
+            return maximum;
+        }
+    }
+    public float EnergyRatio => MaxEnergy <= 0f ? 0f : currentEnergy / MaxEnergy;
+    public bool IsFull => MaxEnergy > 0f && currentEnergy >= MaxEnergy;
     public bool HasOrb => hasOrb;
     public bool IsEnergyGainBlocked => isEnergyGainBlocked;
 
@@ -71,7 +81,7 @@ public class PlayerEnergy : MonoBehaviour
     public void GainEnergy(float amount)
     {
         if (!hasOrb || isEnergyGainBlocked || amount <= 0f) return;
-        float next = Mathf.Clamp(currentEnergy + amount * Mathf.Max(0f, energyGainMultiplier), 0f, maxEnergy);
+        float next = Mathf.Clamp(currentEnergy + amount * Mathf.Max(0f, energyGainMultiplier), 0f, MaxEnergy);
         if (Mathf.Approximately(currentEnergy, next)) return;
         currentEnergy = next;
 
@@ -92,13 +102,27 @@ public class PlayerEnergy : MonoBehaviour
     public void SetMaxEnergy(float newMaxEnergy)
     {
         maxEnergy = Mathf.Max(0f, newMaxEnergy);
-        currentEnergy = Mathf.Clamp(currentEnergy, 0f, maxEnergy);
+        currentEnergy = Mathf.Clamp(currentEnergy, 0f, MaxEnergy);
 
         NotifyEnergyChanged();
     }
 
     //최대 기력을 유물의 보너스 연산
     public void ModifyMaxEnergy(float amount) => SetMaxEnergy(maxEnergy + amount);
+
+    // Capacity caps do not overwrite the base maximum or discard other relic stat changes.
+    public void SetMaxEnergyLimit(object source, float limit)
+    {
+        if (source == null) return;
+        maxEnergyLimits[source] = Mathf.Max(0f, limit);
+        currentEnergy = Mathf.Clamp(currentEnergy, 0f, MaxEnergy);
+        NotifyEnergyChanged();
+    }
+
+    public void RemoveMaxEnergyLimit(object source)
+    {
+        if (source != null && maxEnergyLimits.Remove(source)) NotifyEnergyChanged();
+    }
 
     //각성이 끝난 뒤 기력을 비우고 유물에 변경 사실을 알림
     public void ResetEnergy()
@@ -131,7 +155,7 @@ public class PlayerEnergy : MonoBehaviour
         if (!CanSpendEnergy(amount)) return false;
         if (amount <= 0f) return true;
 
-        currentEnergy = Mathf.Clamp(currentEnergy - amount, 0f, maxEnergy);
+        currentEnergy = Mathf.Clamp(currentEnergy - amount, 0f, MaxEnergy);
 
         NotifyEnergyChanged();
 

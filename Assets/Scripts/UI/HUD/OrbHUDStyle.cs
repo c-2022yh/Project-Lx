@@ -23,15 +23,38 @@ public class OrbHUDStyle
     [Range(0f, 1f)] public float pulseAlphaAmount;
 
     [Header("Effect Conditions")]
+    [InspectorName("Show Eye Effect")]
     public bool showFullEnergyEffect = true;
+    [Tooltip("Independent of the additional persistent effect. Dark Moon: Always; Full Moon: FullEnergy.")]
+    public OrbHUDEffectCondition eyeEffectCondition = OrbHUDEffectCondition.FullEnergy;
     public bool playFullChargeBurst = true;
+    [Tooltip("Common eye burst threshold in actual energy units. Crescent gauges never play this burst.")]
+    [Min(0.01f)] public float fullChargeEyeEnergy = 100f;
     public OrbHUDEffectCondition persistentEffectCondition;
 
-    [Tooltip("UI prefab shown while the selected condition holds. If empty, use the existing effect image and pulse.")]
+    [Tooltip("Optional prefab shown while the selected condition holds. If empty, use Persistent Image Animation settings. Eye animation is independent.")]
     public GameObject persistentEffectPrefab;
     [Tooltip("Draw the persistent prefab in front of or behind the orb HUD.")]
     public OrbHUDEffectLayer persistentEffectLayer;
 
+    [Header("Persistent Image Animation (No Prefab Required)")]
+    public OrbHUDPersistentAnimation persistentAnimation;
+    public Sprite persistentEffectSprite;
+    [Tooltip("Ordered frames for flames/lightning. Null entries are ignored.")]
+    public Sprite[] persistentEffectFrames = Array.Empty<Sprite>();
+    public Color persistentEffectColor = Color.white;
+    [Min(0.01f)] public float persistentSizeMultiplier = 1f;
+    [Min(0.01f)] public float persistentPulsePeriod = 2.4f;
+    public Vector2 persistentAlphaRange = new Vector2(0.38f, 0.8f);
+    [Min(0.01f)] public float persistentFrameRate = 8f;
+    [Range(0f, 1f)] public float persistentFrameCrossFade = 1f;
+    [Tooltip("Quiet interval between flashes, in seconds. Does not include the flash duration.")]
+    public Vector2 persistentFlashInterval = new Vector2(0.6f, 1.8f);
+    [Min(0.01f)] public float persistentFlashDuration = 0.3f;
+    [Tooltip("Full-energy halo fades in/out; awakening/Q effects stop immediately when their condition ends. Zero means instant.")]
+    [Min(0f)] public float persistentFadeSpeed = 5f;
+
+    [Header("Full Charge Burst")]
     [Tooltip("Optional UI prefab played once on entering full energy, separately from the persistent effect.")]
     public GameObject fullChargeBurstPrefab;
     public OrbHUDEffectLayer fullChargeBurstLayer;
@@ -51,13 +74,23 @@ public class OrbHUDStyle
     public Color awakeningEndColor = Color.white;
     [Tooltip("Initial image size relative to the shared orb backdrop. HUD scale is inherited automatically.")]
     [Min(0.01f)] public float awakeningEndSizeMultiplier = 1f;
-    [Tooltip("Final expansion relative to the initial image size.")]
-    [Min(1f)] public float awakeningEndScale = 1.5f;
+    [Tooltip("Final scale relative to the base image size. Can be smaller than From Scale for a contracting pulse.")]
+    [Min(0.01f)] public float awakeningEndFromScale = 1f;
+    [Min(0.01f)] public float awakeningEndScale = 1.5f;
+    [Tooltip("Fraction of the animation spent fading in. Reflux recovery: about 0.2.")]
+    [Range(0.01f, 0.99f)] public float awakeningEndFadeInFraction = 0.2f;
     [Range(0f, 1f)] public float awakeningEndAlpha = 0.8f;
 
     [Header("Gauge Display")]
-    [Tooltip("0 uses the current maximum energy. Use 100 to display a reduced capacity such as Dark Moon's 50/100. Display only; does not change gameplay capacity.")]
+    [Tooltip("Wave mode: 0 uses the current maximum; a positive value sets a visual reference capacity. Crescent always uses the actual maximum. Display only.")]
     [Min(0f)] public float displayEnergyCapacity;
+    public OrbHUDGaugeMode gaugeMode;
+    [Tooltip("Optional material override. Assign OrbCrescentFillMaterial for Crescent so the shader is also included in builds.")]
+    public Material gaugeMaterial;
+    [Tooltip("Circle radius in the untrimmed image canvas, not the HUD rectangle size.")]
+    [Range(0.01f, 0.5f)] public float crescentRadius = 0.38f;
+    [Tooltip("Maximum left crescent width as a fraction of the circle diameter. Energy progress controls growth to this shape.")]
+    [Range(0.01f, 0.95f)] public float crescentWidth = 0.3f;
 }
 
 public enum OrbHUDEffectCondition
@@ -66,7 +99,21 @@ public enum OrbHUDEffectCondition
     Always,
     FullEnergy,
     Awakened,
-    AwakeningEnergyDrain
+    AwakeningEnergyDrain,
+    AwakeningSkillReady
+}
+
+public enum OrbHUDPersistentAnimation
+{
+    Pulse,
+    SpriteSequence,
+    Intermittent
+}
+
+public enum OrbHUDGaugeMode
+{
+    Wave,
+    Crescent
 }
 
 public enum OrbHUDEffectLayer

@@ -58,6 +58,7 @@ public partial class OrbHUD
         OrbHUDStyle style = relic != null && relic.OrbHUDStyle != null
             ? relic.OrbHUDStyle : defaultStyle;
         activeStyle = style;
+        ConfigureGaugeMaterial(style);
 
         if (emptyImage != null)
             emptyImage.sprite = style.emptySprite != null ? style.emptySprite : defaultStyle.emptySprite;
@@ -90,6 +91,8 @@ public partial class OrbHUD
         }
 
         persistentEffectInstance = CreateRelicEffect(style.persistentEffectPrefab, style.persistentEffectLayer);
+        if (style.persistentEffectPrefab == null)
+            persistentEffectInstance = CreatePersistentImages();
         awakeningEndEffectInstance = CreateRelicEffect(style.awakeningEndEffectPrefab, style.awakeningEndEffectLayer);
         if (style.playAwakeningEndEffect && style.awakeningEndEffectPrefab == null
             && style.awakeningEndSprite != null)
@@ -102,7 +105,7 @@ public partial class OrbHUD
         // A reduced capacity must never retain a previously full visual gauge.
         displayedEnergyRatio = Mathf.Min(displayedEnergyRatio, targetEnergyRatio);
         // Equipping an already full orb restores its sustained effect, without a fake charge event.
-        wasEnergyFull = isEnergyFull;
+        wasChargeBurstReady = IsChargeBurstReady();
         UpdateEnergyFill();
     }
 

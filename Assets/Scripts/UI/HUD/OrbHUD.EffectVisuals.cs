@@ -77,7 +77,8 @@ public partial class OrbHUD
         if (awakeningEndImage == null) return;
         AnimateBurstImage(awakeningEndImage, awakeningEndStartScale, activeStyle.awakeningEndColor,
             awakeningEndTimeRemaining, activeStyle.awakeningEndDuration,
-            activeStyle.awakeningEndScale, activeStyle.awakeningEndAlpha);
+            activeStyle.awakeningEndScale, activeStyle.awakeningEndAlpha,
+            activeStyle.awakeningEndFromScale, activeStyle.awakeningEndFadeInFraction);
     }
 
     //완충 눈 이미지를 한 번 확대하고 부드럽게 사라지게 함
@@ -90,13 +91,13 @@ public partial class OrbHUD
     }
 
     private static void AnimateBurstImage(Image image, Vector3 startScale, Color color,
-        float timeRemaining, float duration, float endScale, float alpha)
+        float timeRemaining, float duration, float endScale, float alpha,
+        float fromScale = 1f, float peakFraction = 0.5f)
     {
-        float progress = Mathf.Clamp01(1f - timeRemaining / Mathf.Max(0.01f, duration));
-        float expansion = Mathf.Lerp(1f, Mathf.Max(1f, endScale),
-            1f - Mathf.Pow(1f - progress, 2f));
+        float progress = OrbHUDAnimation.Progress(timeRemaining, duration);
+        float expansion = OrbHUDAnimation.BurstScale(progress, fromScale, endScale);
         image.rectTransform.localScale = startScale * expansion;
-        color.a *= Mathf.Clamp01(alpha) * Mathf.Sin(progress * Mathf.PI);
+        color.a *= Mathf.Clamp01(alpha) * OrbHUDAnimation.BurstAlpha(progress, peakFraction);
         image.color = color;
     }
 
@@ -105,9 +106,8 @@ public partial class OrbHUD
     {
         if (fullEnergyEffect == null) return;
 
-        bool showFullEffect = activeStyle != null
-            && ((activeStyle.showFullEnergyEffect && isEnergyFull && displayedEnergyRatio >= 0.999f)
-                || (persistentEffectInstance == null && ShouldShowPersistentEffect()));
+        bool showFullEffect = activeStyle != null && activeStyle.showFullEnergyEffect
+            && EvaluateEffectCondition(activeStyle.eyeEffectCondition);
         float targetAlpha = showFullEffect ? 1f : 0f;
         if (showFullEffect)
         {

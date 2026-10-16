@@ -8,6 +8,7 @@ public partial class OrbHUD : MonoBehaviour
     private PlayerEnergy playerEnergy;
     private PlayerRelicManager relicManager;
     private PlayerAwakening playerAwakening;
+    private PlayerSkill playerSkill;
 
     [Header("Orb Design")]
     [SerializeField] private Image emptyImage;
@@ -82,6 +83,7 @@ public partial class OrbHUD : MonoBehaviour
 
         relicManager = playerEnergy.GetComponent<PlayerRelicManager>();
         playerAwakening = playerEnergy.GetComponent<PlayerAwakening>();
+        playerSkill = playerEnergy.GetComponent<PlayerSkill>();
         SubscribeAwakeningEvents();
         if (relicManager != null)
         {
@@ -133,7 +135,7 @@ public partial class OrbHUD : MonoBehaviour
         Canvas.willRenderCanvases -= UpdateEnergyFill;
         UnsubscribeAwakeningEvents();
         StopAwakeningEndEffect();
-        if (persistentEffectInstance != null) persistentEffectInstance.SetActive(false);
+        StopPersistentEffect();
         if (fullChargeBurstInstance != null) fullChargeBurstInstance.SetActive(false);
         burstTimeRemaining = 0f;
         if (fullEnergyEffect != null) fullEnergyEffect.alpha = 0f;
@@ -149,7 +151,7 @@ public partial class OrbHUD : MonoBehaviour
             Canvas.willRenderCanvases += UpdateEnergyFill;
         }
         // Reopening the HUD is not a new full-charge event.
-        if (playerEnergy != null) wasEnergyFull = playerEnergy.HasOrb && playerEnergy.IsFull;
+        if (playerEnergy != null) wasChargeBurstReady = IsChargeBurstReady();
     }
 
     private void Update()
