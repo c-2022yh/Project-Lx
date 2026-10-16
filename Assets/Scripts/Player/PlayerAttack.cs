@@ -57,6 +57,7 @@ public class PlayerAttack : MonoBehaviour
     private int comboIndex = 0;
     private float lastAttackEndTime;
     private Coroutine attackCoroutine;
+    private bool attackEffectStarted;
 
     private Vector3 originLocalPos;
 
@@ -124,8 +125,21 @@ public class PlayerAttack : MonoBehaviour
     }
 
 
+    // Stop only the action routine; spawned effects retain their lifetime and hitbox cleanup.
+    public void CancelCurrentAttack()
+    {
+        if (attackCoroutine == null) return;
+        StopCoroutine(attackCoroutine);
+        attackCoroutine = null;
+        if (!attackEffectStarted) comboIndex = 0;
+        lastAttackEndTime = Time.time;
+        if (player != null && player.ActionState.isAttacking)
+            player.ActionState.EnterNormal();
+    }
+
     private IEnumerator AttackRoutine(AttackPattern pattern, bool isAirAttack, int attackIndex)
     {
+        attackEffectStarted = false;
         //상태 진입
         player.ActionState.EnterAttack();
 
@@ -149,6 +163,7 @@ public class PlayerAttack : MonoBehaviour
         DamageInfo damageInfo = CreateDamageInfo(pattern);
 
         //공격 이펙트 생성 및 히트박스 활성화  
+        attackEffectStarted = true;
         SpawnAttackEffect(pattern, dir, damageInfo, isAirAttack);
         
         //공격 활성 시간

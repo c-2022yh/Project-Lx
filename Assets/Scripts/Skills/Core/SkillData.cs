@@ -72,6 +72,12 @@ public abstract class SkillData : ScriptableObject
         yield return WaitForRecovery(p);
     }
 
+    // Called before a replacement action starts, so a cancelled cast cannot retain its physics freeze.
+    public virtual void OnCastCancelled(Player p)
+    {
+        if (p != null) p.SetPhysicsFreeze(false);
+    }
+
     protected virtual IEnumerator WaitForWindup(Player p)
     {
         if (windupTime > 0f) yield return new WaitForSeconds(windupTime);

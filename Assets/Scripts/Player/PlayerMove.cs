@@ -279,6 +279,10 @@ public class PlayerMove : MonoBehaviour
 
         lastDashTime = Time.time;
 
+        // Cancel pending effects before the dash takes ownership of movement and gravity.
+        player.Attack?.CancelCurrentAttack();
+        player.Skill?.CancelCurrentSkill();
+
         float dir;
 
         if (Mathf.Abs(player.moveInput.x) > 0.01f)

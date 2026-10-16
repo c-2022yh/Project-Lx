@@ -246,7 +246,7 @@ public class PlayerAnimation : MonoBehaviour
     public void PlayDash(float holdTime)
     {
         if (animator == null || IsDeadNow || IsHitStunnedNow) return;
-        StopAllCoroutines();
+        CancelActionAnimation();
         StartCoroutine(DashAnimationRoutine(holdTime));
     }
 
