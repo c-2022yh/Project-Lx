@@ -3,6 +3,7 @@ using UnityEditor;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using UnityEngine.TextCore.LowLevel;
 
 /// <summary>
 /// 에디터 UI 빌더들이 공유하는 도구 모음.
@@ -22,6 +23,61 @@ public static class UIBuildKit
             if (koreanFont == null)
                 koreanFont = AssetDatabase.LoadAssetAtPath<TMP_FontAsset>(KoreanFontPath);
             return koreanFont;
+        }
+    }
+
+    // 타이틀 메뉴용 명조 폰트 (10.16 시안). 나눔명조, OFL 라이선스.
+    public const string TitleFontSourcePath = "Assets/TextMesh Pro/Fonts/NanumMyeongjoBold.ttf";
+    public const string TitleFontPath = "Assets/TextMesh Pro/Fonts/NanumMyeongjoBold SDF.asset";
+
+    private static TMP_FontAsset titleFont;
+
+    /// <summary>
+    /// 명조 폰트 에셋. 없으면 ttf로 새로 만든다 (글자는 쓰일 때 자동으로 채워지는 동적 방식).
+    /// ttf도 없으면 null을 돌려주고, 그때는 나눔스퀘어가 그대로 쓰인다.
+    /// </summary>
+    public static TMP_FontAsset TitleFont
+    {
+        get
+        {
+            if (titleFont != null) return titleFont;
+
+            titleFont = AssetDatabase.LoadAssetAtPath<TMP_FontAsset>(TitleFontPath);
+            if (titleFont != null) return titleFont;
+
+            Font source = AssetDatabase.LoadAssetAtPath<Font>(TitleFontSourcePath);
+            if (source == null)
+            {
+                Debug.LogWarning("[UIBuildKit] 명조 폰트 파일이 없어 나눔스퀘어를 씁니다: " + TitleFontSourcePath);
+                return null;
+            }
+
+            TMP_FontAsset asset = TMP_FontAsset.CreateFontAsset(source, 72, 8, GlyphRenderMode.SDFAA,
+                1024, 1024, AtlasPopulationMode.Dynamic, true);
+            if (asset == null) return null;
+
+            asset.name = "NanumMyeongjoBold SDF";
+            asset.TryAddCharacters("게임하기가이드종료");
+
+            // 명조에 없는 글자(기호 등)는 나눔스퀘어로 보여준다.
+            if (KoreanFont != null)
+                asset.fallbackFontAssetTable = new System.Collections.Generic.List<TMP_FontAsset> { KoreanFont };
+
+            AssetDatabase.CreateAsset(asset, TitleFontPath);
+
+            Texture2D atlas = asset.atlasTextures[0];
+            atlas.name = asset.name + " Atlas";
+            AssetDatabase.AddObjectToAsset(atlas, asset);
+
+            asset.material.name = asset.name + " Material";
+            AssetDatabase.AddObjectToAsset(asset.material, asset);
+
+            EditorUtility.SetDirty(asset);
+            AssetDatabase.SaveAssets();
+            AssetDatabase.ImportAsset(TitleFontPath);
+
+            titleFont = AssetDatabase.LoadAssetAtPath<TMP_FontAsset>(TitleFontPath);
+            return titleFont;
         }
     }
 

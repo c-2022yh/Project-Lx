@@ -181,6 +181,7 @@ public static class TitleSceneUIBuilder
         GameObject go = K.Text(name, parent, label, 44, FontStyles.Normal, TextAlignmentOptions.MidlineLeft,
             Color.white);
         TextMeshProUGUI text = go.GetComponent<TextMeshProUGUI>();
+        if (K.TitleFont != null) text.font = K.TitleFont;
         text.raycastTarget = true;
         text.characterSpacing = 6f;
 
@@ -336,14 +337,9 @@ public static class TitleSceneUIBuilder
         List<EditorBuildSettingsScene> scenes = new List<EditorBuildSettingsScene>(EditorBuildSettings.scenes);
 
         int existing = scenes.FindIndex(s => s.path == TitleScenePath);
-        if (existing >= 0)
-        {
-            if (existing == 0) return "빌드 씬 목록 변경 없음 (Title이 이미 0번)";
-
-            EditorBuildSettingsScene entry = scenes[existing];
-            scenes.RemoveAt(existing);
-            scenes.Insert(0, entry);
-        }
+        // 이미 목록에 있으면 순서를 건드리지 않는다.
+        // 팀원이 테스트용으로 다른 씬을 0번에 둘 수 있어서다.
+        if (existing >= 0) return "빌드 씬 목록 변경 없음 (Title이 이미 들어 있음)";
         else
         {
             scenes.Insert(0, new EditorBuildSettingsScene(TitleScenePath, true));
