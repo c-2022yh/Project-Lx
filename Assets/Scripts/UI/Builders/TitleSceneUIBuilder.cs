@@ -136,12 +136,11 @@ public static class TitleSceneUIBuilder
         fitter.aspectMode = AspectRatioFitter.AspectMode.EnvelopeParent;
         fitter.aspectRatio = 16f / 9f;
 
-        // 게임 제목 (붓글씨 로고 그림)
-        GameObject title = K.Img("GameTitle", panel.transform, Color.white);
-        UnityEngine.UI.Image titleImage = title.GetComponent<UnityEngine.UI.Image>();
-        titleImage.sprite = K.Redesign(TitleLogo);
-        titleImage.preserveAspect = true;
-        K.Place(title, K.Anchor.TopLeft, 170, -180, 620, 245);
+        // 배경 위 빛 번짐 + 반딧불 (배경 그림을 따라 움직이도록 배경의 자식으로 둔다)
+        BuildAmbience(bg.transform);
+
+        // 게임 제목 (붓글씨 로고 그림) + 라이팅
+        BuildTitleLogo(panel.transform);
 
         // 메인 메뉴 (좌측): 상자 없이 글자만. 고른 항목만 하얗게 밝아진다.
         GameObject playBtn = MenuText("Button_Play", panel.transform, "게임하기");
@@ -173,6 +172,98 @@ public static class TitleSceneUIBuilder
         Wire(exitBtn, panelComp.OnExitIconButton);
 
         return panelComp;
+    }
+
+    private const float LogoX = 170f, LogoY = -180f, LogoW = 620f, LogoH = 245f;
+
+    /// <summary>
+    /// 로고 뒤 푸른 빛 + 로고 그림 + 로고 모양 안에서만 보이는 빛줄기.
+    /// 빛 그림(Title_Logo_?_Glow)은 로고 그림 사방에 로고 너비의 12%만큼 여백을 두고 만든 것이다.
+    /// </summary>
+    private static void BuildTitleLogo(Transform panel)
+    {
+        Sprite logoSprite = K.Redesign(TitleLogo);
+        Sprite glowSprite = K.Redesign(TitleLogo + "_Glow");
+
+        // 1) 글자 뒤 빛
+        UnityEngine.UI.Image glowImage = null;
+        if (glowSprite != null && logoSprite != null)
+        {
+            GameObject glow = K.Img("GameTitleGlow", panel, new Color(0.6f, 0.8f, 1f, 0.6f));
+            glowImage = glow.GetComponent<UnityEngine.UI.Image>();
+            glowImage.sprite = glowSprite;
+
+            // preserveAspect로 그려진 로고의 실제 크기 기준
+            float drawnW = Mathf.Min(LogoW, LogoH * logoSprite.rect.width / logoSprite.rect.height);
+            float gw = drawnW * 1.24f;
+            float gh = gw * glowSprite.rect.height / glowSprite.rect.width;
+            float cx = LogoX + LogoW * 0.5f, cy = LogoY - LogoH * 0.5f;
+            K.Place(glow, K.Anchor.TopLeft, cx - gw * 0.5f, cy + gh * 0.5f, gw, gh);
+        }
+
+        // 2) 로고. 빛줄기가 보이도록 아주 살짝 푸른 회색
+        GameObject title = K.Img("GameTitle", panel, new Color(0.9f, 0.93f, 0.97f, 1f));
+        UnityEngine.UI.Image titleImage = title.GetComponent<UnityEngine.UI.Image>();
+        titleImage.sprite = logoSprite;
+        titleImage.preserveAspect = true;
+        K.Place(title, K.Anchor.TopLeft, LogoX, LogoY, LogoW, LogoH);
+
+        // 3) 빛줄기: 로고 모양 Mask 안에서만 보인다
+        GameObject shineMask = K.Img("GameTitleShine", panel, Color.white);
+        UnityEngine.UI.Image maskImage = shineMask.GetComponent<UnityEngine.UI.Image>();
+        maskImage.sprite = logoSprite;
+        maskImage.preserveAspect = true;
+        Mask mask = shineMask.AddComponent<Mask>();
+        mask.showMaskGraphic = false;
+        K.Place(shineMask, K.Anchor.TopLeft, LogoX, LogoY, LogoW, LogoH);
+
+        GameObject bar = K.Img("ShineBar", shineMask.transform, new Color(0.85f, 0.94f, 1f, 0.9f));
+        bar.GetComponent<UnityEngine.UI.Image>().sprite = K.Redesign("Shine_Bar");
+        K.Place(bar, K.Anchor.Center, -450f, 0f, 150f, 420f);
+        bar.transform.localRotation = Quaternion.Euler(0f, 0f, -20f);
+
+        TitleLogoLight logoLight = title.AddComponent<TitleLogoLight>();
+        SerializedObject so = new SerializedObject(logoLight);
+        so.FindProperty("glow").objectReferenceValue = glowImage;
+        so.FindProperty("shineBar").objectReferenceValue = bar.GetComponent<RectTransform>();
+        so.ApplyModifiedPropertiesWithoutUndo();
+    }
+
+    /// <summary>
+    /// 바닥을 따라 깔리는 U자 모양 오로라 빛 3겹(가운데는 낮고 양옆으로 올라간다)을 깔고, 반딧불 연출을 붙인다.
+    /// 오로라는 겹마다 밝은 곳이 달라서, 번갈아 밝아지면 빛이 옮겨 다니는 것처럼 보인다.
+    /// </summary>
+    private static void BuildAmbience(Transform background)
+    {
+        GameObject amb = K.Obj("Ambience", background);
+        K.Stretch(amb, 0, 0, 0, 0);
+
+        // 진하기는 색의 알파로 조절한다. 채도를 살짝 낮춘 푸른색.
+        Color[] colors =
+        {
+            new Color(0.47f, 0.62f, 0.92f, 0.16f),
+            new Color(0.42f, 0.66f, 0.88f, 0.12f),
+            new Color(0.52f, 0.58f, 0.90f, 0.14f),
+        };
+
+        Graphic[] glows = new Graphic[colors.Length];
+        for (int i = 0; i < colors.Length; i++)
+        {
+            GameObject g = K.Img("Aurora_" + i, amb.transform, colors[i]);
+            g.GetComponent<UnityEngine.UI.Image>().sprite = K.Redesign("Aurora_" + i);
+            // 좌우로 흔들려도 가장자리가 안 보이게 양옆을 60px씩 넓힌다
+            K.Stretch(g, -60, 0, -60, 0);
+            glows[i] = g.GetComponent<UnityEngine.UI.Image>();
+        }
+
+        TitleAmbience comp = amb.AddComponent<TitleAmbience>();
+        SerializedObject so = new SerializedObject(comp);
+        SerializedProperty arr = so.FindProperty("glows");
+        arr.arraySize = glows.Length;
+        for (int i = 0; i < glows.Length; i++)
+            arr.GetArrayElementAtIndex(i).objectReferenceValue = glows[i];
+        so.FindProperty("fireflySprite").objectReferenceValue = K.Redesign("Firefly");
+        so.ApplyModifiedPropertiesWithoutUndo();
     }
 
     /// <summary>글자만 있는 메뉴 항목. 평소엔 회색, 마우스를 올리거나 고르면 흰색.</summary>
