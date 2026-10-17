@@ -17,10 +17,19 @@ public static class SkillUIBuilder
     private const string SlotPrefabPath = "Assets/Prefabs/UI/SkillPanelSlot.prefab";
 
     private const float SlotSize = 88f;
-    private const float SlotGap = 14f;
 
-    /// <summary>보유 스킬 격자 열 수. SkillPanel.StorageColumns와 같아야 한다.</summary>
-    private const int StorageColumns = 8;
+    /// <summary>장착칸 사이 간격 (10.16 시안).</summary>
+    private const float EquipGap = 28f;
+
+    /// <summary>보유 스킬 칸 크기와 간격. 시안처럼 창 가로를 꽉 채우는 13열.</summary>
+    private const float StorageCell = 100f;
+    private const float StorageGap = 10f;
+
+    /// <summary>보유 스킬 격자 열 수.</summary>
+    private const int StorageColumns = 13;
+
+    /// <summary>뒤에 깔아둘 빈 칸 틀 개수 (두 줄).</summary>
+    private const int StorageBackdropCells = StorageColumns * 2;
 
     [MenuItem("Tools/UI/Build Skill Panel In Prefab")]
     public static void BuildInPrefab()
@@ -98,38 +107,42 @@ public static class SkillUIBuilder
 
         K.TabBar(w, UITabBar.SkillTab);
 
-        // 장착칸
-        GameObject equipHeader = K.Text("Header_Equip", w, "장착 중인 스킬", 28, FontStyles.Bold);
-        K.Place(equipHeader, K.Anchor.TopLeft, 40, -100, 400, 40);
+        // 장착칸 (10.16 시안: 제목과 칸을 가운데로 모은다)
+        GameObject equipHeader = K.Text("Header_Equip", w, "장착 중인 스킬", 30, FontStyles.Bold,
+            TextAlignmentOptions.Center);
+        K.Place(equipHeader, K.Anchor.TopCenter, 0, -100, 400, 40);
 
         GameObject equipLine = K.Img("Divider_Equip", w, K.Divider);
-        K.Place(equipLine, K.Anchor.TopLeft, 40, -142, 1440, 2);
+        K.Place(equipLine, K.Anchor.TopLeft, 40, -150, 1440, 2);
 
         GameObject equipSlots = K.Obj("EquipSlots", w);
-        // 키 이름이 칸 위로 올라가므로 위쪽 여유를 준다.
-        K.Place(equipSlots, K.Anchor.TopLeft, 40, -190, 1440, SlotSize);
+        // 키 글자는 빈 칸 안에 크게 들어가므로 칸 위 여유는 필요 없다.
+        K.Place(equipSlots, K.Anchor.TopCenter, 0, -180, SlotSize * 5 + EquipGap * 4, SlotSize);
 
         HorizontalLayoutGroup equipLayout = equipSlots.AddComponent<HorizontalLayoutGroup>();
-        equipLayout.spacing = 28f;
-        equipLayout.childAlignment = TextAnchor.MiddleLeft;
+        equipLayout.spacing = EquipGap;
+        equipLayout.childAlignment = TextAnchor.MiddleCenter;
         equipLayout.childControlWidth = false;
         equipLayout.childControlHeight = false;
         equipLayout.childForceExpandWidth = false;
         equipLayout.childForceExpandHeight = false;
 
         // 보유 스킬
-        GameObject storageHeader = K.Text("Header_Storage", w, "보유 스킬", 28, FontStyles.Bold);
-        K.Place(storageHeader, K.Anchor.TopLeft, 40, -310, 400, 40);
+        GameObject storageHeader = K.Text("Header_Storage", w, "보유 스킬", 30, FontStyles.Bold,
+            TextAlignmentOptions.Center);
+        K.Place(storageHeader, K.Anchor.TopCenter, 0, -300, 400, 40);
 
         GameObject storageLine = K.Img("Divider_Storage", w, K.Divider);
-        K.Place(storageLine, K.Anchor.TopLeft, 40, -352, 1440, 2);
+        K.Place(storageLine, K.Anchor.TopLeft, 40, -350, 1440, 2);
+
+        float storageWidth = StorageColumns * StorageCell + (StorageColumns - 1) * StorageGap;
 
         GameObject storage = K.Obj("StorageContainer", w);
-        K.Place(storage, K.Anchor.TopLeft, 40, -370, 1440, 230);
+        K.Place(storage, K.Anchor.TopCenter, 0, -366, storageWidth, StorageCell * 2 + StorageGap);
 
         GridLayoutGroup grid = storage.AddComponent<GridLayoutGroup>();
-        grid.cellSize = new Vector2(SlotSize, SlotSize);
-        grid.spacing = new Vector2(SlotGap, SlotGap);
+        grid.cellSize = new Vector2(StorageCell, StorageCell);
+        grid.spacing = new Vector2(StorageGap, StorageGap);
         grid.startCorner = GridLayoutGroup.Corner.UpperLeft;
         grid.startAxis = GridLayoutGroup.Axis.Horizontal;
         grid.childAlignment = TextAnchor.UpperLeft;
@@ -144,12 +157,9 @@ public static class SkillUIBuilder
         // 칸과 칸 사이, 목록이 비어 있을 때도 놓을 수 있게.
         storage.AddComponent<SkillStorageDropZone>();
 
-        // 보유 목록이 비었을 때 띄울 안내. 격자의 자식으로 넣으면 GridLayoutGroup이
-        // 이것도 칸 하나로 잡아버리므로 창(w)에 직접 붙이고 보관함 영역에 겹쳐 둔다.
-        GameObject storageEmpty = K.Text("Storage_Empty", w,
-            "보유한 스킬이 없습니다\n스킬을 주는 유물을 장착하면, 장착칸에 들어가지 못한 스킬이 여기 표시됩니다",
-            21, FontStyles.Normal, TextAlignmentOptions.Top, K.MutedText);
-        K.Place(storageEmpty, K.Anchor.TopLeft, 40, -390, 1440, 120);
+        // 시안처럼 비어 있어도 칸 틀이 보이게 뒤에 빈 칸을 깔아 둔다.
+        // (예전의 "보유한 스킬이 없습니다" 안내는 칸 틀과 겹쳐서 뺐다.)
+        K.FrameBackdrop(w, "StorageBackdrop", grid, StorageBackdropCells);
 
         // 설명창
         GameObject desc = K.Img("DescriptionPanel", w, K.SectionBg, true);
@@ -196,7 +206,6 @@ public static class SkillUIBuilder
         K.SetRef(so, "descMeta", descMeta.GetComponent<TextMeshProUGUI>());
         K.SetRef(so, "descText", descText.GetComponent<TextMeshProUGUI>());
         K.SetRef(so, "hintText", hint.GetComponent<TextMeshProUGUI>());
-        K.SetRef(so, "storageEmptyNotice", storageEmpty);
 
         so.ApplyModifiedPropertiesWithoutUndo();
 
@@ -244,16 +253,27 @@ public static class SkillUIBuilder
         hit.color = new Color(1f, 1f, 1f, 0f);
         hit.raycastTarget = true;
 
+        // 10.16 시안의 네모 칸: 모서리가 안으로 파인 판 + 얇은 테두리.
+        Sprite fill = K.Redesign("Frame_Square_Fill");
+        Sprite border = K.Redesign("Frame_Square_Border");
+
         GameObject outline = K.Img("SelectionOutline", slot.transform,
-            new Color(1f, 0.85f, 0.35f, 0.55f));
-        K.Stretch(outline, -4, -4, -4, -4);
+            new Color(1f, 0.85f, 0.35f, 0.75f));
+        outline.GetComponent<UnityEngine.UI.Image>().sprite = fill;
+        K.Stretch(outline, -5, -5, -5, -5);
         outline.GetComponent<UnityEngine.UI.Image>().enabled = false;
 
-        GameObject bg = K.Img("Background", slot.transform, new Color(0.20f, 0.20f, 0.24f, 1f));
+        GameObject bg = K.Img("Background", slot.transform, new Color(0.17f, 0.175f, 0.20f, 1f));
+        bg.GetComponent<UnityEngine.UI.Image>().sprite = fill;
         K.Stretch(bg, 0, 0, 0, 0);
 
+        // 키 글자: 빈 칸 안에 크고 흐리게 (X / S / D / F). 스킬이 들어오면 SkillPanelSlot이 숨긴다.
+        GameObject key = K.Text("KeyText", slot.transform, "", 64,
+            FontStyles.Bold, TextAlignmentOptions.Center);
+        K.Stretch(key, 0, 0, 0, 0);
+
         GameObject icon = K.Img("Icon", slot.transform, Color.white);
-        K.Stretch(icon, 10, 10, 10, 10);
+        K.Stretch(icon, 5, 5, 5, 5);
         icon.GetComponent<UnityEngine.UI.Image>().enabled = false;
 
         // 아이콘이 없는 스킬에 이름을 대신 띄운다. 칸 안에 들어가야 하므로 자동 축소를 켠다.
@@ -267,10 +287,10 @@ public static class SkillUIBuilder
         fallbackTmp.fontSizeMax = 20f;
         fallbackTmp.enabled = false;
 
-        // 키 이름은 칸 위에 올린다. 보유 목록 칸에서는 SkillPanelSlot이 꺼버린다.
-        GameObject key = K.Text("KeyText", slot.transform, "", 26,
-            FontStyles.Bold, TextAlignmentOptions.Center);
-        K.Place(key, K.Anchor.TopCenter, 0, 34, 80, 34);
+        // 테두리는 맨 위에 덮는다. 색(장착칸 하늘색 / 보유칸 회색)은 SkillPanelSlot이 칠한다.
+        GameObject frame = K.Img("FrameBorder", slot.transform, Color.white);
+        frame.GetComponent<UnityEngine.UI.Image>().sprite = border;
+        K.Stretch(frame, 0, 0, 0, 0);
 
         SkillPanelSlot view = slot.AddComponent<SkillPanelSlot>();
 
@@ -280,6 +300,7 @@ public static class SkillUIBuilder
         K.SetRef(so, "selectionOutline", outline.GetComponent<UnityEngine.UI.Image>());
         K.SetRef(so, "keyText", key.GetComponent<TextMeshProUGUI>());
         K.SetRef(so, "iconFallbackText", fallbackTmp);
+        K.SetRef(so, "frameBorder", frame.GetComponent<UnityEngine.UI.Image>());
         so.ApplyModifiedPropertiesWithoutUndo();
 
         if (!AssetDatabase.IsValidFolder("Assets/Prefabs/UI"))

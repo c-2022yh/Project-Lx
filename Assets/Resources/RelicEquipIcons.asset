@@ -1,0 +1,59 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7c7a95eb39ad4bfdacb1b5871e31d3e3, type: 3}
+  m_Name: RelicEquipIcons
+  m_EditorClassIdentifier: 
+  entries:
+  - relicId: body_bluefan
+    sprite: {fileID: -7971557263655473198, guid: 5f33c39bfc1c1bf4ba87eaf30be816e4, type: 3}
+  - relicId: body_feathercloud
+    sprite: {fileID: 5178928069172686721, guid: 37230831b4de225469711a50e76d4a84, type: 3}
+  - relicId: body_fireAmulet
+    sprite: {fileID: -7894082984361565957, guid: b0a067dc61f087344b34e9189d805901, type: 3}
+  - relicId: body_giantheart
+    sprite: {fileID: -8282615055773661628, guid: a9f0d72e29c558d4fbfb85addbab8779, type: 3}
+  - relicId: body_hairpin
+    sprite: {fileID: 6261861879006121588, guid: 982a65dfd3d3e64499baf8f8f4262497, type: 3}
+  - relicId: body_lamp
+    sprite: {fileID: -4266110478466358347, guid: 3d5bd2a3c856de44fa0be758f24bc250, type: 3}
+  - relicId: body_mirror
+    sprite: {fileID: 1891848481631093801, guid: 9b45545565e242c47acbb1b3c6a7c1d4, type: 3}
+  - relicId: body_reddrop
+    sprite: {fileID: 8241397891212072596, guid: 3d2a62406884250489df4305d7707fe0, type: 3}
+  - relicId: body_shadow
+    sprite: {fileID: 4108834824799776784, guid: 90e4e1aa6c9c0f6439034886f8f108f6, type: 3}
+  - relicId: body_whiteflower
+    sprite: {fileID: 4064096278214419112, guid: f7b9c595a6d5a764ba3776f0b36459b8, type: 3}
+  - relicId: body_windshoes
+    sprite: {fileID: 2192502707624152120, guid: e6e27b3ea5f4f714b807b913255ec08a, type: 3}
+  - relicId: orb_berserk
+    sprite: {fileID: -6989084255836735932, guid: 9c12d61f229820240b1914e7e24b8729, type: 3}
+  - relicId: orb_burning
+    sprite: {fileID: 2526453475479381581, guid: adbacdbcf953c9242bd57fa6bd5088ad, type: 3}
+  - relicId: orb_darkmoon
+    sprite: {fileID: 7522016924543415888, guid: b9849f5937edbad41abbfba9e6ff624e, type: 3}
+  - relicId: orb_fullmoon
+    sprite: {fileID: -3489133626650065099, guid: 14f9a629a77abd54ead4c9de9d96d43c, type: 3}
+  - relicId: orb_reflux
+    sprite: {fileID: 44650187306560439, guid: 4c02bcb4d63c7fd4e9ab33b0606a08fb, type: 3}
+  - relicId: sword_darkshadow
+    sprite: {fileID: -1426611487992574854, guid: 9257b94da0c78304baf80e38d678d0ec, type: 3}
+  - relicId: sword_dawn
+    sprite: {fileID: -245027381341867386, guid: af91ed6b7247d8e43ab9abb20d0ef8a0, type: 3}
+  - relicId: sword_devour
+    sprite: {fileID: 5032185884135120039, guid: d11371d638ac1c34cb7014f87299e128, type: 3}
+  - relicId: sword_residialmoon
+    sprite: {fileID: 2252076922409751362, guid: e805a3948b0ae804d92bdbae229fd876, type: 3}
+  - relicId: sword_thunder
+    sprite: {fileID: 726294752754322701, guid: 6064640fd259e8d41907b4eed0d9230e, type: 3}
+  - relicId: sword_twilight
+    sprite: {fileID: -2879499553356006420, guid: 325275d1e26253f41b92869047caa453, type: 3}
