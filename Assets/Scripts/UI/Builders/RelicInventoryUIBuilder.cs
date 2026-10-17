@@ -548,7 +548,11 @@ public static class RelicInventoryUIBuilder
         // 둥근 사각형 프레임)를 달고 오기 때문에, 그대로 넣으면 칸 테두리와
         // 두 겹으로 보인다. 칸보다 크게 넣고 원으로 잘라내면 그 프레임이
         // 잘려나가고 칸의 원 하나만 남는다.
-        float margin = circular ? -(IconZoom - 1f) / 2f : 0.12f;
+        //
+        // 네모 칸도 아이콘이 자기 프레임을 달고 오므로 여백을 두지 않는다.
+        // 아이콘 그림 둘레에 투명한 가장자리가 2~3% 있어서, 그만큼 살짝 크게 넣어야
+        // 아이콘 프레임이 칸의 계열 테두리에 딱 붙는다.
+        float margin = circular ? -(IconZoom - 1f) / 2f : SquareIconMargin;
 
         GameObject icon = circular
             ? CircleMaskedIcon(slot.transform)
@@ -869,6 +873,9 @@ public static class RelicInventoryUIBuilder
 
     /// <summary>원형 칸에서 아이콘을 칸보다 몇 배로 키울지. 자기 프레임이 잘려나갈 만큼.</summary>
     private const float IconZoom = 1.45f;
+
+    /// <summary>네모 칸 아이콘 여백(비율). 음수면 칸보다 살짝 크게 넣는다.</summary>
+    private const float SquareIconMargin = -0.025f;
 
     private const string CircleMaskShaderName = "UI/CircleMask";
     private const string CircleMaskMaterialPath = "Assets/Materials/UI/RelicIconCircle.mat";
