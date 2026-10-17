@@ -32,6 +32,15 @@ public class PiercingDashSkillData : AttackSkillData
     [SerializeField] private float contactIgnoreAfterDash = 0.2f;
 
 
+    public override void OnCastCancelled(Player p)
+    {
+        base.OnCastCancelled(p);
+        if (p == null) return;
+        PlayerHitReaction hitReaction = p.GetComponent<PlayerHitReaction>();
+        if (hitReaction != null && hitReaction.IsIgnoringEnemyContact)
+            hitReaction.EndEnemyContactIgnoreAfterDelay(contactIgnoreAfterDash);
+    }
+
     public override IEnumerator ProcessSkill(Player p)
     {
         if (p == null) yield break;

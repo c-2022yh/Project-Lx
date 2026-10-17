@@ -18,7 +18,7 @@ MonoBehaviour:
     \uC801 \uCC98\uCE58\uC2DC \uCFE8\uD0C0\uC784\uC774 \uCD08\uAE30\uD654\uB41C\uB2E4."
   animationType: 7
   cooldownTime: 4
-  soulCost: 0
+  energyCost: 0
   activeTime: 0.05
   enemyLayer:
     serializedVersion: 2

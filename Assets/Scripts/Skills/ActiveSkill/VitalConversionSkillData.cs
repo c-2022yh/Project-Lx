@@ -9,21 +9,17 @@ public class VitalConversionSkillData : UtilitySkillData
 {
     [Header("Vital Conversion Settings")]
     [SerializeField, Min(0f)]
-    private float energyCost = 30f;
-
-    [SerializeField, Min(0f)]
     private float healAmount = 2f;
 
 
     //스킬 사용 가능 여부
     public override bool CanUse(Player p)
     {
-        if (p == null) return false;
+        if (!base.CanUse(p)) return false;
 
-        PlayerEnergy playerEnergy = p.GetComponent<PlayerEnergy>();
         PlayerHealth playerHealth = p.GetComponent<PlayerHealth>();
 
-        if (playerEnergy == null || playerHealth == null)
+        if (playerHealth == null)
         {
             return false;
         }
@@ -41,12 +37,6 @@ public class VitalConversionSkillData : UtilitySkillData
             return false;
         }
 
-        //기력이 부족하면 사용 불가능
-        if (!playerEnergy.CanSpendEnergy(energyCost))
-        {
-            return false;
-        }
-
         return true;
     }
 
@@ -55,11 +45,10 @@ public class VitalConversionSkillData : UtilitySkillData
     {
         if (p == null) yield break;
 
-        PlayerEnergy playerEnergy = p.GetComponent<PlayerEnergy>();
 
         PlayerHealth playerHealth = p.GetComponent<PlayerHealth>();
 
-        if (playerEnergy == null || playerHealth == null)
+        if (playerHealth == null)
         {
             yield break;
         }
@@ -93,12 +82,6 @@ public class VitalConversionSkillData : UtilitySkillData
             yield break;
         }
 
-
-        //선딜이 끝난 시점에 기력 소비
-        if (!playerEnergy.TrySpendEnergy(energyCost))
-        {
-            yield break;
-        }
 
 
         //체력 회복

@@ -314,7 +314,7 @@ MonoBehaviour:
   moveSpeed: 10
   jumpForce: 20
   jumpCooldown: 0.2
-  maxAirJumps: 1
+  maxAirJumps: 0
   dropSpeed: 5
   dropMinimumDuration: 0.15
   coyoteTime: 0.15
@@ -323,7 +323,7 @@ MonoBehaviour:
   dashDuration: 0.1
   dashCooldown: 0.5
   lastDashTime: 0
-  isDashUnlocked: 1
+  isDashUnlocked: 0
   airControlMin: 0.8
   groundSmooth: 0.01
   airSmooth: 0.1

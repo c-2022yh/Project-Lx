@@ -1,0 +1,1339 @@
+fileFormatVersion: 2
+guid: 2a646df33609b2649a6f599af72cd4a0
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: -6298871807642902604
+    second: Berserk_Lightning_03_0
+  - first:
+      213: -1206080034725304380
+    second: Berserk_Lightning_03_1
+  - first:
+      213: 7215826017132844725
+    second: Berserk_Lightning_03_2
+  - first:
+      213: 1952270302710690467
+    second: Berserk_Lightning_03_3
+  - first:
+      213: 8273075228139487344
+    second: Berserk_Lightning_03_4
+  - first:
+      213: 6378819640340219359
+    second: Berserk_Lightning_03_5
+  - first:
+      213: -8401610006520283429
+    second: Berserk_Lightning_03_6
+  - first:
+      213: 2937526255127590090
+    second: Berserk_Lightning_03_7
+  - first:
+      213: -3407135881675969714
+    second: Berserk_Lightning_03_8
+  - first:
+      213: -6721767535224114173
+    second: Berserk_Lightning_03_9
+  - first:
+      213: -8826415356409908670
+    second: Berserk_Lightning_03_10
+  - first:
+      213: -5100261758899209213
+    second: Berserk_Lightning_03_11
+  - first:
+      213: -8368361715369824190
+    second: Berserk_Lightning_03_12
+  - first:
+      213: -8460803525086106523
+    second: Berserk_Lightning_03_13
+  - first:
+      213: 4266816872935016001
+    second: Berserk_Lightning_03_14
+  - first:
+      213: -5044120293678066603
+    second: Berserk_Lightning_03_15
+  - first:
+      213: 4791544702071473932
+    second: Berserk_Lightning_03_16
+  - first:
+      213: -7333962703005458686
+    second: Berserk_Lightning_03_17
+  - first:
+      213: -4923734932050431193
+    second: Berserk_Lightning_03_18
+  - first:
+      213: -5165938739848734991
+    second: Berserk_Lightning_03_19
+  - first:
+      213: 4471771940589458732
+    second: Berserk_Lightning_03_20
+  - first:
+      213: -9063389179863371332
+    second: Berserk_Lightning_03_21
+  - first:
+      213: -3073015619652085959
+    second: Berserk_Lightning_03_22
+  - first:
+      213: 4819444307828283501
+    second: Berserk_Lightning_03_23
+  - first:
+      213: -4859051740373841326
+    second: Berserk_Lightning_03_24
+  - first:
+      213: 2238146954173045645
+    second: Berserk_Lightning_03_25
+  - first:
+      213: 4848550458631506328
+    second: Berserk_Lightning_03_26
+  - first:
+      213: 3115949060059722266
+    second: Berserk_Lightning_03_27
+  - first:
+      213: 5876690745961504555
+    second: Berserk_Lightning_03_28
+  - first:
+      213: -2968616017090485249
+    second: Berserk_Lightning_03_29
+  - first:
+      213: -6576673382908957893
+    second: Berserk_Lightning_03_30
+  - first:
+      213: -8814768414301288411
+    second: Berserk_Lightning_03_31
+  - first:
+      213: 7459568225773275284
+    second: Berserk_Lightning_03_32
+  - first:
+      213: 7114008290502375377
+    second: Berserk_Lightning_03_33
+  - first:
+      213: 9113306782479333602
+    second: Berserk_Lightning_03_34
+  - first:
+      213: 7201321676812481525
+    second: Berserk_Lightning_03_35
+  - first:
+      213: -7527134730093728837
+    second: Berserk_Lightning_03_36
+  - first:
+      213: 190097059798000010
+    second: Berserk_Lightning_03_37
+  - first:
+      213: -4873489283311607511
+    second: Berserk_Lightning_03_38
+  - first:
+      213: -3383732669958654588
+    second: Berserk_Lightning_03_39
+  - first:
+      213: -6421532798945971835
+    second: Berserk_Lightning_03_40
+  - first:
+      213: -2194502053371539874
+    second: Berserk_Lightning_03_41
+  - first:
+      213: 1386014354760731109
+    second: Berserk_Lightning_03_42
+  - first:
+      213: 4266876850470684075
+    second: Berserk_Lightning_03_43
+  - first:
+      213: -433690194103479656
+    second: Berserk_Lightning_03_44
+  - first:
+      213: 2204205648272760978
+    second: Berserk_Lightning_03_45
+  - first:
+      213: 194917007536851215
+    second: Berserk_Lightning_03_46
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 1
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 1
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: Berserk_Lightning_03_0
+      rect:
+        serializedVersion: 2
+        x: 4
+        y: 0
+        width: 690
+        height: 689
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4bfd8bbb679e598a0800000000000000
+      internalID: -6298871807642902604
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Berserk_Lightning_03_1
+      rect:
+        serializedVersion: 2
+        x: 634
+        y: 619
+        width: 12
+        height: 8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4c7e1873994234fe0800000000000000
+      internalID: -1206080034725304380
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Berserk_Lightning_03_2
+      rect:
+        serializedVersion: 2
+        x: 651
+        y: 613
+        width: 7
+        height: 6
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5b699301883c32460800000000000000
+      internalID: 7215826017132844725
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Berserk_Lightning_03_3
+      rect:
+        serializedVersion: 2
+        x: 686
+        y: 560
+        width: 9
+        height: 8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3a27d9a2f7bd71b10800000000000000
+      internalID: 1952270302710690467
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Berserk_Lightning_03_4
+      rect:
+        serializedVersion: 2
+        x: 77
+        y: 511
+        width: 7
+        height: 10
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 070865d561edfc270800000000000000
+      internalID: 8273075228139487344
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Berserk_Lightning_03_5
+      rect:
+        serializedVersion: 2
+        x: 691
+        y: 517
+        width: 9
+        height: 13
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: fd583cc9aae168850800000000000000
+      internalID: 6378819640340219359
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Berserk_Lightning_03_6
+      rect:
+        serializedVersion: 2
+        x: 85
+        y: 502
+        width: 9
+        height: 7
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: bdebdf3763c776b80800000000000000
+      internalID: -8401610006520283429
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Berserk_Lightning_03_7
+      rect:
+        serializedVersion: 2
+        x: 88
+        y: 484
+        width: 8
+        height: 9
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ac4734bb09034c820800000000000000
+      internalID: 2937526255127590090
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Berserk_Lightning_03_8
+      rect:
+        serializedVersion: 2
+        x: 113
+        y: 461
+        width: 12
+        height: 9
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e4b6737a7fb67b0d0800000000000000
+      internalID: -3407135881675969714
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Berserk_Lightning_03_9
+      rect:
+        serializedVersion: 2
+        x: 630
+        y: 460
+        width: 6
+        height: 6
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 304b6384a0c77b2a0800000000000000
+      internalID: -6721767535224114173
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Berserk_Lightning_03_10
+      rect:
+        serializedVersion: 2
+        x: 393
+        y: 431
+        width: 6
+        height: 7
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 24272296ff5428580800000000000000
+      internalID: -8826415356409908670
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Berserk_Lightning_03_11
+      rect:
+        serializedVersion: 2
+        x: 398
+        y: 430
+        width: 9
+        height: 8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 30cbd4fd3fa3839b0800000000000000
+      internalID: -5100261758899209213
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Berserk_Lightning_03_12
+      rect:
+        serializedVersion: 2
+        x: 669
+        y: 422
+        width: 7
+        height: 10
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 240376b7b5b9ddb80800000000000000
+      internalID: -8368361715369824190
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Berserk_Lightning_03_13
+      rect:
+        serializedVersion: 2
+        x: 210
+        y: 417
+        width: 7
+        height: 11
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 56caedc6500359a80800000000000000
+      internalID: -8460803525086106523
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Berserk_Lightning_03_14
+      rect:
+        serializedVersion: 2
+        x: 282
+        y: 412
+        width: 13
+        height: 13
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1464fe0e657c63b30800000000000000
+      internalID: 4266816872935016001
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Berserk_Lightning_03_15
+      rect:
+        serializedVersion: 2
+        x: 295
+        y: 412
+        width: 6
+        height: 6
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 554dafa515faff9b0800000000000000
+      internalID: -5044120293678066603
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Berserk_Lightning_03_16
+      rect:
+        serializedVersion: 2
+        x: 171
+        y: 402
+        width: 8
+        height: 9
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c070064158cfe7240800000000000000
+      internalID: 4791544702071473932
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Berserk_Lightning_03_17
+      rect:
+        serializedVersion: 2
+        x: 210
+        y: 408
+        width: 7
+        height: 7
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 20f556357c7883a90800000000000000
+      internalID: -7333962703005458686
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Berserk_Lightning_03_18
+      rect:
+        serializedVersion: 2
+        x: 363
+        y: 399
+        width: 10
+        height: 10
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 723b3f69a216babb0800000000000000
+      internalID: -4923734932050431193
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Berserk_Lightning_03_19
+      rect:
+        serializedVersion: 2
+        x: 187
+        y: 385
+        width: 11
+        height: 7
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1f613ef1616ee48b0800000000000000
+      internalID: -5165938739848734991
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Berserk_Lightning_03_20
+      rect:
+        serializedVersion: 2
+        x: 374
+        y: 386
+        width: 9
+        height: 10
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c25d46333ecee0e30800000000000000
+      internalID: 4471771940589458732
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Berserk_Lightning_03_21
+      rect:
+        serializedVersion: 2
+        x: 638
+        y: 377
+        width: 10
+        height: 11
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: cb1ff119f8f583280800000000000000
+      internalID: -9063389179863371332
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Berserk_Lightning_03_22
+      rect:
+        serializedVersion: 2
+        x: 129
+        y: 371
+        width: 6
+        height: 7
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 937196153947a55d0800000000000000
+      internalID: -3073015619652085959
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Berserk_Lightning_03_23
+      rect:
+        serializedVersion: 2
+        x: 138
+        y: 375
+        width: 9
+        height: 8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d6812ee301b12e240800000000000000
+      internalID: 4819444307828283501
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Berserk_Lightning_03_24
+      rect:
+        serializedVersion: 2
+        x: 618
+        y: 353
+        width: 23
+        height: 24
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 25a06cdbf2e219cb0800000000000000
+      internalID: -4859051740373841326
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Berserk_Lightning_03_25
+      rect:
+        serializedVersion: 2
+        x: 184
+        y: 359
+        width: 7
+        height: 11
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d8b5b9eebce7f0f10800000000000000
+      internalID: 2238146954173045645
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Berserk_Lightning_03_26
+      rect:
+        serializedVersion: 2
+        x: 187
+        y: 357
+        width: 6
+        height: 10
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 899c94214f2894340800000000000000
+      internalID: 4848550458631506328
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Berserk_Lightning_03_27
+      rect:
+        serializedVersion: 2
+        x: 646
+        y: 357
+        width: 9
+        height: 8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a12721f39231e3b20800000000000000
+      internalID: 3115949060059722266
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Berserk_Lightning_03_28
+      rect:
+        serializedVersion: 2
+        x: 649
+        y: 363
+        width: 6
+        height: 6
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b2f5cdfe8133e8150800000000000000
+      internalID: 5876690745961504555
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Berserk_Lightning_03_29
+      rect:
+        serializedVersion: 2
+        x: 202
+        y: 344
+        width: 11
+        height: 12
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ff369caf57b5dc6d0800000000000000
+      internalID: -2968616017090485249
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Berserk_Lightning_03_30
+      rect:
+        serializedVersion: 2
+        x: 210
+        y: 336
+        width: 34
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b3be1f72766fab4a0800000000000000
+      internalID: -6576673382908957893
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Berserk_Lightning_03_31
+      rect:
+        serializedVersion: 2
+        x: 584
+        y: 349
+        width: 16
+        height: 12
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5280d3074d6aba580800000000000000
+      internalID: -8814768414301288411
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Berserk_Lightning_03_32
+      rect:
+        serializedVersion: 2
+        x: 273
+        y: 305
+        width: 8
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 498c10367c5b58760800000000000000
+      internalID: 7459568225773275284
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Berserk_Lightning_03_33
+      rect:
+        serializedVersion: 2
+        x: 285
+        y: 316
+        width: 6
+        height: 8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1d7f39c39d80ab260800000000000000
+      internalID: 7114008290502375377
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Berserk_Lightning_03_34
+      rect:
+        serializedVersion: 2
+        x: 292
+        y: 308
+        width: 11
+        height: 13
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2e8b6dafb38f87e70800000000000000
+      internalID: 9113306782479333602
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Berserk_Lightning_03_35
+      rect:
+        serializedVersion: 2
+        x: 286
+        y: 304
+        width: 9
+        height: 8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5f37abb29eb30f360800000000000000
+      internalID: 7201321676812481525
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Berserk_Lightning_03_36
+      rect:
+        serializedVersion: 2
+        x: 305
+        y: 305
+        width: 6
+        height: 6
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: bbbe14ce7de3a8790800000000000000
+      internalID: -7527134730093728837
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Berserk_Lightning_03_37
+      rect:
+        serializedVersion: 2
+        x: 103
+        y: 4
+        width: 335
+        height: 290
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a812b1ac44c53a200800000000000000
+      internalID: 190097059798000010
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Berserk_Lightning_03_38
+      rect:
+        serializedVersion: 2
+        x: 426
+        y: 221
+        width: 13
+        height: 20
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 921e9835153ed5cb0800000000000000
+      internalID: -4873489283311607511
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Berserk_Lightning_03_39
+      rect:
+        serializedVersion: 2
+        x: 427
+        y: 215
+        width: 8
+        height: 7
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 485fa3080119a01d0800000000000000
+      internalID: -3383732669958654588
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Berserk_Lightning_03_40
+      rect:
+        serializedVersion: 2
+        x: 475
+        y: 173
+        width: 14
+        height: 13
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5813e4d21f122e6a0800000000000000
+      internalID: -6421532798945971835
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Berserk_Lightning_03_41
+      rect:
+        serializedVersion: 2
+        x: 489
+        y: 147
+        width: 11
+        height: 15
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e5e8ce962009b81e0800000000000000
+      internalID: -2194502053371539874
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Berserk_Lightning_03_42
+      rect:
+        serializedVersion: 2
+        x: 458
+        y: 125
+        width: 6
+        height: 7
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5e90b1556bc1c3310800000000000000
+      internalID: 1386014354760731109
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Berserk_Lightning_03_43
+      rect:
+        serializedVersion: 2
+        x: 508
+        y: 92
+        width: 11
+        height: 7
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ba584ac73edf63b30800000000000000
+      internalID: 4266876850470684075
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Berserk_Lightning_03_44
+      rect:
+        serializedVersion: 2
+        x: 490
+        y: 65
+        width: 26
+        height: 13
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 89254e5f0193bf9f0800000000000000
+      internalID: -433690194103479656
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Berserk_Lightning_03_45
+      rect:
+        serializedVersion: 2
+        x: 483
+        y: 38
+        width: 15
+        height: 18
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2902535db59e69e10800000000000000
+      internalID: 2204205648272760978
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Berserk_Lightning_03_46
+      rect:
+        serializedVersion: 2
+        x: 494
+        y: 53
+        width: 13
+        height: 11
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f098ae25cfb74b200800000000000000
+      internalID: 194917007536851215
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 5e97eb03825dee720800000000000000
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
+    nameFileIdTable:
+      Berserk_Lightning_03_0: -6298871807642902604
+      Berserk_Lightning_03_1: -1206080034725304380
+      Berserk_Lightning_03_10: -8826415356409908670
+      Berserk_Lightning_03_11: -5100261758899209213
+      Berserk_Lightning_03_12: -8368361715369824190
+      Berserk_Lightning_03_13: -8460803525086106523
+      Berserk_Lightning_03_14: 4266816872935016001
+      Berserk_Lightning_03_15: -5044120293678066603
+      Berserk_Lightning_03_16: 4791544702071473932
+      Berserk_Lightning_03_17: -7333962703005458686
+      Berserk_Lightning_03_18: -4923734932050431193
+      Berserk_Lightning_03_19: -5165938739848734991
+      Berserk_Lightning_03_2: 7215826017132844725
+      Berserk_Lightning_03_20: 4471771940589458732
+      Berserk_Lightning_03_21: -9063389179863371332
+      Berserk_Lightning_03_22: -3073015619652085959
+      Berserk_Lightning_03_23: 4819444307828283501
+      Berserk_Lightning_03_24: -4859051740373841326
+      Berserk_Lightning_03_25: 2238146954173045645
+      Berserk_Lightning_03_26: 4848550458631506328
+      Berserk_Lightning_03_27: 3115949060059722266
+      Berserk_Lightning_03_28: 5876690745961504555
+      Berserk_Lightning_03_29: -2968616017090485249
+      Berserk_Lightning_03_3: 1952270302710690467
+      Berserk_Lightning_03_30: -6576673382908957893
+      Berserk_Lightning_03_31: -8814768414301288411
+      Berserk_Lightning_03_32: 7459568225773275284
+      Berserk_Lightning_03_33: 7114008290502375377
+      Berserk_Lightning_03_34: 9113306782479333602
+      Berserk_Lightning_03_35: 7201321676812481525
+      Berserk_Lightning_03_36: -7527134730093728837
+      Berserk_Lightning_03_37: 190097059798000010
+      Berserk_Lightning_03_38: -4873489283311607511
+      Berserk_Lightning_03_39: -3383732669958654588
+      Berserk_Lightning_03_4: 8273075228139487344
+      Berserk_Lightning_03_40: -6421532798945971835
+      Berserk_Lightning_03_41: -2194502053371539874
+      Berserk_Lightning_03_42: 1386014354760731109
+      Berserk_Lightning_03_43: 4266876850470684075
+      Berserk_Lightning_03_44: -433690194103479656
+      Berserk_Lightning_03_45: 2204205648272760978
+      Berserk_Lightning_03_46: 194917007536851215
+      Berserk_Lightning_03_5: 6378819640340219359
+      Berserk_Lightning_03_6: -8401610006520283429
+      Berserk_Lightning_03_7: 2937526255127590090
+      Berserk_Lightning_03_8: -3407135881675969714
+      Berserk_Lightning_03_9: -6721767535224114173
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

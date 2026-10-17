@@ -441,7 +441,7 @@ public class SkillPanel : MonoBehaviour, ISkillSlotHost
         if (descMeta != null)
         {
             descMeta.text = has
-                ? $"쿨타임 {skill.cooldownTime:0.#}초     소모 기력 {skill.soulCost}"
+                ? $"쿨타임 {skill.cooldownTime:0.#}초     소모 기력 {skill.energyCost:0.#}"
                 : "";
         }
 
