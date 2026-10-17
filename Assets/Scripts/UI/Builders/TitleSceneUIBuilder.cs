@@ -21,6 +21,13 @@ public static class TitleSceneUIBuilder
     private const string TitleScenePath = "Assets/Scenes/Title.unity";
     private const string SlotEntryPrefabPath = "Assets/Prefabs/UI/SaveSlotEntry.prefab";
 
+    // 10.16 시안 두 가지. 디자이너 PDF 6쪽 = A, 7쪽 = B.
+    // 바꾸고 싶으면 아래 두 줄만 "A"로 고치고 Build Title Scene을 다시 누르면 된다.
+    private const string TitleBackground = "Title_BG_B";
+    private const string TitleLogo = "Title_Logo_B";
+
+    private static readonly Color MenuIdle = new Color(0.62f, 0.64f, 0.70f, 1f);
+
     [MenuItem("Tools/UI/Build Title Scene")]
     public static void BuildTitleScene()
     {
@@ -121,31 +128,41 @@ public static class TitleSceneUIBuilder
         GameObject panel = K.Obj("TitleMenuPanel", canvas);
         K.Stretch(panel, 0, 0, 0, 0);
 
-        // 배경 (아트가 들어올 자리)
-        GameObject bg = K.Img("Background", panel.transform, new Color(0.07f, 0.09f, 0.08f, 1f));
+        // 배경 그림 (10.16 시안). 화면 비율이 16:9가 아니어도 늘어나지 않고 꽉 차게 덮는다.
+        GameObject bg = K.Img("Background", panel.transform, Color.white);
+        bg.GetComponent<UnityEngine.UI.Image>().sprite = K.Redesign(TitleBackground);
         K.Stretch(bg, 0, 0, 0, 0);
+        AspectRatioFitter fitter = bg.AddComponent<AspectRatioFitter>();
+        fitter.aspectMode = AspectRatioFitter.AspectMode.EnvelopeParent;
+        fitter.aspectRatio = 16f / 9f;
 
-        // 게임 타이틀
-        GameObject title = K.Text("GameTitle", panel.transform, "LUDENS", 96,
-            FontStyles.Bold, TextAlignmentOptions.Center);
-        K.Place(title, K.Anchor.TopCenter, 0, -120, 900, 130);
+        // 게임 제목 (붓글씨 로고 그림)
+        GameObject title = K.Img("GameTitle", panel.transform, Color.white);
+        UnityEngine.UI.Image titleImage = title.GetComponent<UnityEngine.UI.Image>();
+        titleImage.sprite = K.Redesign(TitleLogo);
+        titleImage.preserveAspect = true;
+        K.Place(title, K.Anchor.TopLeft, 170, -180, 620, 245);
 
-        // 메인 메뉴 버튼 3개 (좌측)
-        GameObject playBtn = K.Button("Button_Play", panel.transform, "게임하기", 30);
-        K.Place(playBtn, K.Anchor.MiddleLeft, 220, 90, 380, 72);
+        // 메인 메뉴 (좌측): 상자 없이 글자만. 고른 항목만 하얗게 밝아진다.
+        GameObject playBtn = MenuText("Button_Play", panel.transform, "게임하기");
+        K.Place(playBtn, K.Anchor.TopLeft, 200, -584, 380, 64);
 
-        GameObject guideBtn = K.Button("Button_Guide", panel.transform, "가이드", 30);
-        K.Place(guideBtn, K.Anchor.MiddleLeft, 220, 0, 380, 72);
+        GameObject guideBtn = MenuText("Button_Guide", panel.transform, "가이드");
+        K.Place(guideBtn, K.Anchor.TopLeft, 200, -670, 380, 64);
 
-        GameObject quitBtn = K.Button("Button_Quit", panel.transform, "게임 종료", 30);
-        K.Place(quitBtn, K.Anchor.MiddleLeft, 220, -90, 380, 72);
+        GameObject quitBtn = MenuText("Button_Quit", panel.transform, "게임종료");
+        K.Place(quitBtn, K.Anchor.TopLeft, 200, -756, 380, 64);
 
-        // 우측 상단 아이콘 2개
-        GameObject settingsBtn = K.Button("Button_Settings", panel.transform, "설정", 20);
-        K.Place(settingsBtn, K.Anchor.TopRight, -126, -40, 72, 44);
+        // 우측 상단 아이콘 2개 (설정 톱니, 나가기)
+        GameObject settingsBtn = IconButton("Button_Settings", panel.transform, "Icon_Settings");
+        K.Place(settingsBtn, K.Anchor.TopRight, -118, -46, 52, 52);
 
-        GameObject exitBtn = K.Button("Button_ExitIcon", panel.transform, "종료", 20);
-        K.Place(exitBtn, K.Anchor.TopRight, -40, -40, 72, 44);
+        GameObject exitBtn = IconButton("Button_ExitIcon", panel.transform, "Icon_Exit");
+        K.Place(exitBtn, K.Anchor.TopRight, -40, -46, 52, 52);
+
+        // 키보드·패드로도 고를 수 있게 첫 항목을 골라 둔다. 고른 항목이 하얗게 보인다.
+        EventSystem eventSystem = Object.FindAnyObjectByType<EventSystem>();
+        if (eventSystem != null) eventSystem.firstSelectedGameObject = playBtn;
 
         TitleMenuPanel panelComp = panel.AddComponent<TitleMenuPanel>();
 
@@ -156,6 +173,46 @@ public static class TitleSceneUIBuilder
         Wire(exitBtn, panelComp.OnExitIconButton);
 
         return panelComp;
+    }
+
+    /// <summary>글자만 있는 메뉴 항목. 평소엔 회색, 마우스를 올리거나 고르면 흰색.</summary>
+    private static GameObject MenuText(string name, Transform parent, string label)
+    {
+        GameObject go = K.Text(name, parent, label, 44, FontStyles.Normal, TextAlignmentOptions.MidlineLeft,
+            Color.white);
+        TextMeshProUGUI text = go.GetComponent<TextMeshProUGUI>();
+        text.raycastTarget = true;
+        text.characterSpacing = 6f;
+
+        UnityEngine.UI.Button btn = go.AddComponent<UnityEngine.UI.Button>();
+        btn.targetGraphic = text;
+        btn.colors = MenuColors(MenuIdle);
+        return go;
+    }
+
+    /// <summary>우측 상단 아이콘 버튼.</summary>
+    private static GameObject IconButton(string name, Transform parent, string sprite)
+    {
+        GameObject go = K.Img(name, parent, Color.white, true);
+        UnityEngine.UI.Image image = go.GetComponent<UnityEngine.UI.Image>();
+        image.sprite = K.Redesign(sprite);
+        image.preserveAspect = true;
+
+        UnityEngine.UI.Button btn = go.AddComponent<UnityEngine.UI.Button>();
+        btn.targetGraphic = image;
+        btn.colors = MenuColors(new Color(0.85f, 0.87f, 0.92f, 1f));
+        return go;
+    }
+
+    private static ColorBlock MenuColors(Color idle)
+    {
+        ColorBlock colors = ColorBlock.defaultColorBlock;
+        colors.normalColor = idle;
+        colors.highlightedColor = Color.white;
+        colors.selectedColor = Color.white;
+        colors.pressedColor = new Color(0.80f, 0.85f, 0.95f, 1f);
+        colors.fadeDuration = 0.08f;
+        return colors;
     }
 
     // ── 2. 저장 슬롯 선택 ────────────────────

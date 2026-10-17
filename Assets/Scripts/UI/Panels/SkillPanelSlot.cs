@@ -32,21 +32,28 @@ public class SkillPanelSlot : MonoBehaviour,
     [SerializeField] private Image icon;
     [SerializeField] private Image selectionOutline;
 
-    [Tooltip("장착칸 위에 붙는 키 이름(X, A, S, D, F). 보유 목록 칸에서는 꺼둔다.")]
+    [Tooltip("장착칸의 키 이름(X, A, S, D, F). 빈 칸 안에 크고 흐리게 보이고, 스킬이 들어오면 숨는다.")]
     [SerializeField] private TextMeshProUGUI keyText;
 
     [Tooltip("아이콘이 없는 스킬에 이름을 대신 띄운다. 빈 칸으로 오해하지 않게.")]
     [SerializeField] private TextMeshProUGUI iconFallbackText;
 
-    private static readonly Color FilledBg = new Color(0.28f, 0.28f, 0.34f, 1f);
-    private static readonly Color EmptyBg = new Color(0.18f, 0.18f, 0.22f, 1f);
-    private static readonly Color HoverBg = new Color(0.38f, 0.38f, 0.46f, 1f);
+    [Tooltip("칸 테두리(10.16 시안). 장착칸은 하늘색, 보유 목록은 회색.")]
+    [SerializeField] private Image frameBorder;
 
-    /// <summary>잠긴 칸(X)은 손댈 수 없다는 게 보이도록 푸른 기를 준다.</summary>
-    private static readonly Color LockedBg = new Color(0.20f, 0.22f, 0.30f, 1f);
+    // 10.16 시안의 칸 색. 칸 판 그림이 흰색이라 여기 색이 그대로 보인다.
+    private static readonly Color FilledBg = new Color(0.17f, 0.175f, 0.20f, 1f);
+    private static readonly Color EmptyBg = new Color(0.17f, 0.175f, 0.20f, 1f);
+    private static readonly Color HoverBg = new Color(0.26f, 0.27f, 0.31f, 1f);
 
-    private static readonly Color KeyNormal = new Color(0.92f, 0.92f, 0.94f, 1f);
-    private static readonly Color KeyLocked = new Color(0.55f, 0.60f, 0.75f, 1f);
+    /// <summary>잠긴 칸(X)도 시안에서는 빈 칸과 같은 판이다. 글자 색으로만 구분한다.</summary>
+    private static readonly Color LockedBg = new Color(0.17f, 0.175f, 0.20f, 1f);
+
+    private static readonly Color KeyNormal = new Color(1f, 1f, 1f, 0.16f);
+    private static readonly Color KeyLocked = new Color(0.62f, 0.70f, 0.95f, 0.22f);
+
+    private static readonly Color EquipBorder = new Color(0.69f, 0.84f, 0.93f, 1f);
+    private static readonly Color StorageBorder = new Color(1f, 1f, 1f, 0.16f);
 
     /// <summary>드래그 중인 원본 칸은 흐리게 해서 "들려 있다"는 걸 보여준다.</summary>
     private const float DraggingIconAlpha = 0.25f;
@@ -103,9 +110,13 @@ public class SkillPanelSlot : MonoBehaviour,
             }
         }
 
+        if (frameBorder != null)
+            frameBorder.color = area == SkillSlotArea.Equip ? EquipBorder : StorageBorder;
+
         if (keyText != null)
         {
-            bool showKey = !string.IsNullOrEmpty(keyLabel);
+            // 스킬 그림이 칸을 채우면 키 글자는 숨긴다 (시안).
+            bool showKey = !string.IsNullOrEmpty(keyLabel) && !hasSkill;
             keyText.enabled = showKey;
 
             if (showKey)

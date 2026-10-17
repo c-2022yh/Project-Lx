@@ -45,10 +45,32 @@ public class RelicSlotView : MonoBehaviour,
     [Tooltip("아이콘이 없는 유물에 이름 첫 글자를 대신 띄운다. 빈 칸으로 오해하지 않게.")]
     [SerializeField] private TextMeshProUGUI iconFallbackText;
 
-    // 창 배경(0.08)과 충분히 구분되도록 밝힌 값.
-    private static readonly Color FilledBg = new Color(0.28f, 0.28f, 0.34f, 1f);
-    private static readonly Color EmptyBg = new Color(0.18f, 0.18f, 0.22f, 1f);
-    private static readonly Color HoverBg = new Color(0.38f, 0.38f, 0.46f, 1f);
+    [Header("원형 장착칸 (10.16 시안)")]
+    [Tooltip("빈 장착칸 그림(칼·여우 실루엣 + 테두리). 비어 있을 때만 보인다.")]
+    [SerializeField] private Image emptyArtImage;
+
+    [Tooltip("장착칸 테두리 링. 유물이 들어 있을 때 아이콘 위에 덮는다.")]
+    [SerializeField] private Image ringFrameImage;
+
+    [SerializeField] private Sprite swordEmptySprite;
+    [SerializeField] private Sprite orbEmptySprite;
+    [SerializeField] private Sprite swordFrameSprite;
+    [SerializeField] private Sprite orbFrameSprite;
+
+    // 네모 칸 판 색 (10.16 시안). 판 그림이 흰색이라 여기 색이 그대로 보인다.
+    private static readonly Color FilledBg = new Color(0.12f, 0.12f, 0.14f, 1f);
+    private static readonly Color EmptyBg = new Color(0.10f, 0.10f, 0.11f, 1f);
+    private static readonly Color HoverBg = new Color(0.22f, 0.22f, 0.26f, 1f);
+
+    // 원형 장착칸은 판 없이 창 배경이 비친다. 올렸을 때만 살짝 밝힌다.
+    private static readonly Color RingIdleBg = new Color(1f, 1f, 1f, 0f);
+    private static readonly Color RingHoverBg = new Color(1f, 1f, 1f, 0.08f);
+
+    /// <summary>보관함 빈 자리 테두리 (시안의 회색 칸).</summary>
+    private static readonly Color EmptySquareBorder = new Color(1f, 1f, 1f, 0.16f);
+
+    /// <summary>10.16 시안의 원형 장착칸 그림이 연결돼 있는지.</summary>
+    private bool UsesRingArt => ringFrameImage != null;
 
     // 계열 테두리 색. 선택(노랑)·포커스(하양)와 헷갈리지 않는 색으로 골랐다.
     private static readonly Color SwordOutline = new Color(0.90f, 0.42f, 0.38f, 1f);
@@ -143,10 +165,41 @@ public class RelicSlotView : MonoBehaviour,
             if (showCost) costText.text = relic.Cost.ToString();
         }
 
+        RefreshRingArt();
+
         SetSelected(false);
         SetFocused(false);
         RefreshBackground();
         RefreshCategoryOutline();
+    }
+
+    /// <summary>
+    /// 원형 장착칸 그림 (10.16 시안).
+    ///   검·보주 빈 칸 : 칼·여우 실루엣이 그려진 빈 칸 그림 (테두리 포함)
+    ///   유물이 들어감  : 아이콘 + 테두리 링
+    ///   신체 칸       : 실루엣 없이 링만
+    /// </summary>
+    private void RefreshRingArt()
+    {
+        if (!UsesRingArt) return;
+
+        Sprite emptyArt = Category switch
+        {
+            RelicCategory.Sword => swordEmptySprite,
+            RelicCategory.Orb => orbEmptySprite,
+            _ => null
+        };
+
+        bool showEmptyArt = IsEmpty && emptyArt != null;
+
+        if (emptyArtImage != null)
+        {
+            emptyArtImage.sprite = emptyArt;
+            emptyArtImage.enabled = showEmptyArt;
+        }
+
+        ringFrameImage.sprite = Category == RelicCategory.Sword ? swordFrameSprite : orbFrameSprite;
+        ringFrameImage.enabled = !showEmptyArt && ringFrameImage.sprite != null;
     }
 
     /// <summary>
@@ -212,6 +265,12 @@ public class RelicSlotView : MonoBehaviour,
     {
         if (background == null) return;
 
+        if (UsesRingArt)
+        {
+            background.color = isHovered ? RingHoverBg : RingIdleBg;
+            return;
+        }
+
         if (isHovered) background.color = HoverBg;
         else background.color = IsEmpty ? EmptyBg : FilledBg;
     }
@@ -226,10 +285,23 @@ public class RelicSlotView : MonoBehaviour,
     {
         if (categoryOutline == null) return;
 
+        // 원형 장착칸은 시안 테두리 링이 대신한다.
+        if (UsesRingArt)
+        {
+            categoryOutline.enabled = false;
+            return;
+        }
+
         Color color = OutlineColorOf(Category);
-        if (IsEmpty) color.a = EmptyOutlineAlpha;
+        if (IsEmpty) color = Area == RelicSlotArea.Storage ? EmptySquareBorder : WithAlpha(color, EmptyOutlineAlpha);
 
         categoryOutline.color = color;
+    }
+
+    private static Color WithAlpha(Color c, float a)
+    {
+        c.a = a;
+        return c;
     }
 
     private static Color OutlineColorOf(RelicCategory category)

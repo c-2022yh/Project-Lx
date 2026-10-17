@@ -329,19 +329,76 @@ public static class UIBuildKit
         prop.objectReferenceValue = value;
     }
 
+    // ── 10.16 디자이너 시안 리소스 ─────────────
+
+    public const string RedesignFolder = "Assets/Sprites/UI/Redesign/";
+
+    /// <summary>Sprites/UI/Redesign 폴더의 그림. 이름만 넘기면 된다 (확장자 빼고).</summary>
+    public static Sprite Redesign(string name)
+    {
+        Sprite sprite = AssetDatabase.LoadAssetAtPath<Sprite>(RedesignFolder + name + ".png");
+        if (sprite == null) Debug.LogWarning("[UIBuildKit] 시안 그림을 찾지 못했습니다: " + RedesignFolder + name + ".png");
+        return sprite;
+    }
+
+    /// <summary>시안의 빈 칸 테두리 색 (보관함·보유 목록).</summary>
+    public static readonly Color EmptyFrameBorder = new Color(1f, 1f, 1f, 0.16f);
+    public static readonly Color EmptyFrameFill = new Color(0.10f, 0.10f, 0.11f, 1f);
+
+    /// <summary>
+    /// 격자 뒤에 빈 칸 틀을 깔아둔다. 시안처럼 보관함이 비어 있어도 칸 모양이 보이게.
+    /// 실제 칸은 같은 자리·같은 격자 설정의 형제 오브젝트가 그 위에 덮는다.
+    /// </summary>
+    public static GameObject FrameBackdrop(Transform parent, string name, GridLayoutGroup like, int count)
+    {
+        GameObject root = Obj(name, parent);
+        RectTransform src = like.GetComponent<RectTransform>();
+        RectTransform rt = root.GetComponent<RectTransform>();
+        rt.anchorMin = src.anchorMin;
+        rt.anchorMax = src.anchorMax;
+        rt.pivot = src.pivot;
+        rt.anchoredPosition = src.anchoredPosition;
+        rt.sizeDelta = src.sizeDelta;
+
+        GridLayoutGroup grid = root.AddComponent<GridLayoutGroup>();
+        grid.cellSize = like.cellSize;
+        grid.spacing = like.spacing;
+        grid.startCorner = like.startCorner;
+        grid.startAxis = like.startAxis;
+        grid.childAlignment = like.childAlignment;
+        grid.constraint = like.constraint;
+        grid.constraintCount = like.constraintCount;
+
+        Sprite fill = Redesign("Frame_Square_Fill");
+        Sprite border = Redesign("Frame_Square_Border");
+
+        for (int i = 0; i < count; i++)
+        {
+            GameObject cell = Img("EmptyCell", root.transform, EmptyFrameFill);
+            cell.GetComponent<UnityEngine.UI.Image>().sprite = fill;
+
+            GameObject line = Img("Border", cell.transform, EmptyFrameBorder);
+            line.GetComponent<UnityEngine.UI.Image>().sprite = border;
+            Stretch(line, 0, 0, 0, 0);
+        }
+
+        // 실제 칸보다 먼저 그려져야 한다.
+        root.transform.SetSiblingIndex(like.transform.GetSiblingIndex());
+        return root;
+    }
+
     // ── 탭 줄 ────────────────────────────────
     //
     // 유물창과 스킬창은 같은 크기의 창 두 개이고 Q/E로 오간다.
     // 두 창이 똑같은 탭 줄을 같은 자리에 그려야 전환할 때 튀지 않는다.
     // 창마다 제목을 따로 쓰는 대신 이 함수를 부른다.
+    //
+    // 10.16 시안: 상자 없이 글자만. 고른 탭은 밝은 글자 + 아래에서 푸른 빛이 번진다.
+    // 두 탭 모두 글자 아래 짧은 밑줄이 있고, 고른 쪽만 밝다.
 
-    private static readonly Color TabActiveBg = new Color(0.26f, 0.26f, 0.32f, 1f);
-    private static readonly Color TabIdleBg = new Color(0.13f, 0.13f, 0.16f, 1f);
-    private static readonly Color TabAccent = new Color(1f, 0.82f, 0.35f, 1f);
-
-    private const float TabWidth = 150f;
-    private const float TabHeight = 48f;
-    private const float TabGap = 10f;
+    private const float TabWidth = 130f;
+    private const float TabHeight = 72f;
+    private const float TabGap = 16f;
 
     /// <summary>
     /// 창 왼쪽 위에 "유물 / 스킬" 탭 줄을 그린다.
@@ -349,11 +406,9 @@ public static class UIBuildKit
     /// </summary>
     public static UITabBar TabBar(Transform window, int activeIndex)
     {
-        // 키 안내는 창 오른쪽 위 WindowHint가 맡는다. 여기에 같이 두면
-        // 탭 글자와 겹친다.
-
+        // 키 안내는 창 오른쪽 위 WindowHint가 맡는다.
         GameObject bar = Obj("TabBar", window);
-        Place(bar, Anchor.TopLeft, 40, -24, TabWidth * 2 + TabGap, TabHeight);
+        Place(bar, Anchor.TopLeft, 40, -14, TabWidth * 2 + TabGap, TabHeight);
 
         UITabBar comp = bar.AddComponent<UITabBar>();
 
@@ -371,26 +426,36 @@ public static class UIBuildKit
     private static UnityEngine.UI.Button TabButton(Transform bar, string name, string label,
                                                    int slot, bool active)
     {
-        GameObject go = Button(name, bar, label, 26, active ? TabActiveBg : TabIdleBg);
+        GameObject go = Obj(name, bar);
         Place(go, Anchor.MiddleLeft, slot * (TabWidth + TabGap) + TabWidth / 2f, 0,
               TabWidth, TabHeight);
 
-        TextMeshProUGUI text = go.GetComponentInChildren<TextMeshProUGUI>();
+        // 누를 자리. 보이지 않는다.
+        UnityEngine.UI.Image hit = go.AddComponent<UnityEngine.UI.Image>();
+        hit.color = new Color(1f, 1f, 1f, 0f);
+        hit.raycastTarget = true;
 
-        if (text != null)
-        {
-            text.color = active ? AccentText : MutedText;
-            text.fontStyle = active ? FontStyles.Bold : FontStyles.Normal;
-        }
+        UnityEngine.UI.Button btn = go.AddComponent<UnityEngine.UI.Button>();
+        btn.transition = Selectable.Transition.None;
+        btn.targetGraphic = hit;
 
-        // 활성 탭 아래에만 밑줄을 그어 어느 쪽인지 한눈에 보이게 한다.
         if (active)
         {
-            GameObject line = Img("Active", go.transform, TabAccent);
-            Place(line, Anchor.BottomCenter, 0, 0, TabWidth - 16f, 3);
+            GameObject glow = Img("Glow", go.transform, Color.white);
+            glow.GetComponent<UnityEngine.UI.Image>().sprite = Redesign("Tab_Glow");
+            Place(glow, Anchor.BottomCenter, 0, 2, TabWidth + 40f, 60f);
         }
 
-        return go.GetComponent<UnityEngine.UI.Button>();
+        GameObject text = Text("Label", go.transform, label, 38,
+            active ? FontStyles.Bold : FontStyles.Normal, TextAlignmentOptions.Center,
+            active ? Color.white : new Color(0.55f, 0.56f, 0.60f, 1f));
+        Stretch(text, 0, 0, 0, 10);
+
+        GameObject dash = Img("Underline", go.transform,
+            active ? new Color(0.85f, 0.92f, 1f, 1f) : new Color(1f, 1f, 1f, 0.25f));
+        Place(dash, Anchor.BottomCenter, 0, 2, 30, 3);
+
+        return btn;
     }
 }
 #endif

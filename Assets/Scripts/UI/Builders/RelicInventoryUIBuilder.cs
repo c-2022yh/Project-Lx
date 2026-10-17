@@ -21,8 +21,12 @@ public static class RelicInventoryUIBuilder
     /// <summary>BuildInto()가 마지막으로 남긴 UIManager 연결 결과 메시지.</summary>
     public static string LastUIManagerNote { get; private set; } = "";
 
-    private const float SlotSize = 88f;
-    private const float SlotGap = 12f;
+    // 10.16 시안: 보관함은 6열로 오른쪽 영역을 꽉 채운다 (6×98 + 5×9 = 633).
+    private const float SlotSize = 98f;
+    private const float SlotGap = 9f;
+
+    /// <summary>보관함 뒤에 깔아둘 빈 칸 틀 개수 (6열 × 6줄).</summary>
+    private const int StorageBackdropCells = 36;
 
     /// <summary>보관함 격자 열 수. RelicInventoryPanel.StorageColumns와 같아야 한다.</summary>
     private const int StorageColumns = 6;
@@ -51,9 +55,26 @@ public static class RelicInventoryUIBuilder
     /// </summary>
     private const float DiagonalOffset = 52f;
 
-    private const float SwordSlotSize = 130f;
-    private const float OrbSlotSize = 105f;
-    private const float BodySlotSize = 66f;
+    // 10.16 시안 크기. RelicInventoryPanel의 같은 이름 상수와 맞춰야 한다.
+    private const float SwordSlotSize = 280f;
+    private const float OrbSlotSize = 180f;
+    private const float BodySlotSize = 96f;
+    private const float BodySlotGap = 15f;
+
+    // 시안 배치(창 왼쪽 위 기준 중심점). 검은 크게 왼쪽 위, 보주는 오른쪽 아래로 엇갈린다.
+    private const float SwordCenterX = LeftCenterX - 68f;
+    private const float SwordCenterY = -326f;
+    private const float OrbCenterX = LeftCenterX + 154f;
+    private const float OrbCenterY = -479f;
+    private const float BodyCenterY = -692f;
+
+    /// <summary>
+    /// 원형 테두리 그림(Slot_*_Frame / Slot_*_Empty)은 둘레에 마름모 장식이 튀어나와 있어서
+    /// 원 자체보다 캔버스가 크다. 원이 칸 크기에 딱 맞도록 그림을 이만큼 크게 놓는다.
+    /// (원 지름 ÷ 그림 크기를 재서 구한 값)
+    /// </summary>
+    private const float RingImageScaleX = 1.049f;
+    private const float RingImageScaleY = 1.062f;
 
     [MenuItem("Tools/UI/Build Relic Inventory")]
     public static void Build()
@@ -211,12 +232,11 @@ public static class RelicInventoryUIBuilder
         // ── 왼쪽: 장착 ──────────────────────
         // 제목 글자는 두지 않는다. 계열 이름표가 칸마다 붙어 있어서 중복이고,
         // 그 자리를 비워야 검과 보주를 위로 당겨 붙일 수 있다.
-        GameObject equipLine = K.Img("Divider_Equip", w, K.Divider);
-        K.Place(equipLine, K.Anchor.TopLeft, 40, -96, LeftWidth, 2);
+        // 10.16 시안: 왼쪽 위 구분선과 계열 이름표는 없다. 칸 그림(칼·여우)이 계열을 알려준다.
 
         // 검: 가장 크게, 왼쪽 위로
-        Transform swordSlots = EquipSpot(w, "검", LeftCenterX - DiagonalOffset, -368, SwordSlotSize,
-                                         RelicDropTargetKind.SwordRow);
+        Transform swordSlots = EquipSpot(w, "검", SwordCenterX, SwordCenterY + SwordSlotSize / 2f,
+                                         SwordSlotSize, RelicDropTargetKind.SwordRow);
 
         // 보주: 검의 오른쪽 아래로 엇갈리게.
         //
@@ -225,19 +245,16 @@ public static class RelicInventoryUIBuilder
         // 검 오른쪽 끝(-7)과 보주 왼쪽 끝(+19) 사이가 비어 있다.
         // 그래서 두 원을 대각선으로 바짝 붙일 수 있다.
         // 보주 이름표도 검 원 옆 빈자리로 올라간다.
-        Transform orbSlots = EquipSpot(w, "보주", LeftCenterX + DiagonalOffset, -480, OrbSlotSize,
-                                       RelicDropTargetKind.OrbRow);
+        Transform orbSlots = EquipSpot(w, "보주", OrbCenterX, OrbCenterY + OrbSlotSize / 2f,
+                                       OrbSlotSize, RelicDropTargetKind.OrbRow);
 
         // 신체: 아래쪽 가로줄. 개수가 늘 바뀌므로 가로 레이아웃에 맡긴다.
-        GameObject bodyLabel = K.Text("Label_신체", w, "신체", 22,
-            FontStyles.Normal, TextAlignmentOptions.Center, K.MutedText);
-        K.Place(bodyLabel, K.Anchor.TopLeft, LeftCenterX - 60, -642, 120, 26);
-
         GameObject bodyRow = K.Obj("Slots_신체", w);
-        K.Place(bodyRow, K.Anchor.TopLeft, LeftCenterX - LeftWidth / 2f, -672, LeftWidth, BodySlotSize);
+        K.Place(bodyRow, K.Anchor.TopLeft, LeftCenterX - LeftWidth / 2f, BodyCenterY + BodySlotSize / 2f,
+                LeftWidth, BodySlotSize);
 
         HorizontalLayoutGroup bodyLayout = bodyRow.AddComponent<HorizontalLayoutGroup>();
-        bodyLayout.spacing = 14f;
+        bodyLayout.spacing = BodySlotGap;
         bodyLayout.childAlignment = TextAnchor.MiddleCenter;
         bodyLayout.childControlWidth = false;
         bodyLayout.childControlHeight = false;
@@ -248,7 +265,7 @@ public static class RelicInventoryUIBuilder
 
         GameObject costText = K.Text("BodyCostText", w, "코스트  0 / 5", 22,
             FontStyles.Bold, TextAlignmentOptions.Center);
-        K.Place(costText, K.Anchor.TopLeft, LeftCenterX - 150, -756, 300, 30);
+        K.Place(costText, K.Anchor.TopLeft, LeftCenterX - 150, BodyCenterY - BodySlotSize / 2f - 14f, 300, 30);
 
         // ── 가운데 세로 구분선 ───────────────
         GameObject vDivider = K.Img("Divider_Vertical", w, K.Divider);
@@ -277,6 +294,9 @@ public static class RelicInventoryUIBuilder
 
         // 장착된 유물을 여기로 끌어다 놓으면 해제된다.
         AddDropZone(storage, RelicDropTargetKind.Storage);
+
+        // 시안처럼 비어 있어도 칸 틀이 보이게 뒤에 빈 칸을 깔아 둔다.
+        K.FrameBackdrop(w, "StorageBackdrop", grid, StorageBackdropCells);
 
         // ── 아래: 설명창 ────────────────────
         // 설명칸은 두지 않는다. 유물 위에 마우스를 올리면 RelicTooltip이
@@ -451,12 +471,7 @@ public static class RelicInventoryUIBuilder
     private static Transform EquipSpot(Transform window, string label, float centerX, float y,
                                        float size, RelicDropTargetKind kind)
     {
-        // 이름표 상자를 넓게 잡으면 대각선으로 붙여둔 옆 칸을 침범한다.
-        // 글자가 짧으니 120이면 충분하다.
-        GameObject labelGO = K.Text("Label_" + label, window, label, 22,
-            FontStyles.Normal, TextAlignmentOptions.Center, K.MutedText);
-        K.Place(labelGO, K.Anchor.TopLeft, centerX - 60, y + 28, 120, 26);
-
+        // 10.16 시안에서는 이름표를 두지 않는다. label은 오브젝트 이름에만 쓴다.
         GameObject container = K.Obj("Slots_" + label, window);
         K.Place(container, K.Anchor.TopLeft, centerX - size / 2f, y, size, size);
 
@@ -508,6 +523,11 @@ public static class RelicInventoryUIBuilder
     {
         Sprite round = circular ? RoundSprite() : null;
 
+        // 네모 칸은 10.16 시안의 판·테두리 그림을 쓴다.
+        Sprite squareFill = circular ? null : K.Redesign("Frame_Square_Fill");
+        Sprite squareBorder = circular ? null : K.Redesign("Frame_Square_Border");
+        Sprite shape = circular ? round : squareFill;
+
         GameObject slot = new GameObject(circular ? "RelicSlotCircle" : "RelicSlotView",
                                          typeof(RectTransform));
         slot.GetComponent<RectTransform>().sizeDelta = new Vector2(size, size);
@@ -524,21 +544,37 @@ public static class RelicInventoryUIBuilder
         // 그리는 순서는 자식 순서를 따른다. 큰 사각형부터 깔고 작은 것으로 덮어서
         // 가장자리에 3px씩 띠가 남게 만든다.
         //   FocusOutline(-9) → SelectionOutline(-6) → CategoryOutline(-3) → Background(0)
-        GameObject focus = Shape("FocusOutline", slot.transform, new Color(1f, 1f, 1f, 0.75f), round);
+        GameObject focus = Shape("FocusOutline", slot.transform, new Color(1f, 1f, 1f, 0.75f), shape);
         K.Stretch(focus, -9, -9, -9, -9);
         focus.GetComponent<UnityEngine.UI.Image>().enabled = false;
 
         GameObject outline = Shape("SelectionOutline", slot.transform,
-            new Color(1f, 0.85f, 0.35f, 0.55f), round);
+            new Color(1f, 0.85f, 0.35f, 0.55f), shape);
         K.Stretch(outline, -6, -6, -6, -6);
         outline.GetComponent<UnityEngine.UI.Image>().enabled = false;
 
         // 계열 테두리. 색은 RelicSlotView.Bind가 유물 카테고리에 맞춰 덮어쓴다.
+        // 원형 칸: 예전처럼 뒤에 깔린 띠 (10.16 시안 테두리 그림이 있으면 RelicSlotView가 끈다)
+        // 네모 칸: 시안 테두리 그림을 아이콘 위에 덮는다 (아래에서 순서를 옮긴다)
         GameObject category = Shape("CategoryOutline", slot.transform, Color.white, round);
-        K.Stretch(category, -3, -3, -3, -3);
+        if (circular) K.Stretch(category, -3, -3, -3, -3);
+        else
+        {
+            category.GetComponent<UnityEngine.UI.Image>().sprite = squareBorder;
+            K.Stretch(category, 0, 0, 0, 0);
+        }
 
-        GameObject bg = Shape("Background", slot.transform, new Color(0.20f, 0.20f, 0.24f, 1f), round);
+        GameObject bg = Shape("Background", slot.transform, new Color(0.20f, 0.20f, 0.24f, 1f), shape);
         K.Stretch(bg, 0, 0, 0, 0);
+
+        // 원형 장착칸의 빈 칸 그림(칼·여우)과 테두리 링. 어느 그림을 쓸지는 RelicSlotView가 계열 보고 고른다.
+        GameObject emptyArt = null;
+        if (circular)
+        {
+            emptyArt = K.Img("EmptyArt", slot.transform, Color.white);
+            RingRect(emptyArt);
+            emptyArt.GetComponent<UnityEngine.UI.Image>().enabled = false;
+        }
 
         // 아이콘 여백은 비율로 잡는다.
         // 픽셀로 잡으면 같은 프리팹을 신체 칸(72)으로 줄였을 때
@@ -560,6 +596,18 @@ public static class RelicInventoryUIBuilder
 
         FillRelative(icon, margin);
         icon.GetComponent<UnityEngine.UI.Image>().enabled = false;
+
+        GameObject ring = null;
+        if (circular)
+        {
+            ring = K.Img("RingFrame", slot.transform, Color.white);
+            RingRect(ring);
+        }
+        else
+        {
+            // 네모 칸 테두리는 아이콘 위에 그려야 아이콘 가장자리를 깔끔하게 덮는다.
+            category.transform.SetSiblingIndex(icon.transform.GetSiblingIndex());
+        }
 
         // 아이콘이 아직 없는 유물을 위한 글자 자리.
         // 칸 크기가 제각각이라 글자도 자동으로 맞춘다.
@@ -587,6 +635,17 @@ public static class RelicInventoryUIBuilder
         K.SetRef(so, "costText", cost.GetComponent<TextMeshProUGUI>());
         K.SetRef(so, "selectionOutline", outline.GetComponent<UnityEngine.UI.Image>());
         K.SetRef(so, "focusOutline", focus.GetComponent<UnityEngine.UI.Image>());
+
+        if (circular)
+        {
+            K.SetRef(so, "emptyArtImage", emptyArt.GetComponent<UnityEngine.UI.Image>());
+            K.SetRef(so, "ringFrameImage", ring.GetComponent<UnityEngine.UI.Image>());
+            K.SetRef(so, "swordEmptySprite", K.Redesign("Slot_Sword_Empty"));
+            K.SetRef(so, "orbEmptySprite", K.Redesign("Slot_Orb_Empty"));
+            K.SetRef(so, "swordFrameSprite", K.Redesign("Slot_Sword_Frame"));
+            K.SetRef(so, "orbFrameSprite", K.Redesign("Slot_Orb_Frame"));
+        }
+
         so.ApplyModifiedPropertiesWithoutUndo();
 
         if (!AssetDatabase.IsValidFolder("Assets/Prefabs/UI"))
@@ -653,6 +712,17 @@ public static class RelicInventoryUIBuilder
     /// 부모 사각형을 비율로 채운다. margin은 각 변에서 몇 퍼센트를 비울지.
     /// 앵커로 잡아야 칸 크기가 바뀌어도 같은 비율을 유지한다.
     /// </summary>
+    /// <summary>원형 테두리 그림을 칸 위에 놓는다. 원이 칸에 맞도록 마름모 장식만큼 크게.</summary>
+    private static void RingRect(GameObject go)
+    {
+        RectTransform rect = go.GetComponent<RectTransform>();
+        rect.anchorMin = new Vector2(0.5f - RingImageScaleX / 2f, 0.5f - RingImageScaleY / 2f);
+        rect.anchorMax = new Vector2(0.5f + RingImageScaleX / 2f, 0.5f + RingImageScaleY / 2f);
+        rect.offsetMin = Vector2.zero;
+        rect.offsetMax = Vector2.zero;
+        go.GetComponent<UnityEngine.UI.Image>().raycastTarget = false;
+    }
+
     private static void FillRelative(GameObject go, float margin)
     {
         RectTransform rect = go.GetComponent<RectTransform>();
