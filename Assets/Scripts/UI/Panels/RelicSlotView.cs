@@ -77,6 +77,18 @@ public class RelicSlotView : MonoBehaviour,
 
     public bool IsEmpty => Relic == null;
 
+    /// <summary>
+    /// 장착용 아이콘은 그림 둘레에 투명한 가장자리가 3%쯤 있다.
+    /// 그만큼 칸보다 살짝 크게 넣어야 그림의 원이 칸의 원에 딱 맞는다.
+    /// </summary>
+    private const float EquipIconBleed = 0.032f;
+
+    // 동그란 칸(장착칸)의 아이콘 원래 설정. 장착용 아이콘이 없는 유물은 이걸로 되돌린다.
+    private bool circleDefaultsSaved;
+    private Vector2 circleAnchorMin;
+    private Vector2 circleAnchorMax;
+    private Material circleMaterial;
+
     private IRelicSlotHost host;
     private bool isHovered;
     private bool isSelected;
@@ -105,6 +117,8 @@ public class RelicSlotView : MonoBehaviour,
             icon.sprite = hasIcon ? relic.Icon : null;
             icon.enabled = hasIcon;
             icon.color = Color.white;
+
+            if (icon is CircleMaskedImage) ApplyCircleIcon(hasRelic ? RelicEquipIcons.Get(relic) : null);
         }
 
         // 아이콘이 아직 안 붙은 유물이 있다. 그냥 두면 칸이 비어 보여서
@@ -133,6 +147,41 @@ public class RelicSlotView : MonoBehaviour,
         SetFocused(false);
         RefreshBackground();
         RefreshCategoryOutline();
+    }
+
+    /// <summary>
+    /// 동그란 장착칸 아이콘.
+    /// 장착용 그림(원 안에 그림만 있는 것)이 있으면 그대로 칸에 꽉 채운다.
+    /// 없으면 원래대로 네모 아이콘을 크게 넣고 원으로 잘라 프레임을 숨긴다.
+    /// </summary>
+    private void ApplyCircleIcon(Sprite equipSprite)
+    {
+        RectTransform rect = icon.rectTransform;
+
+        if (!circleDefaultsSaved)
+        {
+            circleAnchorMin = rect.anchorMin;
+            circleAnchorMax = rect.anchorMax;
+            circleMaterial = icon.material;
+            circleDefaultsSaved = true;
+        }
+
+        if (equipSprite != null)
+        {
+            icon.sprite = equipSprite;
+            icon.material = null;   // 이미 동그란 그림이라 잘라낼 필요가 없다
+            rect.anchorMin = new Vector2(-EquipIconBleed, -EquipIconBleed);
+            rect.anchorMax = new Vector2(1f + EquipIconBleed, 1f + EquipIconBleed);
+        }
+        else
+        {
+            icon.material = circleMaterial;
+            rect.anchorMin = circleAnchorMin;
+            rect.anchorMax = circleAnchorMax;
+        }
+
+        rect.offsetMin = Vector2.zero;
+        rect.offsetMax = Vector2.zero;
     }
 
     public void SetSelected(bool selected)
