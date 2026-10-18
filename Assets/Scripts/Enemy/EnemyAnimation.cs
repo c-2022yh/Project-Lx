@@ -9,6 +9,14 @@ public class EnemyAnimation : MonoBehaviour
     [Tooltip("Enable if the original, unflipped sprites face right.")]
     [SerializeField] private bool spriteFacesRight = false;
 
+    [Header("Idle Animation")]
+    [SerializeField] private Sprite[] idleSprites;
+    [SerializeField, Min(0.01f)] private float idleFrameTime = 0.12f;
+
+    [Header("Shoot Animation")]
+    [SerializeField] private Sprite[] shootSprites;
+    [SerializeField, Min(0.01f)] private float shootFrameTime = 0.12f;
+
     [Header("Walk Animation")]
     [SerializeField] private Sprite[] walkSprites;
     [SerializeField] private float walkFrameTime = 0.12f;
@@ -25,6 +33,12 @@ public class EnemyAnimation : MonoBehaviour
 
     private Coroutine walkCoroutine;
     private Coroutine deathCoroutine;
+    private Coroutine shootCoroutine;
+    private bool isShooting;
+    private bool usesIdleAnimation;
+
+    public float ShootDuration => shootSprites == null
+        ? 0f : shootSprites.Length * Mathf.Max(0.01f, shootFrameTime);
 
     private void Awake()
     {
@@ -32,6 +46,7 @@ public class EnemyAnimation : MonoBehaviour
         ai = GetComponent<EnemyAI>();
         health = GetComponent<EnemyHealth>();
         knockback = GetComponent<EnemyKnockback>();
+        usesIdleAnimation = ai == null || GetComponent<EnemyRangedAI>() != null;
     }
 
     private void OnEnable()
@@ -43,8 +58,11 @@ public class EnemyAnimation : MonoBehaviour
 
     private void OnDisable()
     {
+        StopAllCoroutines();
         walkCoroutine = null;
         deathCoroutine = null;
+        shootCoroutine = null;
+        isShooting = false;
     }
 
     private void ResetAnimation()
@@ -55,10 +73,8 @@ public class EnemyAnimation : MonoBehaviour
         sr.flipX = false;
         if (ai != null) SetDirection(-1);
 
-        if (walkSprites != null && walkSprites.Length > 0)
-        {
-            sr.sprite = walkSprites[0];
-        }
+        Sprite[] frames = GetBaseSprites();
+        if (frames != null && frames.Length > 0) sr.sprite = frames[0];
     }
 
     //방향 설정
@@ -76,43 +92,75 @@ public class EnemyAnimation : MonoBehaviour
     }
 
     //걷는 애니메이션 재생
+    private Sprite[] GetBaseSprites()
+    {
+        return usesIdleAnimation && idleSprites != null && idleSprites.Length > 0
+            ? idleSprites : walkSprites;
+    }
+
     private IEnumerator WalkAnimationRoutine()
     {
-        if (walkSprites == null || walkSprites.Length == 0)
-        {
-            yield break;
-        }
+        Sprite[] frames = GetBaseSprites();
+        if (frames == null || frames.Length == 0) yield break;
 
+        float frameTime = usesIdleAnimation && idleSprites != null && idleSprites.Length > 0
+            ? idleFrameTime : walkFrameTime;
         int frameIndex = 0;
-
         while (health == null || !health.IsDead)
         {
             if (sr == null) yield break;
-
-            if ((ai == null || ai.Direction != 0) && (knockback == null || !knockback.IsKnockbackActive))
+            if (isShooting)
             {
-                sr.sprite = walkSprites[frameIndex];
+                yield return null;
+                continue;
+            }
 
-                frameIndex++;
-
-                if (frameIndex >= walkSprites.Length)
-                {
-                    frameIndex = 0;
-                }
+            if ((usesIdleAnimation || ai == null || ai.Direction != 0) &&
+                (knockback == null || !knockback.IsKnockbackActive))
+            {
+                sr.sprite = frames[frameIndex];
+                frameIndex = (frameIndex + 1) % frames.Length;
             }
             else if (ai != null && ai.Direction == 0)
             {
-                sr.sprite = walkSprites[0];
+                sr.sprite = frames[0];
                 frameIndex = 0;
             }
-
-            yield return new WaitForSeconds(Mathf.Max(0.01f, walkFrameTime));
+            yield return new WaitForSeconds(Mathf.Max(0.01f, frameTime));
         }
     }
 
-    //사망했을 때
+    public void PlayShoot()
+    {
+        if (!isActiveAndEnabled || sr == null || (health != null && health.IsDead) ||
+            deathCoroutine != null || shootSprites == null || shootSprites.Length == 0) return;
+        StopShoot();
+        shootCoroutine = StartCoroutine(ShootAnimationRoutine());
+    }
+
+    public void StopShoot()
+    {
+        if (shootCoroutine != null) StopCoroutine(shootCoroutine);
+        shootCoroutine = null;
+        isShooting = false;
+    }
+
+    private IEnumerator ShootAnimationRoutine()
+    {
+        isShooting = true;
+        foreach (Sprite frame in shootSprites)
+        {
+            if (sr == null || (health != null && health.IsDead)) break;
+            sr.sprite = frame;
+            yield return new WaitForSeconds(Mathf.Max(0.01f, shootFrameTime));
+        }
+        shootCoroutine = null;
+        // Keep the last shooting frame until the attack releases it with StopShoot().
+    }
+
     public void PlayDeath(System.Action onComplete)
     {
+        StopShoot();
         if (walkCoroutine != null)
         {
             StopCoroutine(walkCoroutine);

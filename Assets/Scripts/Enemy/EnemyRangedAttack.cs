@@ -42,6 +42,8 @@ public class EnemyRangedAttack : MonoBehaviour
     private EnemyHealth enemyHealth;
     private EnemyAI ai;
     private EnemyRangedAI rangedAI;
+    private EnemyAnimation enemyAnimation;
+    private EnemyKnockback knockback;
 
     private bool isAttacking;
     private float nextAttackTime;
@@ -53,57 +55,72 @@ public class EnemyRangedAttack : MonoBehaviour
         enemyHealth = GetComponent<EnemyHealth>();
         ai = GetComponent<EnemyAI>();
         rangedAI = GetComponent<EnemyRangedAI>();
+        enemyAnimation = GetComponent<EnemyAnimation>();
+        knockback = GetComponent<EnemyKnockback>();
     }
 
+
+    private void OnEnable()
+    {
+        isAttacking = false;
+        nextAttackTime = 0f;
+    }
+
+    private bool CanAttack()
+    {
+        return ai != null && rangedAI != null && enemyStats != null && projectilePrefab != null &&
+            (enemyHealth == null || !enemyHealth.IsDead) &&
+            (knockback == null || !knockback.IsKnockbackActive) && rangedAI.CanAttackPlayer();
+    }
 
     private void Update()
     {
-        if (ai == null || rangedAI == null || enemyStats == null) return;
-        if (enemyHealth != null && enemyHealth.IsDead) return;
-        
-        //이미 공격 중
-        if (isAttacking) return;
-
-        //공격 사거리 밖
-        if (!rangedAI.IsInAttackRange) return;
-
-        //플레이어 없음
-        if (ai.Player == null) return;
-
-        //쿨타임
-        if (Time.time < nextAttackTime)  return;
-
-
+        if (isAttacking || Time.time < nextAttackTime || !CanAttack()) return;
         StartCoroutine(AttackRoutine());
     }
-
 
     private IEnumerator AttackRoutine()
     {
         isAttacking = true;
-
-        //공격하는 동안 정지
         ai.StopMovement();
+        enemyAnimation?.PlayShoot();
 
-        if (attackDelay > 0f)
+        float delay = Mathf.Max(0f, attackDelay);
+        float animationDuration = enemyAnimation != null ? enemyAnimation.ShootDuration : 0f;
+        float elapsed = 0f;
+        while (elapsed < delay)
         {
-            yield return new WaitForSeconds(attackDelay);
+            if (!CanAttack())
+            {
+                FinishAttack();
+                yield break;
+            }
+            yield return null;
+            elapsed += Time.deltaTime;
         }
 
-        //선딜 도중 플레이어가 사거리 밖으로 나갔으면 공격 취소
-        if ((enemyHealth != null && enemyHealth.IsDead) ||
-            !rangedAI.IsInAttackRange ||
-            ai.Player == null)
+        if (!CanAttack())
         {
-            isAttacking = false;
+            FinishAttack();
             yield break;
         }
 
-        //발사
         FireProjectile();
+        nextAttackTime = Time.time + Mathf.Max(0f, attackCooldown);
 
-        nextAttackTime = Time.time + attackCooldown;
+        // Finish the shooting pose before returning to idle or starting another shot.
+        while (elapsed < animationDuration)
+        {
+            if (!CanAttack()) break;
+            yield return null;
+            elapsed += Time.deltaTime;
+        }
+        FinishAttack();
+    }
 
+    private void FinishAttack()
+    {
+        enemyAnimation?.StopShoot();
         isAttacking = false;
     }
 
@@ -174,6 +191,6 @@ public class EnemyRangedAttack : MonoBehaviour
     {
         StopAllCoroutines();
 
-        isAttacking = false;
+        FinishAttack();
     }
 }
