@@ -15,13 +15,13 @@ GameObject:
   - component: {fileID: 1668223271681138230}
   - component: {fileID: 4822023049940657397}
   - component: {fileID: 1404998612177364811}
-  - component: {fileID: -2873858688685304043}
+  - component: {fileID: -2735578826098154267}
   - component: {fileID: -590272891194950380}
   - component: {fileID: -3363200476755289365}
   - component: {fileID: -3398159243529488567}
   - component: {fileID: 849854591839963007}
   m_Layer: 8
-  m_Name: Enemy_Melee_Patrol_Only
+  m_Name: Enemy_Mushroom_Brown
   m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -93,10 +93,10 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: 1278559193
-  m_SortingLayer: 9
+  m_SortingLayer: 6
   m_SortingOrder: 0
   m_MaskInteraction: 0
-  m_Sprite: {fileID: 21300000, guid: 97c4c251ef557eb44b5b01596dad86aa, type: 3}
+  m_Sprite: {fileID: 21300000, guid: a185cf78f5adb5a4f8090df9c68f170d, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -140,7 +140,7 @@ CapsuleCollider2D:
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
-  m_Offset: {x: 0, y: 0}
+  m_Offset: {x: 0, y: -0.2}
   m_Size: {x: 3, y: 3.5}
   m_Direction: 1
 --- !u!50 &2594956225376429067
@@ -218,10 +218,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ddee26ff22870b04ab962e7079dc5ac6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EnemyAi
-  moveSpeed: 6
-  turnCooldown: 2
+  moveSpeed: 3
+  turnCooldown: 0.5
   minIdleTime: 0
-  maxIdleTime: 0
+  maxIdleTime: 2
   minWalkTime: 1
   maxWalkTime: 3
   patrolTurnChance: 0.5
@@ -237,7 +237,7 @@ MonoBehaviour:
   groundLayer:
     serializedVersion: 2
     m_Bits: 64
---- !u!114 &-2873858688685304043
+--- !u!114 &-2735578826098154267
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -246,9 +246,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 1525100744247835566}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6ab274b6ddf3406d96e50a07ad7be7fa, type: 3}
+  m_Script: {fileID: 11500000, guid: 2cfeaa7d17132c945b328514d3e1461a, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::EnemyPatrolOnlyAI
+  m_EditorClassIdentifier: Assembly-CSharp::EnemyMeleeAI
+  chaseTurnDistance: 1
 --- !u!114 &-590272891194950380
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -273,15 +274,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a6890d6397d7bf44d9f271bdd365cc08, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EnemyAnimation
+  spriteFacesRight: 1
   walkSprites:
-  - {fileID: 21300000, guid: 97c4c251ef557eb44b5b01596dad86aa, type: 3}
-  - {fileID: 21300000, guid: 60bac2a297e14764cb2b43f33225d44b, type: 3}
-  - {fileID: 21300000, guid: 7d86fedc2a3f3b24995594f9a4dd70be, type: 3}
-  walkFrameTime: 0.12
+  - {fileID: 21300000, guid: a185cf78f5adb5a4f8090df9c68f170d, type: 3}
+  - {fileID: 21300000, guid: 1451972073681ff4a91e317e3bcd168a, type: 3}
+  - {fileID: 21300000, guid: fee98982bc6169048a1b26bc717fe93f, type: 3}
+  walkFrameTime: 0.3
   deathSprites:
-  - {fileID: 21300000, guid: e4ba077dcda69324286ac86b2ae5403e, type: 3}
-  - {fileID: 21300000, guid: 43897825c633b4245acaeb70bdd2ec67, type: 3}
-  - {fileID: 21300000, guid: 67206ad49028ef74cb23a541423b635e, type: 3}
+  - {fileID: 21300000, guid: afc5e65b76f23a64da1010bcedd4c798, type: 3}
+  - {fileID: 21300000, guid: ab7e5f8df35807f42a858566ad9a60a6, type: 3}
+  - {fileID: 21300000, guid: 73382740045c965459859d753c5d978e, type: 3}
   deathFrameTime: 0.12
   deathEndHoldTime: 0.08
 --- !u!114 &-3398159243529488567
@@ -296,7 +298,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f744d1166891d6943bd60c8634499e22, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EnemyHealth
-  maxHp: 10
+  maxHp: 5
   healthBar: {fileID: 4980014735012934091}
   damagePopupPrefab: {fileID: 4418119550550923920, guid: f9203d53f7bdee24b9be1417d4647687, type: 3}
   damagePopupOffset: {x: 0, y: 2, z: 0}
@@ -308,6 +310,7 @@ MonoBehaviour:
   hitBlinkInterval: 0.03
   playerEnergy: {fileID: 0}
   energyReward: 20
+  logEnergyReward: 0
 --- !u!114 &849854591839963007
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -356,7 +359,7 @@ Transform:
   m_GameObject: {fileID: 3095458375250088132}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 1}
+  m_LocalPosition: {x: 0, y: -0.2, z: 1}
   m_LocalScale: {x: 4, y: 3.3, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []

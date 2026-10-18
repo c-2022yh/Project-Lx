@@ -5,6 +5,10 @@ using UnityEngine;
 // 적 스프라이트 애니메이션 관리
 public class EnemyAnimation : MonoBehaviour
 {
+    [Header("Sprite Direction")]
+    [Tooltip("Enable if the original, unflipped sprites face right.")]
+    [SerializeField] private bool spriteFacesRight = false;
+
     [Header("Walk Animation")]
     [SerializeField] private Sprite[] walkSprites;
     [SerializeField] private float walkFrameTime = 0.12f;
@@ -49,6 +53,7 @@ public class EnemyAnimation : MonoBehaviour
 
         sr.enabled = true;
         sr.flipX = false;
+        if (ai != null) SetDirection(-1);
 
         if (walkSprites != null && walkSprites.Length > 0)
         {
@@ -67,7 +72,7 @@ public class EnemyAnimation : MonoBehaviour
             if (sr == null) return;
         } 
 
-        sr.flipX = direction > 0;
+        sr.flipX = spriteFacesRight ? direction < 0 : direction > 0;
     }
 
     //걷는 애니메이션 재생

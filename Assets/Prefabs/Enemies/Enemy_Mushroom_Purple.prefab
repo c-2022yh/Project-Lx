@@ -21,7 +21,7 @@ GameObject:
   - component: {fileID: -3398159243529488567}
   - component: {fileID: 849854591839963007}
   m_Layer: 8
-  m_Name: Enemy_Melee_Chase
+  m_Name: Enemy_Mushroom_Purple
   m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -93,10 +93,10 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: 1278559193
-  m_SortingLayer: 9
+  m_SortingLayer: 6
   m_SortingOrder: 0
   m_MaskInteraction: 0
-  m_Sprite: {fileID: 21300000, guid: d81b0a29ba9f02341bd05aba710acb17, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 3d5ac5cd55705a340948f73e73f1f22d, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -140,7 +140,7 @@ CapsuleCollider2D:
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
-  m_Offset: {x: 0, y: 0}
+  m_Offset: {x: 0, y: -0.2}
   m_Size: {x: 3, y: 3.5}
   m_Direction: 1
 --- !u!50 &2594956225376429067
@@ -274,15 +274,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a6890d6397d7bf44d9f271bdd365cc08, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EnemyAnimation
+  spriteFacesRight: 1
   walkSprites:
-  - {fileID: 21300000, guid: d81b0a29ba9f02341bd05aba710acb17, type: 3}
-  - {fileID: 21300000, guid: 3c64cd477ed18c14abc4dd9fce579404, type: 3}
-  - {fileID: 21300000, guid: 6e6f7109f435f3c42886be1fc56095db, type: 3}
-  walkFrameTime: 0.12
+  - {fileID: 21300000, guid: 3d5ac5cd55705a340948f73e73f1f22d, type: 3}
+  - {fileID: 21300000, guid: da96d7fcea61814408b69f1b7fc3c9ae, type: 3}
+  - {fileID: 21300000, guid: 2f1b34fc5b68d4646a1cfe3f799393cf, type: 3}
+  walkFrameTime: 0.3
   deathSprites:
-  - {fileID: 21300000, guid: d15263fcb0f6dce4bb1a4503bc10984f, type: 3}
-  - {fileID: 21300000, guid: 902ecc88c06e31543b68afc0714d6351, type: 3}
-  - {fileID: 21300000, guid: 15da4e75b7d1fd343a30b2d257b66b64, type: 3}
+  - {fileID: 21300000, guid: 18b5224f595cded4e8989f5145fd34c7, type: 3}
+  - {fileID: 21300000, guid: 3d01b9819abf8414e99681528f616bce, type: 3}
+  - {fileID: 21300000, guid: 83c7a38f3d881994fa7a6f570c02810f, type: 3}
   deathFrameTime: 0.12
   deathEndHoldTime: 0.08
 --- !u!114 &-3398159243529488567
@@ -297,7 +298,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f744d1166891d6943bd60c8634499e22, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EnemyHealth
-  maxHp: 10
+  maxHp: 5
   healthBar: {fileID: 4980014735012934091}
   damagePopupPrefab: {fileID: 4418119550550923920, guid: f9203d53f7bdee24b9be1417d4647687, type: 3}
   damagePopupOffset: {x: 0, y: 2, z: 0}
@@ -309,6 +310,7 @@ MonoBehaviour:
   hitBlinkInterval: 0.03
   playerEnergy: {fileID: 0}
   energyReward: 20
+  logEnergyReward: 0
 --- !u!114 &849854591839963007
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -357,7 +359,7 @@ Transform:
   m_GameObject: {fileID: 3095458375250088132}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 1}
+  m_LocalPosition: {x: 0, y: -0.2, z: 1}
   m_LocalScale: {x: 4, y: 3.3, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []

@@ -30,6 +30,7 @@ public class EnemyFlyingChargeAI : MonoBehaviour
     private EnemyHealth health;
     private EnemyKnockback knockback;
     private SpriteRenderer spriteRenderer;
+    private EnemyAnimation enemyAnimation;
     private State state;
     private Vector2 hoverCenter;
     private Vector2 chargeDirection;
@@ -44,6 +45,7 @@ public class EnemyFlyingChargeAI : MonoBehaviour
         health = GetComponent<EnemyHealth>();
         knockback = GetComponent<EnemyKnockback>();
         spriteRenderer = GetComponent<SpriteRenderer>();
+        enemyAnimation = GetComponent<EnemyAnimation>();
         rb.gravityScale = 0f;
     }
 
@@ -168,8 +170,10 @@ public class EnemyFlyingChargeAI : MonoBehaviour
     {
         if (Mathf.Abs(direction.x) <= 0.001f) return;
         ai.TrySetDirection(direction.x > 0f ? 1 : -1);
-        // EnemyAnimation is optional. Existing enemy art faces left by default.
-        if (spriteRenderer != null) spriteRenderer.flipX = ai.Direction > 0;
+        if (enemyAnimation != null)
+            enemyAnimation.SetDirection(ai.Direction);
+        else if (spriteRenderer != null)
+            spriteRenderer.flipX = ai.Direction > 0;
     }
 
     private void OnDrawGizmosSelected()
