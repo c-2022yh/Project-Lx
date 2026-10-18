@@ -80,11 +80,11 @@ public class EnemyAnimation : MonoBehaviour
 
         int frameIndex = 0;
 
-        while (!health.IsDead)
+        while (health == null || !health.IsDead)
         {
             if (sr == null) yield break;
 
-            if (ai.Direction != 0 && (knockback == null || !knockback.IsKnockbackActive))
+            if ((ai == null || ai.Direction != 0) && (knockback == null || !knockback.IsKnockbackActive))
             {
                 sr.sprite = walkSprites[frameIndex];
 
@@ -95,7 +95,7 @@ public class EnemyAnimation : MonoBehaviour
                     frameIndex = 0;
                 }
             }
-            else if (ai.Direction == 0)
+            else if (ai != null && ai.Direction == 0)
             {
                 sr.sprite = walkSprites[0];
                 frameIndex = 0;

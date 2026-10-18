@@ -71,6 +71,7 @@ MonoBehaviour:
     gaugeMode: 1
     gaugeMaterial: {fileID: 2100000, guid: 96a2d28b9b664b0f8b2e84c9587ce5ef, type: 2}
     crescentRadius: 0.38
+    crescentCenter: {x: 0.5, y: 0.5}
     crescentWidth: 0.3
   effects:
   - {fileID: 11400000, guid: 8b8635fa89d6c554b90996afdc9827bc, type: 2}
