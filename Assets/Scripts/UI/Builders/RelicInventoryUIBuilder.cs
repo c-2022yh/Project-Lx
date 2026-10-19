@@ -263,8 +263,10 @@ public static class RelicInventoryUIBuilder
 
         AddDropZone(bodyRow, RelicDropTargetKind.BodyRow);
 
-        GameObject costText = K.Text("BodyCostText", w, "코스트  0 / 5", 22,
-            FontStyles.Bold, TextAlignmentOptions.Center);
+        // 신체 코스트: ◆◆◇◇◇ (채운 칸 = 쓴 코스트). 글자는 RelicInventoryPanel이 채운다.
+        GameObject costText = K.Text("BodyCostText", w, "◇◇◇◇◇", 24,
+            FontStyles.Normal, TextAlignmentOptions.Center);
+        costText.GetComponent<TextMeshProUGUI>().characterSpacing = 18f;
         K.Place(costText, K.Anchor.TopLeft, LeftCenterX - 150, BodyCenterY - BodySlotSize / 2f - 14f, 300, 30);
 
         // ── 가운데 세로 구분선 ───────────────
@@ -621,9 +623,10 @@ public static class RelicInventoryUIBuilder
         fallbackText.fontSizeMax = 64f;
         fallbackText.enabled = false;
 
-        GameObject cost = K.Text("Cost", slot.transform, "0", 18,
-            FontStyles.Bold, TextAlignmentOptions.BottomRight);
-        K.Place(cost, K.Anchor.BottomRight, -6, 4, 28, 24);
+        // 신체 유물 코스트를 ◆ 개수로 (RelicSlotView가 채운다)
+        GameObject cost = K.Text("Cost", slot.transform, "", 15,
+            FontStyles.Normal, TextAlignmentOptions.BottomRight);
+        K.Place(cost, K.Anchor.BottomRight, -6, 4, 80, 22);
 
         RelicSlotView view = slot.AddComponent<RelicSlotView>();
 
