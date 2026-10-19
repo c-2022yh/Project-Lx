@@ -24,7 +24,7 @@ public static class TitleSceneUIBuilder
     // 10.16 시안 두 가지. 디자이너 PDF 6쪽 = A, 7쪽 = B.
     // 바꾸고 싶으면 아래 두 줄만 "A"로 고치고 Build Title Scene을 다시 누르면 된다.
     private const string TitleBackground = "Title_BG_B";
-    private const string TitleLogo = "Title_Logo_B";
+    private const string TitleLogo = "Title_Logo_C"; // 10.19 최종 로고 (여우 + 꼬리)
 
     private static readonly Color MenuIdle = new Color(0.62f, 0.64f, 0.70f, 1f);
 
@@ -174,7 +174,7 @@ public static class TitleSceneUIBuilder
         return panelComp;
     }
 
-    private const float LogoX = 170f, LogoY = -180f, LogoW = 620f, LogoH = 245f;
+    private const float LogoX = 150f, LogoY = -150f, LogoW = 780f, LogoH = 307f;
 
     /// <summary>
     /// 로고 뒤 푸른 빛 + 로고 그림 + 로고 모양 안에서만 보이는 빛줄기.
@@ -219,13 +219,14 @@ public static class TitleSceneUIBuilder
 
         GameObject bar = K.Img("ShineBar", shineMask.transform, new Color(0.85f, 0.94f, 1f, 0.9f));
         bar.GetComponent<UnityEngine.UI.Image>().sprite = K.Redesign("Shine_Bar");
-        K.Place(bar, K.Anchor.Center, -450f, 0f, 150f, 420f);
+        K.Place(bar, K.Anchor.Center, -LogoW * 0.68f, 0f, 150f, LogoH + 180f);
         bar.transform.localRotation = Quaternion.Euler(0f, 0f, -20f);
 
         TitleLogoLight logoLight = title.AddComponent<TitleLogoLight>();
         SerializedObject so = new SerializedObject(logoLight);
         so.FindProperty("glow").objectReferenceValue = glowImage;
         so.FindProperty("shineBar").objectReferenceValue = bar.GetComponent<RectTransform>();
+        so.FindProperty("shineTravel").floatValue = LogoW * 1.36f; // 로고 왼쪽 밖 → 오른쪽 밖
         so.ApplyModifiedPropertiesWithoutUndo();
     }
 
