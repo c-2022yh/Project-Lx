@@ -64,7 +64,7 @@ public class AcquirePopup : MonoBehaviour
     /// <param name="description">아래 작은 글씨. 없으면 비워도 된다.</param>
     public static void Show(Sprite icon, string itemName, string description)
     {
-        Enqueue(new Entry { Icon = icon, Name = itemName, Description = description, Label = "획득" });
+        Enqueue(new Entry { Icon = icon, Name = itemName, Description = description, Label = "획득", Color = Accent });
     }
 
     /// <summary>유물 획득 알림. [유물창 보기] 버튼이 같이 나온다.</summary>
@@ -77,7 +77,9 @@ public class AcquirePopup : MonoBehaviour
             Icon = relic.Icon,
             Name = relic.RelicName,
             Description = relic.Description,
-            Label = "새 유물",
+            // 계열마다 유물창 칸 테두리와 같은 색으로 칠한다.
+            Label = RelicLabels.NameOf(relic.Category),
+            Color = RelicLabels.ColorOf(relic.Category),
             IsRelic = true
         });
     }
@@ -90,6 +92,7 @@ public class AcquirePopup : MonoBehaviour
         public string Name;
         public string Description;
         public string Label;
+        public Color Color;
         public bool IsRelic;
     }
 
@@ -115,6 +118,9 @@ public class AcquirePopup : MonoBehaviour
     private TMP_Text confirmText;
     private Image viewBg;
     private TMP_Text viewText;
+    private Outline panelOutline;
+    private Image iconFrameImage;
+    private Color accent = Accent;
 
     // 유물 지켜보기
     private PlayerRelicManager relicManager;
@@ -197,9 +203,14 @@ public class AcquirePopup : MonoBehaviour
         Time.timeScale = 0f;
 
         string itemName = string.IsNullOrEmpty(entry.Name) ? "???" : entry.Name;
-        string accentHex = ColorUtility.ToHtmlStringRGB(Accent);
+        accent = entry.Color.a > 0f ? entry.Color : Accent;
+        string accentHex = ColorUtility.ToHtmlStringRGB(accent);
 
         labelText.text = entry.Label;
+        labelText.color = accent;
+        if (panelOutline != null) panelOutline.effectColor = new Color(accent.r, accent.g, accent.b, 0.55f);
+        // 아이콘 칸은 계열 색을 아주 어둡게 깐다.
+        if (iconFrameImage != null) iconFrameImage.color = Color.Lerp(ButtonIdle, accent, 0.22f);
         messageText.text = $"<color=#{accentHex}>{itemName}</color>{ObjectParticle(itemName)} 획득했습니다";
         descriptionText.text = entry.Description ?? "";
         hintText.text = entry.IsRelic ? "제단에서 장착할 수 있어요" : "";
@@ -261,11 +272,11 @@ public class AcquirePopup : MonoBehaviour
         Paint(viewBg, viewText, selected == 1);
     }
 
-    private static void Paint(Image bg, TMP_Text text, bool on)
+    private void Paint(Image bg, TMP_Text text, bool on)
     {
         if (bg == null) return;
 
-        bg.color = on ? Accent : ButtonIdle;
+        bg.color = on ? accent : ButtonIdle;
         text.color = on ? TextOnAccent : TextMain;
     }
 
@@ -351,6 +362,7 @@ public class AcquirePopup : MonoBehaviour
         panelRect.anchoredPosition = new Vector2(0f, 20f);
 
         Outline outline = panel.gameObject.AddComponent<Outline>();
+        panelOutline = outline;
         outline.effectColor = new Color(Accent.r, Accent.g, Accent.b, 0.45f);
         outline.effectDistance = new Vector2(2f, -2f);
 
@@ -358,6 +370,7 @@ public class AcquirePopup : MonoBehaviour
         Place(labelText.rectTransform, 48f, -34f, 500f, 32f);
 
         Image frame = NewImage("IconFrame", panelRect, ButtonIdle);
+        iconFrameImage = frame;
         iconFrame = frame.rectTransform;
         Place(iconFrame, 48f, -84f, 128f, 128f);
 

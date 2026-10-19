@@ -337,7 +337,7 @@ public class RelicInventoryPanel : MonoBehaviour, IRelicSlotHost
         storageFilter = storageFilter == category ? null : category;
 
         SetHint(storageFilter.HasValue
-            ? $"{RelicEquipRules.LabelOf(storageFilter.Value)} 계열만 보는 중"
+            ? $"{RelicLabels.NameOf(storageFilter.Value)}만 보는 중"
             : "전체 보는 중");
 
         Refresh();
@@ -501,7 +501,7 @@ public class RelicInventoryPanel : MonoBehaviour, IRelicSlotHost
 
         if (relic.Category != category)
         {
-            SetHint($"{RelicEquipRules.LabelOf(relic.Category)} 유물은 {RelicEquipRules.LabelOf(category)} 칸에 넣을 수 없습니다");
+            SetHint($"{RelicLabels.NameOf(relic.Category)}은 {RelicLabels.NameOf(category)} 칸에 넣을 수 없습니다");
             return;
         }
 
@@ -870,7 +870,7 @@ public class RelicInventoryPanel : MonoBehaviour, IRelicSlotHost
         if (bodyCostText == null) return;
 
         int used = RelicEquipRules.UsedBodyCost(equipped);
-        bodyCostText.text = $"코스트  {used} / {RelicEquipRules.BodyCostBudget}";
+        bodyCostText.text = RelicLabels.CostGauge(used, RelicEquipRules.BodyCostBudget);
     }
 
     private void UpdateDescription(IReadOnlyList<RelicData> equipped)
@@ -888,11 +888,7 @@ public class RelicInventoryPanel : MonoBehaviour, IRelicSlotHost
 
         if (descMeta != null)
         {
-            if (!has) descMeta.text = "";
-            else if (selected.Category == RelicCategory.Body)
-                descMeta.text = $"{RelicEquipRules.LabelOf(selected.Category)}   ·   코스트 {selected.Cost}";
-            else
-                descMeta.text = RelicEquipRules.LabelOf(selected.Category);
+            descMeta.text = has ? RelicLabels.MetaLine(selected) : "";
         }
 
         if (descText != null)
