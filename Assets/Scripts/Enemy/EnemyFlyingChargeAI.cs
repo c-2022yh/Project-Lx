@@ -1,12 +1,12 @@
 using UnityEngine;
 
-// Hovers in place, then charges in a fixed direction using contact damage.
+// Hovers, notices the player, then commits to the position seen on first detection.
 [DisallowMultipleComponent]
 [RequireComponent(typeof(Rigidbody2D), typeof(EnemyAI), typeof(EnemyHealth))]
 [RequireComponent(typeof(Enemy), typeof(EnemyStats), typeof(EnemyContactAttack))]
 public class EnemyFlyingChargeAI : MonoBehaviour
 {
-    private enum State { Hover, Windup, Charge, Recovery }
+    private enum State { Hover, Detecting, Windup, Charge, Recovery }
 
     [Header("Hover")]
     [SerializeField, Min(0f)] private float hoverAmplitude = 0.5f;
@@ -14,14 +14,17 @@ public class EnemyFlyingChargeAI : MonoBehaviour
     [SerializeField, Min(0f)] private float hoverSpeed = 3f;
 
     [Header("Player Detection")]
-    [Tooltip("Distance to the player required to begin and maintain the windup.")]
+    [Tooltip("Maximum distance required to notice the player.")]
     [SerializeField, Min(0f)] private float detectionRadius = 6f;
+    [Tooltip("Terrain layers that block detection. Nothing disables the line-of-sight check.")]
+    [SerializeField] private LayerMask sightObstacleLayer;
+    [Tooltip("Continuous time visible and in range before Prepare starts. Losing sight during this delay resets detection.")]
+    [SerializeField, Min(0f)] private float detectionDelay = 0.6f;
 
     [Header("Charge")]
-    [Tooltip("Time spent hovering in range before charging. Leaving range cancels it.")]
+    [Tooltip("Prepare duration. Once Prepare starts, charge at the first detected position even if the player leaves.")]
     [SerializeField, Min(0f)] private float windupTime = 1f;
     [SerializeField, Min(0f)] private float chargeSpeed = 12f;
-    [SerializeField, Min(0.01f)] private float chargeDuration = 0.5f;
     [Tooltip("Pause after charging before hovering and detecting the player again.")]
     [SerializeField, Min(0f)] private float recoveryTime = 1.5f;
 
@@ -33,7 +36,7 @@ public class EnemyFlyingChargeAI : MonoBehaviour
     private EnemyAnimation enemyAnimation;
     private State state;
     private Vector2 hoverCenter;
-    private Vector2 chargeDirection;
+    private Vector2 chargeTarget;
     private float hoverTime;
     private float stateTime;
     private bool needsSpawnReset;
@@ -56,12 +59,13 @@ public class EnemyFlyingChargeAI : MonoBehaviour
         state = State.Hover;
         stateTime = 0f;
         hoverTime = 0f;
-        chargeDirection = Vector2.zero;
+        chargeTarget = Vector2.zero;
     }
 
     private void OnDisable()
     {
         rb.linearVelocity = Vector2.zero;
+        enemyAnimation?.StopCharge();
     }
 
     private void FixedUpdate()
@@ -79,6 +83,7 @@ public class EnemyFlyingChargeAI : MonoBehaviour
                 // Let knockback own velocity; restart recovery at its final position.
                 state = State.Recovery;
                 stateTime = recoveryTime;
+                enemyAnimation?.StopCharge();
             }
             else
             {
@@ -92,35 +97,42 @@ public class EnemyFlyingChargeAI : MonoBehaviour
         {
             case State.Hover:
                 UpdateHover(dt);
-                if (IsPlayerInRange())
+                if (CanSeePlayer())
                 {
-                    state = State.Windup;
-                    stateTime = windupTime;
+                    chargeTarget = ai.Player.position;
+                    state = State.Detecting;
+                    stateTime = detectionDelay;
+                    if (stateTime <= 0f) BeginPrepare();
                 }
                 break;
 
-            case State.Windup:
+            case State.Detecting:
                 UpdateHover(dt);
-                if (!IsPlayerInRange())
+                if (!CanSeePlayer())
                 {
                     state = State.Hover;
                     break;
                 }
-                FaceDirection((Vector2)ai.Player.position - rb.position);
+                stateTime -= dt;
+                if (stateTime <= 0f) BeginPrepare();
+                break;
+
+            case State.Windup:
+                UpdateHover(dt);
+                FaceDirection(chargeTarget - rb.position);
                 stateTime -= dt;
                 if (stateTime <= 0f) BeginCharge();
                 break;
 
             case State.Charge:
-                if (stateTime <= 0f)
+                if (stateTime <= 0f || (chargeTarget - rb.position).sqrMagnitude <= 0.0001f)
                 {
-                    rb.linearVelocity = Vector2.zero;
-                    state = State.Recovery;
-                    stateTime = recoveryTime;
+                    BeginRecovery();
                     break;
                 }
-                // The last physics step covers only the remaining charge duration.
-                rb.linearVelocity = chargeDirection * chargeSpeed * (Mathf.Min(dt, stateTime) / dt);
+                // Clamp the last step to the remembered point instead of overshooting it.
+                Vector2 next = Vector2.MoveTowards(rb.position, chargeTarget, chargeSpeed * dt);
+                rb.linearVelocity = (next - rb.position) / dt;
                 stateTime -= dt;
                 break;
 
@@ -147,23 +159,46 @@ public class EnemyFlyingChargeAI : MonoBehaviour
         rb.linearVelocity = (next - rb.position) / dt;
     }
 
-    private bool IsPlayerInRange()
+    private bool CanSeePlayer()
     {
-        return ai.Player != null &&
-            ((Vector2)ai.Player.position - rb.position).sqrMagnitude <= detectionRadius * detectionRadius;
+        if (ai.Player == null || !ai.Player.gameObject.activeInHierarchy) return false;
+        Vector2 target = ai.Player.position;
+        if ((target - rb.position).sqrMagnitude > detectionRadius * detectionRadius) return false;
+
+        return sightObstacleLayer.value == 0 ||
+            Physics2D.Linecast(rb.position, target, sightObstacleLayer).collider == null;
+    }
+
+    private void BeginPrepare()
+    {
+        state = State.Windup;
+        stateTime = windupTime;
+        FaceDirection(chargeTarget - rb.position);
+        enemyAnimation?.PlayPrepare();
     }
 
     private void BeginCharge()
     {
-        // Aim once at launch, allowing the player to dodge sideways during the charge.
-        Vector2 difference = (Vector2)ai.Player.position - rb.position;
-        chargeDirection = difference.sqrMagnitude > 0.0001f
-            ? difference.normalized
-            : Vector2.right * ai.Direction;
-        FaceDirection(chargeDirection);
+        Vector2 difference = chargeTarget - rb.position;
+        if (difference.sqrMagnitude <= 0.0001f || chargeSpeed <= 0f)
+        {
+            BeginRecovery();
+            return;
+        }
+        FaceDirection(difference);
         state = State.Charge;
-        stateTime = chargeDuration;
+        // Allow the expected travel time plus a little tolerance, so a wall cannot trap us in Charge.
+        stateTime = difference.magnitude / chargeSpeed + 0.1f;
+        enemyAnimation?.PlayDash();
         rb.linearVelocity = Vector2.zero;
+    }
+
+    private void BeginRecovery()
+    {
+        rb.linearVelocity = Vector2.zero;
+        state = State.Recovery;
+        stateTime = recoveryTime;
+        enemyAnimation?.StopCharge();
     }
 
     private void FaceDirection(Vector2 direction)

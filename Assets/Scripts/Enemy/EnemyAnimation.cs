@@ -21,6 +21,11 @@ public class EnemyAnimation : MonoBehaviour
     [SerializeField] private Sprite[] walkSprites;
     [SerializeField] private float walkFrameTime = 0.12f;
 
+    [Header("Flying Charge Animation")]
+    [SerializeField] private Sprite prepareSprite;
+    [SerializeField] private Sprite[] dashSprites;
+    [SerializeField, Min(0.01f)] private float dashFrameTime = 0.1f;
+
     [Header("Death Animation")]
     [SerializeField] private Sprite[] deathSprites;
     [SerializeField] private float deathFrameTime = 0.12f;
@@ -34,6 +39,8 @@ public class EnemyAnimation : MonoBehaviour
     private Coroutine walkCoroutine;
     private Coroutine deathCoroutine;
     private Coroutine shootCoroutine;
+    private Coroutine dashCoroutine;
+    private bool isCharging;
     private bool isShooting;
     private bool usesIdleAnimation;
 
@@ -63,6 +70,8 @@ public class EnemyAnimation : MonoBehaviour
         deathCoroutine = null;
         shootCoroutine = null;
         isShooting = false;
+        dashCoroutine = null;
+        isCharging = false;
     }
 
     private void ResetAnimation()
@@ -109,7 +118,7 @@ public class EnemyAnimation : MonoBehaviour
         while (health == null || !health.IsDead)
         {
             if (sr == null) yield break;
-            if (isShooting)
+            if (isShooting || isCharging)
             {
                 yield return null;
                 continue;
@@ -128,6 +137,54 @@ public class EnemyAnimation : MonoBehaviour
             }
             yield return new WaitForSeconds(Mathf.Max(0.01f, frameTime));
         }
+    }
+
+    public void PlayPrepare()
+    {
+        StopCharge();
+        if (!CanPlayCharge() || prepareSprite == null) return;
+        isCharging = true;
+        sr.sprite = prepareSprite;
+    }
+
+    public void PlayDash()
+    {
+        StopCharge();
+        if (!CanPlayCharge() || dashSprites == null || dashSprites.Length == 0) return;
+        isCharging = true;
+        dashCoroutine = StartCoroutine(DashAnimationRoutine());
+    }
+
+    private bool CanPlayCharge()
+    {
+        return isActiveAndEnabled && sr != null &&
+            (health == null || !health.IsDead) && deathCoroutine == null;
+    }
+
+    public void StopCharge()
+    {
+        if (dashCoroutine != null) StopCoroutine(dashCoroutine);
+        dashCoroutine = null;
+        bool wasCharging = isCharging;
+        isCharging = false;
+        if (wasCharging && CanPlayCharge())
+        {
+            Sprite[] frames = GetBaseSprites();
+            if (frames != null && frames.Length > 0) sr.sprite = frames[0];
+        }
+    }
+
+    private IEnumerator DashAnimationRoutine()
+    {
+        int index = 0;
+        while (CanPlayCharge())
+        {
+            sr.sprite = dashSprites[index];
+            index = (index + 1) % dashSprites.Length;
+            yield return new WaitForSeconds(Mathf.Max(0.01f, dashFrameTime));
+        }
+        dashCoroutine = null;
+        isCharging = false;
     }
 
     public void PlayShoot()
@@ -160,6 +217,7 @@ public class EnemyAnimation : MonoBehaviour
 
     public void PlayDeath(System.Action onComplete)
     {
+        StopCharge();
         StopShoot();
         if (walkCoroutine != null)
         {

@@ -47,6 +47,9 @@ public class EnemyRangedAttack : MonoBehaviour
 
     private bool isAttacking;
     private float nextAttackTime;
+    private int shotDirection;
+
+    public bool IsAttacking => isAttacking;
 
 
     private void Awake()
@@ -63,6 +66,7 @@ public class EnemyRangedAttack : MonoBehaviour
     private void OnEnable()
     {
         isAttacking = false;
+        shotDirection = 0;
         nextAttackTime = 0f;
     }
 
@@ -70,17 +74,23 @@ public class EnemyRangedAttack : MonoBehaviour
     {
         return ai != null && rangedAI != null && enemyStats != null && projectilePrefab != null &&
             (enemyHealth == null || !enemyHealth.IsDead) &&
-            (knockback == null || !knockback.IsKnockbackActive) && rangedAI.CanAttackPlayer();
+            (knockback == null || !knockback.IsKnockbackActive) && rangedAI.CanAttackPlayer() &&
+            (!isAttacking || (ai.Player.position.x - transform.position.x) * shotDirection >= 0f);
     }
 
     private void Update()
     {
         if (isAttacking || Time.time < nextAttackTime || !CanAttack()) return;
+        ai.FacePlayer();
+        // Wait for the shared turn cooldown rather than firing toward the wrong side.
+        float targetX = ai.Player.position.x - transform.position.x;
+        if (targetX * ai.Direction < 0f) return;
         StartCoroutine(AttackRoutine());
     }
 
     private IEnumerator AttackRoutine()
     {
+        shotDirection = ai.Direction;
         isAttacking = true;
         ai.StopMovement();
         enemyAnimation?.PlayShoot();
@@ -132,7 +142,7 @@ public class EnemyRangedAttack : MonoBehaviour
         if (ai.Player == null) return;
 
         //현재 바라보는 방향
-        float facingDirection = ai.Direction;
+        float facingDirection = shotDirection;
 
         //투사체 생성 위치
         Vector2 spawnPosition =
@@ -144,7 +154,7 @@ public class EnemyRangedAttack : MonoBehaviour
 
 
         // 발사 순간 플레이어 위치를 향하는 방향
-        Vector2 direction = ((Vector2)ai.Player.position - spawnPosition).normalized;
+        Vector2 direction = Vector2.right * facingDirection;
 
         if (direction.sqrMagnitude <= 0.0001f) return;
 
