@@ -18,7 +18,6 @@ GameObject:
   - component: {fileID: 9155972463604333347}
   - component: {fileID: -3363200476755289365}
   - component: {fileID: -3398159243529488567}
-  - component: {fileID: 849854591839963007}
   - component: {fileID: 836209086618364678}
   - component: {fileID: 3495138512986650946}
   m_Layer: 8
@@ -316,26 +315,6 @@ MonoBehaviour:
   playerEnergy: {fileID: 0}
   energyReward: 20
   logEnergyReward: 0
---- !u!114 &849854591839963007
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1525100744247835566}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2de9dce1027b3234d9e0b5af287cf45b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::EnemyKnockback
-  hitStunTime: 0.2
-  knockbackForce: 7
-  knockbackUpForce: 0
-  backGroundCheck: {fileID: 3473758253372014481}
-  backGroundCheckDistance: 1
-  groundLayer:
-    serializedVersion: 2
-    m_Bits: 64
 --- !u!114 &836209086618364678
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -43,6 +43,11 @@ public class EnemyAnimation : MonoBehaviour
     private bool isCharging;
     private bool isShooting;
     private bool usesIdleAnimation;
+    private bool hasActionPose;
+    private Rigidbody2D body;
+    [Tooltip("Use idle/run by actual velocity. Opt in per prefab.")]
+    [SerializeField] private bool idleWhenStationary;
+    [SerializeField] private Sprite hitSprite;
 
     public float ShootDuration => shootSprites == null
         ? 0f : shootSprites.Length * Mathf.Max(0.01f, shootFrameTime);
@@ -53,6 +58,7 @@ public class EnemyAnimation : MonoBehaviour
         ai = GetComponent<EnemyAI>();
         health = GetComponent<EnemyHealth>();
         knockback = GetComponent<EnemyKnockback>();
+        body = GetComponent<Rigidbody2D>();
         usesIdleAnimation = ai == null || GetComponent<EnemyRangedAI>() != null;
     }
 
@@ -72,6 +78,7 @@ public class EnemyAnimation : MonoBehaviour
         isShooting = false;
         dashCoroutine = null;
         isCharging = false;
+        hasActionPose = false;
     }
 
     private void ResetAnimation()
@@ -118,9 +125,25 @@ public class EnemyAnimation : MonoBehaviour
         while (health == null || !health.IsDead)
         {
             if (sr == null) yield break;
-            if (isShooting || isCharging)
+            if (isShooting || isCharging || hasActionPose)
             {
                 yield return null;
+                continue;
+            }
+
+            if (idleWhenStationary)
+            {
+                if (hitSprite != null && knockback != null && knockback.IsKnockbackActive)
+                {
+                    sr.sprite = hitSprite;
+                    yield return null;
+                    continue;
+                }
+                bool moving = body != null && Mathf.Abs(body.linearVelocity.x) > 0.05f;
+                Sprite[] currentFrames = moving ? walkSprites : idleSprites;
+                if (currentFrames != null && currentFrames.Length > 0)
+                    sr.sprite = currentFrames[frameIndex++ % currentFrames.Length];
+                yield return new WaitForSeconds(Mathf.Max(0.01f, moving ? walkFrameTime : idleFrameTime));
                 continue;
             }
 
@@ -138,6 +161,16 @@ public class EnemyAnimation : MonoBehaviour
             yield return new WaitForSeconds(Mathf.Max(0.01f, frameTime));
         }
     }
+
+    // Attack phases own the pose until recovery ends; death always wins.
+    public void SetActionPose(Sprite sprite)
+    {
+        if (!CanPlayCharge()) return;
+        hasActionPose = true;
+        if (sprite != null) sr.sprite = sprite;
+    }
+
+    public void ReleaseActionPose() => hasActionPose = false;
 
     public void PlayPrepare()
     {
@@ -217,6 +250,7 @@ public class EnemyAnimation : MonoBehaviour
 
     public void PlayDeath(System.Action onComplete)
     {
+        ReleaseActionPose();
         StopCharge();
         StopShoot();
         if (walkCoroutine != null)
