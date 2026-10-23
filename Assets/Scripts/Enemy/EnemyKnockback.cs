@@ -24,6 +24,7 @@ public class EnemyKnockback : MonoBehaviour
 
     //현재 넉백/피격 경직 중인지
     public bool IsKnockbackActive => Time.time < knockbackEndTime;
+    public bool AttackImmune { get; set; }
 
     private void Awake()
     {
@@ -62,6 +63,7 @@ public class EnemyKnockback : MonoBehaviour
     //넉백 시작
     public void ApplyKnockback(Vector2 hitDirection)
     {
+        if (AttackImmune) return;
         knockbackDirection = hitDirection.x >= 0f ? 1 : -1;
 
         knockbackEndTime = Time.time + hitStunTime;
@@ -112,6 +114,7 @@ public class EnemyKnockback : MonoBehaviour
 
     private void ResetKnockback()
     {
+        AttackImmune = false;
         knockbackDirection = 0;
         knockbackEndTime = -999f;
     }
