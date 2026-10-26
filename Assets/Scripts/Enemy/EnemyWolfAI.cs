@@ -8,6 +8,7 @@ public class EnemyWolfAI : MonoBehaviour
     [SerializeField, Min(0f)] private float biteRange = 1.8f;
     [SerializeField, Min(0f)] private float chargeMinRange = 3f;
     [SerializeField, Min(0f)] private float chargeMaxRange = 6f;
+    [Tooltip("Allowed world-space height difference between physical body collider bottoms. Independent of sprite pivot and scale.")]
     [SerializeField, Min(0f)] private float maxAttackHeightDifference = 0.8f;
     private EnemyAI ai;
     private EnemyWolfAttack attack;
@@ -33,10 +34,10 @@ public class EnemyWolfAI : MonoBehaviour
         if (attack.IsAttacking || !ai.BeginBehaviourTick()) return;
         if (!chasing)
         {
-            if (!ai.CanDetectPlayer()) { ai.UpdatePatrol(); return; }
+            if (!ai.CanDetectPlayer(true)) { ai.UpdatePatrol(); return; }
             chasing = true;
         }
-        if (ai.ShouldStopChasing())
+        if (ai.ShouldStopChasing(true))
         {
             chasing = false;
             ai.StartPatrolIdle();
@@ -47,7 +48,7 @@ public class EnemyWolfAI : MonoBehaviour
         int direction = delta.x >= 0f ? 1 : -1;
         if (!ai.TrySetDirection(direction)) { ai.StopMovement(); return; }
         float distance = Mathf.Abs(delta.x);
-        bool sameHeight = Mathf.Abs(delta.y) <= maxAttackHeightDifference;
+        bool sameHeight = ai.GetPlayerHeightDifference(true) <= maxAttackHeightDifference;
         if (sameHeight && distance <= biteRange)
         {
             ai.StopMovement();
