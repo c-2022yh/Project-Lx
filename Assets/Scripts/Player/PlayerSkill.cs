@@ -29,6 +29,7 @@ public class PlayerSkill : MonoBehaviour
     private ScorchedEarthSkillData awakeningSkill;
     private bool awakeningSkillAvailable;
     private Coroutine awakeningSkillRoutine;
+    private ScorchedEarthBarrage activeBarrage;
 
     public const int SlotCount = 5;
     public const int ExclusiveSlot = 0;
@@ -409,6 +410,7 @@ public class PlayerSkill : MonoBehaviour
         skillCoroutine = null;
         awakeningSkillRoutine = null;
         activeSlotIndex = -1;
+        activeBarrage = null;
     }
 
     private void FinishSkill(Player p, SkillData skill, int slotIndex)
@@ -426,10 +428,12 @@ public class PlayerSkill : MonoBehaviour
         int slotIndex = activeSlotIndex;
         Coroutine normalRoutine = skillCoroutine;
         Coroutine awakeningRoutine = awakeningSkillRoutine;
+        ScorchedEarthBarrage barrage = activeBarrage;
         // Detach first: coroutine finalizers must not finish this cast a second time.
         ClearRunningSkill();
         if (normalRoutine != null) StopCoroutine(normalRoutine);
         if (awakeningRoutine != null) StopCoroutine(awakeningRoutine);
+        if (barrage != null) barrage.Cancel();
         skill.OnCastCancelled(player);
         FinishSkill(player, skill, slotIndex);
     }
@@ -461,41 +465,46 @@ public class PlayerSkill : MonoBehaviour
         awakeningSkillAvailable = awakeningSkill != null && available;
     }
 
-    //Q 스킬의 피해를 확정해 실행하고 각성 종료
+    //Q 스킬의 피해를 확정해 실행한다. 각성은 강화탄 폭발 또는 취소 시 종료한다.
     public bool TryUseAwakeningSkill(Player p)
     {
-        if (p == null || isChangingEquipment || activeSkill != null || awakeningSkill == null || !awakeningSkillAvailable) return false;
+        Initialize();
+        if (p == null || p != player || isChangingEquipment || activeSkill != null || awakeningSkill == null || !awakeningSkillAvailable) return false;
         if (awakeningSkillRoutine != null || !awakeningSkill.CanUse(p)) return false;
 
         ScorchedEarthSkillData skill = awakeningSkill;
-        DamageInfo damageInfo = skill.PrepareDamage(p);
+        ScorchedEarthSkillData.PreparedDamage damageInfo = skill.PrepareDamage(p);
         if (!skill.TryPayCost(p)) return false;
         awakeningSkillAvailable = false;
         awakeningSkillRoutine = StartCoroutine(AwakeningSkillRoutine(p, skill, damageInfo));
 
-        p.Awakening.EndAwakening();
         return true;
     }
 
     //Q 스킬을 실행하고 행동 상태 복구
-    private IEnumerator AwakeningSkillRoutine(Player p, ScorchedEarthSkillData skill, DamageInfo damageInfo)
+    private IEnumerator AwakeningSkillRoutine(Player p, ScorchedEarthSkillData skill, ScorchedEarthSkillData.PreparedDamage damageInfo)
     {
         activeSkill = skill;
         activeSlotIndex = -1;
-        p.ActionState.EnterSkill();
+        p.ActionState.EnterSkill(true);
+        p.Awakening.BeginFinisher();
         try
         {
             OnSkillUsed?.Invoke(skill);
-            yield return skill.ExecuteWithTiming(p, skill.ProcessPreparedSkill(p, damageInfo));
+            activeBarrage = skill.CreateBarrage(p, damageInfo);
+            yield return skill.ExecuteWithTiming(p, activeBarrage.Process());
         }
         finally
         {
             if (activeSkill == skill)
             {
+                if (activeBarrage != null) activeBarrage.Cancel();
                 ClearRunningSkill();
                 FinishSkill(p, skill, -1);
             }
         }
     }
+
+    private void OnDisable() { CancelCurrentSkill(); }
 
 }

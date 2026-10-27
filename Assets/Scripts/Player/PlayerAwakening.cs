@@ -78,6 +78,7 @@ public class PlayerAwakening : MonoBehaviour
 
     //현재 각성 상태
     private bool isAwakened;
+    private bool finisherInProgress;
 
     //각성 연출 중인 상태
     private bool isAwakening;
@@ -105,6 +106,7 @@ public class PlayerAwakening : MonoBehaviour
 
     // HUD effects follow the active drain phase, after the awakening intro.
     public bool IsDrainingEnergy => isAwakened
+        && !finisherInProgress
         && awakeningEnergyDrainPerSecond > 0f
         && activePlayer != null
         && activePlayer.Energy != null
@@ -156,9 +158,10 @@ public class PlayerAwakening : MonoBehaviour
         }
 
         //기력이 남아 있는 동안 각성 상태 유지
-        while (isAwakened && p.Energy.CurrentEnergy > 0f)
+        while (isAwakened && (finisherInProgress || p.Energy.CurrentEnergy > 0f))
         {
-            p.Energy.DrainEnergy(awakeningEnergyDrainPerSecond * Time.deltaTime);
+            if (!finisherInProgress)
+                p.Energy.DrainEnergy(awakeningEnergyDrainPerSecond * Time.deltaTime);
             yield return null;
         }
 
@@ -225,6 +228,7 @@ public class PlayerAwakening : MonoBehaviour
     private void ExitAwakened(Player p)
     {
         isAwakened = false;
+        finisherInProgress = false;
 
         if (p.sr != null)
         {
@@ -264,6 +268,12 @@ public class PlayerAwakening : MonoBehaviour
     public void ModifyAwakeningDuration(float amount)
     {
         //기력 기반 각성에서는 지속시간을 직접 수정하지 않음
+    }
+
+    //초토화가 마무리될 때까지 기력 감소를 멈추고 각성 보너스를 유지한다.
+    public void BeginFinisher()
+    {
+        if (isAwakened) finisherInProgress = true;
     }
 
     //각성 중이거나 각성 연출 중인 상태를 강제로 종료

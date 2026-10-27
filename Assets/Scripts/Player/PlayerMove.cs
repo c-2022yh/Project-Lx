@@ -78,7 +78,7 @@ public class PlayerMove : MonoBehaviour
     {
         if (player.ActionState.isAttacking ||
             player.ActionState.isDashing ||
-            player.ActionState.isSkillActive) return;
+            (player.ActionState.isSkillActive && !player.ActionState.CanMove())) return;
 
         player.isFacingRight = !player.isFacingRight;
         player.sr.flipX = !player.isFacingRight; ;

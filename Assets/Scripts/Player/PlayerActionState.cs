@@ -21,6 +21,7 @@ public class PlayerActionState : MonoBehaviour
     [SerializeField] private PlayerActionType currentState = PlayerActionType.Normal;
 
     public PlayerActionType CurrentState => currentState;
+    private bool skillMovementAllowed;
 
     //현재 상태 확인 함수
     public bool isNormal => currentState == PlayerActionType.Normal;
@@ -41,7 +42,8 @@ public class PlayerActionState : MonoBehaviour
     //세부 플래그를 여기서 지정
     public bool CanMove() //이동 아무것도 안 하고 있어야 작동
     {
-        return currentState == PlayerActionType.Normal;
+        return currentState == PlayerActionType.Normal
+            || (isSkillActive && skillMovementAllowed);
     }
 
     public bool CanJump() //점프도 아무것도 안 하고 있어야 작동
@@ -88,6 +90,7 @@ public class PlayerActionState : MonoBehaviour
     {
 
         currentState = newState;
+        if (newState != PlayerActionType.Skill) skillMovementAllowed = false;
     }
 
     //동작을 들어갈 때 실행하는 함수
@@ -110,9 +113,12 @@ public class PlayerActionState : MonoBehaviour
         ChangeState(PlayerActionType.Dashing);
     }
 
-    public void EnterSkill()
+    public void EnterSkill() { EnterSkill(false); }
+
+    public void EnterSkill(bool allowMovement)
     {
         Debug.Log("<color=orange>Skill State</color>");
+        skillMovementAllowed = allowMovement;
         ChangeState(PlayerActionType.Skill);
     }
 

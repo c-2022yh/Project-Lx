@@ -1,66 +1,126 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 [CreateAssetMenu(fileName = "SKL_ScorchedEarth", menuName = "Skills/Awakening/Scorched Earth")]
 
 //폭주 유물이 제공하는 각성 전용 광역 공격 스킬
-public class ScorchedEarthSkillData : AttackSkillData
+public class ScorchedEarthSkillData : SkillData
 {
-    [Header("Scorched Earth Hitbox")]
-    [SerializeField] private Vector2 hitboxOffset = new Vector2(1f, 0f);
-    [SerializeField] private Vector2 hitboxSize = new Vector2(3f, 2f);
+    [Header("Enemy Detection")]
+    public LayerMask enemyLayer;
 
-    [Header("Effect")]
-    [SerializeField] private GameObject effectPrefab;
-    [SerializeField, Min(0f)] private float effectLifetime = 1f;
+    [System.Serializable]
+    public sealed class BarrageSettings
+    {
+        [Header("Targeting")]
+        [Min(0.1f)] public float targetSearchRadius = 12f;
+        [Min(0.1f)] public float retargetSearchRadius = 8f;
+        public LayerMask sightObstacleLayer;
+        public bool requireInitialTarget = true;
+        public bool passThroughTerrain = true;
+
+        [Header("Formation and Launch")]
+        [Tooltip("Includes the final empowered projectile.")]
+        [Min(2)] public int projectileCount = 12;
+        public Vector2 formationOffset = new Vector2(-0.4f, 0.6f);
+        [Min(0f)] public float formationRadius = 1.2f;
+        [Range(0f, 360f)] public float formationArc = 150f;
+        [Min(0f)] public float preparationDuration = 0.3f;
+        [Min(0.01f)] public float launchInterval = 0.07f;
+        [Min(0f)] public float finisherDelay = 0.18f;
+
+        [Header("Flight")]
+        [Min(0f)] public float outwardDuration = 0.15f;
+        [Min(0.1f)] public float projectileSpeed = 14f;
+        [Tooltip("Maximum homing turn in degrees per second.")]
+        [Min(0f)] public float turnSpeed = 540f;
+        [Min(0.1f)] public float projectileLifetime = 3f;
+        [Min(0.01f)] public float hitRadius = 0.15f;
+
+        [Header("Damage per Projectile")]
+        public AttackDamageSpec regularDamage = new AttackDamageSpec
+        {
+            damageType = DamageType.Magical,
+            damageMultiplier = 0.25f
+        };
+        public AttackDamageSpec finisherDamage = new AttackDamageSpec
+        {
+            damageType = DamageType.Magical,
+            damageMultiplier = 1.5f
+        };
+        [Min(0f)] public float finisherExplosionRadius = 2f;
+        [Min(0.1f)] public float finisherSpeedMultiplier = 1.3f;
+
+        [Header("Visual Prefabs")]
+        public GameObject preparationEffectPrefab;
+        public GameObject regularProjectilePrefab;
+        public GameObject finisherProjectilePrefab;
+        public GameObject regularHitEffectPrefab;
+        public GameObject finisherExplosionEffectPrefab;
+        [Min(0f)] public float hitEffectLifetime = 1f;
+    }
+
+    [Header("Barrage Configuration")]
+    [SerializeField] private BarrageSettings barrage = new BarrageSettings();
+    public BarrageSettings Barrage => barrage;
+
+    public struct PreparedDamage
+    {
+        public DamageInfo regular;
+        public DamageInfo finisher;
+    }
 
     //각성 상태와 스킬 시전 가능 상태를 함께 확인한다.
     public override bool CanUse(Player p)
     {
         return base.CanUse(p) && p.Awakening != null && p.Awakening.IsAwakened
-            && p.ActionState != null && p.ActionState.CanSkill();
+            && p.ActionState != null && p.ActionState.CanSkill()
+            && barrage != null && barrage.regularProjectilePrefab != null
+            && barrage.finisherProjectilePrefab != null
+            && (!barrage.requireInitialTarget || ScorchedEarthTargeting.FindTargets(
+                p.transform.position, barrage.targetSearchRadius, enemyLayer,
+                barrage.sightObstacleLayer).Count > 0);
     }
 
     //버프가 해제되기 전에 기존 공격 스탯과 AttackDamageSpec으로 피해 정보를 만든다.
-    public DamageInfo PrepareDamage(Player p)
+    public PreparedDamage PrepareDamage(Player p)
     {
-        return CreateDamageInfo(p);
+        DamageInfo regular = DamageInfo.Create(p.Stats.Offense, barrage.regularDamage, p.gameObject);
+        // Small repeated hits must not push the target out of the barrage.
+        regular.suppressKnockback = true;
+        return new PreparedDamage
+        {
+            regular = regular,
+            finisher = DamageInfo.Create(p.Stats.Offense, barrage.finisherDamage, p.gameObject)
+        };
     }
 
     //일반 스킬 호출 경로에서도 기존 SkillData 계약을 충족한다.
     public override IEnumerator ProcessSkill(Player p)
     {
         if (p == null) yield break;
-        DamageInfo preparedDamage = PrepareDamage(p);
+        PreparedDamage preparedDamage = PrepareDamage(p);
         yield return ProcessPreparedSkill(p, preparedDamage);
     }
 
-    //선딜 뒤 광역 판정을 한 번 수행하고 후딜이 끝나면 반환한다.
-    //preparedDamage는 Q를 눌렀을 때의 각성 공격력을 담는다.
-    public IEnumerator ProcessPreparedSkill(Player p, DamageInfo preparedDamage)
+    public ScorchedEarthBarrage CreateBarrage(Player p, PreparedDamage damage)
+    {
+        var runner = new GameObject("ScorchedEarth_Barrage").AddComponent<ScorchedEarthBarrage>();
+        runner.Initialize(p, barrage, enemyLayer, damage);
+        return runner;
+    }
+
+    public IEnumerator ProcessPreparedSkill(Player p, PreparedDamage damage)
     {
         if (p == null) yield break;
+        ScorchedEarthBarrage runner = CreateBarrage(p, damage);
+        try { yield return runner.Process(); }
+        finally { if (runner != null) runner.Cancel(); }
+    }
 
-        float direction = p.isFacingRight ? 1f : -1f;
-        Vector2 center = (Vector2)p.transform.position
-            + new Vector2(hitboxOffset.x * direction, hitboxOffset.y);
-
-        if (effectPrefab != null)
-        {
-            GameObject effect = Instantiate(effectPrefab, center, Quaternion.identity);
-            if (direction < 0f) effect.transform.localScale = new Vector3(
-                -effect.transform.localScale.x, effect.transform.localScale.y, effect.transform.localScale.z);
-            Destroy(effect, effectLifetime);
-        }
-
-        HashSet<Enemy> hitEnemies = new HashSet<Enemy>();
-        Collider2D[] hits = Physics2D.OverlapBoxAll(center, hitboxSize, 0f, enemyLayer);
-        foreach (Collider2D hit in hits)
-        {
-            TryDamageEnemy(hit, hitEnemies, direction, preparedDamage);
-        }
-
-        yield break;
+    public override void OnCastCancelled(Player p)
+    {
+        base.OnCastCancelled(p);
+        if (p != null) p.Awakening?.EndAwakening();
     }
 }
