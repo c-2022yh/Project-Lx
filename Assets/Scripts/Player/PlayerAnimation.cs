@@ -12,6 +12,7 @@ public class PlayerAnimation : MonoBehaviour
     [Header("Respawn Animation") ]
     [SerializeField] private string respawnStateName = "Base Layer.Player_Idle";
     private bool hasSkillAnimationParameters;
+    private bool hasAwakeningAnimationParameters;
     [SerializeField] private Animator animator;
 
     //애니메이션 제어 변수
@@ -33,6 +34,9 @@ public class PlayerAnimation : MonoBehaviour
     private static readonly int Skill = Animator.StringToHash("Skill");
     private static readonly int IsSkillActive = Animator.StringToHash("IsSkillActive");
 
+    private static readonly int Awakening = Animator.StringToHash("Awakening");
+    private static readonly int IsAwakening = Animator.StringToHash("IsAwakening");
+
     private static readonly int Hit = Animator.StringToHash("Hit");
     private static readonly int IsHitStunned = Animator.StringToHash("IsHitStunned");
     private static readonly int IsDead = Animator.StringToHash("IsDead");
@@ -51,6 +55,7 @@ public class PlayerAnimation : MonoBehaviour
         playerSkill = GetComponent<PlayerSkill>();
         playerHealth = GetComponent<PlayerHealth>();
         CacheSkillAnimationParameters();
+        CacheAwakeningAnimationParameters();
         CacheReactionAnimationParameters();
     }
 
@@ -62,6 +67,7 @@ public class PlayerAnimation : MonoBehaviour
     private void OnDisable()
     {
         if (playerSkill != null) playerSkill.OnSkillUsed -= HandleSkillUsed;
+        ResetAwakeningAnimation();
         if (animator != null && hasSkillAnimationParameters)
         {
             animator.ResetTrigger(Skill);
@@ -85,6 +91,28 @@ public class PlayerAnimation : MonoBehaviour
         hasSkillAnimationParameters = hasIndex && hasTrigger && hasActive;
     }
 
+    private void CacheAwakeningAnimationParameters()
+    {
+        if (animator == null || animator.runtimeAnimatorController == null) return;
+        bool hasTrigger = false;
+        bool hasActive = false;
+        foreach (AnimatorControllerParameter parameter in animator.parameters)
+        {
+            if (parameter.nameHash == Awakening && parameter.type == AnimatorControllerParameterType.Trigger) hasTrigger = true;
+            if (parameter.nameHash == IsAwakening && parameter.type == AnimatorControllerParameterType.Bool) hasActive = true;
+        }
+        hasAwakeningAnimationParameters = hasTrigger && hasActive;
+        if (!hasAwakeningAnimationParameters)
+            Debug.LogWarning("Add Animator parameters: Awakening (Trigger), IsAwakening (Bool).", this);
+    }
+
+    private void ResetAwakeningAnimation()
+    {
+        if (animator == null || !hasAwakeningAnimationParameters) return;
+        animator.ResetTrigger(Awakening);
+        animator.SetBool(IsAwakening, false);
+    }
+
     private void CacheReactionAnimationParameters()
     {
         if (animator == null || animator.runtimeAnimatorController == null) return;
@@ -104,6 +132,7 @@ public class PlayerAnimation : MonoBehaviour
     {
         StopAllCoroutines();
         isDashAnimating = false;
+        ResetAwakeningAnimation();
         if (animator == null) return;
         animator.ResetTrigger(Attack);
         animator.SetBool(IsAttacking, false);
@@ -176,6 +205,14 @@ public class PlayerAnimation : MonoBehaviour
         animator.SetTrigger(Skill);
     }
 
+    public void PlayAwakening()
+    {
+        if (animator == null || !hasAwakeningAnimationParameters || IsDeadNow || IsHitStunnedNow) return;
+        animator.ResetTrigger(Awakening);
+        animator.SetBool(IsAwakening, true);
+        animator.SetTrigger(Awakening);
+    }
+
     private void Update()
     {
         if (animator == null || player == null || player.rb == null || player.ActionState == null) return;
@@ -190,6 +227,12 @@ public class PlayerAnimation : MonoBehaviour
         animator.SetFloat(VerticalVelocity, player.rb.linearVelocity.y);
         animator.SetBool(IsDashing, !blocked && player.ActionState.isDashing);
         animator.SetBool(IsAttacking, !blocked && player.ActionState.isAttacking);
+        if (hasAwakeningAnimationParameters)
+        {
+            bool isAwakening = !blocked && player.ActionState.isAwakening;
+            animator.SetBool(IsAwakening, isAwakening);
+            if (!isAwakening) animator.ResetTrigger(Awakening);
+        }
         if (hasSkillAnimationParameters)
         {
             bool isSkillActive = !blocked && player.ActionState.isSkillActive;
@@ -203,7 +246,7 @@ public class PlayerAnimation : MonoBehaviour
     public void PlayDash(float holdTime)
     {
         if (animator == null || IsDeadNow || IsHitStunnedNow) return;
-        StopAllCoroutines();
+        CancelActionAnimation();
         StartCoroutine(DashAnimationRoutine(holdTime));
     }
 

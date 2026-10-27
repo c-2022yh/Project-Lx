@@ -17,7 +17,7 @@ MonoBehaviour:
   description: "\uD3ED\uC8FC \uC720\uBB3C \uC7A5\uCC29 \uD6C4 \uAC01\uC131 \uC2DC
     \uC0AC\uC6A9\uD560 \uC218 \uC788\uB294 \uAC15\uB825\uD55C \uACF5\uACA9"
   cooldownTime: 1
-  soulCost: 0
+  energyCost: 0
   activeTime: 0.2
   enemyLayer:
     serializedVersion: 2

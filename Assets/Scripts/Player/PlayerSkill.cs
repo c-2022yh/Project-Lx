@@ -19,6 +19,8 @@ public class PlayerSkill : MonoBehaviour
     private SkillData exclusiveSkill;
     private object exclusiveSource;
     private SkillData activeSkill;
+    private Coroutine skillCoroutine;
+    private int activeSlotIndex = -1;
     private bool isInitialized;
     private bool isChangingEquipment;
     private bool skillsChanged;
@@ -44,6 +46,8 @@ public class PlayerSkill : MonoBehaviour
 
     public SkillData ExclusiveSkill => exclusiveSkill;
     public bool IsUsingSkill => activeSkill != null || awakeningSkillRoutine != null;
+    // One-use awakening entitlement, independent of temporary action/input locks.
+    public bool HasAwakeningSkillCharge => awakeningSkill != null && awakeningSkillAvailable;
 
     public event Action OnSkillsChanged;
     public event Action<SkillData> OnSkillUsed;
@@ -374,27 +378,60 @@ public class PlayerSkill : MonoBehaviour
         if (isChangingEquipment || !p.ActionState.CanSkill() || IsOnCooldown(slotIndex)) return;
         SkillData skill = GetEquippedSkill(slotIndex);
         if (!HasSkill(skill) || !skill.CanUse(p)) return;
-        StartCoroutine(SkillRoutine(p, skill, slotIndex));
+        if (!skill.TryPayCost(p)) return;
+        skillCoroutine = StartCoroutine(SkillRoutine(p, skill, slotIndex));
     }
 
     //실제 스킬 실행 후 행동을 복구하고 쿨타임 시작. HUD 미연결이어도 실행 가능
     private IEnumerator SkillRoutine(Player p, SkillData skill, int slotIndex)
     {
         activeSkill = skill;
+        activeSlotIndex = slotIndex;
         p.ActionState.EnterSkill();
         try
         {
             OnSkillUsed?.Invoke(skill);
-            yield return skill.ProcessSkill(p);
+            yield return skill.ExecuteWithTiming(p, skill.ProcessSkill(p));
         }
         finally
         {
-            if (p != null && p.ActionState.isSkillActive) p.ActionState.EnterNormal();
-            activeSkill = null;
-            cooldownEnds[skill] = Time.time + Mathf.Max(0f, skill.cooldownTime);
+            if (activeSkill == skill)
+            {
+                ClearRunningSkill();
+                FinishSkill(p, skill, slotIndex);
+            }
         }
+    }
 
+    private void ClearRunningSkill()
+    {
+        activeSkill = null;
+        skillCoroutine = null;
+        awakeningSkillRoutine = null;
+        activeSlotIndex = -1;
+    }
+
+    private void FinishSkill(Player p, SkillData skill, int slotIndex)
+    {
+        if (p != null && p.ActionState.isSkillActive) p.ActionState.EnterNormal();
+        if (slotIndex < 0) return; // Awakening Q retains its existing once-per-awakening rule.
+        cooldownEnds[skill] = Time.time + Mathf.Max(0f, skill.cooldownTime);
         NotifyCooldown(slotIndex);
+    }
+
+    public void CancelCurrentSkill()
+    {
+        if (activeSkill == null) return;
+        SkillData skill = activeSkill;
+        int slotIndex = activeSlotIndex;
+        Coroutine normalRoutine = skillCoroutine;
+        Coroutine awakeningRoutine = awakeningSkillRoutine;
+        // Detach first: coroutine finalizers must not finish this cast a second time.
+        ClearRunningSkill();
+        if (normalRoutine != null) StopCoroutine(normalRoutine);
+        if (awakeningRoutine != null) StopCoroutine(awakeningRoutine);
+        skill.OnCastCancelled(player);
+        FinishSkill(player, skill, slotIndex);
     }
 
     //폭주의 Q 스킬을 일반 슬롯과 별도로 등록
@@ -415,14 +452,7 @@ public class PlayerSkill : MonoBehaviour
         if (awakeningSkill != expectedSkill) return;
         awakeningSkillAvailable = false;
         awakeningSkill = null;
-        if (awakeningSkillRoutine != null)
-        {
-            StopCoroutine(awakeningSkillRoutine);
-            awakeningSkillRoutine = null;
-            Player owner = GetComponent<Player>();
-            if (owner != null && owner.ActionState != null && owner.ActionState.isSkillActive)
-                owner.ActionState.EnterNormal();
-        }
+        if (awakeningSkillRoutine != null) CancelCurrentSkill();
     }
 
     //각성 시작·종료에 따라 Q 스킬의 1회 사용권 설정
@@ -439,6 +469,7 @@ public class PlayerSkill : MonoBehaviour
 
         ScorchedEarthSkillData skill = awakeningSkill;
         DamageInfo damageInfo = skill.PrepareDamage(p);
+        if (!skill.TryPayCost(p)) return false;
         awakeningSkillAvailable = false;
         awakeningSkillRoutine = StartCoroutine(AwakeningSkillRoutine(p, skill, damageInfo));
 
@@ -449,11 +480,22 @@ public class PlayerSkill : MonoBehaviour
     //Q 스킬을 실행하고 행동 상태 복구
     private IEnumerator AwakeningSkillRoutine(Player p, ScorchedEarthSkillData skill, DamageInfo damageInfo)
     {
+        activeSkill = skill;
+        activeSlotIndex = -1;
         p.ActionState.EnterSkill();
-        OnSkillUsed?.Invoke(skill);
-        yield return skill.ProcessPreparedSkill(p, damageInfo);
-        if (p != null && p.ActionState.isSkillActive) p.ActionState.EnterNormal();
-        awakeningSkillRoutine = null;
+        try
+        {
+            OnSkillUsed?.Invoke(skill);
+            yield return skill.ExecuteWithTiming(p, skill.ProcessPreparedSkill(p, damageInfo));
+        }
+        finally
+        {
+            if (activeSkill == skill)
+            {
+                ClearRunningSkill();
+                FinishSkill(p, skill, -1);
+            }
+        }
     }
 
 }

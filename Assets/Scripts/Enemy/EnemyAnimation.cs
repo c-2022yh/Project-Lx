@@ -5,9 +5,26 @@ using UnityEngine;
 // 적 스프라이트 애니메이션 관리
 public class EnemyAnimation : MonoBehaviour
 {
+    [Header("Sprite Direction")]
+    [Tooltip("Enable if the original, unflipped sprites face right.")]
+    [SerializeField] private bool spriteFacesRight = false;
+
+    [Header("Idle Animation")]
+    [SerializeField] private Sprite[] idleSprites;
+    [SerializeField, Min(0.01f)] private float idleFrameTime = 0.12f;
+
+    [Header("Shoot Animation")]
+    [SerializeField] private Sprite[] shootSprites;
+    [SerializeField, Min(0.01f)] private float shootFrameTime = 0.12f;
+
     [Header("Walk Animation")]
     [SerializeField] private Sprite[] walkSprites;
     [SerializeField] private float walkFrameTime = 0.12f;
+
+    [Header("Flying Charge Animation")]
+    [SerializeField] private Sprite prepareSprite;
+    [SerializeField] private Sprite[] dashSprites;
+    [SerializeField, Min(0.01f)] private float dashFrameTime = 0.1f;
 
     [Header("Death Animation")]
     [SerializeField] private Sprite[] deathSprites;
@@ -21,6 +38,19 @@ public class EnemyAnimation : MonoBehaviour
 
     private Coroutine walkCoroutine;
     private Coroutine deathCoroutine;
+    private Coroutine shootCoroutine;
+    private Coroutine dashCoroutine;
+    private bool isCharging;
+    private bool isShooting;
+    private bool usesIdleAnimation;
+    private bool hasActionPose;
+    private Rigidbody2D body;
+    [Tooltip("Use idle/run by actual velocity. Opt in per prefab.")]
+    [SerializeField] private bool idleWhenStationary;
+    [SerializeField] private Sprite hitSprite;
+
+    public float ShootDuration => shootSprites == null
+        ? 0f : shootSprites.Length * Mathf.Max(0.01f, shootFrameTime);
 
     private void Awake()
     {
@@ -28,6 +58,8 @@ public class EnemyAnimation : MonoBehaviour
         ai = GetComponent<EnemyAI>();
         health = GetComponent<EnemyHealth>();
         knockback = GetComponent<EnemyKnockback>();
+        body = GetComponent<Rigidbody2D>();
+        usesIdleAnimation = ai == null || GetComponent<EnemyRangedAI>() != null;
     }
 
     private void OnEnable()
@@ -39,8 +71,14 @@ public class EnemyAnimation : MonoBehaviour
 
     private void OnDisable()
     {
+        StopAllCoroutines();
         walkCoroutine = null;
         deathCoroutine = null;
+        shootCoroutine = null;
+        isShooting = false;
+        dashCoroutine = null;
+        isCharging = false;
+        hasActionPose = false;
     }
 
     private void ResetAnimation()
@@ -49,11 +87,10 @@ public class EnemyAnimation : MonoBehaviour
 
         sr.enabled = true;
         sr.flipX = false;
+        if (ai != null) SetDirection(-1);
 
-        if (walkSprites != null && walkSprites.Length > 0)
-        {
-            sr.sprite = walkSprites[0];
-        }
+        Sprite[] frames = GetBaseSprites();
+        if (frames != null && frames.Length > 0) sr.sprite = frames[0];
     }
 
     //방향 설정
@@ -67,47 +104,155 @@ public class EnemyAnimation : MonoBehaviour
             if (sr == null) return;
         } 
 
-        sr.flipX = direction > 0;
+        sr.flipX = spriteFacesRight ? direction < 0 : direction > 0;
     }
 
     //걷는 애니메이션 재생
+    private Sprite[] GetBaseSprites()
+    {
+        return usesIdleAnimation && idleSprites != null && idleSprites.Length > 0
+            ? idleSprites : walkSprites;
+    }
+
     private IEnumerator WalkAnimationRoutine()
     {
-        if (walkSprites == null || walkSprites.Length == 0)
-        {
-            yield break;
-        }
+        Sprite[] frames = GetBaseSprites();
+        if (frames == null || frames.Length == 0) yield break;
 
+        float frameTime = usesIdleAnimation && idleSprites != null && idleSprites.Length > 0
+            ? idleFrameTime : walkFrameTime;
         int frameIndex = 0;
-
-        while (!health.IsDead)
+        while (health == null || !health.IsDead)
         {
             if (sr == null) yield break;
-
-            if (ai.Direction != 0 && (knockback == null || !knockback.IsKnockbackActive))
+            if (isShooting || isCharging || hasActionPose)
             {
-                sr.sprite = walkSprites[frameIndex];
-
-                frameIndex++;
-
-                if (frameIndex >= walkSprites.Length)
-                {
-                    frameIndex = 0;
-                }
+                yield return null;
+                continue;
             }
-            else if (ai.Direction == 0)
+
+            if (idleWhenStationary)
             {
-                sr.sprite = walkSprites[0];
+                if (hitSprite != null && knockback != null && knockback.IsKnockbackActive)
+                {
+                    sr.sprite = hitSprite;
+                    yield return null;
+                    continue;
+                }
+                bool moving = body != null && Mathf.Abs(body.linearVelocity.x) > 0.05f;
+                Sprite[] currentFrames = moving ? walkSprites : idleSprites;
+                if (currentFrames != null && currentFrames.Length > 0)
+                    sr.sprite = currentFrames[frameIndex++ % currentFrames.Length];
+                yield return new WaitForSeconds(Mathf.Max(0.01f, moving ? walkFrameTime : idleFrameTime));
+                continue;
+            }
+
+            if ((usesIdleAnimation || ai == null || ai.Direction != 0) &&
+                (knockback == null || !knockback.IsKnockbackActive))
+            {
+                sr.sprite = frames[frameIndex];
+                frameIndex = (frameIndex + 1) % frames.Length;
+            }
+            else if (ai != null && ai.Direction == 0)
+            {
+                sr.sprite = frames[0];
                 frameIndex = 0;
             }
-
-            yield return new WaitForSeconds(Mathf.Max(0.01f, walkFrameTime));
+            yield return new WaitForSeconds(Mathf.Max(0.01f, frameTime));
         }
     }
 
-    //사망했을 때
+    // Attack phases own the pose until recovery ends; death always wins.
+    public void SetActionPose(Sprite sprite)
+    {
+        if (!CanPlayCharge()) return;
+        hasActionPose = true;
+        if (sprite != null) sr.sprite = sprite;
+    }
+
+    public void ReleaseActionPose() => hasActionPose = false;
+
+    public void PlayPrepare()
+    {
+        StopCharge();
+        if (!CanPlayCharge() || prepareSprite == null) return;
+        isCharging = true;
+        sr.sprite = prepareSprite;
+    }
+
+    public void PlayDash()
+    {
+        StopCharge();
+        if (!CanPlayCharge() || dashSprites == null || dashSprites.Length == 0) return;
+        isCharging = true;
+        dashCoroutine = StartCoroutine(DashAnimationRoutine());
+    }
+
+    private bool CanPlayCharge()
+    {
+        return isActiveAndEnabled && sr != null &&
+            (health == null || !health.IsDead) && deathCoroutine == null;
+    }
+
+    public void StopCharge()
+    {
+        if (dashCoroutine != null) StopCoroutine(dashCoroutine);
+        dashCoroutine = null;
+        bool wasCharging = isCharging;
+        isCharging = false;
+        if (wasCharging && CanPlayCharge())
+        {
+            Sprite[] frames = GetBaseSprites();
+            if (frames != null && frames.Length > 0) sr.sprite = frames[0];
+        }
+    }
+
+    private IEnumerator DashAnimationRoutine()
+    {
+        int index = 0;
+        while (CanPlayCharge())
+        {
+            sr.sprite = dashSprites[index];
+            index = (index + 1) % dashSprites.Length;
+            yield return new WaitForSeconds(Mathf.Max(0.01f, dashFrameTime));
+        }
+        dashCoroutine = null;
+        isCharging = false;
+    }
+
+    public void PlayShoot()
+    {
+        if (!isActiveAndEnabled || sr == null || (health != null && health.IsDead) ||
+            deathCoroutine != null || shootSprites == null || shootSprites.Length == 0) return;
+        StopShoot();
+        shootCoroutine = StartCoroutine(ShootAnimationRoutine());
+    }
+
+    public void StopShoot()
+    {
+        if (shootCoroutine != null) StopCoroutine(shootCoroutine);
+        shootCoroutine = null;
+        isShooting = false;
+    }
+
+    private IEnumerator ShootAnimationRoutine()
+    {
+        isShooting = true;
+        foreach (Sprite frame in shootSprites)
+        {
+            if (sr == null || (health != null && health.IsDead)) break;
+            sr.sprite = frame;
+            yield return new WaitForSeconds(Mathf.Max(0.01f, shootFrameTime));
+        }
+        shootCoroutine = null;
+        // Keep the last shooting frame until the attack releases it with StopShoot().
+    }
+
     public void PlayDeath(System.Action onComplete)
     {
+        ReleaseActionPose();
+        StopCharge();
+        StopShoot();
         if (walkCoroutine != null)
         {
             StopCoroutine(walkCoroutine);

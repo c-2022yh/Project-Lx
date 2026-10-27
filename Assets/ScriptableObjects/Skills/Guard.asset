@@ -17,7 +17,7 @@ MonoBehaviour:
   description: "\uD2B9\uC815 \uBCF4\uC2A4 \uD328\uD134 \uB9C9\uAE30\uC5D0 \uC0AC\uC6A9\uB418\uB294
     \uC2A4\uD0AC"
   cooldownTime: 2
-  soulCost: 0
+  energyCost: 0
   activeTime: 0.2
   lockInputDuringSkill: 1
   invincibleDuringSkill: 0

@@ -9,7 +9,7 @@ TagManager:
   - Default
   - TransparentFX
   - Ignore Raycast
-  - 
+  - Background
   - Water
   - UI
   - Ground
@@ -23,8 +23,8 @@ TagManager:
   - EnemyProjectile
   - UI
   - GroundCover
-  - 
-  - 
+  - HiddenAreaCover
+  - Effects_Back
   - 
   - 
   - 
@@ -45,23 +45,17 @@ TagManager:
   - name: Default
     uniqueID: 0
     locked: 0
-  - name: New Layer 1
-    uniqueID: 316941489
-    locked: 0
-  - name: New Layer 2
-    uniqueID: 863617049
-    locked: 0
   - name: VFX
     uniqueID: 1334015393
     locked: 0
-  - name: 
-    uniqueID: 3117241241
-    locked: 0
-  - name: GroundCover
-    uniqueID: 1691898173
+  - name: Effects_Back
+    uniqueID: 316941489
     locked: 0
   - name: Ground
     uniqueID: 3979320971
+    locked: 0
+  - name: GroundCover
+    uniqueID: 1691898173
     locked: 0
   - name: Player
     uniqueID: 841780471
@@ -72,11 +66,14 @@ TagManager:
   - name: Effects
     uniqueID: 3987238507
     locked: 0
-  - name: UI
-    uniqueID: 2061393111
-    locked: 0
   - name: Orb
     uniqueID: 4097052509
+    locked: 0
+  - name: HiddenAreaCover
+    uniqueID: 3117241241
+    locked: 0
+  - name: UI
+    uniqueID: 2061393111
     locked: 0
   m_RenderingLayers:
   - Default

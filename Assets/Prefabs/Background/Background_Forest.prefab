@@ -9,7 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2129302273920100598}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Light
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -42,7 +42,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2806322879635842106}
   - component: {fileID: 2586596597300269054}
-  m_Layer: 0
+  m_Layer: 12
   m_Name: Global Light 2D
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -58,7 +58,7 @@ Transform:
   m_GameObject: {fileID: 292546295865556120}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -6.9967194, y: -26.624182, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -81,7 +81,7 @@ MonoBehaviour:
   m_BlendStyleIndex: 0
   m_FalloffIntensity: 0.5
   m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_Intensity: 1
+  m_Intensity: 0.2
   m_LightVolumeIntensity: 1
   m_LightVolumeEnabled: 0
   m_ApplyToSortingLayers: a121e602
@@ -126,7 +126,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3020126260388231595}
   - component: {fileID: 8740327240647507527}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: lantern_post
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -216,7 +216,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1271427338264963378}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Background_Forest
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -232,7 +232,7 @@ Transform:
   m_GameObject: {fileID: 1416827008592657210}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 50.31361, y: 42.75748, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -252,7 +252,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3835500447424258192}
   - component: {fileID: 3818086343429900207}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Far_Center
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -323,7 +323,7 @@ SpriteRenderer:
   m_SortingLayer: -1
   m_SortingOrder: 0
   m_MaskInteraction: 0
-  m_Sprite: {fileID: -8010657799410552898, guid: 939cf0c054fe4a54b8609619be61b5e6, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 89aa3f7e33f893340a3848f4ff093601, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -343,7 +343,7 @@ GameObject:
   m_Component:
   - component: {fileID: 8762358996218022733}
   - component: {fileID: 3966422441531120024}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: tree2_0
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -434,7 +434,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7429256583614502306}
   - component: {fileID: 2203825919361020022}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: tree3_0
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -526,13 +526,13 @@ GameObject:
   - component: {fileID: 7257543553415023521}
   - component: {fileID: 2410247730823616934}
   - component: {fileID: 6001342799911973681}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Near_Background
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &7257543553415023521
 Transform:
   m_ObjectHideFlags: 0
@@ -597,7 +597,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3183564564483039587}
   - component: {fileID: 4587213693643091930}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Mid_Center
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -691,7 +691,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6164090146298226532}
   - component: {fileID: 8010716397621240043}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: stone_lantern_ruined
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -782,7 +782,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3991826030830431494}
   - component: {fileID: 5026608163198583680}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Near_Center
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -878,7 +878,7 @@ GameObject:
   - component: {fileID: 2393609783820902971}
   - component: {fileID: 1319265272491333071}
   - component: {fileID: 3070611626718960536}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Far_Background
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -895,7 +895,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: -50.1, y: -42.3, z: 0}
-  m_LocalScale: {x: 2, y: 2, z: 2}
+  m_LocalScale: {x: 1, y: 1, z: 2}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 3835500447424258192}
@@ -964,7 +964,7 @@ GameObject:
   m_Component:
   - component: {fileID: 8612937854328219004}
   - component: {fileID: 7849884601927375417}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: tree1_0
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1055,7 +1055,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4026560552534118994}
   - component: {fileID: 6121925592212796274}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: stone_wall_fence
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1146,7 +1146,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7750178305400819081}
   - component: {fileID: 698303815803040879}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Moonlight_Shafts
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1238,13 +1238,13 @@ GameObject:
   - component: {fileID: 5001485706055881029}
   - component: {fileID: 4309482502145735625}
   - component: {fileID: 1877690093297245280}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Mid_Background
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &5001485706055881029
 Transform:
   m_ObjectHideFlags: 0

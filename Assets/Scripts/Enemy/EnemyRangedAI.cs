@@ -1,149 +1,74 @@
 using UnityEngine;
+using UnityEngine.Serialization;
 
-//원거리 적의 행동 판단
-//플레이어에게 접근하거나 거리를 유지하고, 너무 가까워지면 후퇴한다.
+// Stationary ranged enemy: detect, face the player, and let EnemyRangedAttack fire.
 public class EnemyRangedAI : MonoBehaviour
 {
-    private enum AIState
-    {
-        Patrol,
-        Chase
-    }
+    [Header("Rectangular Detection")]
+    [Tooltip("Horizontal reach on each side of the detection center.")]
+    [FormerlySerializedAs("attackRange")]
+    [SerializeField, Min(0f)] private float detectionRangeX = 6f;
+    [Tooltip("Vertical reach above and below the detection center.")]
+    [SerializeField, Min(0f)] private float detectionRangeY = 0.8f;
+    [SerializeField] private Vector2 detectionOffset;
 
-    private AIState currentState = AIState.Patrol;
-
-
-    [Header("Ranged Distance")]
-
-    //이 거리보다 멀면 플레이어에게 접근
-    [SerializeField] private float attackRange = 6f;
+    [Header("Line Of Sight")]
+    [Tooltip("Terrain layers that block sight. Nothing uses distance detection only.")]
+    [SerializeField] private LayerMask sightObstacleLayer;
 
     private EnemyAI ai;
+    private EnemyRangedAttack attack;
 
     public bool IsInAttackRange { get; private set; }
-
 
     private void Awake()
     {
         ai = GetComponent<EnemyAI>();
+        attack = GetComponent<EnemyRangedAttack>();
     }
-
 
     private void OnEnable()
     {
-        currentState = AIState.Patrol;
-
         IsInAttackRange = false;
     }
 
+    private void OnDisable()
+    {
+        IsInAttackRange = false;
+    }
 
     private void FixedUpdate()
     {
-        if (ai == null) return;
-
-
-        if (!ai.BeginBehaviourTick())
-        {
-            IsInAttackRange = false;
-            return;
-        }
-
-        //상태 전환
-        if (currentState == AIState.Patrol)
-        {
-            if (ai.CanDetectPlayer())
-            {
-                EnterChase();
-            }
-        }
-        else if (currentState == AIState.Chase)
-        {
-            if (ai.ShouldStopChasing())
-            {
-                EnterPatrol();
-            }
-        }
-
-        switch (currentState)
-        {
-            case AIState.Patrol:
-
-                IsInAttackRange = false;
-
-                ai.UpdatePatrol();
-
-                break;
-
-
-            case AIState.Chase:
-
-                UpdateChase();
-
-                break;
-        }
-    }
-
-    private void UpdateChase()
-    {
-        Transform player = ai.Player;
-
-        if (player == null)
-        {
-            EnterPatrol();
-            return;
-        }
-
-        //플레이어와 실제 2D 거리
-        Vector2 difference = player.position - transform.position;
-
-        float distance = difference.magnitude;
-
-        //좌우 바라보는 방향은 X값으로 결정
-        int playerDirection = difference.x > 0f ? 1 : -1;
-
-        //공격 사거리 안
-        if (distance <= attackRange)
-        {
-            IsInAttackRange = true;
-
-            ai.StopMovement();
-
-            //플레이어 방향 바라보기
-            ai.TrySetDirection(playerDirection);
-
-            return;
-        }
-
-        //공격 사거리 밖
         IsInAttackRange = false;
+        if (ai == null || !ai.BeginBehaviourTick()) return;
 
-        ai.TrySetDirection(playerDirection);
-
-
-        if (!ai.CanMoveForward())
-        {
-            ai.HandleObstacle();
-            return;
-        }
-
-
-        ai.Move();
+        // Preserve gravity and knockback, but never patrol or approach the player.
+        ai.StopMovement();
+        IsInAttackRange = CanAttackPlayer();
+        if (IsInAttackRange && (attack == null || !attack.IsAttacking)) ai.FacePlayer();
     }
 
-    //상태 전환
-    private void EnterChase()
+    // Recheck at launch as well, so a stale FixedUpdate result cannot fire through cover.
+    public bool CanAttackPlayer()
     {
-        currentState = AIState.Chase;
+        if (!isActiveAndEnabled || ai == null || !ai.isActiveAndEnabled ||
+            ai.Player == null || !ai.Player.gameObject.activeInHierarchy)
+            return false;
 
-        ai.FacePlayer();
+        Vector2 origin = (Vector2)transform.position + detectionOffset;
+        Vector2 target = ai.Player.position;
+        Vector2 difference = target - origin;
+        if (Mathf.Abs(difference.x) > detectionRangeX ||
+            Mathf.Abs(difference.y) > detectionRangeY) return false;
+
+        return sightObstacleLayer.value == 0 ||
+            Physics2D.Linecast(origin, target, sightObstacleLayer).collider == null;
     }
 
-    private void EnterPatrol()
+    private void OnDrawGizmosSelected()
     {
-        currentState = AIState.Patrol;
-
-        IsInAttackRange = false;
-
-        ai.StartPatrolIdle();
+        Gizmos.color = Color.red;
+        Vector2 center = (Vector2)transform.position + detectionOffset;
+        Gizmos.DrawWireCube(center, new Vector3(detectionRangeX * 2f, detectionRangeY * 2f, 0f));
     }
 }

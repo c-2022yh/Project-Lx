@@ -44,6 +44,7 @@ public class EnemyHealth : MonoBehaviour
     [Header("Reward")]
     [SerializeField] private PlayerEnergy playerEnergy;
     [SerializeField] private float energyReward = 20f;
+    [SerializeField] private bool logEnergyReward = false;
 
     private EnemyStats enemyStats;
     private EnemyAI ai;
@@ -270,7 +271,7 @@ public class EnemyHealth : MonoBehaviour
         isDead = true;
 
         NotifyKill(lastDamageInfo);
-        GiveReward();
+        GiveReward(lastDamageInfo);
 
         ai?.StopAI();
 
@@ -311,11 +312,37 @@ public class EnemyHealth : MonoBehaviour
     }
 
     //보상 제공 -> 플레이어 기력 수급
-    private void GiveReward()
+    private void GiveReward(DamageInfo lastDamageInfo)
     {
-        if (playerEnergy != null)
+        // Prefer the actual attacker, including attacks originating from a player child.
+        PlayerEnergy attackerEnergy = lastDamageInfo.attacker != null
+            ? lastDamageInfo.attacker.GetComponentInParent<PlayerEnergy>()
+            : null;
+        if (attackerEnergy != null && attackerEnergy.isActiveAndEnabled)
         {
-            playerEnergy.GainEnergy(energyReward);
+            playerEnergy = attackerEnergy;
+        }
+
+        // The player may have spawned after this enemy was enabled, or been replaced.
+        if (playerEnergy == null || !playerEnergy.isActiveAndEnabled)
+        {
+            playerEnergy = FindAnyObjectByType<PlayerEnergy>();
+        }
+
+        if (playerEnergy == null || !playerEnergy.isActiveAndEnabled)
+        {
+            Debug.LogWarning("[EnemyHealth] Energy reward skipped: no active PlayerEnergy found.", this);
+            return;
+        }
+
+        float before = playerEnergy.CurrentEnergy;
+        playerEnergy.GainEnergy(energyReward);
+
+        if (logEnergyReward)
+        {
+            Debug.Log($"[EnemyHealth] {name}: reward={energyReward}, " +
+                $"energy={before}->{playerEnergy.CurrentEnergy}/{playerEnergy.MaxEnergy}, " +
+                $"hasOrb={playerEnergy.HasOrb}, blocked={playerEnergy.IsEnergyGainBlocked}", this);
         }
     }
 

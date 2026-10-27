@@ -15,9 +15,12 @@ MonoBehaviour:
   skillName: "\uADF8\uB9BC\uC790"
   icon: {fileID: -6192746434826769595, guid: 6622c3043ec0f644f8c9f5923df5de82, type: 3}
   description: "\uC0E4\uC0E4\uC0E5"
+  animationType: 5
   cooldownTime: 1
-  soulCost: 0
+  energyCost: 20
+  windupTime: 0
   activeTime: 0.2
+  recoveryTime: 0
   lockInputDuringSkill: 1
   invincibleDuringSkill: 0
   shadowPrefab: {fileID: 5188507118734370343, guid: 1aef8a43828f4a0478dceb36e864aa1f, type: 3}
