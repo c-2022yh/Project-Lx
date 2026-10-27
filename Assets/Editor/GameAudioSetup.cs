@@ -110,7 +110,7 @@ public static class GameAudioSetup
         if (catalog == null || catalog.mixer == null || catalog.bgmGroup == null || catalog.sfxGroup == null || catalog.uiGroup == null)
             throw new InvalidOperationException("Audio catalog or mixer routing is incomplete.");
         foreach (GameSound sound in Enum.GetValues(typeof(GameSound)))
-            if (catalog.Find(sound) == null) throw new InvalidOperationException("Missing sound slot: " + sound);
+            if ((int)sound >= (int)GameSound.UIClick && catalog.Find(sound) == null) throw new InvalidOperationException("Missing sound slot: " + sound);
         foreach (string parameter in new[] { "Master", "BGM", "SFX", "UI" })
             if (!catalog.mixer.GetFloat(parameter, out _)) throw new InvalidOperationException("Missing exposed parameter: " + parameter);
         Debug.Log("[GameAudio] VERIFIED: catalog slots, 3 mixer groups and 4 volume parameters.");

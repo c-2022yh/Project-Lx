@@ -6,6 +6,8 @@ using UnityEngine.UI;
 public sealed class GameAudioButton : MonoBehaviour
 {
     [SerializeField] private GameSound clickSound = GameSound.UIClick;
+    [SerializeField] private bool useCustomSound;
+    [SerializeField] private SoundCue customSound = new SoundCue(GameAudioChannel.UI);
     private Button button;
 
     // Subscribe once so re-opening a window does not multiply click sounds.
@@ -16,7 +18,12 @@ public sealed class GameAudioButton : MonoBehaviour
     }
 
     // Unity invokes this for both pointer clicks and navigation submit.
-    private void PlayClick() { GameAudio.Play(clickSound); }
+    private void PlayClick()
+    {
+        if (!enabled) return;
+        if (useCustomSound) GameAudio.Play(customSound, transform.position, transform);
+        else GameAudio.Play(clickSound);
+    }
 
     // Remove only the audio listener owned by this component.
     private void OnDestroy()

@@ -30,7 +30,7 @@ public class TripleSlashData : AttackSkillData
         for (int i = 0; i < slashRotations.Length; i++)
         {
             //공격 정보 생성
-            DamageInfo damageInfo = DamageInfo.Create(p.Stats.Offense, damageSpec, p.gameObject);
+            DamageInfo damageInfo = CreateDamageInfo(p);
 
             SpawnSlashEffect(p, dir, slashRotations[i], damageInfo);
             yield return new WaitForSeconds(slashInterval);
@@ -58,6 +58,7 @@ public class TripleSlashData : AttackSkillData
         Quaternion rotation = Quaternion.Euler(0f, 0f, rotationZ * dir);
 
         GameObject effectObj = Instantiate(slashEffectPrefab, spawnPos, rotation);
+        PlayReleaseSound(p, spawnPos);
 
         effectObj.transform.localScale = effectScale;
 

@@ -1,5 +1,4 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -12,10 +11,11 @@ public sealed class GameAudio : MonoBehaviour
     private AudioSource[] sfxSources;
     private AudioSource[] uiSources;
     private AudioSource[] musicSources;
-    private readonly Dictionary<GameSound, float> lastPlayed = new Dictionary<GameSound, float>();
+    private SoundVoicePool sfxPool;
+    private SoundVoicePool uiPool;
     private readonly float[] musicGains = new float[2];
     private int musicIndex;
-    private GameSound? currentMusic;
+    private SoundCue currentMusic;
     private Coroutine musicRoutine;
     private bool started;
     private float nextButtonScan;
@@ -49,6 +49,8 @@ public sealed class GameAudio : MonoBehaviour
         uiSources = CreateSources("UI", Mathf.Clamp(catalog.uiVoices, 1, 16), catalog.uiGroup, true);
         musicSources = CreateSources("BGM", 2, catalog.bgmGroup, true);
         foreach (AudioSource source in musicSources) source.loop = true;
+        sfxPool = new SoundVoicePool(sfxSources, true);
+        uiPool = new SoundVoicePool(uiSources, false);
         SceneManager.sceneLoaded += OnSceneLoaded;
     }
 
@@ -66,6 +68,8 @@ public sealed class GameAudio : MonoBehaviour
     private void Update()
     {
         if (catalog == null) return;
+        sfxPool.Tick();
+        uiPool.Tick();
         if (Time.unscaledTime >= nextButtonScan)
         {
             nextButtonScan = Time.unscaledTime + 0.25f;
@@ -91,8 +95,20 @@ public sealed class GameAudio : MonoBehaviour
     // Title and gameplay music are shared defaults; empty destinations stop old music.
     private void PlaySceneMusic(Scene scene)
     {
-        if (catalog.autoPlaySceneMusic)
-            Play(scene.name == GameFlow.TitleSceneName ? GameSound.TitleBgm : GameSound.GameplayBgm);
+        if (!catalog.autoPlaySceneMusic) return;
+        if (catalog.sceneMusic != null)
+        {
+            foreach (SceneMusicEntry entry in catalog.sceneMusic)
+            {
+                if (entry == null || entry.sceneName != scene.name) continue;
+                SoundCue cue = entry.music != null ? Resolve(entry.music) : null;
+                AudioClip clip = cue?.PickClip();
+                if (clip == null) StopMusic();
+                else PlayMusic(cue, clip);
+                return;
+            }
+        }
+        Play(scene.name == GameFlow.TitleSceneName ? GameSound.TitleBgm : GameSound.GameplayBgm);
     }
 
     // Attach a small listener without changing scene/prefab assets or button actions.
@@ -121,49 +137,76 @@ public sealed class GameAudio : MonoBehaviour
         return sources;
     }
 
-    // Calls from existing game actions are safe when their clip slot is empty.
-    public static void Play(GameSound sound)
+    // Shared UI/music and explicitly selected legacy fallback events use this overload.
+    public static SoundHandle Play(GameSound sound)
     {
-        if (instance == null || instance.catalog == null) return;
-        instance.PlayInternal(sound);
+        if (instance == null || instance.catalog == null) return default;
+        return Play(instance.catalog.Find(sound), Vector3.zero);
     }
 
-    // Use a separate voice for each shot so pitch and volume do not affect other shots.
-    private void PlayInternal(GameSound sound)
+    // Direct cue playback lets patterns, skill assets and prefabs own their clips.
+    public static SoundHandle Play(SoundCue cue, Vector3 position, Transform owner = null, bool stopWithOwner = false)
     {
-        GameSoundSlot slot = catalog.Find(sound);
-        if (slot == null) return;
-        if (slot.channel == GameAudioChannel.BGM)
+        if (instance == null || instance.catalog == null || cue == null) return default;
+        SoundCue resolved = instance.Resolve(cue);
+        AudioClip clip = resolved?.PickClip();
+        if (clip == null)
         {
-            if (currentMusic == sound && musicSources[musicIndex].clip != null) return;
-            AudioClip music = slot.PickClip();
-            if (music == null) { StopMusic(); return; }
-            if (musicRoutine != null) StopCoroutine(musicRoutine);
-            musicIndex = 1 - musicIndex;
-            AudioSource target = musicSources[musicIndex];
-            target.Stop();
-            target.clip = music;
-            target.pitch = 1f;
-            musicGains[musicIndex] = 0f;
-            target.volume = 0f;
-            target.Play();
-            currentMusic = sound;
-            musicRoutine = StartCoroutine(FadeMusic(musicIndex, Mathf.Clamp01(slot.volume)));
-            return;
+            if (cue.channel == GameAudioChannel.BGM) StopMusic();
+            return default;
         }
-        if (lastPlayed.TryGetValue(sound, out float last) && Time.unscaledTime - last < slot.minimumInterval) return;
-        AudioClip clip = slot.PickClip();
-        if (clip == null) return;
-        AudioSource[] pool = slot.channel == GameAudioChannel.UI ? uiSources : sfxSources;
-        AudioSource voice = null;
-        foreach (AudioSource source in pool)
-            if (!source.isPlaying) { voice = source; break; }
-        if (voice == null) return; // Keep current sounds instead of cutting one off.
-        lastPlayed[sound] = Time.unscaledTime;
-        voice.clip = clip;
-        voice.pitch = Random.Range(Mathf.Clamp(slot.pitchRange.x, 0.1f, 3f), Mathf.Clamp(Mathf.Max(slot.pitchRange.x, slot.pitchRange.y), 0.1f, 3f));
-        voice.volume = Mathf.Clamp01(slot.volume);
-        voice.Play();
+        if (resolved.channel == GameAudioChannel.BGM)
+        {
+            instance.PlayMusic(resolved, clip);
+            return default;
+        }
+        SoundVoicePool pool = resolved.channel == GameAudioChannel.UI ? instance.uiPool : instance.sfxPool;
+        return pool.Play(resolved, clip, position, owner, false, stopWithOwner);
+    }
+
+    // Loops require an owner and are automatically stopped when it disappears.
+    public static SoundHandle PlayLoop(SoundCue cue, Transform owner)
+    {
+        if (instance == null || instance.catalog == null || cue == null || owner == null) return default;
+        SoundCue resolved = instance.Resolve(cue);
+        AudioClip clip = resolved?.PickClip();
+        if (clip == null || resolved.channel == GameAudioChannel.BGM) return default;
+        SoundVoicePool pool = resolved.channel == GameAudioChannel.UI ? instance.uiPool : instance.sfxPool;
+        return pool.Play(resolved, clip, owner.position, owner, true, true);
+    }
+
+    // Empty local slots stay silent unless their fallback toggle is explicitly enabled.
+    private SoundCue Resolve(SoundCue cue)
+    {
+        if (cue.HasClip) return cue;
+        if (!cue.useFallback) return null;
+        GameSoundSlot fallback = catalog.Find(cue.fallbackSound);
+        return fallback != null && fallback.HasClip ? fallback : null;
+    }
+
+    // Stop an actor's cast/loop voices on death without truncating independent impacts.
+    public static void StopOwnedSounds(Transform owner)
+    {
+        if (instance == null || owner == null) return;
+        instance.sfxPool?.StopOwned(owner);
+        instance.uiPool?.StopOwned(owner);
+    }
+
+    // Keep the same music cue running across scenes; crossfade only on a change.
+    private void PlayMusic(SoundCue cue, AudioClip clip)
+    {
+        if (ReferenceEquals(currentMusic, cue) && musicSources[musicIndex].clip != null) return;
+        if (musicRoutine != null) StopCoroutine(musicRoutine);
+        musicIndex = 1 - musicIndex;
+        AudioSource target = musicSources[musicIndex];
+        target.Stop();
+        target.clip = clip;
+        target.pitch = 1f;
+        musicGains[musicIndex] = 0f;
+        target.volume = 0f;
+        target.Play();
+        currentMusic = cue;
+        musicRoutine = StartCoroutine(FadeMusic(musicIndex, Mathf.Clamp01(cue.volume)));
     }
 
     // Fade using unscaled time so transitions also finish while menus pause gameplay.

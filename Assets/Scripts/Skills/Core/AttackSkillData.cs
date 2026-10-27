@@ -14,7 +14,7 @@ public abstract class AttackSkillData : SkillData
     //현재 시전자의 스탯 + 스킬 고유 설정으로 DamageInfo 생성
     protected DamageInfo CreateDamageInfo(Player p)
     {
-        return DamageInfo.Create(p.Stats.Offense, damageSpec, p.gameObject);
+        return AttachImpactAudio(p, DamageInfo.Create(p.Stats.Offense, damageSpec, p.gameObject));
     }
 
 

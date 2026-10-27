@@ -15,6 +15,9 @@ public class WolfAttackSettings
     public Vector2 hitboxOffset = new Vector2(1.6f, -0.6f);
     public Vector2 hitboxSize = new Vector2(0.9f, 0.8f);
     public AttackDamageSpec damage = new AttackDamageSpec { damageMultiplier = 2f };
+    public SoundCue attackSound = new SoundCue();
+    public SoundCue impactSound = new SoundCue();
+    public SoundCue activeLoop = new SoundCue();
     public Sprite prepareSprite;
     public Sprite[] activeSprites;
     public Sprite recoverySprite;
@@ -59,6 +62,7 @@ public class EnemyWolfAttack : MonoBehaviour
     private float activeElapsed;
     private float biteReadyTime;
     private float chargeReadyTime;
+    private SoundHandle attackLoop;
     private DamageInfo damageInfo;
     private readonly HashSet<PlayerHealth> hitTargets = new HashSet<PlayerHealth>();
     private readonly List<Collider2D> overlaps = new List<Collider2D>();
@@ -94,6 +98,7 @@ public class EnemyWolfAttack : MonoBehaviour
         current = useCharge ? charge : bite;
         direction = ai.Direction;
         damageInfo = DamageInfo.Create(stats.Offense, current.damage, gameObject);
+        damageInfo.impactAudio = new AttackAudioContext(current.impactSound, ImpactSoundMode.EveryHit, transform);
         hitTargets.Clear();
         knockback.StopKnockback();
         knockback.AttackImmune = true;
@@ -135,6 +140,12 @@ public class EnemyWolfAttack : MonoBehaviour
 
     private void EnterPhase(Phase next)
     {
+        attackLoop.Stop();
+        if (next == Phase.Active)
+        {
+            GameAudio.Play(current.attackSound, transform.position, transform);
+            attackLoop = GameAudio.PlayLoop(current.activeLoop, transform);
+        }
         phase = next;
         phaseTime = 0f;
         ai.StopMovement();
@@ -207,6 +218,7 @@ public class EnemyWolfAttack : MonoBehaviour
 
     private void CancelAttack()
     {
+        attackLoop.Stop();
         phase = Phase.None;
         hitTargets.Clear();
         if (knockback != null) knockback.AttackImmune = false;

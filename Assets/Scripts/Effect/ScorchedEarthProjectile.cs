@@ -14,6 +14,7 @@ public sealed class ScorchedEarthProjectile : MonoBehaviour
     private bool resolved;
     private bool noReplacement;
     private Action onResolved;
+    private SoundHandle flightAudio;
 
     public void Launch(ScorchedEarthSkillData.BarrageSettings config, LayerMask enemies,
         DamageInfo preparedDamage, Enemy initialTarget, Vector2 outward,
@@ -26,6 +27,8 @@ public sealed class ScorchedEarthProjectile : MonoBehaviour
         direction = outward.sqrMagnitude > 0f ? outward.normalized : Vector2.right;
         onResolved = callback;
         launched = true;
+        flightAudio.Stop();
+        flightAudio = GameAudio.PlayLoop(settings.flightLoop, transform);
         SpriteRenderer sprite = GetComponentInChildren<SpriteRenderer>();
         if (sprite != null)
         {
@@ -93,6 +96,7 @@ public sealed class ScorchedEarthProjectile : MonoBehaviour
     {
         if (resolved) return;
         resolved = true;
+        flightAudio.Stop();
         if (ScorchedEarthTargeting.IsValid(directHit))
         {
             directHit.TakeDamage(damage, direction);
@@ -116,5 +120,6 @@ public sealed class ScorchedEarthProjectile : MonoBehaviour
         callback?.Invoke();
     }
 
-    private void OnDestroy() { NotifyResolved(); }
+    private void OnDisable() { flightAudio.Stop(); }
+    private void OnDestroy() { flightAudio.Stop(); NotifyResolved(); }
 }

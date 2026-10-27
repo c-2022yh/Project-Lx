@@ -3,6 +3,8 @@ using UnityEngine;
 //모든 적의 공통 공격 처리를 담당
 public class EnemyContactAttack : MonoBehaviour
 {
+    [Header("Audio")]
+    [SerializeField] private SoundCue impactSound = new SoundCue();
     private EnemyStats enemyStats;
 
     private void Awake()
@@ -28,6 +30,7 @@ public class EnemyContactAttack : MonoBehaviour
             gameObject
         );
 
+        damageInfo.impactAudio = new AttackAudioContext(impactSound, ImpactSoundMode.EveryHit, transform);
         target.TakeDamage(damageInfo, hitDirection);
     }
 }

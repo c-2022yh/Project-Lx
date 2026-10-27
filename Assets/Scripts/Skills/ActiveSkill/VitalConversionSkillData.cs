@@ -52,6 +52,7 @@ public class VitalConversionSkillData : UtilitySkillData
         {
             yield break;
         }
+        BeginEffectAudio(p);
 
 
         //스킬 시전 시작
@@ -86,6 +87,7 @@ public class VitalConversionSkillData : UtilitySkillData
 
         //체력 회복
         playerHealth.Heal(healAmount);
+        PlayReleaseSound(p, p.transform.position);
 
     }
 }

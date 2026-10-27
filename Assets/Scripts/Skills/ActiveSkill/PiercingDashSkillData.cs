@@ -62,15 +62,12 @@ public class PiercingDashSkillData : AttackSkillData
 
         //해시셋 (한번 충돌한 적은 다시 판정하면 안되므로 해시셋으로 관리)
         HashSet<Enemy> hitEnemies = new HashSet<Enemy>();
+        PlayReleaseSound(p, p.transform.position);
 
         p.SetPhysicsFreeze(true);
 
         //공격 정보 생성 
-        DamageInfo damageInfo = DamageInfo.Create(
-            p.Stats.Offense,
-            damageSpec,
-            p.gameObject
-        );
+        DamageInfo damageInfo = CreateDamageInfo(p);
 
         //실제 이동 거리에 맞춰 쇄도 이펙트 생성
         SpawnDashEffect(p, dir, actualDist);

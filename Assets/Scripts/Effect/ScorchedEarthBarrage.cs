@@ -6,6 +6,7 @@ using UnityEngine;
 public sealed class ScorchedEarthBarrage : MonoBehaviour
 {
     private Player owner;
+    private SkillAudioSession audioSession;
     private ScorchedEarthSkillData.BarrageSettings settings;
     private ScorchedEarthSkillData.PreparedDamage damage;
     private LayerMask enemyLayer;
@@ -17,9 +18,10 @@ public sealed class ScorchedEarthBarrage : MonoBehaviour
     private int unresolvedProjectiles;
 
     public void Initialize(Player player, ScorchedEarthSkillData.BarrageSettings config,
-        LayerMask enemies, ScorchedEarthSkillData.PreparedDamage preparedDamage)
+        LayerMask enemies, ScorchedEarthSkillData.PreparedDamage preparedDamage, SkillAudioSession soundSession = null)
     {
         owner = player;
+        audioSession = soundSession;
         settings = config;
         damage = preparedDamage;
         enemyLayer = enemies;
@@ -80,6 +82,8 @@ public sealed class ScorchedEarthBarrage : MonoBehaviour
 
     public IEnumerator Process()
     {
+        if (completed) yield break;
+        audioSession?.BeginActive();
         if (settings.preparationDuration > 0f)
             yield return new WaitForSeconds(settings.preparationDuration);
         if (completed) yield break;
@@ -93,6 +97,7 @@ public sealed class ScorchedEarthBarrage : MonoBehaviour
                 OnProjectileResolved();
                 continue;
             }
+            audioSession?.Release(projectile.transform.position);
             projectile.Launch(settings, enemyLayer, damage.regular,
                 target, FormationDirection(i), OnProjectileResolved);
             waiting[i] = null;

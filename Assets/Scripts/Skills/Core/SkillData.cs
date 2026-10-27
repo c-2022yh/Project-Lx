@@ -30,6 +30,9 @@ public abstract class SkillData : ScriptableObject
     [Tooltip("Motion played when this skill is used. None skips skill animation. Keep existing enum values unchanged when extending.")]
     public SkillAnimationType animationType = SkillAnimationType.None;
 
+    [Header("Audio")]
+    public SkillSoundSettings audio = new SkillSoundSettings();
+
     [Header("Cost")]
     [Min(0f)] public float cooldownTime = 1f;
     [FormerlySerializedAs("soulCost")]
@@ -65,11 +68,34 @@ public abstract class SkillData : ScriptableObject
     public IEnumerator ExecuteWithTiming(Player p, IEnumerator effect)
     {
         if (p == null) yield break;
+        SkillAudioSession session = p.Skill != null ? p.Skill.GetAudioSession(this) : null;
+        session?.BeginCast();
         yield return WaitForWindup(p);
         if (p == null) yield break;
+        session?.EndWindup();
         yield return effect;
+        session?.EndActive();
         if (p == null) yield break;
         yield return WaitForRecovery(p);
+    }
+
+    // Playback state stays on the player; SOs only supply cue settings.
+    protected void BeginEffectAudio(Player p)
+    {
+        if (p != null && p.Skill != null) p.Skill.GetAudioSession(this)?.BeginActive();
+    }
+
+    protected void PlayReleaseSound(Player p, Vector3 position)
+    {
+        if (p != null && p.Skill != null) p.Skill.GetAudioSession(this)?.Release(position);
+    }
+
+    protected DamageInfo AttachImpactAudio(Player p, DamageInfo damage)
+    {
+        SkillAudioSession session = p != null && p.Skill != null ? p.Skill.GetAudioSession(this) : null;
+        damage.impactAudio = session != null ? session.Impact
+            : new AttackAudioContext(audio?.impactSound, audio != null ? audio.impactMode : ImpactSoundMode.EveryHit, p != null ? p.transform : null);
+        return damage;
     }
 
     // Called before a replacement action starts, so a cancelled cast cannot retain its physics freeze.

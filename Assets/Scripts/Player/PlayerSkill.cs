@@ -19,6 +19,10 @@ public class PlayerSkill : MonoBehaviour
     private SkillData exclusiveSkill;
     private object exclusiveSource;
     private SkillData activeSkill;
+    private SkillAudioSession activeAudio;
+
+    // A cast owns its sound handles; the shared skill asset owns settings only.
+    public SkillAudioSession GetAudioSession(SkillData skill) => activeSkill == skill ? activeAudio : null;
     private Coroutine skillCoroutine;
     private int activeSlotIndex = -1;
     private bool isInitialized;
@@ -387,6 +391,7 @@ public class PlayerSkill : MonoBehaviour
     private IEnumerator SkillRoutine(Player p, SkillData skill, int slotIndex)
     {
         activeSkill = skill;
+        activeAudio = new SkillAudioSession(skill.audio, p.transform);
         activeSlotIndex = slotIndex;
         p.ActionState.EnterSkill();
         try
@@ -406,6 +411,8 @@ public class PlayerSkill : MonoBehaviour
 
     private void ClearRunningSkill()
     {
+        activeAudio?.Finish(false);
+        activeAudio = null;
         activeSkill = null;
         skillCoroutine = null;
         awakeningSkillRoutine = null;
@@ -429,6 +436,7 @@ public class PlayerSkill : MonoBehaviour
         Coroutine normalRoutine = skillCoroutine;
         Coroutine awakeningRoutine = awakeningSkillRoutine;
         ScorchedEarthBarrage barrage = activeBarrage;
+        activeAudio?.Finish(true);
         // Detach first: coroutine finalizers must not finish this cast a second time.
         ClearRunningSkill();
         if (normalRoutine != null) StopCoroutine(normalRoutine);
@@ -485,6 +493,7 @@ public class PlayerSkill : MonoBehaviour
     private IEnumerator AwakeningSkillRoutine(Player p, ScorchedEarthSkillData skill, ScorchedEarthSkillData.PreparedDamage damageInfo)
     {
         activeSkill = skill;
+        activeAudio = new SkillAudioSession(skill.audio, p.transform);
         activeSlotIndex = -1;
         p.ActionState.EnterSkill(true);
         p.Awakening.BeginFinisher();

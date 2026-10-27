@@ -50,7 +50,7 @@ public class ThrustSkillData : AttackSkillData
 
 
         //공격 정보 생성
-        DamageInfo damageInfo = DamageInfo.Create(p.Stats.Offense, damageSpec, p.gameObject);
+        DamageInfo damageInfo = CreateDamageInfo(p);
 
         //찌르기 이펙트 생성
         SpawnThrustEffect(p, dir, damageInfo);
@@ -78,6 +78,7 @@ public class ThrustSkillData : AttackSkillData
         Quaternion rotation = Quaternion.Euler(0f, 0f, effectRotationZ * dir);
 
         GameObject effectObj = Instantiate(thrustEffectPrefab, spawnPos, rotation);
+        PlayReleaseSound(p, spawnPos);
 
         effectObj.transform.localScale = effectScale;
 

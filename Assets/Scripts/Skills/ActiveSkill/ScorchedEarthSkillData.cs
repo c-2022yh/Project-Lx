@@ -45,6 +45,8 @@ public class ScorchedEarthSkillData : SkillData
         public GameObject preparationEffectPrefab;
         public GameObject regularProjectilePrefab;
         public GameObject regularHitEffectPrefab;
+        [Header("Projectile Audio")]
+        public SoundCue flightLoop = new SoundCue();
         [Min(0f)] public float hitEffectLifetime = 1f;
     }
 
@@ -91,7 +93,8 @@ public class ScorchedEarthSkillData : SkillData
     public ScorchedEarthBarrage CreateBarrage(Player p, PreparedDamage damage)
     {
         var runner = new GameObject("ScorchedEarth_Barrage").AddComponent<ScorchedEarthBarrage>();
-        runner.Initialize(p, barrage, enemyLayer, damage);
+        damage.regular = AttachImpactAudio(p, damage.regular);
+        runner.Initialize(p, barrage, enemyLayer, damage, p.Skill != null ? p.Skill.GetAudioSession(this) : null);
         return runner;
     }
 
