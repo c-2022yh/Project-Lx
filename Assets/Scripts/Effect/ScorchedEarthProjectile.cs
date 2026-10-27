@@ -13,19 +13,17 @@ public sealed class ScorchedEarthProjectile : MonoBehaviour
     private bool launched;
     private bool resolved;
     private bool noReplacement;
-    private bool finisher;
     private Action onResolved;
 
     public void Launch(ScorchedEarthSkillData.BarrageSettings config, LayerMask enemies,
         DamageInfo preparedDamage, Enemy initialTarget, Vector2 outward,
-        bool isFinisher, Action callback)
+        Action callback)
     {
         settings = config;
         enemyLayer = enemies;
         damage = preparedDamage;
         target = initialTarget;
         direction = outward.sqrMagnitude > 0f ? outward.normalized : Vector2.right;
-        finisher = isFinisher;
         onResolved = callback;
         launched = true;
         SpriteRenderer sprite = GetComponentInChildren<SpriteRenderer>();
@@ -34,7 +32,7 @@ public sealed class ScorchedEarthProjectile : MonoBehaviour
             TrailRenderer trail = gameObject.AddComponent<TrailRenderer>();
             trail.sharedMaterial = sprite.sharedMaterial;
             trail.time = 0.18f;
-            trail.startWidth = finisher ? 0.25f : 0.12f;
+            trail.startWidth = 0.12f;
             trail.endWidth = 0f;
             trail.startColor = new Color(1f, 0.12f, 0.04f, 0.7f);
             trail.endColor = new Color(1f, 0.02f, 0f, 0f);
@@ -69,8 +67,7 @@ public sealed class ScorchedEarthProjectile : MonoBehaviour
         }
 
         float remaining = Mathf.Max(0f, settings.projectileLifetime - age);
-        float distance = Mathf.Max(0.1f, settings.projectileSpeed)
-            * (finisher ? Mathf.Max(0.1f, settings.finisherSpeedMultiplier) : 1f) * Mathf.Min(dt, remaining);
+        float distance = Mathf.Max(0.1f, settings.projectileSpeed) * Mathf.Min(dt, remaining);
         LayerMask collisionMask = enemyLayer;
         if (!settings.passThroughTerrain) collisionMask |= settings.sightObstacleLayer;
         // Swept collision prevents fast shards skipping small enemies at low FPS.
@@ -96,24 +93,7 @@ public sealed class ScorchedEarthProjectile : MonoBehaviour
     {
         if (resolved) return;
         resolved = true;
-        if (finisher)
-        {
-            var damaged = new HashSet<Enemy>();
-            if (ScorchedEarthTargeting.IsValid(directHit))
-            {
-                damaged.Add(directHit);
-                directHit.TakeDamage(damage, direction);
-            }
-            foreach (Collider2D hit in Physics2D.OverlapCircleAll(transform.position,
-                Mathf.Max(0f, settings.finisherExplosionRadius), enemyLayer))
-            {
-                Enemy enemy = hit.GetComponentInParent<Enemy>();
-                if (ScorchedEarthTargeting.IsValid(enemy) && damaged.Add(enemy))
-                    enemy.TakeDamage(damage, direction);
-            }
-            SpawnEffect(settings.finisherExplosionEffectPrefab);
-        }
-        else if (ScorchedEarthTargeting.IsValid(directHit))
+        if (ScorchedEarthTargeting.IsValid(directHit))
         {
             directHit.TakeDamage(damage, direction);
             SpawnEffect(settings.regularHitEffectPrefab);

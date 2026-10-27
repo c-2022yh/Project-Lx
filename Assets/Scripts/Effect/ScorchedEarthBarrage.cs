@@ -14,6 +14,7 @@ public sealed class ScorchedEarthBarrage : MonoBehaviour
     private GameObject preparationEffect;
     private float facing;
     private bool completed;
+    private int unresolvedProjectiles;
 
     public void Initialize(Player player, ScorchedEarthSkillData.BarrageSettings config,
         LayerMask enemies, ScorchedEarthSkillData.PreparedDamage preparedDamage)
@@ -26,12 +27,10 @@ public sealed class ScorchedEarthBarrage : MonoBehaviour
         targets = ScorchedEarthTargeting.FindTargets(owner.transform.position,
             settings.targetSearchRadius, enemyLayer, settings.sightObstacleLayer);
 
-        int count = Mathf.Max(2, settings.projectileCount);
+        int count = Mathf.Max(1, settings.projectileCount);
         for (int i = 0; i < count; i++)
         {
-            bool finisher = i == count - 1;
-            GameObject prefab = finisher ? settings.finisherProjectilePrefab : settings.regularProjectilePrefab;
-            GameObject shard = Instantiate(prefab);
+            GameObject shard = Instantiate(settings.regularProjectilePrefab);
             ScorchedEarthProjectile projectile = shard.GetComponent<ScorchedEarthProjectile>();
             if (projectile == null) projectile = shard.AddComponent<ScorchedEarthProjectile>();
             waiting.Add(projectile);
@@ -57,11 +56,11 @@ public sealed class ScorchedEarthBarrage : MonoBehaviour
 
     private Vector2 FormationDirection(int index)
     {
-        // Launch from alternating ends of an arc behind the player.
+        // Spread the simultaneous volley across an arc behind the player.
         int count = waiting.Count;
         int slot = index % 2 == 0 ? index / 2 : count - 1 - index / 2;
         float angle = Mathf.Lerp(-settings.formationArc * 0.5f,
-            settings.formationArc * 0.5f, slot / (float)(count - 1)) * Mathf.Deg2Rad;
+            settings.formationArc * 0.5f, count > 1 ? slot / (float)(count - 1) : 0.5f) * Mathf.Deg2Rad;
         return new Vector2(-Mathf.Cos(angle) * facing, Mathf.Sin(angle));
     }
 
@@ -83,21 +82,31 @@ public sealed class ScorchedEarthBarrage : MonoBehaviour
     {
         if (settings.preparationDuration > 0f)
             yield return new WaitForSeconds(settings.preparationDuration);
+        if (completed) yield break;
+        unresolvedProjectiles = waiting.Count;
         for (int i = 0; i < waiting.Count && !completed; i++)
         {
-            bool finisher = i == waiting.Count - 1;
-            if (finisher && settings.finisherDelay > 0f)
-                yield return new WaitForSeconds(settings.finisherDelay);
-            if (completed) yield break;
             Enemy target = targets.Count > 0 ? targets[i % targets.Count] : null;
             ScorchedEarthProjectile projectile = waiting[i];
-            projectile.Launch(settings, enemyLayer, finisher ? damage.finisher : damage.regular,
-                target, FormationDirection(i), finisher, finisher ? Finish : (System.Action)null);
+            if (projectile == null)
+            {
+                OnProjectileResolved();
+                continue;
+            }
+            projectile.Launch(settings, enemyLayer, damage.regular,
+                target, FormationDirection(i), OnProjectileResolved);
             waiting[i] = null;
-            if (!finisher) yield return new WaitForSeconds(Mathf.Max(0.01f, settings.launchInterval));
         }
         ClearPreparation();
         while (!completed) yield return null;
+    }
+
+    // End awakening once every launched shard has hit or expired.
+    private void OnProjectileResolved()
+    {
+        if (completed) return;
+        unresolvedProjectiles--;
+        if (unresolvedProjectiles <= 0) Finish();
     }
 
     private void ClearPreparation()

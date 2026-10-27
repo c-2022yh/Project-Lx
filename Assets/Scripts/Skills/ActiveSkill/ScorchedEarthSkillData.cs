@@ -20,43 +20,31 @@ public class ScorchedEarthSkillData : SkillData
         public bool passThroughTerrain = true;
 
         [Header("Formation and Launch")]
-        [Tooltip("Includes the final empowered projectile.")]
-        [Min(2)] public int projectileCount = 12;
+        [Min(1)] public int projectileCount = 12;
         public Vector2 formationOffset = new Vector2(-0.4f, 0.6f);
         [Min(0f)] public float formationRadius = 1.2f;
         [Range(0f, 360f)] public float formationArc = 150f;
-        [Min(0f)] public float preparationDuration = 0.3f;
-        [Min(0.01f)] public float launchInterval = 0.07f;
-        [Min(0f)] public float finisherDelay = 0.18f;
+        [Min(0f)] public float preparationDuration = 0.15f;
 
         [Header("Flight")]
-        [Min(0f)] public float outwardDuration = 0.15f;
-        [Min(0.1f)] public float projectileSpeed = 14f;
+        [Min(0f)] public float outwardDuration = 0.04f;
+        [Min(0.1f)] public float projectileSpeed = 30f;
         [Tooltip("Maximum homing turn in degrees per second.")]
-        [Min(0f)] public float turnSpeed = 540f;
-        [Min(0.1f)] public float projectileLifetime = 3f;
+        [Min(0f)] public float turnSpeed = 2160f;
+        [Min(0.1f)] public float projectileLifetime = 2f;
         [Min(0.01f)] public float hitRadius = 0.15f;
 
         [Header("Damage per Projectile")]
         public AttackDamageSpec regularDamage = new AttackDamageSpec
         {
             damageType = DamageType.Magical,
-            damageMultiplier = 0.25f
+            damageMultiplier = 4.25f / 12f
         };
-        public AttackDamageSpec finisherDamage = new AttackDamageSpec
-        {
-            damageType = DamageType.Magical,
-            damageMultiplier = 1.5f
-        };
-        [Min(0f)] public float finisherExplosionRadius = 2f;
-        [Min(0.1f)] public float finisherSpeedMultiplier = 1.3f;
 
         [Header("Visual Prefabs")]
         public GameObject preparationEffectPrefab;
         public GameObject regularProjectilePrefab;
-        public GameObject finisherProjectilePrefab;
         public GameObject regularHitEffectPrefab;
-        public GameObject finisherExplosionEffectPrefab;
         [Min(0f)] public float hitEffectLifetime = 1f;
     }
 
@@ -67,7 +55,6 @@ public class ScorchedEarthSkillData : SkillData
     public struct PreparedDamage
     {
         public DamageInfo regular;
-        public DamageInfo finisher;
     }
 
     //각성 상태와 스킬 시전 가능 상태를 함께 확인한다.
@@ -76,7 +63,6 @@ public class ScorchedEarthSkillData : SkillData
         return base.CanUse(p) && p.Awakening != null && p.Awakening.IsAwakened
             && p.ActionState != null && p.ActionState.CanSkill()
             && barrage != null && barrage.regularProjectilePrefab != null
-            && barrage.finisherProjectilePrefab != null
             && (!barrage.requireInitialTarget || ScorchedEarthTargeting.FindTargets(
                 p.transform.position, barrage.targetSearchRadius, enemyLayer,
                 barrage.sightObstacleLayer).Count > 0);
@@ -90,8 +76,7 @@ public class ScorchedEarthSkillData : SkillData
         regular.suppressKnockback = true;
         return new PreparedDamage
         {
-            regular = regular,
-            finisher = DamageInfo.Create(p.Stats.Offense, barrage.finisherDamage, p.gameObject)
+            regular = regular
         };
     }
 

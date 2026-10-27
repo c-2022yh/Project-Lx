@@ -465,7 +465,7 @@ public class PlayerSkill : MonoBehaviour
         awakeningSkillAvailable = awakeningSkill != null && available;
     }
 
-    //Q 스킬의 피해를 확정해 실행한다. 각성은 강화탄 폭발 또는 취소 시 종료한다.
+    //Q 스킬의 피해를 확정해 실행한다. 각성은 전탄 명중·소멸 또는 취소 시 종료한다.
     public bool TryUseAwakeningSkill(Player p)
     {
         Initialize();
