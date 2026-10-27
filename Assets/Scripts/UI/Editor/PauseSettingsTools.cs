@@ -13,7 +13,7 @@ using UnityEngine.UI;
 /// </summary>
 public static class PauseSettingsTools
 {
-    private const string PrefabPath = "Assets/Prefabs/UI/System_Canvas.prefab";
+    private const string PrefabPath = "Assets/Prefabs/UI/System_Canvas/System_Canvas.prefab";
     private const float TopY = 50f;
     private const float Gap = 90f;
 

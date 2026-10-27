@@ -15,8 +15,8 @@ using K = UIBuildKit;
 /// </summary>
 public static class RelicInventoryUIBuilder
 {
-    private const string SlotPrefabPath = "Assets/Prefabs/UI/RelicSlotView.prefab";
-    private const string PopupCanvasPath = "Assets/Prefabs/UI/Popup_Canvas.prefab";
+    private const string SlotPrefabPath = "Assets/Prefabs/UI/Popup_Canvas/RelicSlotView.prefab";
+    private const string PopupCanvasPath = "Assets/Prefabs/UI/Combat_System/Popup_Canvas.prefab";
 
     /// <summary>BuildInto()가 마지막으로 남긴 UIManager 연결 결과 메시지.</summary>
     public static string LastUIManagerNote { get; private set; } = "";
@@ -33,7 +33,7 @@ public static class RelicInventoryUIBuilder
 
     private const float TooltipWidth = 400f;
 
-    private const string CircleSlotPrefabPath = "Assets/Prefabs/UI/RelicSlotCircle.prefab";
+    private const string CircleSlotPrefabPath = "Assets/Prefabs/UI/Popup_Canvas/RelicSlotCircle.prefab";
     private const string FilterIconFolder = "Assets/Sprites/UI/RelicFilter";
 
     // 창을 좌우로 나눈다. 왼쪽은 장착, 오른쪽은 보관함.
@@ -941,7 +941,7 @@ public static class RelicInventoryUIBuilder
 
     // ── 원형 칸에 쓰는 동그라미 ─────────────
 
-    private const string RoundSpritePath = "Assets/Sprites/UI/Circle.png";
+    private const string RoundSpritePath = "Assets/Sprites/UI/RelicFilter/Circle.png";
 
     /// <summary>원형 칸에서 아이콘을 칸보다 몇 배로 키울지. 자기 프레임이 잘려나갈 만큼.</summary>
     private const float IconZoom = 1.45f;

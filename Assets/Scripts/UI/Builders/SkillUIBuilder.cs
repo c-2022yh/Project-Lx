@@ -13,8 +13,8 @@ using K = UIBuildKit;
 /// </summary>
 public static class SkillUIBuilder
 {
-    private const string PopupCanvasPath = "Assets/Prefabs/UI/Popup_Canvas.prefab";
-    private const string SlotPrefabPath = "Assets/Prefabs/UI/SkillPanelSlot.prefab";
+    private const string PopupCanvasPath = "Assets/Prefabs/UI/Combat_System/Popup_Canvas.prefab";
+    private const string SlotPrefabPath = "Assets/Prefabs/UI/Popup_Canvas/SkillPanelSlot.prefab";
 
     private const float SlotSize = 88f;
 

@@ -19,7 +19,7 @@ using K = UIBuildKit;
 public static class TitleSceneUIBuilder
 {
     private const string TitleScenePath = "Assets/Scenes/Title.unity";
-    private const string SlotEntryPrefabPath = "Assets/Prefabs/UI/SaveSlotEntry.prefab";
+    private const string SlotEntryPrefabPath = "Assets/Prefabs/UI/System_Canvas/SaveSlotEntry.prefab";
 
     // 10.16 시안 두 가지. 디자이너 PDF 6쪽 = A, 7쪽 = B.
     // 바꾸고 싶으면 아래 두 줄만 "A"로 고치고 Build Title Scene을 다시 누르면 된다.

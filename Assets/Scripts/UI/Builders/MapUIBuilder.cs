@@ -16,8 +16,8 @@ using K = UIBuildKit;
 /// </summary>
 public static class MapUIBuilder
 {
-    private const string PopupCanvasPath = "Assets/Prefabs/UI/Popup_Canvas.prefab";
-    private const string MarkerPrefabPath = "Assets/Prefabs/UI/MapMarkerView.prefab";
+    private const string PopupCanvasPath = "Assets/Prefabs/UI/Combat_System/Popup_Canvas.prefab";
+    private const string MarkerPrefabPath = "Assets/Prefabs/UI/Map/MapMarkerView.prefab";
 
     private const float WindowWidth = 1560f;
     private const float WindowHeight = 880f;
