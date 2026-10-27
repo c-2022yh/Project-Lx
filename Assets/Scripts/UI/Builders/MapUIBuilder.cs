@@ -25,7 +25,7 @@ public static class MapUIBuilder
     /// <summary>맵 판 안쪽 여백. 제목과 범례가 들어갈 자리.</summary>
     private const float BoardTop = 92f;
     private const float BoardBottom = 88f;
-    private const float BoardSide = 36f;
+    private const float BoardSide = 64f; // 창살 테두리 모서리 장식을 피할 만큼
 
     [MenuItem("Tools/UI/Build Map Panel In Prefab")]
     public static void BuildInPrefab()
@@ -166,9 +166,10 @@ public static class MapUIBuilder
             new Color(0.08f, 0.08f, 0.09f, 0.82f), true);
         K.Place(window, K.Anchor.Center, 0, 0, WindowWidth, WindowHeight);
         Transform w = window.transform;
+        LatticeFrame.Attach(window.GetComponent<RectTransform>(), WindowHeight);
 
         GameObject title = K.Text("Title", w, "지도", 38, FontStyles.Bold);
-        K.Place(title, K.Anchor.TopLeft, BoardSide + 4, -26, 400, 50);
+        K.Place(title, K.Anchor.TopLeft, 112, -26, 400, 50);
 
         GameObject titleLine = K.Img("Divider_Title", w, K.Divider);
         K.Place(titleLine, K.Anchor.TopLeft, BoardSide, -BoardTop + 8, WindowWidth - BoardSide * 2, 2);
@@ -203,7 +204,7 @@ public static class MapUIBuilder
 
         GameObject hint = K.Text("HintText", w, "탭을 떼면 닫힙니다", 19,
             FontStyles.Normal, TextAlignmentOptions.MidlineRight, K.MutedText);
-        K.Place(hint, K.Anchor.BottomRight, -BoardSide, 26, 520, 30);
+        K.Place(hint, K.Anchor.BottomRight, -112, 26, 520, 30);
 
         // 컴포넌트 + 참조 연결
         MapPanel comp = panel.AddComponent<MapPanel>();
@@ -227,7 +228,7 @@ public static class MapUIBuilder
     private static void BuildLegend(Transform window)
     {
         GameObject legend = K.Obj("Legend", window);
-        K.Place(legend, K.Anchor.BottomLeft, BoardSide, 22, 1500, 38);
+        K.Place(legend, K.Anchor.BottomLeft, 112, 22, 1300, 38);
 
         HorizontalLayoutGroup layout = legend.AddComponent<HorizontalLayoutGroup>();
         layout.spacing = 20;

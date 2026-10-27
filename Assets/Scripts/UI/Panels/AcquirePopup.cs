@@ -28,6 +28,12 @@ public class AcquirePopup : MonoBehaviour
     private const float FadeSeconds = 0.15f;
 
     private static readonly Color Accent = new Color(0.56f, 0.82f, 0.90f, 1f);
+
+    // 판 크기와 안쪽 여백. 여백은 창살 모서리 장식을 피할 만큼 둔다.
+    private const float PanelWidth = 880f;
+    private const float PanelHeight = 420f;
+    private const float Inset = 96f;
+    private const float TextLeft = Inset + 128f + 28f;
     private static readonly Color PanelColor = new Color(0.05f, 0.09f, 0.11f, 0.97f);
     private static readonly Color ButtonIdle = new Color(0.12f, 0.19f, 0.22f, 1f);
     private static readonly Color TextMain = new Color(0.90f, 0.93f, 0.95f, 1f);
@@ -118,7 +124,7 @@ public class AcquirePopup : MonoBehaviour
     private TMP_Text confirmText;
     private Image viewBg;
     private TMP_Text viewText;
-    private Outline panelOutline;
+    private GameObject frameObject;
     private Image iconFrameImage;
     private Color accent = Accent;
 
@@ -208,7 +214,7 @@ public class AcquirePopup : MonoBehaviour
 
         labelText.text = entry.Label;
         labelText.color = accent;
-        if (panelOutline != null) panelOutline.effectColor = new Color(accent.r, accent.g, accent.b, 0.55f);
+        LatticeFrame.SetColor(frameObject, new Color(accent.r, accent.g, accent.b, 0.9f));
         // 아이콘 칸은 계열 색을 아주 어둡게 깐다.
         if (iconFrameImage != null) iconFrameImage.color = Color.Lerp(ButtonIdle, accent, 0.22f);
         messageText.text = $"<color=#{accentHex}>{itemName}</color>{ObjectParticle(itemName)} 획득했습니다";
@@ -219,8 +225,8 @@ public class AcquirePopup : MonoBehaviour
         iconFrame.gameObject.SetActive(hasIcon);
         if (hasIcon) iconImage.sprite = entry.Icon;
 
-        float textLeft = hasIcon ? 204f : 48f;
-        SetLeft(labelText.rectTransform, 48f);
+        float textLeft = hasIcon ? TextLeft : Inset;
+        SetLeft(labelText.rectTransform, Inset);
         SetLeft(messageText.rectTransform, textLeft);
         SetLeft(descriptionText.rectTransform, textLeft);
 
@@ -358,51 +364,49 @@ public class AcquirePopup : MonoBehaviour
         RectTransform panelRect = panel.rectTransform;
         panelRect.anchorMin = panelRect.anchorMax = new Vector2(0.5f, 0.5f);
         panelRect.pivot = new Vector2(0.5f, 0.5f);
-        panelRect.sizeDelta = new Vector2(780f, 380f);
+        panelRect.sizeDelta = new Vector2(PanelWidth, PanelHeight);
         panelRect.anchoredPosition = new Vector2(0f, 20f);
 
-        Outline outline = panel.gameObject.AddComponent<Outline>();
-        panelOutline = outline;
-        outline.effectColor = new Color(Accent.r, Accent.g, Accent.b, 0.45f);
-        outline.effectDistance = new Vector2(2f, -2f);
+        // 창살 테두리 (10.19). 색은 Open에서 유물 계열 색으로 바꾼다.
+        frameObject = LatticeFrame.Attach(panelRect, PanelHeight, Accent);
 
         labelText = NewText("Label", panelRect, font, 22f, Accent);
-        Place(labelText.rectTransform, 48f, -34f, 500f, 32f);
+        Place(labelText.rectTransform, Inset, -46f, 500f, 32f);
 
         Image frame = NewImage("IconFrame", panelRect, ButtonIdle);
         iconFrameImage = frame;
         iconFrame = frame.rectTransform;
-        Place(iconFrame, 48f, -84f, 128f, 128f);
+        Place(iconFrame, Inset, -96f, 128f, 128f);
 
         iconImage = NewImage("Icon", iconFrame, Color.white);
         iconImage.preserveAspect = true;
         Stretch(iconImage.rectTransform, 12f);
 
         messageText = NewText("Message", panelRect, font, 34f, TextMain);
-        Place(messageText.rectTransform, 204f, -84f, 528f, 56f);
+        Place(messageText.rectTransform, TextLeft, -96f, 540f, 56f);
 
         descriptionText = NewText("Description", panelRect, font, 22f, TextDim);
         descriptionText.textWrappingMode = TextWrappingModes.Normal;
         descriptionText.alignment = TextAlignmentOptions.TopLeft;
-        Place(descriptionText.rectTransform, 204f, -150f, 528f, 100f);
+        Place(descriptionText.rectTransform, TextLeft, -162f, 540f, 100f);
 
         hintText = NewText("Hint", panelRect, font, 20f, TextDim);
         RectTransform hintRect = hintText.rectTransform;
         hintRect.anchorMin = hintRect.anchorMax = hintRect.pivot = Vector2.zero;
-        hintRect.anchoredPosition = new Vector2(48f, 54f);
+        hintRect.anchoredPosition = new Vector2(Inset, 70f);
         hintRect.sizeDelta = new Vector2(280f, 30f);
 
-        confirmBg = NewButton("Confirm", panelRect, font, "확인", 180f, new Vector2(-48f, 36f),
+        confirmBg = NewButton("Confirm", panelRect, font, "확인", 180f, new Vector2(-Inset, 52f),
                               out confirmText, 0);
-        viewBg = NewButton("ViewRelics", panelRect, font, "유물창 보기", 200f, new Vector2(-244f, 36f),
+        viewBg = NewButton("ViewRelics", panelRect, font, "유물창 보기", 200f, new Vector2(-Inset - 196f, 52f),
                            out viewText, 1);
 
         TMP_Text keys = NewText("Keys", root.transform, font, 20f, TextDim);
         RectTransform keysRect = keys.rectTransform;
         keysRect.anchorMin = keysRect.anchorMax = new Vector2(0.5f, 0.5f);
         keysRect.pivot = new Vector2(0.5f, 1f);
-        keysRect.anchoredPosition = new Vector2(0f, 20f - 190f - 18f);
-        keysRect.sizeDelta = new Vector2(780f, 30f);
+        keysRect.anchoredPosition = new Vector2(0f, 20f - PanelHeight / 2f - 30f);
+        keysRect.sizeDelta = new Vector2(PanelWidth, 30f);
         keys.alignment = TextAlignmentOptions.Center;
         keys.text = "Z · Space  확인        ← →  선택";
 
@@ -473,7 +477,7 @@ public class AcquirePopup : MonoBehaviour
 
     private static void SetLeft(RectTransform rect, float left)
     {
-        float right = 780f - 48f;
+        float right = PanelWidth - Inset;
         rect.anchoredPosition = new Vector2(left, rect.anchoredPosition.y);
         rect.sizeDelta = new Vector2(right - left, rect.sizeDelta.y);
     }
@@ -487,9 +491,15 @@ public class AcquirePopup : MonoBehaviour
         rect.offsetMax = new Vector2(-inset, -inset);
     }
 
-    /// <summary>다른 UI와 같은 나눔스퀘어를 쓴다. 못 찾으면 씬에 있는 글자의 폰트를 빌린다.</summary>
+    /// <summary>
+    /// 다른 UI와 같은 폰트를 쓴다. 10.19부터 전부 제주명조라서 TMP 기본 폰트(글꼴 통일 도구가 설정)를 먼저 쓴다.
+    /// 기본 폰트가 아직 LiberationSans면 예전처럼 나눔스퀘어를 찾는다.
+    /// </summary>
     private static TMP_FontAsset FindFont()
     {
+        TMP_FontAsset main = TMP_Settings.defaultFontAsset;
+        if (main != null && !main.name.StartsWith("LiberationSans")) return main;
+
         TMP_FontAsset fallback = null;
 
         foreach (TMP_FontAsset font in Resources.FindObjectsOfTypeAll<TMP_FontAsset>())

@@ -212,14 +212,13 @@ public static class RelicInventoryUIBuilder
         GameObject dim = K.Img("Dim", panel.transform, new Color(0f, 0f, 0f, 0.78f), true);
         K.Stretch(dim, 0, 0, 0, 0);
 
-        // 창 테두리. 배경이 게임 화면과 비슷한 어두운 색이라
-        // 테두리가 없으면 창이 어디서 시작하는지 안 보인다.
-        GameObject frame = K.Img("WindowFrame", panel.transform, new Color(0.45f, 0.45f, 0.55f, 0.65f));
-        K.Place(frame, K.Anchor.Center, 0, 0, WindowWidth + 4f, WindowHeight + 4f);
-
         GameObject window = K.Img("Window", panel.transform, new Color(0.07f, 0.07f, 0.09f, 1f), true);
         K.Place(window, K.Anchor.Center, 0, 0, WindowWidth, WindowHeight);
         Transform w = window.transform;
+
+        // 창 테두리. 배경이 게임 화면과 비슷한 어두운 색이라
+        // 테두리가 없으면 창이 어디서 시작하는지 안 보인다. (10.19 창살 테두리)
+        LatticeFrame.Attach(window.GetComponent<RectTransform>(), WindowHeight);
 
         // 제목 대신 탭 줄. 스킬창과 같은 자리에 같은 모양으로 그려야
         // Q/E로 오갈 때 위쪽이 튀지 않는다.
@@ -227,7 +226,7 @@ public static class RelicInventoryUIBuilder
 
         GameObject closeHint = K.Text("WindowHint", w, "Q / E  전환      Esc  닫기", 20,
             FontStyles.Normal, TextAlignmentOptions.MidlineRight, K.MutedText);
-        K.Place(closeHint, K.Anchor.TopRight, -40, -34, 360, 34);
+        K.Place(closeHint, K.Anchor.TopRight, -112, -34, 360, 34);
 
         // ── 왼쪽: 장착 ──────────────────────
         // 제목 글자는 두지 않는다. 계열 이름표가 칸마다 붙어 있어서 중복이고,

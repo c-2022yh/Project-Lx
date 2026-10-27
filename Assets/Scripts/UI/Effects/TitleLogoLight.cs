@@ -13,7 +13,7 @@ public class TitleLogoLight : MonoBehaviour
     [Header("글자 뒤 빛")]
     [SerializeField] private Graphic glow;
     [Tooltip("밝기가 오르내리는 정도. 0.3이면 원래 밝기의 ±30%")]
-    [SerializeField, Range(0f, 1f)] private float glowPulse = 0.3f;
+    [SerializeField, Range(0f, 1f)] private float glowPulse = 0.2f;
     [Tooltip("한 번 숨 쉬는 데 걸리는 시간(초)")]
     [SerializeField] private float glowPeriod = 4f;
 

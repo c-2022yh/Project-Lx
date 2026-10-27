@@ -3,6 +3,12 @@ using UnityEngine.UI;
 
 public class PausePanel : MonoBehaviour
 {
+    [Tooltip("일시정지에서 여는 설정창. 같은 System_Canvas 안에 있다. Tools/UI/일시정지에 설정 버튼 넣기 가 연결한다.")]
+    [SerializeField] private SettingsPanel settingsPanel;
+
+    /// <summary>일시정지에서 연 설정창이 떠 있는지. Esc를 누르면 설정창부터 닫는다.</summary>
+    public bool IsSettingsOpen => settingsPanel != null && settingsPanel.gameObject.activeSelf;
+
     // 일시정지 화면을 켜고 끄는 함수
     // UIManager가 이 함수를 호출해서 패널을 보이거나 숨김
     public void SetVisible(bool visible)
@@ -29,6 +35,26 @@ public class PausePanel : MonoBehaviour
         if (UIManager.Instance == null) return;
 
         UIManager.Instance.ShowControlGuide();
+    }
+
+    // "설정" 버튼이 눌렸을 때 실행. 설정창을 닫으면 일시정지 창으로 돌아온다.
+    public void OnSettingsButton()
+    {
+        if (settingsPanel == null)
+        {
+            Debug.LogWarning("[PausePanel] 설정창이 연결되지 않았습니다. Tools/UI/일시정지에 설정 버튼 넣기 를 실행해주세요.", this);
+            return;
+        }
+
+        SetVisible(false);
+        settingsPanel.OnClosed = () => SetVisible(true);
+        settingsPanel.Open();
+    }
+
+    /// <summary>Esc로 설정창 닫기 (적용 안 한 변경은 버린다. 뒤로가기 버튼과 같다).</summary>
+    public void CloseSettings()
+    {
+        if (IsSettingsOpen) settingsPanel.OnBackButton();
     }
 
     // "Quit" 버튼이 눌렸을 때 실행

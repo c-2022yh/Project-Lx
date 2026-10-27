@@ -189,7 +189,9 @@ public static class TitleSceneUIBuilder
         UnityEngine.UI.Image glowImage = null;
         if (glowSprite != null && logoSprite != null)
         {
-            GameObject glow = K.Img("GameTitleGlow", panel, new Color(0.6f, 0.8f, 1f, 0.6f));
+            // 10.23: 가장 밝을 때 조금 세다고 해서 기본 진하기 0.6 → 0.55, 오르내림 ±30% → ±20% (가장 밝을 때 0.78 → 0.66).
+            // 10.27: 하늘색 → 바닥 안개와 같은 차분한 푸른 보라 톤
+            GameObject glow = K.Img("GameTitleGlow", panel, new Color(0.62f, 0.70f, 0.92f, 0.55f));
             glowImage = glow.GetComponent<UnityEngine.UI.Image>();
             glowImage.sprite = glowSprite;
 
@@ -202,22 +204,24 @@ public static class TitleSceneUIBuilder
         }
 
         // 2) 로고. 빛줄기가 보이도록 아주 살짝 푸른 회색
-        GameObject title = K.Img("GameTitle", panel, new Color(0.9f, 0.93f, 0.97f, 1f));
+        GameObject title = K.Img("GameTitle", panel, new Color(0.90f, 0.92f, 0.97f, 1f));
         UnityEngine.UI.Image titleImage = title.GetComponent<UnityEngine.UI.Image>();
         titleImage.sprite = logoSprite;
         titleImage.preserveAspect = true;
         K.Place(title, K.Anchor.TopLeft, LogoX, LogoY, LogoW, LogoH);
 
-        // 3) 빛줄기: 로고 모양 Mask 안에서만 보인다
+        // 3) 빛줄기: 로고의 여우 부분(머리·꼬리)에서만 보인다. 글자에는 지나가지 않는다.
+        //    _FoxMask는 로고 그림에서 글자를 지우고 여우만 남긴 그림이다 (크기 같음).
         GameObject shineMask = K.Img("GameTitleShine", panel, Color.white);
         UnityEngine.UI.Image maskImage = shineMask.GetComponent<UnityEngine.UI.Image>();
-        maskImage.sprite = logoSprite;
+        Sprite foxMask = K.Redesign(TitleLogo + "_FoxMask");
+        maskImage.sprite = foxMask != null ? foxMask : logoSprite;
         maskImage.preserveAspect = true;
         Mask mask = shineMask.AddComponent<Mask>();
         mask.showMaskGraphic = false;
         K.Place(shineMask, K.Anchor.TopLeft, LogoX, LogoY, LogoW, LogoH);
 
-        GameObject bar = K.Img("ShineBar", shineMask.transform, new Color(0.85f, 0.94f, 1f, 0.9f));
+        GameObject bar = K.Img("ShineBar", shineMask.transform, new Color(0.86f, 0.90f, 1f, 0.9f));
         bar.GetComponent<UnityEngine.UI.Image>().sprite = K.Redesign("Shine_Bar");
         K.Place(bar, K.Anchor.Center, -LogoW * 0.68f, 0f, 150f, LogoH + 180f);
         bar.transform.localRotation = Quaternion.Euler(0f, 0f, -20f);
@@ -227,11 +231,13 @@ public static class TitleSceneUIBuilder
         so.FindProperty("glow").objectReferenceValue = glowImage;
         so.FindProperty("shineBar").objectReferenceValue = bar.GetComponent<RectTransform>();
         so.FindProperty("shineTravel").floatValue = LogoW * 1.36f; // 로고 왼쪽 밖 → 오른쪽 밖
+        so.FindProperty("glowPulse").floatValue = 0.2f;
         so.ApplyModifiedPropertiesWithoutUndo();
     }
 
     /// <summary>
-    /// 바닥을 따라 깔리는 U자 모양 오로라 빛 3겹(가운데는 낮고 양옆으로 올라간다)을 깔고, 반딧불 연출을 붙인다.
+    /// 바닥을 따라 깔리는 U자 모양 안개 3겹(가운데는 낮고 양옆으로 올라간다)을 깔고, 반딧불 연출을 붙인다.
+    /// 그림 이름은 예전 그대로 Aurora_0~2 (10.23에 세로 줄기 빛을 뭉게뭉게한 안개로 바꿨다).
     /// 오로라는 겹마다 밝은 곳이 달라서, 번갈아 밝아지면 빛이 옮겨 다니는 것처럼 보인다.
     /// </summary>
     private static void BuildAmbience(Transform background)
@@ -242,9 +248,10 @@ public static class TitleSceneUIBuilder
         // 진하기는 색의 알파로 조절한다. 채도를 살짝 낮춘 푸른색.
         Color[] colors =
         {
-            new Color(0.47f, 0.62f, 0.92f, 0.16f),
-            new Color(0.42f, 0.66f, 0.88f, 0.12f),
-            new Color(0.52f, 0.58f, 0.90f, 0.14f),
+            // 10.23: 줄기 빛 → 안개. 안개답게 채도를 조금 더 낮췄다.
+            new Color(0.55f, 0.64f, 0.84f, 0.16f),
+            new Color(0.52f, 0.66f, 0.82f, 0.12f),
+            new Color(0.58f, 0.62f, 0.84f, 0.14f),
         };
 
         Graphic[] glows = new Graphic[colors.Length];
@@ -264,6 +271,8 @@ public static class TitleSceneUIBuilder
         for (int i = 0; i < glows.Length; i++)
             arr.GetArrayElementAtIndex(i).objectReferenceValue = glows[i];
         so.FindProperty("fireflySprite").objectReferenceValue = K.Redesign("Firefly");
+        // 반딧불 색을 아래 오로라와 같은 푸른 계열로 (오로라보다 밝게)
+        so.FindProperty("fireflyColor").colorValue = new Color(0.74f, 0.80f, 0.98f, 1f);
         so.ApplyModifiedPropertiesWithoutUndo();
     }
 

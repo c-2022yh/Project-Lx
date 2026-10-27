@@ -12,7 +12,10 @@ using UnityEngine.TextCore.LowLevel;
 /// </summary>
 public static class UIBuildKit
 {
-    public const string KoreanFontPath = "Assets/TextMesh Pro/Fonts/NanumSquare_acB SDF.asset";
+    // 10.19 결정: 모든 글자를 제주명조로 통일한다. 제주명조는 OFL 라이선스라 게임에 넣어도 된다.
+    // 폰트 에셋이 없으면 ttf로 새로 만든다 (글자는 쓰일 때 자동으로 채워지는 동적 방식).
+    public const string KoreanFontSourcePath = "Assets/TextMesh Pro/Fonts/JejuMyeongjo-Regular.ttf";
+    public const string KoreanFontPath = "Assets/TextMesh Pro/Fonts/JejuMyeongjo SDF.asset";
 
     private static TMP_FontAsset koreanFont;
 
@@ -20,65 +23,49 @@ public static class UIBuildKit
     {
         get
         {
+            if (koreanFont != null) return koreanFont;
+
+            koreanFont = AssetDatabase.LoadAssetAtPath<TMP_FontAsset>(KoreanFontPath);
             if (koreanFont == null)
-                koreanFont = AssetDatabase.LoadAssetAtPath<TMP_FontAsset>(KoreanFontPath);
+                koreanFont = CreateDynamicFont(KoreanFontSourcePath, KoreanFontPath, "JejuMyeongjo SDF");
             return koreanFont;
         }
     }
 
-    // 타이틀 메뉴용 명조 폰트 (10.16 시안). 나눔명조, OFL 라이선스.
-    public const string TitleFontSourcePath = "Assets/TextMesh Pro/Fonts/NanumMyeongjoBold.ttf";
-    public const string TitleFontPath = "Assets/TextMesh Pro/Fonts/NanumMyeongjoBold SDF.asset";
+    /// <summary>예전엔 타이틀 메뉴만 따로 명조를 썼다. 지금은 전부 같은 폰트.</summary>
+    public static TMP_FontAsset TitleFont => KoreanFont;
 
-    private static TMP_FontAsset titleFont;
-
-    /// <summary>
-    /// 명조 폰트 에셋. 없으면 ttf로 새로 만든다 (글자는 쓰일 때 자동으로 채워지는 동적 방식).
-    /// ttf도 없으면 null을 돌려주고, 그때는 나눔스퀘어가 그대로 쓰인다.
-    /// </summary>
-    public static TMP_FontAsset TitleFont
+    /// <summary>ttf로 동적 TMP 폰트 에셋을 만든다. 2048 아틀라스 한 장에 글자 약 780개, 모자라면 한 장씩 더 붙는다.</summary>
+    public static TMP_FontAsset CreateDynamicFont(string sourcePath, string assetPath, string assetName)
     {
-        get
+        Font source = AssetDatabase.LoadAssetAtPath<Font>(sourcePath);
+        if (source == null)
         {
-            if (titleFont != null) return titleFont;
-
-            titleFont = AssetDatabase.LoadAssetAtPath<TMP_FontAsset>(TitleFontPath);
-            if (titleFont != null) return titleFont;
-
-            Font source = AssetDatabase.LoadAssetAtPath<Font>(TitleFontSourcePath);
-            if (source == null)
-            {
-                Debug.LogWarning("[UIBuildKit] 명조 폰트 파일이 없어 나눔스퀘어를 씁니다: " + TitleFontSourcePath);
-                return null;
-            }
-
-            TMP_FontAsset asset = TMP_FontAsset.CreateFontAsset(source, 72, 8, GlyphRenderMode.SDFAA,
-                1024, 1024, AtlasPopulationMode.Dynamic, true);
-            if (asset == null) return null;
-
-            asset.name = "NanumMyeongjoBold SDF";
-            asset.TryAddCharacters("게임하기가이드종료");
-
-            // 명조에 없는 글자(기호 등)는 나눔스퀘어로 보여준다.
-            if (KoreanFont != null)
-                asset.fallbackFontAssetTable = new System.Collections.Generic.List<TMP_FontAsset> { KoreanFont };
-
-            AssetDatabase.CreateAsset(asset, TitleFontPath);
-
-            Texture2D atlas = asset.atlasTextures[0];
-            atlas.name = asset.name + " Atlas";
-            AssetDatabase.AddObjectToAsset(atlas, asset);
-
-            asset.material.name = asset.name + " Material";
-            AssetDatabase.AddObjectToAsset(asset.material, asset);
-
-            EditorUtility.SetDirty(asset);
-            AssetDatabase.SaveAssets();
-            AssetDatabase.ImportAsset(TitleFontPath);
-
-            titleFont = AssetDatabase.LoadAssetAtPath<TMP_FontAsset>(TitleFontPath);
-            return titleFont;
+            Debug.LogWarning("[UIBuildKit] 폰트 파일이 없습니다: " + sourcePath);
+            return null;
         }
+
+        TMP_FontAsset asset = TMP_FontAsset.CreateFontAsset(source, 64, 7, GlyphRenderMode.SDFAA,
+            2048, 2048, AtlasPopulationMode.Dynamic, true);
+        if (asset == null) return null;
+
+        asset.name = assetName;
+        asset.TryAddCharacters("0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz .,:;!?/()[]-+%·◆◇←→↑↓");
+
+        AssetDatabase.CreateAsset(asset, assetPath);
+
+        Texture2D atlas = asset.atlasTextures[0];
+        atlas.name = assetName + " Atlas";
+        AssetDatabase.AddObjectToAsset(atlas, asset);
+
+        asset.material.name = assetName + " Material";
+        AssetDatabase.AddObjectToAsset(asset.material, asset);
+
+        EditorUtility.SetDirty(asset);
+        AssetDatabase.SaveAssets();
+        AssetDatabase.ImportAsset(assetPath);
+
+        return AssetDatabase.LoadAssetAtPath<TMP_FontAsset>(assetPath);
     }
 
     public static bool EnsureKoreanFont()
@@ -87,8 +74,8 @@ public static class UIBuildKit
 
         EditorUtility.DisplayDialog(
             "한글 폰트 없음",
-            "폰트 에셋을 찾을 수 없습니다:\n" + KoreanFontPath + "\n\n" +
-            "경로가 바뀌었다면 UIBuildKit.KoreanFontPath를 수정해주세요.",
+            "폰트 에셋을 만들 수 없습니다:\n" + KoreanFontSourcePath + "\n\n" +
+            "제주명조 ttf가 그 자리에 있는지 확인해주세요.",
             "확인");
 
         return false;
@@ -464,7 +451,8 @@ public static class UIBuildKit
     {
         // 키 안내는 창 오른쪽 위 WindowHint가 맡는다.
         GameObject bar = Obj("TabBar", window);
-        Place(bar, Anchor.TopLeft, 40, -14, TabWidth * 2 + TabGap, TabHeight);
+        // 왼쪽 위 창살 모서리 장식을 피해서 안쪽으로 들인다.
+        Place(bar, Anchor.TopLeft, 112, -14, TabWidth * 2 + TabGap, TabHeight);
 
         UITabBar comp = bar.AddComponent<UITabBar>();
 

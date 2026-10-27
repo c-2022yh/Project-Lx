@@ -24,7 +24,7 @@ public class TitleAmbience : MonoBehaviour
     [SerializeField] private Sprite fireflySprite;
     [SerializeField] private int fireflyCount = 28;
     [SerializeField] private Vector2 fireflySize = new Vector2(22f, 48f);
-    [SerializeField] private Color fireflyColor = new Color(0.62f, 0.86f, 1f, 1f);
+    [SerializeField] private Color fireflyColor = new Color(0.74f, 0.80f, 0.98f, 1f);
     [Tooltip("양옆 어디까지에서 나타나는지 (화면 너비 비율)")]
     [SerializeField, Range(0.05f, 0.5f)] private float sideBand = 0.18f;
     [Tooltip("나타나는 높이 범위 (0 = 화면 아래, 1 = 위)")]
