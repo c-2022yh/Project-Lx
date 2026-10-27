@@ -18,9 +18,9 @@ using UnityEngine;
 /// </summary>
 public static class InventoryPrefabFixer
 {
-    private const string PopupCanvasPath = "Assets/Prefabs/UI/Popup_Canvas.prefab";
+    private const string PopupCanvasPath = "Assets/Prefabs/UI/Combat_System/Popup_Canvas.prefab";
     /// <summary>UIManager와 Popup_Canvas가 나란히 중첩되어 있는 프리팹.</summary>
-    public const string UIRootPath = "Assets/Prefabs/UI/UI_Root.prefab";
+    public const string UIRootPath = "Assets/Prefabs/UI/Core/UI_Root.prefab";
 
     [MenuItem("Tools/UI/Fix Inventory Panel In Prefab")]
     public static void FixInPrefab()

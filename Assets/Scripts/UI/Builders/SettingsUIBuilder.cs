@@ -52,10 +52,12 @@ public static class SettingsUIBuilder
         // 창
         GameObject window = K.Img("Window", panel.transform, K.PanelBg, true);
         K.Place(window, K.Anchor.Center, 0, 0, 1180, 780);
+        LatticeFrame.Attach(window.GetComponent<RectTransform>(), 780);
 
         // 좌측 탭 레일
         GameObject tabRail = K.Img("TabRail", window.transform, K.SectionBg, true);
-        K.StretchLeft(tabRail, 16, 16, 150, 100);
+        // 창살 모서리 장식을 피해 안쪽으로 들인다.
+        K.StretchLeft(tabRail, 44, 96, 150, 100);
 
         GameObject tabVideo = TabButton(tabRail.transform, "Tab_Video", "비디오", 0);
         GameObject tabAudio = TabButton(tabRail.transform, "Tab_Audio", "오디오", 1);
@@ -69,8 +71,8 @@ public static class SettingsUIBuilder
         scrollRt.anchorMin = new Vector2(0, 0);
         scrollRt.anchorMax = new Vector2(1, 1);
         scrollRt.pivot = new Vector2(0.5f, 0.5f);
-        scrollRt.offsetMin = new Vector2(182, 100);
-        scrollRt.offsetMax = new Vector2(-16, -16);
+        scrollRt.offsetMin = new Vector2(214, 100);
+        scrollRt.offsetMax = new Vector2(-60, -60);
 
         Transform content = scroll.content;
 

@@ -45,10 +45,8 @@ public class RelicTooltip : MonoBehaviour
 
         if (subtitleText != null)
         {
-            // 코스트는 신체 유물에만 의미가 있다.
-            subtitleText.text = relic.Category == RelicCategory.Body
-                ? $"{RelicEquipRules.LabelOf(relic.Category)} 계열   ·   코스트 {relic.Cost}"
-                : $"{RelicEquipRules.LabelOf(relic.Category)} 계열";
+            // "검의 힘" / "유물 · ◆◆" (코스트는 신체 유물에만 의미가 있다)
+            subtitleText.text = RelicLabels.MetaLine(relic);
         }
 
         if (iconImage != null)

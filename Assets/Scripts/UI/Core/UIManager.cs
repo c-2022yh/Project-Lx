@@ -187,6 +187,13 @@ public class UIManager : MonoBehaviour
     /// </summary>
     private void HandleCancelKey()
     {
+        // 일시정지에서 연 설정창이 제일 위에 있다. 닫으면 일시정지 창으로 돌아간다.
+        if (pausePanel != null && pausePanel.IsSettingsOpen)
+        {
+            pausePanel.CloseSettings();
+            return;
+        }
+
         // 조작법은 일시정지 위에 떠 있으므로 가장 먼저 본다.
         if (controlGuidePanel != null && controlGuidePanel.gameObject.activeSelf)
         {

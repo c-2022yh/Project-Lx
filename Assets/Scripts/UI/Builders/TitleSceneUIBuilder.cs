@@ -19,12 +19,12 @@ using K = UIBuildKit;
 public static class TitleSceneUIBuilder
 {
     private const string TitleScenePath = "Assets/Scenes/Title.unity";
-    private const string SlotEntryPrefabPath = "Assets/Prefabs/UI/SaveSlotEntry.prefab";
+    private const string SlotEntryPrefabPath = "Assets/Prefabs/UI/System_Canvas/SaveSlotEntry.prefab";
 
     // 10.16 시안 두 가지. 디자이너 PDF 6쪽 = A, 7쪽 = B.
     // 바꾸고 싶으면 아래 두 줄만 "A"로 고치고 Build Title Scene을 다시 누르면 된다.
     private const string TitleBackground = "Title_BG_B";
-    private const string TitleLogo = "Title_Logo_B";
+    private const string TitleLogo = "Title_Logo_C"; // 10.19 최종 로고 (여우 + 꼬리)
 
     private static readonly Color MenuIdle = new Color(0.62f, 0.64f, 0.70f, 1f);
 
@@ -136,12 +136,11 @@ public static class TitleSceneUIBuilder
         fitter.aspectMode = AspectRatioFitter.AspectMode.EnvelopeParent;
         fitter.aspectRatio = 16f / 9f;
 
-        // 게임 제목 (붓글씨 로고 그림)
-        GameObject title = K.Img("GameTitle", panel.transform, Color.white);
-        UnityEngine.UI.Image titleImage = title.GetComponent<UnityEngine.UI.Image>();
-        titleImage.sprite = K.Redesign(TitleLogo);
-        titleImage.preserveAspect = true;
-        K.Place(title, K.Anchor.TopLeft, 170, -180, 620, 245);
+        // 배경 위 빛 번짐 + 반딧불 (배경 그림을 따라 움직이도록 배경의 자식으로 둔다)
+        BuildAmbience(bg.transform);
+
+        // 게임 제목 (붓글씨 로고 그림) + 라이팅
+        BuildTitleLogo(panel.transform);
 
         // 메인 메뉴 (좌측): 상자 없이 글자만. 고른 항목만 하얗게 밝아진다.
         GameObject playBtn = MenuText("Button_Play", panel.transform, "게임하기");
@@ -173,6 +172,137 @@ public static class TitleSceneUIBuilder
         Wire(exitBtn, panelComp.OnExitIconButton);
 
         return panelComp;
+    }
+
+    private const float LogoX = 150f, LogoY = -150f, LogoW = 780f, LogoH = 307f;
+
+    /// <summary>
+    /// 로고 뒤 푸른 빛 + 로고 그림 + 로고 모양 안에서만 보이는 빛줄기.
+    /// 빛 그림(Title_Logo_?_Glow)은 로고 그림 사방에 로고 너비의 12%만큼 여백을 두고 만든 것이다.
+    /// </summary>
+    private static void BuildTitleLogo(Transform panel)
+    {
+        Sprite logoSprite = K.Redesign(TitleLogo);
+        Sprite glowSprite = K.Redesign(TitleLogo + "_Glow");
+
+        // 1) 글자 뒤 빛
+        UnityEngine.UI.Image glowImage = null;
+        if (glowSprite != null && logoSprite != null)
+        {
+            // 10.23: 가장 밝을 때 조금 세다고 해서 기본 진하기 0.6 → 0.55, 오르내림 ±30% → ±20% (가장 밝을 때 0.78 → 0.66).
+            // 10.27: 하늘색 → 바닥 안개와 같은 차분한 푸른 보라 톤
+            GameObject glow = K.Img("GameTitleGlow", panel, new Color(0.62f, 0.70f, 0.92f, 0.55f));
+            glowImage = glow.GetComponent<UnityEngine.UI.Image>();
+            glowImage.sprite = glowSprite;
+
+            // preserveAspect로 그려진 로고의 실제 크기 기준
+            float drawnW = Mathf.Min(LogoW, LogoH * logoSprite.rect.width / logoSprite.rect.height);
+            float gw = drawnW * 1.24f;
+            float gh = gw * glowSprite.rect.height / glowSprite.rect.width;
+            float cx = LogoX + LogoW * 0.5f, cy = LogoY - LogoH * 0.5f;
+            K.Place(glow, K.Anchor.TopLeft, cx - gw * 0.5f, cy + gh * 0.5f, gw, gh);
+        }
+
+        // 2) 로고. 빛줄기가 보이도록 아주 살짝 푸른 회색
+        GameObject title = K.Img("GameTitle", panel, new Color(0.90f, 0.92f, 0.97f, 1f));
+        UnityEngine.UI.Image titleImage = title.GetComponent<UnityEngine.UI.Image>();
+        titleImage.sprite = logoSprite;
+        titleImage.preserveAspect = true;
+        K.Place(title, K.Anchor.TopLeft, LogoX, LogoY, LogoW, LogoH);
+
+        // 3) 여우 모양을 따라 흐르는 빛 (10.27): 머리 → 앞다리 → 아래 선 → 꼬리. 글자에는 지나가지 않는다.
+        //    _FoxPath 그림: A = 여우 모양, R = 여우 몸을 따라 온 정도(0~1). UI/LogoPathShine 셰이더가 읽는다.
+        RawImage pathImage = BuildPathShine(panel, logoSprite);
+
+        TitleLogoLight logoLight = title.AddComponent<TitleLogoLight>();
+        SerializedObject so = new SerializedObject(logoLight);
+        so.FindProperty("glow").objectReferenceValue = glowImage;
+        so.FindProperty("pathShine").objectReferenceValue = pathImage;
+        so.FindProperty("shineDuration").floatValue = 2.6f; // 머리에서 꼬리 끝까지
+        so.FindProperty("shineInterval").floatValue = 7f;
+        so.FindProperty("glowPulse").floatValue = 0.2f;
+        so.ApplyModifiedPropertiesWithoutUndo();
+    }
+
+    private const string PathShineMaterialPath = "Assets/Sprites/UI/Redesign/LogoPathShine.mat";
+
+    /// <summary>여우 길 그림 + 전용 재질로 빛 그래픽을 만든다. 재질 파일이 없으면 새로 만든다.</summary>
+    private static RawImage BuildPathShine(Transform panel, Sprite logoSprite)
+    {
+        Sprite path = K.Redesign(TitleLogo + "_FoxPath");
+        Shader shader = Shader.Find("UI/LogoPathShine");
+        if (path == null || shader == null)
+        {
+            Debug.LogWarning("[TitleSceneUIBuilder] 여우 길 그림이나 UI/LogoPathShine 셰이더가 없어 빛을 만들지 않았습니다.");
+            return null;
+        }
+
+        Material mat = AssetDatabase.LoadAssetAtPath<Material>(PathShineMaterialPath);
+        if (mat == null)
+        {
+            mat = new Material(shader) { name = "LogoPathShine" };
+            AssetDatabase.CreateAsset(mat, PathShineMaterialPath);
+        }
+        mat.shader = shader;
+        mat.SetFloat("_Progress", -1f);
+        mat.SetFloat("_Width", 0.07f);
+        mat.SetFloat("_Intensity", 1f);
+        EditorUtility.SetDirty(mat);
+
+        GameObject go = K.Obj("GameTitleShine", panel);
+        RawImage raw = go.AddComponent<RawImage>();
+        raw.texture = path.texture;
+        raw.material = mat;
+        raw.color = new Color(0.86f, 0.90f, 1f, 0.9f);
+        raw.raycastTarget = false;
+
+        // 로고(preserveAspect)가 실제로 그려지는 크기에 딱 맞춘다. 길 그림은 로고와 같은 크기다.
+        float drawnW = Mathf.Min(LogoW, LogoH * logoSprite.rect.width / logoSprite.rect.height);
+        float drawnH = drawnW * path.rect.height / path.rect.width;
+        float cx = LogoX + LogoW * 0.5f, cy = LogoY - LogoH * 0.5f;
+        K.Place(go, K.Anchor.TopLeft, cx - drawnW * 0.5f, cy + drawnH * 0.5f, drawnW, drawnH);
+        return raw;
+    }
+
+    /// <summary>
+    /// 바닥을 따라 깔리는 U자 모양 안개 3겹(가운데는 낮고 양옆으로 올라간다)을 깔고, 반딧불 연출을 붙인다.
+    /// 그림 이름은 예전 그대로 Aurora_0~2 (10.23에 세로 줄기 빛을 뭉게뭉게한 안개로 바꿨다).
+    /// 오로라는 겹마다 밝은 곳이 달라서, 번갈아 밝아지면 빛이 옮겨 다니는 것처럼 보인다.
+    /// </summary>
+    private static void BuildAmbience(Transform background)
+    {
+        GameObject amb = K.Obj("Ambience", background);
+        K.Stretch(amb, 0, 0, 0, 0);
+
+        // 진하기는 색의 알파로 조절한다. 채도를 살짝 낮춘 푸른색.
+        Color[] colors =
+        {
+            // 10.23: 줄기 빛 → 안개. 안개답게 채도를 조금 더 낮췄다.
+            new Color(0.55f, 0.64f, 0.84f, 0.16f),
+            new Color(0.52f, 0.66f, 0.82f, 0.12f),
+            new Color(0.58f, 0.62f, 0.84f, 0.14f),
+        };
+
+        Graphic[] glows = new Graphic[colors.Length];
+        for (int i = 0; i < colors.Length; i++)
+        {
+            GameObject g = K.Img("Aurora_" + i, amb.transform, colors[i]);
+            g.GetComponent<UnityEngine.UI.Image>().sprite = K.Redesign("Aurora_" + i);
+            // 좌우로 흔들려도 가장자리가 안 보이게 양옆을 60px씩 넓힌다
+            K.Stretch(g, -60, 0, -60, 0);
+            glows[i] = g.GetComponent<UnityEngine.UI.Image>();
+        }
+
+        TitleAmbience comp = amb.AddComponent<TitleAmbience>();
+        SerializedObject so = new SerializedObject(comp);
+        SerializedProperty arr = so.FindProperty("glows");
+        arr.arraySize = glows.Length;
+        for (int i = 0; i < glows.Length; i++)
+            arr.GetArrayElementAtIndex(i).objectReferenceValue = glows[i];
+        so.FindProperty("fireflySprite").objectReferenceValue = K.Redesign("Firefly");
+        // 반딧불 색을 아래 오로라와 같은 푸른 계열로 (오로라보다 밝게)
+        so.FindProperty("fireflyColor").colorValue = new Color(0.74f, 0.80f, 0.98f, 1f);
+        so.ApplyModifiedPropertiesWithoutUndo();
     }
 
     /// <summary>글자만 있는 메뉴 항목. 평소엔 회색, 마우스를 올리거나 고르면 흰색.</summary>

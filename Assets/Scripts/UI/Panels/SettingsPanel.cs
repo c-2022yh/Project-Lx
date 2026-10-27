@@ -50,6 +50,9 @@ public class SettingsPanel : MonoBehaviour
     private GameSettingsData draft;
     private List<Vector2Int> resolutions;
     private TitleMenuPanel returnToTitle;
+
+    /// <summary>닫힐 때 한 번 불린다. 일시정지에서 열었으면 일시정지 창을 다시 띄우는 데 쓴다.</summary>
+    public System.Action OnClosed;
     private bool isBinding;
 
     private void Awake()
@@ -251,6 +254,10 @@ public class SettingsPanel : MonoBehaviour
         // [TODO] 시안의 "변경 사항 미적용 시 안내 팝업"을 여기에 붙이면 된다.
         SetVisible(false);
         returnToTitle?.SetVisible(true);
+
+        System.Action closed = OnClosed;
+        OnClosed = null;
+        closed?.Invoke();
     }
 
     /// <summary>"단축키 설정"</summary>

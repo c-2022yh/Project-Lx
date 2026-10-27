@@ -21,7 +21,7 @@ public static class InventoryUIBuilder
     private const string KoreanFontPath = "Assets/TextMesh Pro/Fonts/NanumSquare_acB SDF.asset";
 
     // 유물 칸 프리팹 경로 (없으면 자동 생성)
-    private const string RelicSlotPrefabPath = "Assets/Prefabs/UI/RelicSlot.prefab";
+    private const string RelicSlotPrefabPath = "Assets/Prefabs/UI/Popup_Canvas/RelicSlot.prefab";
 
     private static TMP_FontAsset koreanFont;
 

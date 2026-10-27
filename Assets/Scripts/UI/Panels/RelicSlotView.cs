@@ -73,9 +73,10 @@ public class RelicSlotView : MonoBehaviour,
     private bool UsesRingArt => ringFrameImage != null;
 
     // 계열 테두리 색. 선택(노랑)·포커스(하양)와 헷갈리지 않는 색으로 골랐다.
-    private static readonly Color SwordOutline = new Color(0.90f, 0.42f, 0.38f, 1f);
-    private static readonly Color OrbOutline = new Color(0.62f, 0.52f, 0.95f, 1f);
-    private static readonly Color BodyOutline = new Color(0.38f, 0.82f, 0.70f, 1f);
+    // RelicLabels와 같은 색을 쓴다 (획득 팝업·툴팁도 이 색).
+    private static readonly Color SwordOutline = RelicLabels.SwordColor;
+    private static readonly Color OrbOutline = RelicLabels.OrbColor;
+    private static readonly Color BodyOutline = RelicLabels.BodyColor;
 
     /// <summary>빈 장착칸은 같은 색을 흐리게 써서 "여기는 검 칸"이라는 것만 알려준다.</summary>
     private const float EmptyOutlineAlpha = 0.35f;
@@ -162,7 +163,7 @@ public class RelicSlotView : MonoBehaviour,
             // 코스트는 신체 유물에만 의미가 있다. 검/보주는 칸이 하나뿐이라 표시하지 않는다.
             bool showCost = hasRelic && relic.Category == RelicCategory.Body;
             costText.enabled = showCost;
-            if (showCost) costText.text = relic.Cost.ToString();
+            if (showCost) costText.text = RelicLabels.CostDiamonds(relic.Cost);
         }
 
         RefreshRingArt();

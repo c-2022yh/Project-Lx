@@ -15,8 +15,8 @@ using K = UIBuildKit;
 /// </summary>
 public static class RelicInventoryUIBuilder
 {
-    private const string SlotPrefabPath = "Assets/Prefabs/UI/RelicSlotView.prefab";
-    private const string PopupCanvasPath = "Assets/Prefabs/UI/Popup_Canvas.prefab";
+    private const string SlotPrefabPath = "Assets/Prefabs/UI/Popup_Canvas/RelicSlotView.prefab";
+    private const string PopupCanvasPath = "Assets/Prefabs/UI/Combat_System/Popup_Canvas.prefab";
 
     /// <summary>BuildInto()가 마지막으로 남긴 UIManager 연결 결과 메시지.</summary>
     public static string LastUIManagerNote { get; private set; } = "";
@@ -33,7 +33,7 @@ public static class RelicInventoryUIBuilder
 
     private const float TooltipWidth = 400f;
 
-    private const string CircleSlotPrefabPath = "Assets/Prefabs/UI/RelicSlotCircle.prefab";
+    private const string CircleSlotPrefabPath = "Assets/Prefabs/UI/Popup_Canvas/RelicSlotCircle.prefab";
     private const string FilterIconFolder = "Assets/Sprites/UI/RelicFilter";
 
     // 창을 좌우로 나눈다. 왼쪽은 장착, 오른쪽은 보관함.
@@ -212,14 +212,13 @@ public static class RelicInventoryUIBuilder
         GameObject dim = K.Img("Dim", panel.transform, new Color(0f, 0f, 0f, 0.78f), true);
         K.Stretch(dim, 0, 0, 0, 0);
 
-        // 창 테두리. 배경이 게임 화면과 비슷한 어두운 색이라
-        // 테두리가 없으면 창이 어디서 시작하는지 안 보인다.
-        GameObject frame = K.Img("WindowFrame", panel.transform, new Color(0.45f, 0.45f, 0.55f, 0.65f));
-        K.Place(frame, K.Anchor.Center, 0, 0, WindowWidth + 4f, WindowHeight + 4f);
-
         GameObject window = K.Img("Window", panel.transform, new Color(0.07f, 0.07f, 0.09f, 1f), true);
         K.Place(window, K.Anchor.Center, 0, 0, WindowWidth, WindowHeight);
         Transform w = window.transform;
+
+        // 창 테두리. 배경이 게임 화면과 비슷한 어두운 색이라
+        // 테두리가 없으면 창이 어디서 시작하는지 안 보인다. (10.19 창살 테두리)
+        LatticeFrame.Attach(window.GetComponent<RectTransform>(), WindowHeight);
 
         // 제목 대신 탭 줄. 스킬창과 같은 자리에 같은 모양으로 그려야
         // Q/E로 오갈 때 위쪽이 튀지 않는다.
@@ -227,7 +226,7 @@ public static class RelicInventoryUIBuilder
 
         GameObject closeHint = K.Text("WindowHint", w, "Q / E  전환      Esc  닫기", 20,
             FontStyles.Normal, TextAlignmentOptions.MidlineRight, K.MutedText);
-        K.Place(closeHint, K.Anchor.TopRight, -40, -34, 360, 34);
+        K.Place(closeHint, K.Anchor.TopRight, -112, -34, 360, 34);
 
         // ── 왼쪽: 장착 ──────────────────────
         // 제목 글자는 두지 않는다. 계열 이름표가 칸마다 붙어 있어서 중복이고,
@@ -263,8 +262,10 @@ public static class RelicInventoryUIBuilder
 
         AddDropZone(bodyRow, RelicDropTargetKind.BodyRow);
 
-        GameObject costText = K.Text("BodyCostText", w, "코스트  0 / 5", 22,
-            FontStyles.Bold, TextAlignmentOptions.Center);
+        // 신체 코스트: ◆◆◇◇◇ (채운 칸 = 쓴 코스트). 글자는 RelicInventoryPanel이 채운다.
+        GameObject costText = K.Text("BodyCostText", w, "◇◇◇◇◇", 24,
+            FontStyles.Normal, TextAlignmentOptions.Center);
+        costText.GetComponent<TextMeshProUGUI>().characterSpacing = 18f;
         K.Place(costText, K.Anchor.TopLeft, LeftCenterX - 150, BodyCenterY - BodySlotSize / 2f - 14f, 300, 30);
 
         // ── 가운데 세로 구분선 ───────────────
@@ -621,9 +622,10 @@ public static class RelicInventoryUIBuilder
         fallbackText.fontSizeMax = 64f;
         fallbackText.enabled = false;
 
-        GameObject cost = K.Text("Cost", slot.transform, "0", 18,
-            FontStyles.Bold, TextAlignmentOptions.BottomRight);
-        K.Place(cost, K.Anchor.BottomRight, -6, 4, 28, 24);
+        // 신체 유물 코스트를 ◆ 개수로 (RelicSlotView가 채운다)
+        GameObject cost = K.Text("Cost", slot.transform, "", 15,
+            FontStyles.Normal, TextAlignmentOptions.BottomRight);
+        K.Place(cost, K.Anchor.BottomRight, -6, 4, 80, 22);
 
         RelicSlotView view = slot.AddComponent<RelicSlotView>();
 
@@ -939,7 +941,7 @@ public static class RelicInventoryUIBuilder
 
     // ── 원형 칸에 쓰는 동그라미 ─────────────
 
-    private const string RoundSpritePath = "Assets/Sprites/UI/Circle.png";
+    private const string RoundSpritePath = "Assets/Sprites/UI/RelicFilter/Circle.png";
 
     /// <summary>원형 칸에서 아이콘을 칸보다 몇 배로 키울지. 자기 프레임이 잘려나갈 만큼.</summary>
     private const float IconZoom = 1.45f;

@@ -13,8 +13,8 @@ using K = UIBuildKit;
 /// </summary>
 public static class SkillUIBuilder
 {
-    private const string PopupCanvasPath = "Assets/Prefabs/UI/Popup_Canvas.prefab";
-    private const string SlotPrefabPath = "Assets/Prefabs/UI/SkillPanelSlot.prefab";
+    private const string PopupCanvasPath = "Assets/Prefabs/UI/Combat_System/Popup_Canvas.prefab";
+    private const string SlotPrefabPath = "Assets/Prefabs/UI/Popup_Canvas/SkillPanelSlot.prefab";
 
     private const float SlotSize = 88f;
 
@@ -96,14 +96,14 @@ public static class SkillUIBuilder
         GameObject dim = K.Img("Dim", panel.transform, new Color(0f, 0f, 0f, 0.78f), true);
         K.Stretch(dim, 0, 0, 0, 0);
 
-        // 창 테두리와 배경색을 유물창과 맞춘다. 탭으로 오가는 같은 창이라
+        // 창 배경색을 유물창과 맞춘다. 탭으로 오가는 같은 창이라
         // 색이 다르면 전환할 때 깜빡이는 것처럼 보인다.
-        GameObject frame = K.Img("WindowFrame", panel.transform, new Color(0.45f, 0.45f, 0.55f, 0.65f));
-        K.Place(frame, K.Anchor.Center, 0, 0, 1524, 844);
-
         GameObject window = K.Img("Window", panel.transform, new Color(0.07f, 0.07f, 0.09f, 1f), true);
         K.Place(window, K.Anchor.Center, 0, 0, 1520, 840);
         Transform w = window.transform;
+
+        // 창살 테두리 (10.19)
+        LatticeFrame.Attach(window.GetComponent<RectTransform>(), 840);
 
         K.TabBar(w, UITabBar.SkillTab);
 
@@ -187,7 +187,7 @@ public static class SkillUIBuilder
 
         GameObject controls = K.Text("WindowHint", w, "Q / E  전환      Esc  닫기", 20,
             FontStyles.Normal, TextAlignmentOptions.MidlineRight, K.MutedText);
-        K.Place(controls, K.Anchor.TopRight, -40, -34, 360, 34);
+        K.Place(controls, K.Anchor.TopRight, -112, -34, 360, 34);
 
         // 드래그 고스트
         SkillDragLayer dragLayer = BuildDragLayer(panel.transform);
