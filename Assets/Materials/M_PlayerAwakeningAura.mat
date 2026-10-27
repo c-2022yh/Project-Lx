@@ -31,6 +31,9 @@ Material:
     - _NoiseScale: 5
     - _Turbulence: 0.65
     - _AuraTime: 0
+    - _FanAngle: 80
+    - _StreamCount: 7
+    - _AuraAspect: 1.285714
     m_Colors:
     - _AuraColor: {r: 0.15, g: 0.45, b: 1, a: 1}
   m_BuildTextureStacks: []

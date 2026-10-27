@@ -8,6 +8,9 @@ Shader "ProjectLx/Player Awakening Aura"
         _RiseSpeed ("Rise Speed", Float) = 0.65
         _NoiseScale ("Noise Scale", Range(1, 12)) = 5
         _Turbulence ("Turbulence", Range(0, 1)) = 0.65
+        _FanAngle ("Fan Angle (Degrees)", Range(20, 140)) = 80
+        _StreamCount ("Stream Count", Range(3, 16)) = 7
+        [HideInInspector] _AuraAspect ("Canvas Aspect", Float) = 1.285714
         [HideInInspector] _AuraTime ("Animation Clock", Float) = 0
     }
     SubShader
@@ -33,6 +36,9 @@ Shader "ProjectLx/Player Awakening Aura"
                 float _NoiseScale;
                 float _Turbulence;
                 float _AuraTime;
+                float _FanAngle;
+                float _StreamCount;
+                float _AuraAspect;
             CBUFFER_END
 
             struct Attributes { float3 positionOS : POSITION; float2 uv : TEXCOORD0; };
@@ -69,27 +75,32 @@ Shader "ProjectLx/Player Awakening Aura"
 
             half4 AuraFragment(Varyings input) : SV_Target
             {
-                float x = (input.uv.x - 0.5) * 2.0;
-                float y = input.uv.y;
+                // Polar flow starts at the quad's bottom-center and expands upward.
+                float2 p = float2((input.uv.x - 0.5) * _AuraAspect, input.uv.y);
+                float radius = length(p);
+                float halfAngle = radians(clamp(_FanAngle, 20.0, 140.0) * 0.5);
+                float angle = atan2(p.x, max(p.y, 0.0001)) / halfAngle;
+                float lanes = (angle * 0.5 + 0.5) * _StreamCount;
                 float t = _AuraTime * _RiseSpeed;
-                // Subtracting time from Y moves noise features upward.
-                float2 flowUV = float2(x * _NoiseScale, y * _NoiseScale - t);
-                float flow = FlowNoise(flowUV);
-                float warpedX = x + (flow - 0.5) * _Turbulence * 0.45
-                    + sin(y * 8.0 - t * 1.7) * _Turbulence * 0.08;
-                float width = lerp(0.98, 0.42, y * y);
-                float sides = 1.0 - smoothstep(width * 0.5, width, abs(warpedX));
-                float vertical = smoothstep(0.0, 0.13, y) * (1.0 - smoothstep(0.5, 1.0, y));
-                // Two loose streams break into wisps, with less light behind the face.
-                float lane = abs(abs(warpedX) - lerp(0.45, 0.2, y));
-                float stream = exp2(-85.0 * lane * lane);
-                float wisps = smoothstep(0.4, 0.72, flow);
-                float hollow = lerp(0.25, 1.0, smoothstep(0.1, 0.65, abs(x)));
-                float density = (0.06 + wisps * 0.55 + stream * wisps * 0.75)
-                    * sides * vertical * hollow;
+                // Radial advection sends the center upward and the sides diagonally outward.
+                float flow = FlowNoise(float2(lanes * 0.73, radius * _NoiseScale - t));
+                float bend = (Noise(float2(lanes * 0.5 + 3.0, radius * 4.0 - t)) - 0.5)
+                    * _Turbulence * 0.8;
+                float stream = pow(saturate(0.5 + 0.5 * sin((lanes + bend) * 6.2831853)), 3.0);
+                // Blend the streams together at the origin instead of drawing thin spokes at the feet.
+                stream = lerp(0.25 + flow * 0.25, stream, smoothstep(0.06, 0.26, radius));
+                float wisps = smoothstep(0.3, 0.7, flow);
+                float sides = 1.0 - smoothstep(0.68, 1.0, abs(angle));
+                // Different lengths and broken streams avoid a hard fan outline or uniform rays.
+                float reach = 0.72 + 0.25 * Noise(float2(lanes * 0.65, t * 0.15 + 11.0));
+                float radialFade = smoothstep(0.0, 0.04, radius)
+                    * (1.0 - smoothstep(reach * 0.55, reach, radius));
+                float density = (0.07 + flow * 0.12 + stream * wisps * 0.95)
+                    * sides * radialFade;
                 // Fade the quad borders exactly to zero even when noise distorts them.
                 float edge = smoothstep(0.0, 0.07, input.uv.x)
-                    * (1.0 - smoothstep(0.93, 1.0, input.uv.x));
+                    * (1.0 - smoothstep(0.93, 1.0, input.uv.x))
+                    * (1.0 - smoothstep(0.94, 1.0, input.uv.y));
                 return half4(_AuraColor.rgb * _AuraIntensity, saturate(density * edge) * _AuraOpacity);
             }
             ENDHLSL

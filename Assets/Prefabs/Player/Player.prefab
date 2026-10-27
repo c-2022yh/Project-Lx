@@ -814,8 +814,10 @@ MonoBehaviour:
   auraColor: {r: 0.15, g: 0.45, b: 1, a: 1}
   auraIntensity: 2.5
   auraOpacity: 0.4
-  auraSize: {x: 3, y: 4.2}
-  auraOffset: {x: -0.2, y: 0.15}
+  auraSize: {x: 5.4, y: 4.2}
+  auraOffset: {x: -0.15, y: -1.65}
+  auraFanAngle: 80
+  auraStreamCount: 7
   auraRiseSpeed: 0.65
   auraNoiseScale: 5
   auraTurbulence: 0.65

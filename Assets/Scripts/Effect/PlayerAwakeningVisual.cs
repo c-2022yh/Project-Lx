@@ -22,9 +22,12 @@ public sealed class PlayerAwakeningVisual : MonoBehaviour
     [SerializeField, ColorUsage(false, true)] private Color auraColor = new Color(0.15f, 0.45f, 1f);
     [SerializeField, Min(0f)] private float auraIntensity = 2.5f;
     [SerializeField, Range(0f, 1f)] private float auraOpacity = 0.4f;
-    [Tooltip("Width and height in Player-root local units. Independent of animation frames and facing.")]
-    [SerializeField] private Vector2 auraSize = new Vector2(3f, 4.2f);
-    [SerializeField] private Vector2 auraOffset = new Vector2(-0.2f, 0.15f);
+    [Tooltip("Canvas width and aura reach in Player-root units. Use Fan Angle for spread; allow enough canvas width for the fan.")]
+    [SerializeField] private Vector2 auraSize = new Vector2(5.4f, 4.2f);
+    [Tooltip("Fan origin near the feet, relative to Player root. Follows the player in the air too.")]
+    [SerializeField] private Vector2 auraOffset = new Vector2(-0.15f, -1.65f);
+    [SerializeField, Range(20f, 140f)] private float auraFanAngle = 80f;
+    [SerializeField, Range(3f, 16f)] private float auraStreamCount = 7f;
     [SerializeField, Min(0f)] private float auraRiseSpeed = 0.65f;
     [SerializeField, Range(1f, 12f)] private float auraNoiseScale = 5f;
     [SerializeField, Range(0f, 1f)] private float auraTurbulence = 0.65f;
@@ -85,6 +88,9 @@ public sealed class PlayerAwakeningVisual : MonoBehaviour
     private static readonly int RiseSpeedId = Shader.PropertyToID("_RiseSpeed");
     private static readonly int NoiseScaleId = Shader.PropertyToID("_NoiseScale");
     private static readonly int TurbulenceId = Shader.PropertyToID("_Turbulence");
+    private static readonly int FanAngleId = Shader.PropertyToID("_FanAngle");
+    private static readonly int StreamCountId = Shader.PropertyToID("_StreamCount");
+    private static readonly int AuraAspectId = Shader.PropertyToID("_AuraAspect");
 
     private void Awake()
     {
@@ -220,9 +226,11 @@ public sealed class PlayerAwakeningVisual : MonoBehaviour
         aura.sharedMaterial = auraMaterial;
         aura.sortingLayerID = source.sortingLayerID;
         aura.sortingOrder = source.sortingOrder - 1;
-        // Root-relative placement stays stable when a pose or flipX changes.
-        aura.transform.localPosition = new Vector3(auraOffset.x, auraOffset.y, 0f);
-        aura.transform.localScale = new Vector3(Mathf.Max(0.1f, auraSize.x), Mathf.Max(0.1f, auraSize.y), 1f);
+        // The quad's bottom-center is the fan origin, independent of pose and flipX.
+        float width = Mathf.Max(0.1f, auraSize.x);
+        float height = Mathf.Max(0.1f, auraSize.y);
+        aura.transform.localPosition = new Vector3(auraOffset.x, auraOffset.y + height * 0.5f, 0f);
+        aura.transform.localScale = new Vector3(width, height, 1f);
         auraProperties.SetColor(AuraColorId, auraColor);
         auraProperties.SetFloat(AuraIntensityId, auraIntensity * strength);
         auraProperties.SetFloat(AuraOpacityId, auraOpacity * source.color.a);
@@ -230,6 +238,9 @@ public sealed class PlayerAwakeningVisual : MonoBehaviour
         auraProperties.SetFloat(RiseSpeedId, auraRiseSpeed);
         auraProperties.SetFloat(NoiseScaleId, auraNoiseScale);
         auraProperties.SetFloat(TurbulenceId, auraTurbulence);
+        auraProperties.SetFloat(FanAngleId, Mathf.Clamp(auraFanAngle, 20f, 140f));
+        auraProperties.SetFloat(StreamCountId, Mathf.Clamp(auraStreamCount, 3f, 16f));
+        auraProperties.SetFloat(AuraAspectId, width / height);
         aura.SetPropertyBlock(auraProperties);
     }
 
