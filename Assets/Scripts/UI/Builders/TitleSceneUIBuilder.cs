@@ -210,29 +210,58 @@ public static class TitleSceneUIBuilder
         titleImage.preserveAspect = true;
         K.Place(title, K.Anchor.TopLeft, LogoX, LogoY, LogoW, LogoH);
 
-        // 3) 빛줄기: 로고의 여우 부분(머리·꼬리)에서만 보인다. 글자에는 지나가지 않는다.
-        //    _FoxMask는 로고 그림에서 글자를 지우고 여우만 남긴 그림이다 (크기 같음).
-        GameObject shineMask = K.Img("GameTitleShine", panel, Color.white);
-        UnityEngine.UI.Image maskImage = shineMask.GetComponent<UnityEngine.UI.Image>();
-        Sprite foxMask = K.Redesign(TitleLogo + "_FoxMask");
-        maskImage.sprite = foxMask != null ? foxMask : logoSprite;
-        maskImage.preserveAspect = true;
-        Mask mask = shineMask.AddComponent<Mask>();
-        mask.showMaskGraphic = false;
-        K.Place(shineMask, K.Anchor.TopLeft, LogoX, LogoY, LogoW, LogoH);
-
-        GameObject bar = K.Img("ShineBar", shineMask.transform, new Color(0.86f, 0.90f, 1f, 0.9f));
-        bar.GetComponent<UnityEngine.UI.Image>().sprite = K.Redesign("Shine_Bar");
-        K.Place(bar, K.Anchor.Center, -LogoW * 0.68f, 0f, 150f, LogoH + 180f);
-        bar.transform.localRotation = Quaternion.Euler(0f, 0f, -20f);
+        // 3) 여우 모양을 따라 흐르는 빛 (10.27): 머리 → 앞다리 → 아래 선 → 꼬리. 글자에는 지나가지 않는다.
+        //    _FoxPath 그림: A = 여우 모양, R = 여우 몸을 따라 온 정도(0~1). UI/LogoPathShine 셰이더가 읽는다.
+        RawImage pathImage = BuildPathShine(panel, logoSprite);
 
         TitleLogoLight logoLight = title.AddComponent<TitleLogoLight>();
         SerializedObject so = new SerializedObject(logoLight);
         so.FindProperty("glow").objectReferenceValue = glowImage;
-        so.FindProperty("shineBar").objectReferenceValue = bar.GetComponent<RectTransform>();
-        so.FindProperty("shineTravel").floatValue = LogoW * 1.36f; // 로고 왼쪽 밖 → 오른쪽 밖
+        so.FindProperty("pathShine").objectReferenceValue = pathImage;
+        so.FindProperty("shineDuration").floatValue = 2.6f; // 머리에서 꼬리 끝까지
+        so.FindProperty("shineInterval").floatValue = 7f;
         so.FindProperty("glowPulse").floatValue = 0.2f;
         so.ApplyModifiedPropertiesWithoutUndo();
+    }
+
+    private const string PathShineMaterialPath = "Assets/Sprites/UI/Redesign/LogoPathShine.mat";
+
+    /// <summary>여우 길 그림 + 전용 재질로 빛 그래픽을 만든다. 재질 파일이 없으면 새로 만든다.</summary>
+    private static RawImage BuildPathShine(Transform panel, Sprite logoSprite)
+    {
+        Sprite path = K.Redesign(TitleLogo + "_FoxPath");
+        Shader shader = Shader.Find("UI/LogoPathShine");
+        if (path == null || shader == null)
+        {
+            Debug.LogWarning("[TitleSceneUIBuilder] 여우 길 그림이나 UI/LogoPathShine 셰이더가 없어 빛을 만들지 않았습니다.");
+            return null;
+        }
+
+        Material mat = AssetDatabase.LoadAssetAtPath<Material>(PathShineMaterialPath);
+        if (mat == null)
+        {
+            mat = new Material(shader) { name = "LogoPathShine" };
+            AssetDatabase.CreateAsset(mat, PathShineMaterialPath);
+        }
+        mat.shader = shader;
+        mat.SetFloat("_Progress", -1f);
+        mat.SetFloat("_Width", 0.07f);
+        mat.SetFloat("_Intensity", 1f);
+        EditorUtility.SetDirty(mat);
+
+        GameObject go = K.Obj("GameTitleShine", panel);
+        RawImage raw = go.AddComponent<RawImage>();
+        raw.texture = path.texture;
+        raw.material = mat;
+        raw.color = new Color(0.86f, 0.90f, 1f, 0.9f);
+        raw.raycastTarget = false;
+
+        // 로고(preserveAspect)가 실제로 그려지는 크기에 딱 맞춘다. 길 그림은 로고와 같은 크기다.
+        float drawnW = Mathf.Min(LogoW, LogoH * logoSprite.rect.width / logoSprite.rect.height);
+        float drawnH = drawnW * path.rect.height / path.rect.width;
+        float cx = LogoX + LogoW * 0.5f, cy = LogoY - LogoH * 0.5f;
+        K.Place(go, K.Anchor.TopLeft, cx - drawnW * 0.5f, cy + drawnH * 0.5f, drawnW, drawnH);
+        return raw;
     }
 
     /// <summary>

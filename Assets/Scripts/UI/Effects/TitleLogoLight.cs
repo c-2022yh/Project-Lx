@@ -4,8 +4,9 @@ using UnityEngine.UI;
 /// <summary>
 /// 타이틀 로고 라이팅.
 /// 1) 글자 뒤 푸른 빛(glow)이 천천히 숨 쉬듯 밝아졌다 어두워진다.
-/// 2) 몇 초마다 글자 위로 빛줄기(shineBar)가 비스듬히 한 번 지나간다.
-///    빛줄기는 로고 모양 Mask 안에서만 보인다.
+/// 2) 몇 초마다 빛이 한 번 지나간다.
+///    - pathShine이 있으면: 여우 모양을 따라 머리 → 앞다리 → 아래 선 → 꼬리 순서로 흐른다 (10.27, UI/LogoPathShine 셰이더).
+///    - 없으면: 예전처럼 비스듬한 빛줄기(shineBar)가 왼쪽에서 오른쪽으로 지나간다.
 /// 시간 정지(timeScale 0)와 무관하게 돈다.
 /// </summary>
 public class TitleLogoLight : MonoBehaviour
@@ -17,7 +18,10 @@ public class TitleLogoLight : MonoBehaviour
     [Tooltip("한 번 숨 쉬는 데 걸리는 시간(초)")]
     [SerializeField] private float glowPeriod = 4f;
 
-    [Header("지나가는 빛줄기")]
+    [Header("지나가는 빛")]
+    [Tooltip("여우 모양을 따라 흐르는 빛 (UI/LogoPathShine 재질을 쓴 그래픽). 있으면 이쪽을 쓴다.")]
+    [SerializeField] private Graphic pathShine;
+    [Tooltip("예전 방식: 왼쪽 → 오른쪽으로 지나가는 빛줄기")]
     [SerializeField] private RectTransform shineBar;
     [Tooltip("빛줄기가 다시 지나가기까지의 간격(초)")]
     [SerializeField] private float shineInterval = 6f;
@@ -30,12 +34,28 @@ public class TitleLogoLight : MonoBehaviour
 
     private float glowBaseAlpha;
     private Graphic shineGraphic;
+    private Material pathMaterial;
     private float startTime;
+    private static readonly int ProgressId = Shader.PropertyToID("_Progress");
+    private static readonly int WidthId = Shader.PropertyToID("_Width");
 
     private void Awake()
     {
         if (glow != null) glowBaseAlpha = glow.color.a;
         if (shineBar != null) shineGraphic = shineBar.GetComponent<Graphic>();
+
+        // 재질 파일을 직접 바꾸지 않도록 복사본을 쓴다.
+        if (pathShine != null && pathShine.material != null)
+        {
+            pathMaterial = new Material(pathShine.material);
+            pathShine.material = pathMaterial;
+            pathMaterial.SetFloat(ProgressId, -1f);
+        }
+    }
+
+    private void OnDestroy()
+    {
+        if (pathMaterial != null) Destroy(pathMaterial);
     }
 
     private void OnEnable()
@@ -54,9 +74,26 @@ public class TitleLogoLight : MonoBehaviour
             glow.color = c;
         }
 
+        float cycle = t - firstDelay;
+
+        if (pathMaterial != null)
+        {
+            bool on = cycle >= 0f && Mathf.Repeat(cycle, shineInterval) <= shineDuration;
+            if (!on)
+            {
+                pathMaterial.SetFloat(ProgressId, -1f);
+                return;
+            }
+
+            float q = Mathf.Repeat(cycle, shineInterval) / shineDuration;
+            q = q * q * (3f - 2f * q);
+            float w = pathMaterial.GetFloat(WidthId);
+            pathMaterial.SetFloat(ProgressId, Mathf.Lerp(-w, 1f + w, q));
+            return;
+        }
+
         if (shineBar == null) return;
 
-        float cycle = t - firstDelay;
         bool visible = cycle >= 0f && Mathf.Repeat(cycle, shineInterval) <= shineDuration;
         if (shineGraphic != null) shineGraphic.enabled = visible;
         if (!visible) return;
