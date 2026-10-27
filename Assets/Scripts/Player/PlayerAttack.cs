@@ -164,6 +164,7 @@ public class PlayerAttack : MonoBehaviour
 
         //공격 이펙트 생성 및 히트박스 활성화  
         attackEffectStarted = true;
+        GameAudio.Play(GameSound.PlayerAttack);
         SpawnAttackEffect(pattern, dir, damageInfo, isAirAttack);
         
         //공격 활성 시간

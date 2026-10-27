@@ -4,8 +4,8 @@ using UnityEngine;
 /// <summary>
 /// 설정값을 실제 엔진/시스템에 반영하는 곳.
 ///
-/// 지금 동작하는 것:  해상도, 화면 모드, VSync, 프레임 제한
-/// 값만 보관 중인 것:  밝기, 오디오 4채널, 언어
+/// 지금 동작하는 것:  해상도, 화면 모드, VSync, 프레임 제한, 오디오 4채널
+/// 값만 보관 중인 것:  밝기, 언어
 ///
 /// 시스템이 생기면 아래 [*_HOOK] 주석 부분만 채우면 된다.
 /// 다른 파일은 손댈 필요 없다.
@@ -79,16 +79,7 @@ public static class SettingsApplier
     // ── 오디오 ─────────────────────────────
     private static void ApplyAudio(GameSettingsData d)
     {
-        // [AUDIO_HOOK]
-        // 프로젝트에 AudioMixer가 생기면 여기만 채우면 된다.
-        // 믹서 노출 파라미터 이름을 Master / BGM / SFX / UI 로 만들어두면:
-        //
-        //   mixer.SetFloat("Master", ToDecibel(d.masterVolume));
-        //   mixer.SetFloat("BGM",    ToDecibel(d.bgmVolume));
-        //   mixer.SetFloat("SFX",    ToDecibel(d.sfxVolume));
-        //   mixer.SetFloat("UI",     ToDecibel(d.uiVolume));
-        //
-        // 지금은 값만 보관한다.
+        GameAudio.ApplySettings(d);
     }
 
     /// <summary>0~100 슬라이더 값을 AudioMixer용 데시벨로. 오디오 붙일 때 바로 쓰면 된다.</summary>

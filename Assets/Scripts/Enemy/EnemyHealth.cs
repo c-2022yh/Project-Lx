@@ -163,6 +163,8 @@ public class EnemyHealth : MonoBehaviour
             return;
         }
 
+        if (finalDamage > 0f) GameAudio.Play(GameSound.EnemyHurt);
+
         if (hitFeedbackCoroutine != null)
         {
             StopCoroutine(hitFeedbackCoroutine);
@@ -269,6 +271,7 @@ public class EnemyHealth : MonoBehaviour
         if (isDead) return;
 
         isDead = true;
+        GameAudio.Play(GameSound.EnemyDeath);
 
         NotifyKill(lastDamageInfo);
         GiveReward(lastDamageInfo);

@@ -60,6 +60,7 @@ public class PlayerHealth : MonoBehaviour, IDamageable
         currentHealth -= damage;
         currentHealth = Mathf.Clamp(currentHealth, 0f, maxHealth);
 
+        GameAudio.Play(IsDead ? GameSound.PlayerDeath : GameSound.PlayerHurt);
         OnDamaged?.Invoke(appliedDamage);
 
         Debug.Log("Player damaged. HP: " + currentHealth);

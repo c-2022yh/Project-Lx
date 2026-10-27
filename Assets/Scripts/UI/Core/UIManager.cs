@@ -309,7 +309,7 @@ public class UIManager : MonoBehaviour
             inventoryPanel.SetVisible(isInventoryOpen);
 
         RefreshPlayerControl();
-        // [SFX_HOOK] AudioManager.Play(isInventoryOpen ? openSfx : closeSfx);
+        GameAudio.Play(isInventoryOpen ? GameSound.WindowOpen : GameSound.WindowClose);
     }
 
     /// <summary>
@@ -332,7 +332,7 @@ public class UIManager : MonoBehaviour
         if (skillPanel != null) skillPanel.SetVisible(isSkillOpen);
 
         RefreshPlayerControl();
-        // [SFX_HOOK]
+        GameAudio.Play(isSkillOpen ? GameSound.WindowOpen : GameSound.WindowClose);
     }
 
     public void ToggleMap()
@@ -359,7 +359,7 @@ public class UIManager : MonoBehaviour
         Debug.Log($"[UI] Map: {(isMapOpen ? "Open" : "Close")}");
 
         if (mapPanel != null) mapPanel.SetVisible(isMapOpen);
-        // [SFX_HOOK]
+        GameAudio.Play(isMapOpen ? GameSound.WindowOpen : GameSound.WindowClose);
     }
 
     public void TogglePause()
@@ -372,7 +372,7 @@ public class UIManager : MonoBehaviour
         pausePanel.SetVisible(isPaused);
 
         RefreshPlayerControl();
-        // [SFX_HOOK]
+        GameAudio.Play(isPaused ? GameSound.WindowOpen : GameSound.WindowClose);
     }
 
 
