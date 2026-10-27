@@ -22,6 +22,33 @@ Player 프리팹 루트의 **Player Awakening Visual**:
 
 씬의 Player 인스턴스에 동일 항목의 override가 있으면 해당 값이 우선된다. 조명 색상은 Glow Color와 별도로 조절한다.
 
+## 보주 유물별 각성 색상
+
+`Assets/ScriptableObjects/Relic/Relic_Orb/Relic_*.asset`의 **Orb Awakening Colors**에 색상을 저장한다. HUD와 인게임 보주 이미지의 색을 참고해 초기값을 지정했으며, 실행 중 이미지에서 자동 추출하지 않는다.
+
+| SO 설정 | 역할 |
+| --- | --- |
+| Override Awakening Colors | 이 보주 유물의 각성 색상을 사용한다. 검·신체 유물에는 적용되지 않는다. |
+| Awakening Glow Color | 캐릭터 윤곽 및 Body Glow의 색. HDR 색상 지원. |
+| Awakening Aura Color | 발밑에서 퍼지는 부채꼴 오라의 색. HDR 색상 지원. |
+| Awakening Light Color | 주변 지형을 비추는 작은 조명의 색. |
+
+| 유물 | 초기 색상 방향 |
+| --- | --- |
+| 폭주 / Berserk | HUD의 푸른 테두리를 따른 윤곽 + 인게임 보주의 붉은 눈을 따른 오라 |
+| 연소 / Burning | 인게임 보주의 눈 색을 따른 민트·청록색 |
+| 그믐 / DarkMoon | HUD·인게임 보주의 보라색 |
+| 만월 / FullMoon | HUD·인게임 보주의 금빛·따뜻한 노랑 |
+| 환류 / Reflux | HUD·인게임 보주의 파랑·푸른빛 |
+
+Player의 **Use Equipped Orb Colors**가 켜져 있고 장착한 보주 SO의 **Override Awakening Colors**가 켜져 있을 때 SO의 세 색이 우선한다. 획득만 한 유물은 적용하지 않는다. 유물 교체 및 SO 색상 편집은 매 프레임 반영된다. 밝기·농도·윤곽 두께·흐름 속도는 기존 Player 컴포넌트에서 조절한다.
+
+보주 미장착, SO의 색상 설정 꺼짐, Player의 Use Equipped Orb Colors 꺼짐, 유물 관리자 없음 상태에서는 Player 컴포넌트의 Glow Color / Aura Color / Light Color를 사용한다. SO 색상을 읽을 때 이 기본값을 덮어쓰지 않으므로 유물을 해제하면 원래 색으로 돌아간다. 기본색을 직접 비교하려면 Use Equipped Orb Colors를 잠시 끈다.
+
+이 설정은 캐릭터 윤곽·오라·주변 조명에 적용된다. HUD 자체의 색상은 기존 Orb HUD 설정을 사용하며, 화면 가장자리 UI 및 별도 일회성 AwakeningEffect의 색상은 이 세 항목에 연결되어 있지 않다. Bloom은 발광하는 색을 번지게 하므로 오라·윤곽 색 변경이 자연스럽게 반영된다.
+
+검증: 전체 게임 C# 소스 컴파일 통과. 별도 Unity 프로젝트에서 실제 RelicData·OrbHUDStyle·PlayerAwakeningVisual 소스와 보주 SO 5개를 사용해 5종 렌더링, 각 렌더러/조명의 색상 전달, 해제·설정 해제·관리자 없음의 기본색 복귀, SO 편집 즉시 반영, 기본 머티리얼·색 보존, 사망 시 숨김 등 40개 확인을 통과했다. 이 검증의 장착 상태·체력·각성 상태는 최소 대역으로 제공했으므로 실제 게임의 인벤토리·각성·리스폰 연동은 Play Mode 확인이 필요하다.
+
 ## 오라 초안 조절
 
 같은 컴포넌트의 **Flowing Aura**를 조절한다. 발밑 한 점에서 위쪽 부채꼴로 노이즈를 흘리는 가산 셰이더이며 별도 이미지나 프레임은 사용하지 않는다. 가운데 흐름은 위로, 양옆 흐름은 대각선으로 퍼진다. 캐릭터와 같은 Sorting Layer에서 Order를 하나 낮춰 몸 뒤에 표시한다. 방향마다 길이를 다르게 하고 끝을 흐리게 없애 단단한 부채꼴 테두리가 보이지 않게 했다.

@@ -803,6 +803,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2a8e9702723f46ff995fb7f09f218d6f, type: 3}
   m_Name:
   m_EditorClassIdentifier: Assembly-CSharp::PlayerAwakeningVisual
+  useEquippedOrbColors: 1
   source: {fileID: 7915228961384660491}
   glowMaterial: {fileID: 2100000, guid: 5ee4184e0777406cbf8d49eba6b8a565, type: 2}
   glowColor: {r: 0.2, g: 0.5, b: 1, a: 1}

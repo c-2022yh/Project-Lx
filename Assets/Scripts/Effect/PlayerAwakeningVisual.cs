@@ -8,6 +8,10 @@ using UnityEngine.Rendering.Universal;
 [RequireComponent(typeof(PlayerAwakening), typeof(PlayerHealth))]
 public sealed class PlayerAwakeningVisual : MonoBehaviour
 {
+    [Header("Orb Relic Colors")]
+    [Tooltip("Use the equipped orb relic's Awakening Colors when enabled on its SO. Otherwise use the colors below.")]
+    [SerializeField] private bool useEquippedOrbColors = true;
+
     [Header("Sprite Glow")]
     [SerializeField] private SpriteRenderer source;
     [SerializeField] private Material glowMaterial;
@@ -62,6 +66,8 @@ public sealed class PlayerAwakeningVisual : MonoBehaviour
 
     private PlayerAwakening awakening;
     private PlayerHealth health;
+    private PlayerRelicManager relicManager;
+    private Color resolvedGlowColor, resolvedAuraColor, resolvedLightColor;
     private SpriteRenderer overlay;
     private MeshRenderer aura;
     private Mesh auraMesh;
@@ -96,6 +102,7 @@ public sealed class PlayerAwakeningVisual : MonoBehaviour
     {
         awakening = GetComponent<PlayerAwakening>();
         health = GetComponent<PlayerHealth>();
+        relicManager = GetComponent<PlayerRelicManager>();
         if (source == null) source = GetComponentInChildren<SpriteRenderer>();
         if (source == null || glowMaterial == null)
         {
@@ -178,10 +185,11 @@ public sealed class PlayerAwakeningVisual : MonoBehaviour
         float pulse = 1f + Mathf.Sin(clock * pulseFrequency * Mathf.PI * 2f) * pulseAmount;
         float strength = weight * peak * pulse;
 
+        ResolveRelicColors();
         UpdateOverlay(strength);
         UpdateAura(strength);
         nearbyLight.transform.position = source.bounds.center + (Vector3)lightOffset;
-        nearbyLight.color = lightColor;
+        nearbyLight.color = resolvedLightColor;
         nearbyLight.intensity = lightIntensity * strength;
         nearbyLight.pointLightOuterRadius = Mathf.Max(0.1f, lightRadius);
         nearbyLight.pointLightInnerRadius = nearbyLight.pointLightOuterRadius * 0.15f;
@@ -190,6 +198,21 @@ public sealed class PlayerAwakeningVisual : MonoBehaviour
         bloom.threshold.value = bloomThreshold;
         bloom.scatter.value = bloomScatter;
         bloomVolume.weight = weight;
+    }
+
+    private void ResolveRelicColors()
+    {
+        // Do not overwrite the Inspector defaults. Unequip restores them immediately,
+        // and reading the SO each frame also supports color tuning during Play Mode.
+        resolvedGlowColor = glowColor;
+        resolvedAuraColor = auraColor;
+        resolvedLightColor = lightColor;
+        if (!useEquippedOrbColors || relicManager == null) return;
+        RelicData relic = relicManager.EquippedOrbRelic;
+        if (relic == null || !relic.HasAwakeningColors) return;
+        resolvedGlowColor = relic.AwakeningGlowColor;
+        resolvedAuraColor = relic.AwakeningAuraColor;
+        resolvedLightColor = relic.AwakeningLightColor;
     }
 
     private void CreateAura()
@@ -231,7 +254,7 @@ public sealed class PlayerAwakeningVisual : MonoBehaviour
         float height = Mathf.Max(0.1f, auraSize.y);
         aura.transform.localPosition = new Vector3(auraOffset.x, auraOffset.y + height * 0.5f, 0f);
         aura.transform.localScale = new Vector3(width, height, 1f);
-        auraProperties.SetColor(AuraColorId, auraColor);
+        auraProperties.SetColor(AuraColorId, resolvedAuraColor);
         auraProperties.SetFloat(AuraIntensityId, auraIntensity * strength);
         auraProperties.SetFloat(AuraOpacityId, auraOpacity * source.color.a);
         auraProperties.SetFloat(AuraTimeId, clock);
@@ -271,7 +294,7 @@ public sealed class PlayerAwakeningVisual : MonoBehaviour
             }
             uvRect = new Vector4(min.x, min.y, max.x, max.y);
         }
-        properties.SetColor(GlowColorId, glowColor);
+        properties.SetColor(GlowColorId, resolvedGlowColor);
         properties.SetFloat(GlowIntensityId, glowIntensity * strength);
         properties.SetFloat(OutlinePixelsId, outlinePixels);
         properties.SetFloat(BodyGlowId, bodyGlow);
