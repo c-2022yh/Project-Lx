@@ -142,6 +142,7 @@ GameObject:
   - component: {fileID: 8630995702748567631}
   - component: {fileID: 9034583387251907042}
   - component: {fileID: 327711697826805450}
+  - component: {fileID: 748219306312450001}
   m_Layer: 7
   m_Name: Player
   m_TagString: Player
@@ -482,6 +483,7 @@ MonoBehaviour:
   awakeningFreezeTime: 0.8
   awakeningRequiredEnergy: 100
   awakeningEnergyDrainPerSecond: 5
+  applySpriteTint: 0
   normalColor: {r: 1, g: 1, b: 1, a: 1}
   awakenedColor: {r: 1, g: 1, b: 1, a: 1}
   awakenedMoveMultiplier: 1.3
@@ -789,3 +791,48 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 6234295986293454894, guid: b67f57ed10ddf2f42b0cd17f2e8d0c19, type: 3}
   m_PrefabInstance: {fileID: 3864082654687442276}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &748219306312450001
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3993503971577391545}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2a8e9702723f46ff995fb7f09f218d6f, type: 3}
+  m_Name:
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerAwakeningVisual
+  source: {fileID: 7915228961384660491}
+  glowMaterial: {fileID: 2100000, guid: 5ee4184e0777406cbf8d49eba6b8a565, type: 2}
+  glowColor: {r: 0.2, g: 0.5, b: 1, a: 1}
+  glowIntensity: 4
+  outlinePixels: 2
+  bodyGlow: 0.025
+  enableAura: 1
+  auraMaterial: {fileID: 2100000, guid: 6f4172dc78c345ebbd11ca4cc3689bd7, type: 2}
+  auraColor: {r: 0.15, g: 0.45, b: 1, a: 1}
+  auraIntensity: 2.5
+  auraOpacity: 0.4
+  auraSize: {x: 3, y: 4.2}
+  auraOffset: {x: -0.2, y: 0.15}
+  auraRiseSpeed: 0.65
+  auraNoiseScale: 5
+  auraTurbulence: 0.65
+  previewInPlayMode: 0
+  fadeIn: 0.3
+  fadeOut: 0.3
+  entryPeak: 1.8
+  entrySettle: 0.35
+  pulseAmount: 0.1
+  pulseFrequency: 0.8
+  lightColor: {r: 0.3, g: 0.55, b: 1, a: 1}
+  lightIntensity: 0.8
+  lightRadius: 2.5
+  lightOffset: {x: 0, y: -0.3}
+  lightSortingLayers:
+  - Ground
+  enableBloom: 1
+  bloomIntensity: 0.6
+  bloomThreshold: 1.1
+  bloomScatter: 0.65

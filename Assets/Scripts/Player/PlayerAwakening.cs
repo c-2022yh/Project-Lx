@@ -63,6 +63,8 @@ public class PlayerAwakening : MonoBehaviour
     [SerializeField, Min(0f)] private float awakeningEnergyDrainPerSecond = 5f;
 
     [Header("Awakening Color")]
+    [Tooltip("Legacy full-sprite tint. Leave off when using PlayerAwakeningVisual.")]
+    [SerializeField] private bool applySpriteTint = false;
     [SerializeField] private Color normalColor = Color.green;
     [SerializeField] private Color awakenedColor = Color.red;
 
@@ -187,7 +189,7 @@ public class PlayerAwakening : MonoBehaviour
 
         ApplyAwakeningCombatBonus(p);
 
-        if (p.sr != null)
+        if (applySpriteTint && p.sr != null)
         {
             p.sr.color = awakenedColor;
         }
@@ -230,7 +232,7 @@ public class PlayerAwakening : MonoBehaviour
         isAwakened = false;
         finisherInProgress = false;
 
-        if (p.sr != null)
+        if (applySpriteTint && p.sr != null)
         {
             p.sr.color = normalColor;
         }

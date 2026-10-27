@@ -33,6 +33,7 @@ public sealed class ScreenEffectsCamera : MonoBehaviour
     {
         Camera camera = GetComponent<Camera>();
         UniversalAdditionalCameraData data = camera.GetUniversalAdditionalCameraData();
+        camera.allowHDR = true;
         data.renderPostProcessing = true;
         data.volumeLayerMask |= 1;
         camera.SetVolumeFrameworkUpdateMode(VolumeFrameworkUpdateMode.EveryFrame);
