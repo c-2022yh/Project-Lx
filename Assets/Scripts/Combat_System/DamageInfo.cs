@@ -11,6 +11,9 @@ public struct DamageInfo
 
     public bool suppressKnockback;
 
+    // Runtime-only hit audio policy, shared by copies of one attack/cast.
+    public AttackAudioContext impactAudio;
+
     public bool isCritical;         //치명타 여부
 
     public float damageAmplification; //피해 증폭
@@ -33,6 +36,7 @@ public struct DamageInfo
 
         this.attacker = attacker;
         this.suppressKnockback = false;
+        this.impactAudio = null;
     }
 
 

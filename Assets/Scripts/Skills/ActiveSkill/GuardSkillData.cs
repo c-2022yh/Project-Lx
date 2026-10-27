@@ -9,6 +9,7 @@ public class GuardSkillData : UtilitySkillData
     public override IEnumerator ProcessSkill(Player p)
     {
         if (!p.isGrounded) yield break;
+        PlayReleaseSound(p, p.transform.position);
 
         //중력 정지
         p.SetPhysicsFreeze(true);

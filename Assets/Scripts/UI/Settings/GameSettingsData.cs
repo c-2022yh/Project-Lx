@@ -2,7 +2,7 @@ using System;
 
 /// <summary>
 /// 설정 화면의 모든 값. PlayerPrefs에 JSON으로 저장된다.
-/// 아직 게임에 없는 시스템(오디오/언어)의 값도 미리 담아둔다.
+/// 아직 게임에 없는 시스템(언어)의 값도 미리 담아둔다.
 /// 시스템이 생기면 SettingsApplier의 해당 훅만 채우면 된다.
 /// </summary>
 [Serializable]
@@ -26,8 +26,7 @@ public class GameSettingsData
     public int frameLimitIndex = 1;
 
     // ── 오디오 (0~100) ──────────────────────
-    // [AUDIO_HOOK] 현재 프로젝트에 AudioMixer가 없다.
-    // 값은 저장/복원되지만 아직 아무 곳에도 적용되지 않는다.
+    // GameAudio의 Mixer에 적용하며 기존 설정 저장/복원을 그대로 사용한다.
     public float masterVolume = 100f;
     public float bgmVolume = 80f;
     public float sfxVolume = 80f;

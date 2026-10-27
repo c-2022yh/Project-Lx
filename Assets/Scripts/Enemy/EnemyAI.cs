@@ -51,6 +51,12 @@ public class EnemyAI : MonoBehaviour
 
     private Transform player;
 
+    // Cache only physical body colliders, not sprite bounds or contact hitboxes.
+    private Collider2D[] heightBodyColliders;
+    private Transform heightReferencePlayer;
+    private Collider2D[] playerHeightBodyColliders;
+    private Rigidbody2D playerHeightBody;
+
     //플레이어가 씬에 늦게 생성될 수 있으므로 주기적으로 탐색
     [SerializeField] private float playerSearchInterval = 0.5f;
 
@@ -234,23 +240,62 @@ public class EnemyAI : MonoBehaviour
     }
 
 
-    public bool CanDetectPlayer()
+    // Wolf opts in to feet-based height; other enemy types retain root-based height.
+    public float GetPlayerHeightDifference(bool useBodyFeetHeight = false)
+    {
+        if (player == null) return float.PositiveInfinity;
+        if (!useBodyFeetHeight)
+            return Mathf.Abs(player.position.y - transform.position.y);
+
+        if (heightBodyColliders == null)
+            heightBodyColliders = GetComponentsInChildren<Collider2D>(true);
+        if (heightReferencePlayer != player)
+        {
+            heightReferencePlayer = player;
+            playerHeightBodyColliders = player.GetComponentsInChildren<Collider2D>(true);
+            playerHeightBody = player.GetComponent<Rigidbody2D>();
+        }
+
+        // Read world bounds each time so changes in scale, offset or pose are reflected.
+        float enemyFeet = GetBodyFeetY(heightBodyColliders, rb, transform.position.y);
+        float playerFeet = GetBodyFeetY(playerHeightBodyColliders, playerHeightBody, player.position.y);
+        return Mathf.Abs(playerFeet - enemyFeet);
+    }
+
+    private static float GetBodyFeetY(Collider2D[] colliders, Rigidbody2D ownerBody, float fallbackY)
+    {
+        float feetY = float.PositiveInfinity;
+        if (colliders != null)
+        {
+            foreach (Collider2D bodyCollider in colliders)
+            {
+                if (bodyCollider == null || !bodyCollider.enabled || bodyCollider.isTrigger ||
+                    !bodyCollider.gameObject.activeInHierarchy || bodyCollider.attachedRigidbody != ownerBody)
+                    continue;
+                feetY = Mathf.Min(feetY, bodyCollider.bounds.min.y);
+            }
+        }
+        return float.IsPositiveInfinity(feetY) ? fallbackY : feetY;
+    }
+
+
+    public bool CanDetectPlayer(bool useBodyFeetHeight = false)
     {
         if (player == null) return false;
 
         float distanceX = Mathf.Abs(player.position.x - transform.position.x);
-        float distanceY = Mathf.Abs(player.position.y - transform.position.y);
+        float distanceY = GetPlayerHeightDifference(useBodyFeetHeight);
 
         return distanceX <= detectionRangeX && distanceY <= detectionRangeY;
     }
 
 
-    public bool ShouldStopChasing()
+    public bool ShouldStopChasing(bool useBodyFeetHeight = false)
     {
         if (player == null) return true;
 
         float distanceX = Mathf.Abs(player.position.x - transform.position.x);
-        float distanceY = Mathf.Abs(player.position.y - transform.position.y);  
+        float distanceY = GetPlayerHeightDifference(useBodyFeetHeight);
 
         return distanceX >= loseRangeX || distanceY >= loseRangeY;
     }

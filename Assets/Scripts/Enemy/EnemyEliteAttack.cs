@@ -6,6 +6,9 @@ using UnityEngine;
 public class EnemyEliteAttackPattern
 {
     public string attackName;
+    [Header("Audio")]
+    public SoundCue attackSound = new SoundCue();
+    public SoundCue impactSound = new SoundCue();
 
     [Header("Timing")]
     public float startupTime = 0.3f;    //선딜
@@ -62,6 +65,11 @@ public class EnemyEliteAttack : MonoBehaviour
     [Tooltip("다음 돌진까지의 쿨타임입니다.")]
     [Min(0f)]
     [SerializeField] private float chargeCooldown = 1.5f;
+
+    [Header("Charge Audio")]
+    [SerializeField] private SoundCue chargeSound = new SoundCue();
+    [SerializeField] private SoundCue chargeLoop = new SoundCue();
+    private SoundHandle chargeAudio;
 
     public bool IsAttacking => isAttacking;
     public bool IsCharging => isCharging;
@@ -170,7 +178,9 @@ public class EnemyEliteAttack : MonoBehaviour
             Destroy(hitboxObj);
             return;
         }
+        damageInfo.impactAudio = new AttackAudioContext(pattern.impactSound, ImpactSoundMode.EveryHit, transform);
         hitbox.Init(damageInfo,new Vector2(dir, 0f), pattern.activeTime);
+        GameAudio.Play(pattern.attackSound, spawnPosition, transform);
 
     }
 
@@ -220,6 +230,8 @@ public class EnemyEliteAttack : MonoBehaviour
         yield return new WaitForSeconds(chargeStartupTime);
 
         isCharging = true;
+        GameAudio.Play(chargeSound, transform.position, transform);
+        chargeAudio = GameAudio.PlayLoop(chargeLoop, transform);
 
         if (rb != null)
         {
@@ -231,6 +243,7 @@ public class EnemyEliteAttack : MonoBehaviour
         }
 
         yield return new WaitForSeconds(chargeDuration);
+        chargeAudio.Stop();
 
         if (rb != null)
         {
@@ -256,6 +269,7 @@ public class EnemyEliteAttack : MonoBehaviour
 
     private void OnDisable()
     {
+        chargeAudio.Stop();
         StopAllCoroutines();
 
         if (rb != null)

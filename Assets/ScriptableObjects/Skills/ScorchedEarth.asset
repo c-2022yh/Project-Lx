@@ -22,16 +22,33 @@ MonoBehaviour:
   enemyLayer:
     serializedVersion: 2
     m_Bits: 256
-  damageSpec:
-    damageType: 0
-    damageMultiplier: 0
-    canCritical: 0
-    bonusPenetration: 0
-    bonusDamageAmplification: 0
-  knockbackDirection: {x: 1, y: 0}
-  hitboxOffset: {x: 1, y: 0}
-  hitboxSize: {x: 3, y: 2}
-  windup: 0.3
-  recovery: 0.2
-  effectPrefab: {fileID: 7000748839020387578, guid: eadce98c30aaf6448abf549f26f2e279, type: 3}
-  effectLifetime: 1
+  barrage:
+    targetSearchRadius: 12
+    retargetSearchRadius: 8
+    sightObstacleLayer:
+      serializedVersion: 2
+      m_Bits: 64
+    requireInitialTarget: 1
+    passThroughTerrain: 1
+    projectileCount: 12
+    formationOffset: {x: -0.4, y: 0.6}
+    formationRadius: 1.2
+    formationArc: 150
+    preparationDuration: 0.15
+    outwardDuration: 0.04
+    projectileSpeed: 30
+    turnSpeed: 2160
+    projectileLifetime: 2
+    hitRadius: 0.15
+    regularDamage:
+      damageType: 1
+      damageMultiplier: 0.35416667
+      canCritical: 0
+      bonusPenetration: 0
+      bonusDamageAmplification: 0
+    preparationEffectPrefab: {fileID: 0}
+    regularProjectilePrefab: {fileID: 2512384032804664592, guid: 81afb68c1264477e8f695c8bb04779e0, type: 3}
+    regularHitEffectPrefab: {fileID: 7910235883446043059, guid: 42fb663768604a48bdb4761239a4c118, type: 3}
+    hitEffectLifetime: 1
+  windupTime: 0
+  recoveryTime: 0.2

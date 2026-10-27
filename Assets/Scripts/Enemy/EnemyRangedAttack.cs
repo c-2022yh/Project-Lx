@@ -38,6 +38,11 @@ public class EnemyRangedAttack : MonoBehaviour
     [SerializeField] private LayerMask playerLayer;
 
 
+    [Header("Audio")]
+    [SerializeField] private SoundCue attackSound = new SoundCue();
+    [SerializeField] private SoundCue impactSound = new SoundCue();
+    [SerializeField] private SoundCue flightLoop = new SoundCue();
+
     private EnemyStats enemyStats;
     private EnemyHealth enemyHealth;
     private EnemyAI ai;
@@ -185,6 +190,8 @@ public class EnemyRangedAttack : MonoBehaviour
 
 
         //투사체에 필요한 정보 전달
+        damageInfo.impactAudio = new AttackAudioContext(impactSound, ImpactSoundMode.EveryHit, transform);
+        GameAudio.Play(attackSound, spawnPosition, transform);
         projectile.Init(
             direction,
             projectileSpeed,
@@ -192,7 +199,8 @@ public class EnemyRangedAttack : MonoBehaviour
             rotationSpeed,
             damageInfo,
             playerLayer,
-            destroyOnPlayerHit
+            destroyOnPlayerHit,
+            flightLoop
         );
     }
 

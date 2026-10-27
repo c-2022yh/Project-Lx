@@ -8,6 +8,11 @@ public class AttackPattern //공격 패턴
 {
     public string attackName;
 
+    [Header("Audio")]
+    public SoundCue attackSound = new SoundCue();
+    public SoundCue impactSound = new SoundCue();
+    public ImpactSoundMode impactMode = ImpactSoundMode.EveryHit;
+
     [Header("Timing")]
     public float startupTime = 0.05f;   //선딜
     public float activeTime = 0.1f;     //공격판정 시간
@@ -164,6 +169,7 @@ public class PlayerAttack : MonoBehaviour
 
         //공격 이펙트 생성 및 히트박스 활성화  
         attackEffectStarted = true;
+        GameAudio.Play(pattern.attackSound, transform.position, transform);
         SpawnAttackEffect(pattern, dir, damageInfo, isAirAttack);
         
         //공격 활성 시간
@@ -187,6 +193,7 @@ public class PlayerAttack : MonoBehaviour
     {
         DamageInfo damageInfo = DamageInfo.Create(playerStats.Offense, pattern.damageSpec, gameObject);
         damageInfo.damage *= Mathf.Max(0f, 1f + basicAttackDamageBonus);
+        damageInfo.impactAudio = new AttackAudioContext(pattern.impactSound, pattern.impactMode, transform);
         return damageInfo;
     }
 

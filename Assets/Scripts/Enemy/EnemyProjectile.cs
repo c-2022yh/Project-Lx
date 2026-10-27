@@ -29,6 +29,7 @@ public class EnemyProjectile : MonoBehaviour
     private readonly HashSet<IDamageable> hitTargets = new();
 
     private bool initialized;
+    private SoundHandle flightAudio;
 
     private void Awake()
     {
@@ -43,7 +44,8 @@ public class EnemyProjectile : MonoBehaviour
         float rotationSpeed,
         DamageInfo damageInfo,
         LayerMask playerLayer,
-        bool destroyOnPlayerHit)
+        bool destroyOnPlayerHit,
+        SoundCue flightLoop = null)
     {
         this.direction = direction.normalized;
 
@@ -52,6 +54,8 @@ public class EnemyProjectile : MonoBehaviour
         this.rotationSpeed = rotationSpeed;
 
         this.damageInfo = damageInfo;
+        flightAudio.Stop();
+        flightAudio = GameAudio.PlayLoop(flightLoop, transform);
 
         this.playerLayer = playerLayer;
 
@@ -81,6 +85,8 @@ public class EnemyProjectile : MonoBehaviour
         }
     }
 
+
+    private void OnDisable() { flightAudio.Stop(); }
 
     private void Update()
     {

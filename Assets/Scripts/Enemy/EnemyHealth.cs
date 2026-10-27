@@ -46,6 +46,10 @@ public class EnemyHealth : MonoBehaviour
     [SerializeField] private float energyReward = 20f;
     [SerializeField] private bool logEnergyReward = false;
 
+    [Header("Audio")]
+    [SerializeField] private SoundCue hurtSound = new SoundCue();
+    [SerializeField] private SoundCue deathSound = new SoundCue();
+
     private EnemyStats enemyStats;
     private EnemyAI ai;
     private EnemyAnimation enemyAnimation;
@@ -155,6 +159,7 @@ public class EnemyHealth : MonoBehaviour
         currentHp = Mathf.Max(0f, currentHp - finalDamage);
 
 
+        if (finalDamage > 0f) damageInfo.impactAudio?.OnDamageApplied(transform);
         ShowDamageFeedback(finalDamage, damageInfo.damageType, damageInfo.isCritical);
 
         if (currentHp <= 0f)
@@ -162,6 +167,8 @@ public class EnemyHealth : MonoBehaviour
             Die(damageInfo);
             return;
         }
+
+        if (finalDamage > 0f) GameAudio.Play(hurtSound, transform.position, transform);
 
         if (hitFeedbackCoroutine != null)
         {
@@ -259,6 +266,7 @@ public class EnemyHealth : MonoBehaviour
         if (isDead) return;
 
         currentHp = 0f;
+        damageInfo.impactAudio?.OnDamageApplied(transform);
 
         Die(damageInfo);
     }
@@ -269,6 +277,8 @@ public class EnemyHealth : MonoBehaviour
         if (isDead) return;
 
         isDead = true;
+        GameAudio.StopOwnedSounds(transform);
+        GameAudio.Play(deathSound, transform.position, transform);
 
         NotifyKill(lastDamageInfo);
         GiveReward(lastDamageInfo);

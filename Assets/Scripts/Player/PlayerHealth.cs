@@ -19,6 +19,10 @@ public class PlayerHealth : MonoBehaviour, IDamageable
     [SerializeField] private float maxHealth = 10f;
     [SerializeField] private float currentHealth;
 
+    [Header("Audio")]
+    [SerializeField] private SoundCue hurtSound = new SoundCue();
+    [SerializeField] private SoundCue deathSound = new SoundCue();
+
     private PlayerHitReaction hitReaction;
 
     private void Awake()
@@ -45,11 +49,17 @@ public class PlayerHealth : MonoBehaviour, IDamageable
             0f
         );
 
-        TakeDamage(damage, damageInfo.attacker.transform.position);
+        ApplyDamage(damage, damageInfo.attacker.transform.position, damageInfo.impactAudio);
     }
 
     //데미지 입음
     public void TakeDamage(float damage, Vector2 damageSourcePosition)
+    {
+        ApplyDamage(damage, damageSourcePosition, null);
+    }
+
+    // Confirm impact audio before damage/death callbacks can change the player state.
+    private void ApplyDamage(float damage, Vector2 damageSourcePosition, AttackAudioContext impactAudio)
     {
         if (damage <= 0f) return;
         if (IsDead) return;
@@ -60,6 +70,9 @@ public class PlayerHealth : MonoBehaviour, IDamageable
         currentHealth -= damage;
         currentHealth = Mathf.Clamp(currentHealth, 0f, maxHealth);
 
+        if (IsDead) GameAudio.StopOwnedSounds(transform);
+        GameAudio.Play(IsDead ? deathSound : hurtSound, transform.position, transform);
+        impactAudio?.OnDamageApplied(transform);
         OnDamaged?.Invoke(appliedDamage);
 
         Debug.Log("Player damaged. HP: " + currentHealth);

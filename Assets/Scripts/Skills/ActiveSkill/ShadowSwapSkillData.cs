@@ -15,6 +15,7 @@ public class ShadowSwapSkillData : UtilitySkillData
     {
         if (p == null) yield break;
         if (shadowPrefab == null) yield break;
+        PlayReleaseSound(p, p.transform.position);
         
 
         if (currentShadow == null)

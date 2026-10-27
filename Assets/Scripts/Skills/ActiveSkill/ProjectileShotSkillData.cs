@@ -15,6 +15,8 @@ public class ProjectileShotSkillData : AttackSkillData
     public float maxDistance = 6f;
     public float rotationSpeed = 0f;
     public bool destroyOnEnemyHit = true;
+    [Header("Projectile Audio")]
+    public SoundCue flightLoop = new SoundCue();
 
 
     public override IEnumerator ProcessSkill(Player p)
@@ -25,7 +27,7 @@ public class ProjectileShotSkillData : AttackSkillData
         float dir = p.isFacingRight ? 1f : -1f;
 
         //공격 정보 생성
-        DamageInfo damageInfo = DamageInfo.Create(p.Stats.Offense, damageSpec, p.gameObject);
+        DamageInfo damageInfo = CreateDamageInfo(p);
 
         //소환 위치
         Vector2 spawnPos = (Vector2)p.transform.position + new Vector2(spawnOffset.x * dir, spawnOffset.y);
@@ -42,7 +44,8 @@ public class ProjectileShotSkillData : AttackSkillData
 
         //투사체 생성 방향, 속도, 데미지 등 값을 넘겨줌
         projectile.Init(dir, projectileSpeed, maxDistance,
-            rotationSpeed, damageInfo, enemyLayer, destroyOnEnemyHit);
+            rotationSpeed, damageInfo, enemyLayer, destroyOnEnemyHit, flightLoop);
+        PlayReleaseSound(p, spawnPos);
 
         yield return null;
     }

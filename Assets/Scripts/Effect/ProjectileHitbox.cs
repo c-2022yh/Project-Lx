@@ -8,6 +8,7 @@ public class ProjectileHitbox : MonoBehaviour
     private float speed;            //속도   
     private float maxDistance;      //사거리
     private float rotationSpeed;    //회전 속도
+    private SoundHandle flightAudio;
     private DamageInfo damageInfo; //데미지  
     private LayerMask enemyLayer;   //적을 식별할 레이어마스크
     private bool destroyOnEnemyHit; //적이 맞았는지 체크
@@ -23,13 +24,15 @@ public class ProjectileHitbox : MonoBehaviour
 
     //값을 받아오는 함수
     public void Init(float dir, float speed, float maxDistance, float rotationSpeed,
-        DamageInfo damageInfo, LayerMask enemyLayer, bool destroyOnEnemyHit)
+        DamageInfo damageInfo, LayerMask enemyLayer, bool destroyOnEnemyHit, SoundCue flightLoop = null)
     {
         this.dir = dir;
         this.speed = speed;
         this.maxDistance = maxDistance;
         this.rotationSpeed = rotationSpeed;
         this.damageInfo = damageInfo;
+        flightAudio.Stop();
+        flightAudio = GameAudio.PlayLoop(flightLoop, transform);
         this.enemyLayer = enemyLayer;
         this.destroyOnEnemyHit = destroyOnEnemyHit;
 
@@ -48,6 +51,8 @@ public class ProjectileHitbox : MonoBehaviour
 
         initialized = true;
     }
+
+    private void OnDisable() { flightAudio.Stop(); }
 
     private void Update()
     {
