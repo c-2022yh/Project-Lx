@@ -67,7 +67,7 @@ public class UIManager : MonoBehaviour
         isInventoryOpen || isSkillOpen || isPaused ||
         (controlGuidePanel != null && controlGuidePanel.gameObject.activeSelf) ||
         (gameOverPanel != null && gameOverPanel.gameObject.activeSelf) ||
-        AcquirePopup.IsOpen;
+        AcquirePopup.IsOpen || RelicSelectionPanelUI.IsOpen;
 
    
     //  Input System 연결
@@ -119,8 +119,8 @@ public class UIManager : MonoBehaviour
     {
       
 
-        // 획득 알림창이 떠 있으면 키는 알림창 몫이다. 맵만 손을 떼면 내린다.
-        if (AcquirePopup.BlocksInput)
+        // 획득 알림창·유물 선택창이 떠 있으면 키는 그 창 몫이다. 맵만 손을 떼면 내린다.
+        if (AcquirePopup.BlocksInput || RelicSelectionPanelUI.IsOpen)
         {
             if (Keyboard.current.tabKey.wasReleasedThisFrame) SetMapVisible(false);
             return;
