@@ -50,7 +50,7 @@ public class SaveSlotEntry : MonoBehaviour
                 slotNameText.text = string.IsNullOrEmpty(info.slotName) ? $"슬롯 {info.slotIndex + 1}" : info.slotName;
 
             if (detailText != null)
-                detailText.text = $"플레이 시간 {info.PlayTimeText}   Lv.{info.level}   {info.locationName}";
+                detailText.text = $"플레이 시간 {info.PlayTimeText}   {info.locationName}";
 
             if (savedAtText != null)
                 savedAtText.text = info.SavedAtText;

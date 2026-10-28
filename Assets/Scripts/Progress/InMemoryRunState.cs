@@ -17,6 +17,7 @@ public class InMemoryRunState : IRunState
     public IReadOnlyList<string> EquippedRelicIds => equipped;
     public IReadOnlyCollection<string> VisitedRoomIds => visited;
     public IReadOnlyCollection<string> Flags => flags;
+    public IReadOnlyDictionary<string, HashSet<long>> ExploredCells => explored;
 
     public event Action OnChanged;
 
