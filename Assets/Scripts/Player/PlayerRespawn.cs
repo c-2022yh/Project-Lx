@@ -168,6 +168,9 @@ public class PlayerRespawn : MonoBehaviour
 
         if (SceneManager.GetActiveScene().name != targetScene)
         {
+            //화면을 검게 덮은 뒤 넘어간다. 새 씬은 SceneFader가 알아서 밝힌다.
+            yield return SceneFader.CoverRoutine();
+
             GameSession.BeginRespawnLoad();
             AsyncOperation load = SceneManager.LoadSceneAsync(targetScene);
 

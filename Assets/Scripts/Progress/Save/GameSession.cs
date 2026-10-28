@@ -119,7 +119,7 @@ public class GameSession : MonoBehaviour
         if (loaded.hasShrine) SetRespawn(scene, new Vector2(loaded.shrineX, loaded.shrineY));
         else ClearRespawn();
         Time.timeScale = 1f;
-        SceneManager.LoadScene(scene);
+        SceneFader.LoadScene(scene);
     }
 
     /// <summary>제단 활성화/휴식. 이어하기 위치를 이 제단으로 바꾸고 저장한다.</summary>
