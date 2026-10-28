@@ -82,6 +82,7 @@ public class ProjectileHitbox : MonoBehaviour
         {
             Vector2 hitPoint = other.ClosestPoint(transform.position);
             secretBreakableWall.HitWallAtWorldPosition(hitPoint);
+            GetComponent<FireballVisual>()?.PlayImpact();
             Destroy(gameObject);
             return;
         }
@@ -101,6 +102,7 @@ public class ProjectileHitbox : MonoBehaviour
         //맞으면 삭제
         if (destroyOnEnemyHit)
         {
+            GetComponent<FireballVisual>()?.PlayImpact();
             Destroy(gameObject);
         }
 

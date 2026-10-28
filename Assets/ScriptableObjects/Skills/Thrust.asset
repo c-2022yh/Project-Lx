@@ -36,3 +36,5 @@ MonoBehaviour:
   effectScale: {x: 1, y: 1, z: 1}
   effectRotationZ: 0
   effectLifeTime: 0.2
+  allowUseInAir: 1
+  stopHorizontalMovementOnStart: 1

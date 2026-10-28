@@ -16,11 +16,105 @@ MonoBehaviour:
   icon: {fileID: 160405844485933162, guid: a14516441b69871418a0c1fc4e79f3e5, type: 3}
   description: "\uAE30\uB825\uC744 \uC18C\uBAA8\uD574 \uCCB4\uB825\uC744 \uD68C\uBCF5\uD55C\uB2E4"
   animationType: 0
+  audio:
+    castSound:
+      channel: 0
+      clip: {fileID: 0}
+      clips:
+      - {fileID: 0}
+      volume: 1
+      minimumInterval: 0.05
+      pitchRange: {x: 1, y: 1}
+      maxSimultaneous: 4
+      limitScope: 0
+      spatialBlend: 0
+      minDistance: 1
+      maxDistance: 15
+      useFallback: 0
+      fallbackSound: 5
+    releaseSound:
+      channel: 0
+      clip: {fileID: 0}
+      clips:
+      - {fileID: 0}
+      volume: 1
+      minimumInterval: 0.05
+      pitchRange: {x: 1, y: 1}
+      maxSimultaneous: 4
+      limitScope: 0
+      spatialBlend: 0
+      minDistance: 1
+      maxDistance: 15
+      useFallback: 0
+      fallbackSound: 5
+    impactSound:
+      channel: 0
+      clip: {fileID: 0}
+      clips:
+      - {fileID: 0}
+      volume: 1
+      minimumInterval: 0.05
+      pitchRange: {x: 1, y: 1}
+      maxSimultaneous: 4
+      limitScope: 0
+      spatialBlend: 0
+      minDistance: 1
+      maxDistance: 15
+      useFallback: 0
+      fallbackSound: 5
+    impactMode: 0
+    activeLoop:
+      channel: 0
+      clip: {fileID: 0}
+      clips:
+      - {fileID: 0}
+      volume: 1
+      minimumInterval: 0.05
+      pitchRange: {x: 1, y: 1}
+      maxSimultaneous: 4
+      limitScope: 0
+      spatialBlend: 0
+      minDistance: 1
+      maxDistance: 15
+      useFallback: 0
+      fallbackSound: 5
+    completeSound:
+      channel: 0
+      clip: {fileID: 0}
+      clips:
+      - {fileID: 0}
+      volume: 1
+      minimumInterval: 0.05
+      pitchRange: {x: 1, y: 1}
+      maxSimultaneous: 4
+      limitScope: 0
+      spatialBlend: 0
+      minDistance: 1
+      maxDistance: 15
+      useFallback: 0
+      fallbackSound: 5
+    cancelSound:
+      channel: 0
+      clip: {fileID: 0}
+      clips:
+      - {fileID: 0}
+      volume: 1
+      minimumInterval: 0.05
+      pitchRange: {x: 1, y: 1}
+      maxSimultaneous: 4
+      limitScope: 0
+      spatialBlend: 0
+      minDistance: 1
+      maxDistance: 15
+      useFallback: 0
+      fallbackSound: 5
   cooldownTime: 1
+  energyCost: 20
+  allowUseInAir: 0
+  stopHorizontalMovementOnStart: 1
   windupTime: 0.5
   activeTime: 0.2
   recoveryTime: 0.5
   lockInputDuringSkill: 1
   invincibleDuringSkill: 0
-  energyCost: 20
   healAmount: 2

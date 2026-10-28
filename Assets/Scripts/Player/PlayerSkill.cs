@@ -14,6 +14,7 @@ public class PlayerSkill : MonoBehaviour
     private readonly List<SkillData> ownedSkills = new();
     private readonly Dictionary<SkillData, HashSet<object>> skillSources = new();
     private readonly Dictionary<SkillData, float> cooldownEnds = new();
+    private readonly Dictionary<SkillData, float> cooldownDurations = new();
 
     private Player player;
     private SkillData exclusiveSkill;
@@ -339,6 +340,12 @@ public class PlayerSkill : MonoBehaviour
     //스킬 또는 해당 슬롯의 남은 쿨타임 조회. 해제·재장착해도 종료 시각 유지
     public float GetCooldownRemaining(int slotIndex) => GetCooldownRemaining(GetEquippedSkill(slotIndex));
 
+    public float GetCooldownDuration(SkillData skill)
+    {
+        if (skill == null) return 0f;
+        return cooldownDurations.TryGetValue(skill, out float duration) ? duration : skill.cooldownTime;
+    }
+
     //해당 슬롯 스킬의 쿨타임이 남아 있는지 확인
     public bool IsOnCooldown(int slotIndex) => GetCooldownRemaining(slotIndex) > 0f;
 
@@ -352,7 +359,7 @@ public class PlayerSkill : MonoBehaviour
         }
         SkillData skill = GetEquippedSkill(slotIndex);
         OnSkillCooldownChanged?.Invoke(
-            slotIndex, GetCooldownRemaining(skill), skill != null ? skill.cooldownTime : 0f);
+            slotIndex, GetCooldownRemaining(skill), GetCooldownDuration(skill));
     }
 
     //현재 슬롯 스킬의 쿨타임을 명시적으로 초기화
@@ -361,6 +368,7 @@ public class PlayerSkill : MonoBehaviour
         SkillData skill = GetEquippedSkill(slotIndex);
         if (skill == null) return;
         cooldownEnds.Remove(skill);
+        cooldownDurations.Remove(skill);
         NotifyCooldown(slotIndex);
     }
 
@@ -394,6 +402,7 @@ public class PlayerSkill : MonoBehaviour
         activeAudio = new SkillAudioSession(skill.audio, p.transform);
         activeSlotIndex = slotIndex;
         p.ActionState.EnterSkill();
+        skill.ApplyStartMovement(p);
         try
         {
             OnSkillUsed?.Invoke(skill);
@@ -424,7 +433,9 @@ public class PlayerSkill : MonoBehaviour
     {
         if (p != null && p.ActionState.isSkillActive) p.ActionState.EnterNormal();
         if (slotIndex < 0) return; // Awakening Q retains its existing once-per-awakening rule.
-        cooldownEnds[skill] = Time.time + Mathf.Max(0f, skill.cooldownTime);
+        float duration = Mathf.Max(0f, skill.GetCooldownAfterCast(p));
+        cooldownDurations[skill] = duration;
+        cooldownEnds[skill] = Time.time + duration;
         NotifyCooldown(slotIndex);
     }
 
