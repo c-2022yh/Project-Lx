@@ -14,6 +14,9 @@ public class EnergyOrb : MonoBehaviour
     private Sprite defaultSprite;
     private PlayerRelicManager relicManager;
 
+    public OrbFollower Follower => follower;
+    public SpriteRenderer SpriteRenderer => orbSpriteRenderer;
+
     private void Awake()
     {
         follower = GetComponent<OrbFollower>();

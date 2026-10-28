@@ -15,6 +15,7 @@ public class PlayerEnergy : MonoBehaviour
     [SerializeField] private bool startWithOrb = false;
     [SerializeField] private VitalConversionSkillData orbAcquisitionSkill;
 
+    private EnergyOrb currentOrb;
     private bool hasOrb;
     private bool isEnergyGainBlocked;
     private float energyGainMultiplier = 1f;
@@ -36,6 +37,7 @@ public class PlayerEnergy : MonoBehaviour
     public float EnergyRatio => MaxEnergy <= 0f ? 0f : currentEnergy / MaxEnergy;
     public bool IsFull => MaxEnergy > 0f && currentEnergy >= MaxEnergy;
     public bool HasOrb => hasOrb;
+    public EnergyOrb CurrentOrb => currentOrb;
     public bool IsEnergyGainBlocked => isEnergyGainBlocked;
 
     //테스트용 시작 보주가 설정되어 있으면 생성
@@ -55,6 +57,7 @@ public class PlayerEnergy : MonoBehaviour
             Quaternion.identity
         );
 
+        currentOrb = orb;
         orb.Initialize(transform);
         StartCoroutine(GrantOrbAcquisitionSkill());
 

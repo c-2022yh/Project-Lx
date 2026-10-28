@@ -59,7 +59,7 @@ public sealed class PlayerAwakeningVisual : MonoBehaviour
     [Header("Transition")]
     [SerializeField, Min(0.01f)] private float fadeIn = 0.3f;
     [SerializeField, Min(0.01f)] private float fadeOut = 0.3f;
-    [SerializeField, Min(1f)] private float entryPeak = 1.8f;
+    [SerializeField, Min(1f)] private float entryPeak = 1.4f;
     [SerializeField, Min(0.01f)] private float entrySettle = 0.35f;
     [SerializeField, Range(0f, 0.4f)] private float pulseAmount = 0.1f;
     [SerializeField, Min(0f)] private float pulseFrequency = 0.8f;
@@ -109,6 +109,11 @@ public sealed class PlayerAwakeningVisual : MonoBehaviour
         { brightness = 1f, height = 1f, angle = 1f, speed = 1f };
 
     public bool UsesIntroSequence => isActiveAndEnabled && enableIntroSequence;
+    public float VisualIntroElapsed => GetIntroElapsed();
+    public float VisualIntroDuration => awakening != null ? awakening.IntroDuration : 0f;
+    public float IntroChargeEnd => Mathf.Max(0.01f, chargeDuration) * IntroTimeScale;
+    public float IntroReleaseEnd => (Mathf.Max(0.01f, chargeDuration) + Mathf.Max(0.01f, releaseDuration)) * IntroTimeScale;
+    public Color CurrentGlowColor => resolvedGlowColor;
     public bool IsVisualActive
     {
         get
