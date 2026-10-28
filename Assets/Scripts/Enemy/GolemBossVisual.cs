@@ -1,0 +1,140 @@
+using System;
+using UnityEngine;
+
+[Serializable]
+public class GolemBossMotion
+{
+    public Sprite[] prepare;
+    public Sprite[] strike;
+    public Sprite[] recovery;
+}
+
+public enum GolemBossPose { Idle, Prepare, Strike, Recovery, Summon, PhaseChange }
+
+// Presentation only: replacing sprites never changes attack geometry or timing.
+[RequireComponent(typeof(SpriteRenderer), typeof(EnemyHealth))]
+public class GolemBossVisual : MonoBehaviour
+{
+    [Header("Art (empty slots use the block golem)")]
+    [SerializeField] private Sprite[] idleSprites;
+    [SerializeField] private Sprite[] summonSprites;
+    [SerializeField] private Sprite[] phaseChangeSprites;
+    [SerializeField, Min(0.01f)] private float idleFrameTime = 0.2f;
+    [SerializeField] private bool spritesFaceRight = true;
+    [Header("Health bar")]
+    [SerializeField] private bool showHealthBar = true;
+    [SerializeField] private Vector2 healthBarOffset = new Vector2(0f, 2.6f);
+    [SerializeField] private Vector2 healthBarSize = new Vector2(4f, 0.16f);
+
+    private SpriteRenderer body, leftArm, rightArm, core, barBack, barFill;
+    private EnemyHealth health;
+    private GolemBossPose pose;
+    private Sprite[] frames;
+    private float progress;
+    private int facing = 1;
+    private bool singleArm;
+    private static Sprite square;
+
+    // A code-generated white primitive, shared by indicators and placeholder parts.
+    public static Sprite Square
+    {
+        get
+        {
+            if (square == null)
+                square = Sprite.Create(Texture2D.whiteTexture,
+                    new Rect(0, 0, Texture2D.whiteTexture.width, Texture2D.whiteTexture.height),
+                    new Vector2(0.5f, 0.5f), Texture2D.whiteTexture.width, 0, SpriteMeshType.FullRect);
+            return square;
+        }
+    }
+
+    public static SpriteRenderer MakeRectangle(string name, Transform parent, Color color, int order)
+    {
+        var part = new GameObject(name);
+        int effectLayer = LayerMask.NameToLayer("Effects");
+        part.layer = effectLayer >= 0 ? effectLayer : 0;
+        part.transform.SetParent(parent, false);
+        var renderer = part.AddComponent<SpriteRenderer>();
+        renderer.sprite = Square;
+        renderer.color = color;
+        renderer.sortingLayerName = "Effects";
+        renderer.sortingOrder = order;
+        return renderer;
+    }
+
+    private void Awake()
+    {
+        body = GetComponent<SpriteRenderer>();
+        health = GetComponent<EnemyHealth>();
+        leftArm = MakeRectangle("Placeholder Left Arm", transform, new Color(0.38f, 0.42f, 0.46f), 1);
+        rightArm = MakeRectangle("Placeholder Right Arm", transform, leftArm.color, 1);
+        core = MakeRectangle("Placeholder Core", transform, new Color(1f, 0.65f, 0.15f), 2);
+        barBack = MakeRectangle("Boss HP Background", transform, new Color(0.08f, 0.08f, 0.1f), 10);
+        barFill = MakeRectangle("Boss HP", transform, new Color(0.85f, 0.12f, 0.08f), 11);
+    }
+
+    private void OnEnable() => SetPose(GolemBossPose.Idle);
+
+    public void SetPose(GolemBossPose next, float normalizedTime = 0f, int direction = 1, Sprite[] sprites = null, bool oneArm = false)
+    {
+        pose = next;
+        progress = Mathf.Clamp01(normalizedTime);
+        facing = direction < 0 ? -1 : 1;
+        frames = sprites;
+        singleArm = oneArm;
+    }
+
+    private void LateUpdate()
+    {
+        if (health.IsDead)
+        {
+            leftArm.enabled = rightArm.enabled = core.enabled = false;
+            barBack.enabled = barFill.enabled = false;
+            if (body.sprite != Square) { body.drawMode = SpriteDrawMode.Simple; body.color = Color.white; }
+            return; // EnemyAnimation owns death sprites.
+        }
+        Sprite[] selected = frames;
+        if (selected == null || selected.Length == 0)
+        {
+            if (pose == GolemBossPose.Idle) selected = idleSprites;
+            else if (pose == GolemBossPose.Summon) selected = summonSprites;
+            else if (pose == GolemBossPose.PhaseChange) selected = phaseChangeSprites;
+        }
+        bool hasArt = selected != null && selected.Length > 0;
+        if (hasArt)
+        {
+            int index = pose == GolemBossPose.Idle
+                ? (int)(Time.time / Mathf.Max(0.01f, idleFrameTime)) % selected.Length
+                : Mathf.Min(selected.Length - 1, (int)(progress * selected.Length));
+            body.sprite = selected[index] != null ? selected[index] : Square;
+            body.drawMode = SpriteDrawMode.Simple;
+            body.color = Color.white;
+            body.flipX = spritesFaceRight ? facing < 0 : facing > 0;
+        }
+        else
+        {
+            body.sprite = Square;
+            body.drawMode = SpriteDrawMode.Sliced;
+            body.size = new Vector2(2.6f, 3.6f);
+            body.color = new Color(0.48f, 0.53f, 0.58f);
+            // Root and collider are centered at (0, 0); feet are at y = -1.8.
+            body.flipX = false;
+        }
+        leftArm.enabled = rightArm.enabled = core.enabled = !hasArt && body.enabled;
+        float lift = pose == GolemBossPose.Prepare ? Mathf.Lerp(0.2f, 2f, progress) : 0.2f;
+        if (pose == GolemBossPose.Strike) lift = -1.2f;
+        bool channel = pose == GolemBossPose.Summon || pose == GolemBossPose.PhaseChange;
+        if (channel) lift = 1.4f;
+        leftArm.transform.localPosition = new Vector3(-1.7f, singleArm && facing > 0 ? 0.2f : lift);
+        rightArm.transform.localPosition = new Vector3(1.7f, singleArm && facing < 0 ? 0.2f : lift);
+        leftArm.transform.localScale = rightArm.transform.localScale = new Vector3(1.1f, 1.3f, 1f);
+        core.transform.localPosition = new Vector3(0f, 0.3f);
+        core.transform.localScale = Vector3.one * (channel ? 0.75f + Mathf.Sin(Time.time * 12f) * 0.1f : 0.55f);
+        barBack.enabled = barFill.enabled = showHealthBar;
+        float ratio = health.MaxHp > 0f ? Mathf.Clamp01(health.CurrentHp / health.MaxHp) : 0f;
+        barBack.transform.localPosition = healthBarOffset;
+        barBack.transform.localScale = new Vector3(healthBarSize.x, healthBarSize.y, 1f);
+        barFill.transform.localPosition = healthBarOffset + Vector2.left * healthBarSize.x * (1f - ratio) * 0.5f;
+        barFill.transform.localScale = new Vector3(healthBarSize.x * ratio, healthBarSize.y * 0.7f, 1f);
+    }
+}
