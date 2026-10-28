@@ -52,8 +52,18 @@ public static class SaveSystem
 
     public static void Delete(int slot)
     {
-        if (!Exists(slot)) return;
-        File.Delete(PathOf(slot));
+        if (!IsValid(slot)) return;
+        try
+        {
+            string path = PathOf(slot);
+            if (File.Exists(path)) File.Delete(path);
+            if (File.Exists(path + ".tmp")) File.Delete(path + ".tmp");   // 저장하다 꺼진 찌꺼기
+            Debug.Log($"[SaveSystem] 슬롯 {slot + 1} 삭제");
+        }
+        catch (Exception e)
+        {
+            Debug.LogError($"[SaveSystem] 슬롯 {slot + 1} 삭제 실패: {e.Message}");
+        }
     }
 
     private static bool IsValid(int slot) => slot >= 0 && slot < SlotCount;
