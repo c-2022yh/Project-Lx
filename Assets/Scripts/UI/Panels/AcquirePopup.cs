@@ -200,7 +200,7 @@ public class AcquirePopup : MonoBehaviour
         if (!holdingTime)
         {
             // 처음 뜰 때만 시간을 저장한다. 줄 선 알림이 이어서 뜰 땐 이미 0이다.
-            savedTimeScale = Time.timeScale > 0f ? Time.timeScale : 1f;
+            savedTimeScale = HitStop.IsActive ? HitStop.RestoreScale : (Time.timeScale > 0f ? Time.timeScale : 1f);
             holdingTime = true;
         }
 

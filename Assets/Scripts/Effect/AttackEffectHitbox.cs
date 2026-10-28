@@ -80,6 +80,9 @@ public class AttackEffectHitbox : MonoBehaviour
         //피해 정보 전달
         target.TakeDamage(damageInfo, new Vector2(attackDirection, 0f));
 
+        //히트스탑·카메라 흔들림
+        CombatFeedback.OnPlayerHit(target, attackDirection, damageInfo.isCritical);
+
         //치명타 여부에 따라 피격 이펙트 생성
         GameObject effectPrefab = damageInfo.isCritical ? criticalHitEffectPrefab : hitEffectPrefab;
 

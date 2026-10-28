@@ -32,5 +32,8 @@ public abstract class AttackSkillData : SkillData
         hitEnemies.Add(enemy);
 
         enemy.TakeDamage(damageInfo, new Vector2(dir, 0f));
+
+        //히트스탑·카메라 흔들림
+        CombatFeedback.OnPlayerHitObject(enemy, dir, damageInfo.isCritical);
     }
 }
