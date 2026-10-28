@@ -188,6 +188,8 @@ public static class DebrisBurst
         r.sortingLayerID = sortingLayerId;
         r.sortingOrder = sortingOrder;
 
+        VfxResources.ApplySheet(ps, texture);
+
         ps.Play();
         return ps;
     }

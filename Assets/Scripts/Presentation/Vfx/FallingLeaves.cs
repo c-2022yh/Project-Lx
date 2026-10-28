@@ -25,10 +25,11 @@ public class FallingLeaves : MonoBehaviour
     [SerializeField] private Sprite leafSprite;
     [SerializeField] private Color[] colors =
     {
-        new Color(0.80f, 0.52f, 0.22f),
-        new Color(0.70f, 0.32f, 0.18f),
-        new Color(0.86f, 0.70f, 0.32f),
-        new Color(0.55f, 0.58f, 0.28f),
+        // 쿨톤: 청록 / 푸른 초록 / 회청록 / 은빛 하늘
+        new Color(0.42f, 0.64f, 0.62f),
+        new Color(0.36f, 0.54f, 0.62f),
+        new Color(0.58f, 0.70f, 0.72f),
+        new Color(0.74f, 0.80f, 0.88f),
     };
 
     [Header("Sorting")]
@@ -185,6 +186,8 @@ public class FallingLeaves : MonoBehaviour
         r.sharedMaterial = VfxResources.MaterialFor(tex);
         r.sortingLayerName = sortingLayer;
         r.sortingOrder = order;
+
+        VfxResources.ApplySheet(ps, tex);
 
         return ps;
     }

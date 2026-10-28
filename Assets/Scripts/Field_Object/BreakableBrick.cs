@@ -9,7 +9,7 @@ public class BreakableBrick : MonoBehaviour
 
     [Header("Debris")]
     [SerializeField] private bool spawnDebris = true;
-    [SerializeField] private Color debrisColor = new Color(0.62f, 0.56f, 0.5f);
+    [SerializeField] private Color debrisColor = new Color(0.7f, 0.74f, 0.82f);
 
     private int currentHitCount;
 

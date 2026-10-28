@@ -14,7 +14,7 @@ public class FoliageRustle : MonoBehaviour
     [SerializeField, Min(0f)] private float cooldown = 0.8f;
     [Tooltip("비우면 코드로 만든 임시 잎 그림을 쓴다.")]
     [SerializeField] private Sprite leafSprite;
-    [SerializeField] private Color leafColor = new Color(0.55f, 0.62f, 0.3f);
+    [SerializeField] private Color leafColor = new Color(0.45f, 0.62f, 0.6f);
 
     private float nextTime;
     private ParticleSystem ps;
@@ -100,7 +100,9 @@ public class FoliageRustle : MonoBehaviour
 
         ParticleSystemRenderer r = go.GetComponent<ParticleSystemRenderer>();
         r.renderMode = ParticleSystemRenderMode.Billboard;
-        r.sharedMaterial = VfxResources.MaterialFor(VfxResources.TextureOr(leafSprite, VfxResources.Leaf));
+        Texture tex = VfxResources.TextureOr(leafSprite, VfxResources.Leaf);
+        r.sharedMaterial = VfxResources.MaterialFor(tex);
+        VfxResources.ApplySheet(p, tex);
 
         SpriteRenderer sr = GetComponentInChildren<SpriteRenderer>();
         if (sr != null)

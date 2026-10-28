@@ -15,7 +15,7 @@ public class SecretBreakableWall : MonoBehaviour
 
     [Header("Debris")]
     [SerializeField] private bool spawnDebris = true;
-    [SerializeField] private Color debrisColor = new Color(0.55f, 0.52f, 0.48f);
+    [SerializeField] private Color debrisColor = new Color(0.66f, 0.7f, 0.78f);
 
     // 타일 좌표별 맞은 횟수 저장
     private Dictionary<Vector3Int, int> hitCountByCellPosition = new Dictionary<Vector3Int, int>();

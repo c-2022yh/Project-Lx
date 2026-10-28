@@ -9,7 +9,7 @@ public class FireBreakableWall : MonoBehaviour
 
     [Header("Debris")]
     [SerializeField] private bool spawnDebris = true;
-    [SerializeField] private Color debrisColor = new Color(0.36f, 0.3f, 0.27f);
+    [SerializeField] private Color debrisColor = new Color(0.42f, 0.44f, 0.54f);
 
     private int currentHitCount;
     private bool isBroken;
