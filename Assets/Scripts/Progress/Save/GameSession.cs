@@ -144,6 +144,12 @@ public class GameSession : MonoBehaviour
         GameFlow.GoToTitle();
     }
 
+    /// <summary>보스 처치처럼 바로 남겨야 하는 일. 진행도만 저장하고 이어하기 위치(제단)는 그대로 둔다.</summary>
+    public static void SaveProgressNow()
+    {
+        if (HasSlot && instance != null) instance.SaveProgress();
+    }
+
     /// <summary>
     /// PlayerRespawn이 제단 씬을 불러오기 직전에 부른다.
     /// 씬이 뜨자마자(카메라가 잡기 전에) 플레이어를 제단 위치로 옮긴다.
