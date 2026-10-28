@@ -10,6 +10,16 @@ public class FireBreakableWall : MonoBehaviour
     private int currentHitCount;
     private bool isBroken;
 
+    private void Awake()
+    {
+        //이미 부순 벽이면 다시 나오지 않게 제거
+        if (FieldObjectState.IsDone(this))
+        {
+            isBroken = true;
+            Destroy(gameObject);
+        }
+    }
+
     //화염구에 맞았을 때 호출
     public void HitWall()
     {
@@ -28,6 +38,7 @@ public class FireBreakableWall : MonoBehaviour
     {
         //같은 프레임에 여러 화염구가 닿아도 한 번만 파괴
         isBroken = true;
+        FieldObjectState.MarkDone(this);
 
         if (breakEffectPrefab != null)
         {

@@ -9,6 +9,12 @@ public class BreakableBrick : MonoBehaviour
 
     private int currentHitCount;
 
+    private void Awake()
+    {
+        //이미 부순 벽돌이면 다시 나오지 않게 제거
+        if (FieldObjectState.IsDone(this)) Destroy(gameObject);
+    }
+
     //공격을 받았을 때 호출
     public void HitBrick()
     {
@@ -23,6 +29,8 @@ public class BreakableBrick : MonoBehaviour
     //벽돌 파괴
     private void BreakBrick()
     {
+        FieldObjectState.MarkDone(this);
+
         if (breakEffectPrefab != null)
         {
             Instantiate(breakEffectPrefab, transform.position, Quaternion.identity);

@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 //플레이어 리스폰 처리 스크립트
 public class PlayerRespawn : MonoBehaviour
@@ -120,6 +121,9 @@ public class PlayerRespawn : MonoBehaviour
 
         SetSpriteAlpha(0f);
 
+        //마지막 제단이 다른 씬에 있으면 그 씬을 불러온 뒤 이어서 진행
+        yield return LoadRespawnSceneIfNeeded();
+
         //마지막 체크포인트로 이동
         if (rb != null)
         {
@@ -153,6 +157,30 @@ public class PlayerRespawn : MonoBehaviour
         if (sr != null) sr.enabled = true;
         if (player != null) player.SetPhysicsFreeze(false);
         if (hitReaction != null) hitReaction.StartRespawnInvincible();
+    }
+
+    //제단 씬으로 이동. 같은 씬이면 위치만 맞춘다.
+    private IEnumerator LoadRespawnSceneIfNeeded()
+    {
+        if (!GameSession.HasRespawn) yield break;
+
+        string targetScene = GameSession.RespawnScene;
+
+        if (SceneManager.GetActiveScene().name != targetScene)
+        {
+            GameSession.BeginRespawnLoad();
+            AsyncOperation load = SceneManager.LoadSceneAsync(targetScene);
+
+            //씬을 못 불러오면(빌드 설정에 없음 등) 지금 씬의 예전 위치로 부활
+            if (load == null) yield break;
+
+            while (!load.isDone) yield return null;
+
+            //새 씬 오브젝트들의 Start가 끝나도록 한 프레임 대기
+            yield return null;
+        }
+
+        respawnPosition = GameSession.RespawnPosition;
     }
 
     //기존 RGB 색상은 유지하고 투명도만 변경
