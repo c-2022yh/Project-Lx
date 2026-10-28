@@ -45,3 +45,11 @@ MonoBehaviour:
     sketch: {fileID: -261656940029454954, guid: 02d51c08eda51de428bc013a48908038, type: 3}
     worldCenter: {x: 2, y: 29}
     unitsToPixels: 8
+  - sceneName: F_01
+    sketch: {fileID: 21300000, guid: 0bdfeed615d04a8d8fec1604dfc0a0e4, type: 3}
+    worldCenter: {x: 87, y: 6.5}
+    unitsToPixels: 8
+  - sceneName: F_02
+    sketch: {fileID: 21300000, guid: dc43b35b185b421b8eed6bff39a2ef29, type: 3}
+    worldCenter: {x: 247.5, y: 108.5}
+    unitsToPixels: 8
