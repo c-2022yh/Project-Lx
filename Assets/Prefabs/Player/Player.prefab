@@ -823,6 +823,16 @@ MonoBehaviour:
   auraNoiseScale: 5
   auraTurbulence: 0.65
   previewInPlayMode: 0
+  enableIntroSequence: 1
+  chargeDuration: 0.25
+  releaseDuration: 0.15
+  chargeBrightness: 0.65
+  chargeHeight: 0.22
+  chargeFanAngle: 20
+  chargeAuraBoost: 2
+  releaseHeight: 1.15
+  releaseAngle: 1.15
+  releaseSpeed: 3
   fadeIn: 0.3
   fadeOut: 0.3
   entryPeak: 1.8

@@ -12,6 +12,7 @@ Shader "ProjectLx/Player Awakening Aura"
         _StreamCount ("Stream Count", Range(3, 16)) = 7
         [HideInInspector] _AuraAspect ("Canvas Aspect", Float) = 1.285714
         [HideInInspector] _AuraTime ("Animation Clock", Float) = 0
+        [HideInInspector] _ChargeGlow ("Charge Glow", Float) = 0
     }
     SubShader
     {
@@ -39,6 +40,7 @@ Shader "ProjectLx/Player Awakening Aura"
                 float _FanAngle;
                 float _StreamCount;
                 float _AuraAspect;
+                float _ChargeGlow;
             CBUFFER_END
 
             struct Attributes { float3 positionOS : POSITION; float2 uv : TEXCOORD0; };
@@ -97,6 +99,10 @@ Shader "ProjectLx/Player Awakening Aura"
                     * (1.0 - smoothstep(reach * 0.55, reach, radius));
                 float density = (0.07 + flow * 0.12 + stream * wisps * 0.95)
                     * sides * radialFade;
+                float2 chargePoint = float2(p.x, p.y - 0.07);
+                float chargeHalo = exp2(-90.0 * dot(chargePoint, chargePoint))
+                    * smoothstep(0.0, 0.03, p.y) * _ChargeGlow;
+                density = max(density, chargeHalo);
                 // Fade the quad borders exactly to zero even when noise distorts them.
                 float edge = smoothstep(0.0, 0.07, input.uv.x)
                     * (1.0 - smoothstep(0.93, 1.0, input.uv.x))

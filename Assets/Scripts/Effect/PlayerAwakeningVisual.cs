@@ -5,6 +5,7 @@ using UnityEngine.Rendering.Universal;
 
 // Adds glow and a flowing aura without replacing the animated sprite's material or tint.
 [DisallowMultipleComponent]
+[DefaultExecutionOrder(-25)]
 [RequireComponent(typeof(PlayerAwakening), typeof(PlayerHealth))]
 public sealed class PlayerAwakeningVisual : MonoBehaviour
 {
@@ -41,6 +42,19 @@ public sealed class PlayerAwakeningVisual : MonoBehaviour
     [Tooltip("Preview visuals without energy cost or combat bonuses. Editor Play Mode only.")]
     [SerializeField] private bool previewInPlayMode;
 #endif
+
+    [Header("Awakening Intro")]
+    [SerializeField] private bool enableIntroSequence = true;
+    [Tooltip("Requested seconds. Charge/release/settle are compressed together if longer than PlayerAwakening's intro.")]
+    [SerializeField, Min(0.01f)] private float chargeDuration = 0.25f;
+    [SerializeField, Min(0.01f)] private float releaseDuration = 0.15f;
+    [SerializeField, Range(0f, 1f)] private float chargeBrightness = 0.65f;
+    [SerializeField, Range(0.05f, 0.5f)] private float chargeHeight = 0.22f;
+    [SerializeField, Range(20f, 60f)] private float chargeFanAngle = 20f;
+    [SerializeField, Min(1f)] private float chargeAuraBoost = 2f;
+    [SerializeField, Min(1f)] private float releaseHeight = 1.15f;
+    [SerializeField, Min(1f)] private float releaseAngle = 1.15f;
+    [SerializeField, Min(1f)] private float releaseSpeed = 3f;
 
     [Header("Transition")]
     [SerializeField, Min(0.01f)] private float fadeIn = 0.3f;
@@ -79,8 +93,99 @@ public sealed class PlayerAwakeningVisual : MonoBehaviour
     private MaterialPropertyBlock auraProperties;
     private Sprite previousSprite;
     private Vector4 uvRect;
-    private float weight, peakRemaining, clock;
+    private float weight, peakRemaining, clock, auraClock;
     private bool wasAwakened;
+    private IntroFrame introFrame = SustainedFrame;
+#if UNITY_EDITOR
+    private bool wasPreview;
+    private float previewStartedAt;
+#endif
+
+    private struct IntroFrame
+    {
+        public float brightness, height, angle, speed, chargeGlow, flash;
+    }
+    private static IntroFrame SustainedFrame => new IntroFrame
+        { brightness = 1f, height = 1f, angle = 1f, speed = 1f };
+
+    public bool UsesIntroSequence => isActiveAndEnabled && enableIntroSequence;
+    public bool IsVisualActive
+    {
+        get
+        {
+            if (!isActiveAndEnabled || health == null || health.IsDead || awakening == null) return false;
+            bool active = awakening.isActiveAndEnabled && (awakening.IsAwakening || awakening.IsAwakened);
+#if UNITY_EDITOR
+            active |= previewInPlayMode;
+#endif
+            return active;
+        }
+    }
+    public float ScreenEffectWeight => weight;
+    public float IntroFlashStrength => UsesIntroSequence && IsVisualActive ? EvaluateIntro(GetIntroElapsed()).flash : 0f;
+    public bool ShouldShowScreenEdge => IsVisualActive && (enableIntroSequence
+        ? GetIntroElapsed() >= Mathf.Max(0.01f, chargeDuration) * IntroTimeScale
+        : awakening.IsAwakened);
+
+    private float IntroTimeScale
+    {
+        get
+        {
+            float requested = Mathf.Max(0.01f, chargeDuration) + Mathf.Max(0.01f, releaseDuration)
+                + Mathf.Max(0.01f, entrySettle);
+            return Mathf.Min(1f, awakening.IntroDuration / requested);
+        }
+    }
+
+    private float GetIntroElapsed()
+    {
+        if (awakening.isActiveAndEnabled && (awakening.IsAwakening || awakening.IsAwakened))
+            return awakening.IntroElapsed;
+#if UNITY_EDITOR
+        if (previewInPlayMode) return Mathf.Max(0f, Time.time - previewStartedAt);
+#endif
+        return float.PositiveInfinity;
+    }
+
+    private IntroFrame EvaluateIntro(float elapsed)
+    {
+        if (!enableIntroSequence || awakening.IntroDuration <= 0f) return SustainedFrame;
+        float scale = IntroTimeScale;
+        float charge = Mathf.Max(0.01f, chargeDuration) * scale;
+        float release = Mathf.Max(0.01f, releaseDuration) * scale;
+        float settle = Mathf.Max(0.01f, entrySettle) * scale;
+        float narrowAngle = Mathf.Clamp(chargeFanAngle / Mathf.Max(20f, auraFanAngle), 0.01f, 1f);
+        IntroFrame frame = SustainedFrame;
+        if (elapsed < charge)
+        {
+            float u = Mathf.SmoothStep(0f, 1f, elapsed / charge);
+            frame.brightness = Mathf.Lerp(0.05f, chargeBrightness, u);
+            frame.height = Mathf.Lerp(0.08f, chargeHeight, u);
+            frame.angle = narrowAngle;
+            frame.speed = 0.25f;
+            frame.chargeGlow = Mathf.Lerp(0.2f, 1f, u);
+        }
+        else if (elapsed < charge + release)
+        {
+            float u = Mathf.SmoothStep(0f, 1f, (elapsed - charge) / release);
+            frame.brightness = Mathf.Lerp(chargeBrightness, entryPeak, u);
+            frame.height = Mathf.Lerp(chargeHeight, releaseHeight, u);
+            frame.angle = Mathf.Lerp(narrowAngle, releaseAngle, u);
+            frame.speed = Mathf.Lerp(0.25f, releaseSpeed, u);
+            frame.chargeGlow = 1f - u;
+            frame.flash = u;
+        }
+        else if (elapsed < charge + release + settle)
+        {
+            float u = Mathf.SmoothStep(0f, 1f, (elapsed - charge - release) / settle);
+            frame.brightness = Mathf.Lerp(entryPeak, 1f, u);
+            frame.height = Mathf.Lerp(releaseHeight, 1f, u);
+            frame.angle = Mathf.Lerp(releaseAngle, 1f, u);
+            frame.speed = Mathf.Lerp(releaseSpeed, 1f, u);
+            frame.flash = 1f - u;
+        }
+        return frame;
+    }
 
     private static readonly int GlowColorId = Shader.PropertyToID("_GlowColor");
     private static readonly int GlowIntensityId = Shader.PropertyToID("_GlowIntensity");
@@ -97,6 +202,7 @@ public sealed class PlayerAwakeningVisual : MonoBehaviour
     private static readonly int FanAngleId = Shader.PropertyToID("_FanAngle");
     private static readonly int StreamCountId = Shader.PropertyToID("_StreamCount");
     private static readonly int AuraAspectId = Shader.PropertyToID("_AuraAspect");
+    private static readonly int ChargeGlowId = Shader.PropertyToID("_ChargeGlow");
 
     private void Awake()
     {
@@ -168,13 +274,14 @@ public sealed class PlayerAwakeningVisual : MonoBehaviour
         if (health.IsDead) { ResetVisuals(); return; }
 
         // IsAwakening covers the intro before OnAwakeningStarted is raised.
-        bool active = awakening.isActiveAndEnabled && (awakening.IsAwakening || awakening.IsAwakened);
+        bool active = IsVisualActive;
         bool awakened = awakening.isActiveAndEnabled && awakening.IsAwakened;
 #if UNITY_EDITOR
-        active |= previewInPlayMode;
+        if (previewInPlayMode && !wasPreview) previewStartedAt = Time.time;
+        wasPreview = previewInPlayMode;
         awakened |= previewInPlayMode;
 #endif
-        if (awakened && !wasAwakened) peakRemaining = entrySettle;
+        if (!enableIntroSequence && awakened && !wasAwakened) peakRemaining = entrySettle;
         wasAwakened = awakened;
         float dt = Time.deltaTime;
         weight = Mathf.MoveTowards(weight, active ? 1f : 0f,
@@ -183,11 +290,17 @@ public sealed class PlayerAwakeningVisual : MonoBehaviour
         peakRemaining = Mathf.Max(0f, peakRemaining - dt);
         float peak = Mathf.Lerp(1f, entryPeak, peakRemaining / Mathf.Max(0.01f, entrySettle));
         float pulse = 1f + Mathf.Sin(clock * pulseFrequency * Mathf.PI * 2f) * pulseAmount;
-        float strength = weight * peak * pulse;
+        if (active) introFrame = enableIntroSequence ? EvaluateIntro(GetIntroElapsed()) : SustainedFrame;
+        else if (weight <= 0f) introFrame = SustainedFrame;
+        bool inIntro = active && enableIntroSequence && GetIntroElapsed()
+            < (Mathf.Max(0.01f, chargeDuration) + Mathf.Max(0.01f, releaseDuration) + Mathf.Max(0.01f, entrySettle)) * IntroTimeScale;
+        float strength = weight * (enableIntroSequence ? introFrame.brightness : peak) * (inIntro ? 1f : pulse);
+        // Integrate speed so settling from the burst does not run the noise backward.
+        auraClock = active || weight > 0f ? auraClock + dt * auraRiseSpeed * introFrame.speed : 0f;
 
         ResolveRelicColors();
         UpdateOverlay(strength);
-        UpdateAura(strength);
+        UpdateAura(strength * Mathf.Lerp(1f, chargeAuraBoost, introFrame.chargeGlow));
         nearbyLight.transform.position = source.bounds.center + (Vector3)lightOffset;
         nearbyLight.color = resolvedLightColor;
         nearbyLight.intensity = lightIntensity * strength;
@@ -250,20 +363,21 @@ public sealed class PlayerAwakeningVisual : MonoBehaviour
         aura.sortingLayerID = source.sortingLayerID;
         aura.sortingOrder = source.sortingOrder - 1;
         // The quad's bottom-center is the fan origin, independent of pose and flipX.
-        float width = Mathf.Max(0.1f, auraSize.x);
-        float height = Mathf.Max(0.1f, auraSize.y);
+        float width = Mathf.Max(0.1f, auraSize.x) * Mathf.Max(1f, introFrame.height * introFrame.angle);
+        float height = Mathf.Max(0.1f, auraSize.y * introFrame.height);
         aura.transform.localPosition = new Vector3(auraOffset.x, auraOffset.y + height * 0.5f, 0f);
         aura.transform.localScale = new Vector3(width, height, 1f);
         auraProperties.SetColor(AuraColorId, resolvedAuraColor);
         auraProperties.SetFloat(AuraIntensityId, auraIntensity * strength);
         auraProperties.SetFloat(AuraOpacityId, auraOpacity * source.color.a);
-        auraProperties.SetFloat(AuraTimeId, clock);
-        auraProperties.SetFloat(RiseSpeedId, auraRiseSpeed);
+        auraProperties.SetFloat(AuraTimeId, auraClock);
+        auraProperties.SetFloat(RiseSpeedId, 1f);
         auraProperties.SetFloat(NoiseScaleId, auraNoiseScale);
         auraProperties.SetFloat(TurbulenceId, auraTurbulence);
-        auraProperties.SetFloat(FanAngleId, Mathf.Clamp(auraFanAngle, 20f, 140f));
+        auraProperties.SetFloat(FanAngleId, Mathf.Clamp(auraFanAngle * introFrame.angle, 20f, 140f));
         auraProperties.SetFloat(StreamCountId, Mathf.Clamp(auraStreamCount, 3f, 16f));
         auraProperties.SetFloat(AuraAspectId, width / height);
+        auraProperties.SetFloat(ChargeGlowId, introFrame.chargeGlow);
         aura.SetPropertyBlock(auraProperties);
     }
 
@@ -332,8 +446,12 @@ public sealed class PlayerAwakeningVisual : MonoBehaviour
 
     private void ResetVisuals()
     {
-        weight = peakRemaining = clock = 0f;
+        weight = peakRemaining = clock = auraClock = 0f;
         wasAwakened = false;
+        introFrame = SustainedFrame;
+#if UNITY_EDITOR
+        wasPreview = false;
+#endif
         if (overlay != null) overlay.enabled = false;
         if (aura != null) aura.enabled = false;
         if (nearbyLight != null) nearbyLight.enabled = false;
