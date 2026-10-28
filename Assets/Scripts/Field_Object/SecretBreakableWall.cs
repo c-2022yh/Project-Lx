@@ -13,6 +13,10 @@ public class SecretBreakableWall : MonoBehaviour
     [SerializeField] private int requiredHitsToBreak = 1;
     [SerializeField] private GameObject breakEffectPrefab;
 
+    [Header("Debris")]
+    [SerializeField] private bool spawnDebris = true;
+    [SerializeField] private Color debrisColor = new Color(0.55f, 0.52f, 0.48f);
+
     // 타일 좌표별 맞은 횟수 저장
     private Dictionary<Vector3Int, int> hitCountByCellPosition = new Dictionary<Vector3Int, int>();
 
@@ -89,6 +93,8 @@ public class SecretBreakableWall : MonoBehaviour
         tilemapSecretWall.RefreshTile(cellPosition);
         FieldObjectState.MarkTileBroken(gameObject.scene.name, cellPosition);
 
+        if (spawnDebris) SpawnTileDebris(cellPosition, breakPosition);
+
         hitCountByCellPosition.Remove(cellPosition);
 
         if (breakEffectPrefab != null)
@@ -97,6 +103,29 @@ public class SecretBreakableWall : MonoBehaviour
         }
 
         Debug.Log("Secret wall tile broken: " + cellPosition);
+    }
+
+    // 타일 한 칸 크기만큼 파편을 뿌린다. 정렬 순서는 타일맵을 따른다.
+    private void SpawnTileDebris(Vector3Int cellPosition, Vector3 center)
+    {
+        Vector3 cellSize = tilemapSecretWall.layoutGrid != null ? tilemapSecretWall.layoutGrid.cellSize : Vector3.one;
+        Vector3 scale = tilemapSecretWall.transform.lossyScale;
+        Bounds area = new Bounds(center, new Vector3(cellSize.x * scale.x, cellSize.y * scale.y, 0.1f));
+
+        Color tint = debrisColor * tilemapSecretWall.GetColor(cellPosition) * tilemapSecretWall.color;
+        tint.a = 1f;
+
+        DebrisBurst.Options options = DebrisBurst.Options.Default(tint);
+        options.strength = 0.8f;
+
+        TilemapRenderer tilemapRenderer = tilemapSecretWall.GetComponent<TilemapRenderer>();
+        if (tilemapRenderer != null)
+        {
+            options.sortingLayerId = tilemapRenderer.sortingLayerID;
+            options.sortingOrder = tilemapRenderer.sortingOrder;
+        }
+
+        DebrisBurst.Spawn(area, options);
     }
 
     private bool TryFindNearbySecretWallTile(Vector3Int centerCell, out Vector3Int foundCell)

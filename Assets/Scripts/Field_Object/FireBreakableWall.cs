@@ -7,6 +7,10 @@ public class FireBreakableWall : MonoBehaviour
     [SerializeField, Min(1)] private int requiredHitsToBreak = 1;
     [SerializeField] private GameObject breakEffectPrefab;
 
+    [Header("Debris")]
+    [SerializeField] private bool spawnDebris = true;
+    [SerializeField] private Color debrisColor = new Color(0.36f, 0.3f, 0.27f);
+
     private int currentHitCount;
     private bool isBroken;
 
@@ -39,6 +43,9 @@ public class FireBreakableWall : MonoBehaviour
         //같은 프레임에 여러 화염구가 닿아도 한 번만 파괴
         isBroken = true;
         FieldObjectState.MarkDone(this);
+
+        //불탄 파편·먼지 (일반 벽보다 조금 세게)
+        if (spawnDebris) DebrisBurst.SpawnFrom(gameObject, debrisColor, 1.2f);
 
         if (breakEffectPrefab != null)
         {

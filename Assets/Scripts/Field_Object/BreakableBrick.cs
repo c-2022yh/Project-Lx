@@ -7,6 +7,10 @@ public class BreakableBrick : MonoBehaviour
     [SerializeField] private int requiredHitsToBreak = 1;
     [SerializeField] private GameObject breakEffectPrefab;
 
+    [Header("Debris")]
+    [SerializeField] private bool spawnDebris = true;
+    [SerializeField] private Color debrisColor = new Color(0.62f, 0.56f, 0.5f);
+
     private int currentHitCount;
 
     private void Awake()
@@ -30,6 +34,9 @@ public class BreakableBrick : MonoBehaviour
     private void BreakBrick()
     {
         FieldObjectState.MarkDone(this);
+
+        //파편·먼지
+        if (spawnDebris) DebrisBurst.SpawnFrom(gameObject, debrisColor);
 
         if (breakEffectPrefab != null)
         {
