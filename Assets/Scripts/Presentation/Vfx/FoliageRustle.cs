@@ -3,7 +3,6 @@
 /// <summary>
 /// 덤불·나무에 붙이면 플레이어가 지나갈 때 잎이 몇 장 떨어진다.
 /// 트리거 콜라이더(Collider2D, Is Trigger)가 같이 있어야 한다.
-/// 흔들리는 모양 자체는 FoliageSway 머티리얼이 맡는다.
 /// </summary>
 [RequireComponent(typeof(Collider2D))]
 public class FoliageRustle : MonoBehaviour
