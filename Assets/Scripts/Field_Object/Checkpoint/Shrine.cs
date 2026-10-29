@@ -58,6 +58,7 @@ public class Shrine : MonoBehaviour, IInteractable
         if (activeShrine == this)
         {
             playerHealth?.FullHeal();
+            GameSession.SaveAtShrine(RespawnPosition);
             return;
         }
 
@@ -77,6 +78,7 @@ public class Shrine : MonoBehaviour, IInteractable
         playerHealth?.FullHeal();
 
         SetActiveVisual();
+        GameSession.SaveAtShrine(RespawnPosition);
 
         Debug.Log("Shrine Activated : " + gameObject.name);
     }

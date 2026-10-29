@@ -1,5 +1,9 @@
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
+using UnityEngine.EventSystems;
+using UnityEngine.InputSystem;
+using UnityEngine.UI;
 
 /// <summary>
 /// 저장 슬롯 선택 화면.
@@ -14,6 +18,16 @@ public class SaveSlotPanel : MonoBehaviour
 
     private readonly List<SaveSlotEntry> spawnedEntries = new();
     private TitleMenuPanel returnTo;
+
+    // 삭제 확인 창 (코드로 만든다)
+    private GameObject confirmRoot;
+    private TextMeshProUGUI confirmText;
+    private Button confirmDeleteButton;
+    private Button confirmCancelButton;
+    private int pendingDeleteSlot = -1;
+
+    /// <summary>삭제 확인 창이 떠 있는지. 떠 있는 동안 Esc는 창을 닫는 데만 쓴다.</summary>
+    public bool IsConfirmOpen => confirmRoot != null && confirmRoot.activeSelf;
 
     public void SetVisible(bool visible)
     {
@@ -57,7 +71,7 @@ public class SaveSlotPanel : MonoBehaviour
                 continue;
             }
 
-            entry.Bind(provider.GetSlot(i), OnSlotClicked);
+            entry.Bind(provider.GetSlot(i), OnSlotClicked, OnDeleteClicked);
             spawnedEntries.Add(entry);
         }
     }
@@ -94,7 +108,148 @@ public class SaveSlotPanel : MonoBehaviour
     /// <summary>"뒤로가기"</summary>
     public void OnBackButton()
     {
+        if (IsConfirmOpen) CloseConfirm();
         SetVisible(false);
         returnTo?.SetVisible(true);
+    }
+
+    // ───────────── 슬롯 삭제 ─────────────
+
+    private void OnDeleteClicked(int slotIndex)
+    {
+        SaveSlotInfo info = SaveSlotService.Provider.GetSlot(slotIndex);
+        if (info == null || info.isEmpty) return;
+
+        if (confirmRoot == null) BuildConfirm();
+
+        pendingDeleteSlot = slotIndex;
+        string where = string.IsNullOrEmpty(info.locationName) ? "" : $" · {info.locationName}";
+        confirmText.text = $"슬롯 {slotIndex + 1}의 기록을 지울까요?\n" +
+                           $"<size=70%><color=#9AA6AD>플레이 시간 {info.PlayTimeText}{where}\n지우면 되돌릴 수 없습니다.</color></size>";
+
+        confirmRoot.SetActive(true);
+        confirmRoot.transform.SetAsLastSibling();
+
+        // 실수로 지우지 않게 처음엔 [취소]를 고른 상태로 연다.
+        if (EventSystem.current != null) EventSystem.current.SetSelectedGameObject(confirmCancelButton.gameObject);
+    }
+
+    private void ConfirmDelete()
+    {
+        int slot = pendingDeleteSlot;
+        CloseConfirm();
+        if (slot < 0) return;
+
+        SaveSlotService.Provider.DeleteSlot(slot);
+        Refresh();
+    }
+
+    private void CloseConfirm()
+    {
+        pendingDeleteSlot = -1;
+        if (confirmRoot != null) confirmRoot.SetActive(false);
+        if (EventSystem.current != null) EventSystem.current.SetSelectedGameObject(null);
+    }
+
+    private void Update()
+    {
+        if (!IsConfirmOpen) return;
+        Keyboard kb = Keyboard.current;
+        if (kb != null && (kb.escapeKey.wasPressedThisFrame || kb.xKey.wasPressedThisFrame)) CloseConfirm();
+    }
+
+    private void OnDisable()
+    {
+        if (IsConfirmOpen) CloseConfirm();
+    }
+
+    private void BuildConfirm()
+    {
+        TMP_FontAsset font = GetComponentInChildren<TextMeshProUGUI>(true)?.font;
+
+        confirmRoot = new GameObject("DeleteConfirm", typeof(RectTransform), typeof(Image));
+        RectTransform root = confirmRoot.GetComponent<RectTransform>();
+        root.SetParent(transform, false);
+        root.anchorMin = Vector2.zero;
+        root.anchorMax = Vector2.one;
+        root.offsetMin = root.offsetMax = Vector2.zero;
+        confirmRoot.GetComponent<Image>().color = new Color(0f, 0f, 0f, 0.6f);   // 뒤를 막고 어둡게
+
+        RectTransform box = NewRect("Box", root);
+        box.anchorMin = box.anchorMax = new Vector2(0.5f, 0.5f);
+        box.sizeDelta = new Vector2(620f, 300f);
+        Image boxBg = box.gameObject.AddComponent<Image>();
+        boxBg.color = new Color(0.06f, 0.08f, 0.10f, 0.98f);
+        Outline outline = box.gameObject.AddComponent<Outline>();
+        outline.effectColor = new Color(0.72f, 0.42f, 0.40f, 0.8f);
+        outline.effectDistance = new Vector2(2f, -2f);
+
+        RectTransform textRt = NewRect("Message", box);
+        textRt.anchorMin = new Vector2(0f, 0.38f);
+        textRt.anchorMax = new Vector2(1f, 1f);
+        textRt.offsetMin = new Vector2(30f, 0f);
+        textRt.offsetMax = new Vector2(-30f, -20f);
+        confirmText = textRt.gameObject.AddComponent<TextMeshProUGUI>();
+        if (font != null) confirmText.font = font;
+        confirmText.fontSize = 28f;
+        confirmText.alignment = TextAlignmentOptions.Center;
+        confirmText.color = new Color(0.92f, 0.94f, 0.95f, 1f);
+        confirmText.raycastTarget = false;
+
+        confirmDeleteButton = NewButton("Button_ConfirmDelete", box, "지우기", font, new Vector2(-120f, 56f),
+                                        new Color(0.45f, 0.16f, 0.15f, 1f));
+        confirmCancelButton = NewButton("Button_Cancel", box, "취소", font, new Vector2(120f, 56f),
+                                        new Color(0.14f, 0.19f, 0.22f, 1f));
+        confirmDeleteButton.onClick.AddListener(ConfirmDelete);
+        confirmCancelButton.onClick.AddListener(CloseConfirm);
+
+        // ←/→로 두 버튼 사이만 오가게
+        Navigation nav = new Navigation { mode = Navigation.Mode.Explicit, selectOnRight = confirmCancelButton, selectOnLeft = confirmCancelButton };
+        confirmDeleteButton.navigation = nav;
+        nav.selectOnRight = confirmDeleteButton;
+        nav.selectOnLeft = confirmDeleteButton;
+        confirmCancelButton.navigation = nav;
+
+        confirmRoot.SetActive(false);
+    }
+
+    private static RectTransform NewRect(string name, Transform parent)
+    {
+        GameObject go = new GameObject(name, typeof(RectTransform));
+        RectTransform rt = go.GetComponent<RectTransform>();
+        rt.SetParent(parent, false);
+        return rt;
+    }
+
+    private static Button NewButton(string name, Transform parent, string label, TMP_FontAsset font, Vector2 position, Color color)
+    {
+        RectTransform rt = NewRect(name, parent);
+        rt.anchorMin = rt.anchorMax = new Vector2(0.5f, 0f);
+        rt.anchoredPosition = position;
+        rt.sizeDelta = new Vector2(200f, 56f);
+
+        Image bg = rt.gameObject.AddComponent<Image>();
+        bg.color = color;
+        Button b = rt.gameObject.AddComponent<Button>();
+        b.targetGraphic = bg;
+        ColorBlock colors = ColorBlock.defaultColorBlock;
+        colors.highlightedColor = new Color(1.35f, 1.35f, 1.35f, 1f);
+        colors.selectedColor = new Color(1.35f, 1.35f, 1.35f, 1f);
+        colors.colorMultiplier = 1.4f;
+        colors.fadeDuration = 0.08f;
+        b.colors = colors;
+
+        RectTransform textRt = NewRect("Label", rt);
+        textRt.anchorMin = Vector2.zero;
+        textRt.anchorMax = Vector2.one;
+        textRt.offsetMin = textRt.offsetMax = Vector2.zero;
+        TextMeshProUGUI t = textRt.gameObject.AddComponent<TextMeshProUGUI>();
+        if (font != null) t.font = font;
+        t.text = label;
+        t.fontSize = 24f;
+        t.alignment = TextAlignmentOptions.Center;
+        t.color = new Color(0.94f, 0.95f, 0.96f, 1f);
+        t.raycastTarget = false;
+        return b;
     }
 }
