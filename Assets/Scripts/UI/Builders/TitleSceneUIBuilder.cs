@@ -23,7 +23,8 @@ public static class TitleSceneUIBuilder
 
     // 10.16 시안 두 가지. 디자이너 PDF 6쪽 = A, 7쪽 = B.
     // 바꾸고 싶으면 아래 두 줄만 "A"로 고치고 Build Title Scene을 다시 누르면 된다.
-    private const string TitleBackground = "Title_BG_B";
+    // 10.29: 배경의 짙은 남색 얼룩을 눌러 채도를 낮춘 판 (원본은 Title_BG_B 그대로 둠)
+    private const string TitleBackground = "Title_BG_B_Calm";
     private const string TitleLogo = "Title_Logo_C"; // 10.19 최종 로고 (여우 + 꼬리)
 
     private static readonly Color MenuIdle = new Color(0.62f, 0.64f, 0.70f, 1f);
@@ -191,7 +192,8 @@ public static class TitleSceneUIBuilder
         {
             // 10.23: 가장 밝을 때 조금 세다고 해서 기본 진하기 0.6 → 0.55, 오르내림 ±30% → ±20% (가장 밝을 때 0.78 → 0.66).
             // 10.27: 하늘색 → 바닥 안개와 같은 차분한 푸른 보라 톤
-            GameObject glow = K.Img("GameTitleGlow", panel, new Color(0.62f, 0.70f, 0.92f, 0.55f));
+            // 10.29: 빛이 너무 세다고 해서 0.55 → 0.4
+            GameObject glow = K.Img("GameTitleGlow", panel, new Color(0.62f, 0.70f, 0.92f, 0.4f));
             glowImage = glow.GetComponent<UnityEngine.UI.Image>();
             glowImage.sprite = glowSprite;
 
@@ -291,8 +293,6 @@ public static class TitleSceneUIBuilder
             // 좌우로 흔들려도 가장자리가 안 보이게 양옆을 60px씩 넓힌다
             K.Stretch(g, -60, 0, -60, 0);
             glows[i] = g.GetComponent<UnityEngine.UI.Image>();
-            // 10.29: 바닥의 푸른 얼룩(안개)은 끈다. 반딧불만 남긴다. 다시 켜려면 이 줄을 지우면 된다.
-            g.SetActive(false);
         }
 
         TitleAmbience comp = amb.AddComponent<TitleAmbience>();
