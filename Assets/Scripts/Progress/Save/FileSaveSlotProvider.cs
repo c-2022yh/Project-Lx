@@ -32,4 +32,6 @@ public class FileSaveSlotProvider : ISaveSlotProvider
     public void StartNewGame(int slotIndex) => GameSession.StartNew(slotIndex);
 
     public void LoadSlot(int slotIndex) => GameSession.Continue(slotIndex);
+
+    public void DeleteSlot(int slotIndex) => SaveSystem.Delete(slotIndex);
 }
