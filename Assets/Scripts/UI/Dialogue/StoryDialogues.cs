@@ -5,6 +5,8 @@ using UnityEngine;
 /// 스토리 대화를 어디서 띄울지 모아 둔 목록. Resources/StoryDialogues 에셋 하나만 쓴다.
 ///   - 게임 시작: 새 게임을 시작하고 첫 맵이 뜨면
 ///   - 유물: 그 유물을 처음 얻으면 (획득 알림창을 닫은 다음)
+///   - 보주 첫 장착: 보주를 처음으로 장착하면 (유물창을 닫은 다음). 한 번 보면 저장돼서 다시 안 뜬다.
+/// 대사와 이름에 {유물}이라고 쓰면 그 유물 이름으로 바뀐다. 초상화를 비우면 그 유물 아이콘이 들어간다.
 /// 보스를 잡았을 때 대사는 보스방(BossRoom)의 Clear Dialogue 칸에 넣는다.
 /// 칸이 비어 있으면 아무것도 안 뜬다.
 /// </summary>
@@ -24,7 +26,12 @@ public class StoryDialogues : ScriptableObject
     [Tooltip("이 유물을 처음 얻으면 (획득 알림창 다음). 보주를 얻었을 때 대사도 여기 넣는다.")]
     [SerializeField] private RelicEntry[] relics = new RelicEntry[0];
 
+    [Tooltip("보주를 처음 장착하면 (유물창을 닫은 다음). 대사에 {유물}을 쓰면 장착한 보주 이름이 된다.")]
+    [SerializeField] private DialogueData firstOrbEquip;
+
     private const float GameStartDelay = 0.8f;   // 화면이 밝아진 뒤에 뜨게
+    private const string FirstOrbFlag = "story.firstOrbEquip";
+    private const string RelicToken = "{유물}";
 
     private static StoryDialogues cached;
     private static bool looked;
@@ -55,6 +62,37 @@ public class StoryDialogues : ScriptableObject
     {
         StoryDialogues s = Instance;
         if (s != null && s.gameStart != null) DialogueBox.Play(s.gameStart, null, GameStartDelay);
+    }
+
+    /// <summary>보주를 장착했을 때 부른다. 처음 한 번만 뜬다.</summary>
+    public static void PlayFirstOrbEquip(RelicData orb)
+    {
+        StoryDialogues s = Instance;
+        if (s == null || s.firstOrbEquip == null || orb == null) return;
+        if (RunState.Current.HasFlag(FirstOrbFlag)) return;
+
+        RunState.Current.SetFlag(FirstOrbFlag);
+        DialogueBox.Play(WithRelic(s.firstOrbEquip, orb));
+    }
+
+    /// <summary>{유물}을 유물 이름으로 바꾸고, 빈 초상화에 유물 아이콘을 넣은 복사본.</summary>
+    private static DialogueData WithRelic(DialogueData source, RelicData relic)
+    {
+        DialogueData copy = Instantiate(source);
+        copy.lines = new DialogueData.Line[source.lines.Length];
+
+        for (int i = 0; i < source.lines.Length; i++)
+        {
+            DialogueData.Line from = source.lines[i] ?? new DialogueData.Line();
+            copy.lines[i] = new DialogueData.Line
+            {
+                speaker = (from.speaker ?? "").Replace(RelicToken, relic.RelicName),
+                text = (from.text ?? "").Replace(RelicToken, relic.RelicName),
+                portrait = from.portrait != null ? from.portrait : relic.Icon
+            };
+        }
+
+        return copy;
     }
 
     public static void PlayForRelic(RelicData relic)

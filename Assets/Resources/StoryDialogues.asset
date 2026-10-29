@@ -14,3 +14,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   gameStart: {fileID: 0}
   relics: []
+  firstOrbEquip: {fileID: 11400000, guid: bb97aff3f46049548f25ff9f9acc7cec, type: 2}

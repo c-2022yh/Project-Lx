@@ -21,7 +21,7 @@ using UnityEditor;
 ///   Esc                      : 대화 건너뛰기
 ///   뜬 직후 0.25초는 입력을 받지 않는다. 공격하던 Z가 그대로 넘어오지 않게.
 ///
-/// 떠 있는 동안 게임을 멈춘다. 획득 알림창·유물 선택창이 떠 있으면 닫힐 때까지 기다렸다가 뜬다.
+/// 떠 있는 동안 게임을 멈춘다. 획득 알림창·유물 선택창·유물창이 떠 있으면 닫힐 때까지 기다렸다가 뜬다.
 /// 씬에도 프리팹에도 붙이지 않는다. 게임이 시작되면 스스로 생기고 화면도 코드로 만든다.
 /// </summary>
 public class DialogueBox : MonoBehaviour
@@ -183,8 +183,9 @@ public class DialogueBox : MonoBehaviour
     {
         if (queue.Count == 0) return;
 
-        // 획득 알림창·유물 선택창이 먼저다.
+        // 획득 알림창·유물 선택창·유물창이 먼저다. 유물창 키 조작과 겹치지 않게 닫힌 뒤에 뜬다.
         if (AcquirePopup.IsOpen || RelicSelectionPanelUI.IsOpen) return;
+        if (UIManager.Instance != null && UIManager.Instance.IsRelicWindowOpen) return;
         if (queue.Peek().StartAt > Time.unscaledTime) return;
 
         Open(queue.Dequeue());
