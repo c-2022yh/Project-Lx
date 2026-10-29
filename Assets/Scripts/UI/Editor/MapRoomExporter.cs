@@ -107,7 +107,7 @@ public static class MapRoomExporter
         // 1. 막힌 칸
         HashSet<Vector2Int> solid = new HashSet<Vector2Int>();
         List<Tilemap> all = new List<Tilemap>();
-        foreach (Tilemap t in Object.FindObjectsByType<Tilemap>(FindObjectsSortMode.None))
+        foreach (Tilemap t in Object.FindObjectsByType<Tilemap>())
             if (t.gameObject.scene == scene && t.gameObject.activeInHierarchy) all.Add(t);
 
         foreach (Tilemap t in all)
@@ -133,7 +133,7 @@ public static class MapRoomExporter
 
         // 2. 시작점: 스폰·포털·제단·플레이어
         List<Vector2> seeds = new List<Vector2>();
-        foreach (MonoBehaviour mb in Object.FindObjectsByType<MonoBehaviour>(FindObjectsSortMode.None))
+        foreach (MonoBehaviour mb in Object.FindObjectsByType<MonoBehaviour>())
         {
             if (mb == null || mb.gameObject.scene != scene) continue;
             string type = mb.GetType().Name;
@@ -191,6 +191,10 @@ public static class MapRoomExporter
             for (int x = Pad; x < w - Pad; x++)
             for (int y = Pad; y < h - Pad; y++)
                 inside[x, y] = !blocked[x, y];
+
+        // 방 안에 떠 있는 발판·블록(바깥 벽과 안 붙은 것)은 구멍으로 남기지 않고 메운다.
+        // 그래야 발판 테두리 없이 방 전체 테두리만 남는다.
+        FillHoles(inside, w, h);
 
         room.WorldMin = origin;
         room.WorldSize = new Vector2(w, h);
@@ -259,6 +263,40 @@ public static class MapRoomExporter
         }
 
         return inside;
+    }
+
+    /// <summary>바깥 가장자리에서 닿지 않는 칸(= 방 안에 갇힌 블록)을 방 안으로 바꾼다.</summary>
+    private static void FillHoles(bool[,] inside, int w, int h)
+    {
+        bool[,] outside = new bool[w, h];
+        Queue<Vector2Int> q = new Queue<Vector2Int>();
+
+        for (int x = 0; x < w; x++)
+        for (int y = 0; y < h; y++)
+        {
+            bool edge = x == 0 || y == 0 || x == w - 1 || y == h - 1;
+            if (!edge || inside[x, y]) continue;
+            outside[x, y] = true;
+            q.Enqueue(new Vector2Int(x, y));
+        }
+
+        Vector2Int[] dirs = { Vector2Int.up, Vector2Int.down, Vector2Int.left, Vector2Int.right };
+        while (q.Count > 0)
+        {
+            Vector2Int c = q.Dequeue();
+            foreach (Vector2Int d in dirs)
+            {
+                Vector2Int n = c + d;
+                if (n.x < 0 || n.y < 0 || n.x >= w || n.y >= h) continue;
+                if (inside[n.x, n.y] || outside[n.x, n.y]) continue;
+                outside[n.x, n.y] = true;
+                q.Enqueue(n);
+            }
+        }
+
+        for (int x = 0; x < w; x++)
+        for (int y = 0; y < h; y++)
+            inside[x, y] = !outside[x, y];
     }
 
     private static bool Any(bool[,] a)
@@ -409,6 +447,7 @@ public static class MapRoomExporter
                     Vector2 arrive = ArrivalIn(b, p.TargetSpawn, a.Name);
                     Vector2 dir = Side(a, p.Position);
                     b.AtlasMin = MapRoomAtlas.ToAtlas(Temp(a), p.Position) + dir * DoorGap - (arrive - b.WorldMin);
+                    PushApart(b, rooms, dir);
                     b.Placed = true;
                     q.Enqueue(b);
                 }
@@ -425,6 +464,7 @@ public static class MapRoomExporter
                         // b의 포털이 a의 도착 지점 바로 옆에 오게
                         Vector2 atlasArrive = MapRoomAtlas.ToAtlas(Temp(a), arrive);
                         b.AtlasMin = atlasArrive - dir * DoorGap - (p.Position - b.WorldMin);
+                        PushApart(b, rooms, -dir);
                         b.Placed = true;
                         q.Enqueue(b);
                         break;
@@ -435,6 +475,31 @@ public static class MapRoomExporter
             foreach (SceneRoom r in rooms)
                 if (r.Placed) nextFreeX = Mathf.Max(nextFreeX, r.AtlasMin.x + r.WorldSize.x + 20f);
         }
+    }
+
+    /// <summary>먼저 놓인 방과 겹치면 push 쪽으로 밀어낸다.</summary>
+    private static void PushApart(SceneRoom b, List<SceneRoom> rooms, Vector2 push)
+    {
+        if (push == Vector2.zero) return;
+
+        for (int step = 0; step < 400; step++)
+        {
+            Rect rb = AtlasSolid(b);
+            bool hit = false;
+            foreach (SceneRoom o in rooms)
+            {
+                if (o == b || !o.Placed) continue;
+                if (rb.Overlaps(AtlasSolid(o))) { hit = true; break; }
+            }
+            if (!hit) return;
+            b.AtlasMin += push * 2f;
+        }
+    }
+
+    private static Rect AtlasSolid(SceneRoom r)
+    {
+        Vector2 min = r.AtlasMin + (r.Solid.min - r.WorldMin);
+        return new Rect(min, r.Solid.size);
     }
 
     private static MapRoomAtlas.Room Temp(SceneRoom r) =>
