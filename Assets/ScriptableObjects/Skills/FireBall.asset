@@ -18,6 +18,8 @@ MonoBehaviour:
   animationType: 3
   cooldownTime: 3
   energyCost: 10
+  allowUseInAir: 1
+  stopHorizontalMovementOnStart: 1
   windupTime: 0.33
   activeTime: 1
   recoveryTime: 0.33

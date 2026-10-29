@@ -18,9 +18,12 @@ MonoBehaviour:
   animationType: 5
   cooldownTime: 1
   energyCost: 20
+  allowUseInAir: 1
+  stopHorizontalMovementOnStart: 1
   windupTime: 0
   activeTime: 0.2
   recoveryTime: 0
   lockInputDuringSkill: 1
   invincibleDuringSkill: 0
   shadowPrefab: {fileID: 5188507118734370343, guid: 1aef8a43828f4a0478dceb36e864aa1f, type: 3}
+  recastDelay: 0.3

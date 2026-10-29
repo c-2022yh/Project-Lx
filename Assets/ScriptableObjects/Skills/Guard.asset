@@ -21,3 +21,5 @@ MonoBehaviour:
   activeTime: 0.2
   lockInputDuringSkill: 1
   invincibleDuringSkill: 0
+  allowUseInAir: 1
+  stopHorizontalMovementOnStart: 1

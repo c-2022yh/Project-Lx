@@ -50,5 +50,7 @@ MonoBehaviour:
     regularProjectilePrefab: {fileID: 2512384032804664592, guid: 81afb68c1264477e8f695c8bb04779e0, type: 3}
     regularHitEffectPrefab: {fileID: 7910235883446043059, guid: 42fb663768604a48bdb4761239a4c118, type: 3}
     hitEffectLifetime: 1
+  allowUseInAir: 1
+  stopHorizontalMovementOnStart: 0
   windupTime: 0
   recoveryTime: 0.2

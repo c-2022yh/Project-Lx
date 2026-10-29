@@ -114,7 +114,7 @@ public class HUDPanel : MonoBehaviour
             if (slot == null) continue;
             SkillData skill = playerSkill.GetEquippedSkill((int)slot.SlotType);
             slot.SetCooldown(playerSkill.GetCooldownRemaining(skill),
-                skill != null ? skill.cooldownTime : 0f);
+                playerSkill.GetCooldownDuration(skill));
         }
     }
 

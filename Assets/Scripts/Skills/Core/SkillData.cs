@@ -39,17 +39,37 @@ public abstract class SkillData : ScriptableObject
     [Min(0f), Tooltip("Energy spent once when casting starts. 0 is free; a positive cost requires an owned orb and enough energy.")]
     public float energyCost = 0f;
 
+    // Multi-stage skills can price each activation without changing shared asset values.
+    public virtual float GetEnergyCost(Player p) => energyCost;
+    public virtual float GetCooldownAfterCast(Player p) => cooldownTime;
+
     public bool CanPayCost(Player p)
     {
-        return p != null && (energyCost <= 0f
-            || (p.Energy != null && p.Energy.CanSpendEnergy(energyCost)));
+        if (p == null) return false;
+        float cost = GetEnergyCost(p);
+        return cost <= 0f || (p.Energy != null && p.Energy.CanSpendEnergy(cost));
     }
 
     public bool TryPayCost(Player p)
     {
         if (p == null) return false;
-        if (energyCost <= 0f) return true;
-        return p.Energy != null && p.Energy.TrySpendEnergy(energyCost);
+        float cost = GetEnergyCost(p);
+        if (cost <= 0f) return true;
+        return p.Energy != null && p.Energy.TrySpendEnergy(cost);
+    }
+
+    [Header("Use Conditions")]
+    [Tooltip("When disabled, casting requires the player to be grounded. Checked before energy payment or cooldown.")]
+    public bool allowUseInAir = true;
+
+    [Header("Movement")]
+    [Tooltip("Stop existing horizontal velocity when a normal skill starts. Keeps vertical velocity and held movement input. Does not affect the movable awakening Q cast.")]
+    public bool stopHorizontalMovementOnStart = true;
+
+    public void ApplyStartMovement(Player p)
+    {
+        if (!stopHorizontalMovementOnStart || p == null || p.rb == null) return;
+        p.rb.linearVelocity = new Vector2(0f, p.rb.linearVelocity.y);
     }
 
     [Header("Timing")]
@@ -115,7 +135,7 @@ public abstract class SkillData : ScriptableObject
     }
 
     //현재 상태에서 스킬을 사용할 수 있는지 확인
-    public virtual bool CanUse(Player p) => CanPayCost(p);
+    public virtual bool CanUse(Player p) => p != null && (allowUseInAir || p.isGrounded) && CanPayCost(p);
     
     //스킬 실행하는 가상 함수
     public abstract IEnumerator ProcessSkill(Player p);

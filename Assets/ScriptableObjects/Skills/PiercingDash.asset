@@ -41,3 +41,5 @@ MonoBehaviour:
   criticalHitEffectPrefab: {fileID: 3791669258595038075, guid: 3f6554b28c7eeb14cb42e5f4336adcbf, type: 3}
   hitEffectOffset: {x: 0, y: 0, z: 0}
   contactIgnoreAfterDash: 0.3
+  allowUseInAir: 1
+  stopHorizontalMovementOnStart: 1

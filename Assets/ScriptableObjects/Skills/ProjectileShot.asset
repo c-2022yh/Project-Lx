@@ -35,3 +35,5 @@ MonoBehaviour:
   maxDistance: 10
   rotationSpeed: -1080
   destroyOnEnemyHit: 1
+  allowUseInAir: 1
+  stopHorizontalMovementOnStart: 1
