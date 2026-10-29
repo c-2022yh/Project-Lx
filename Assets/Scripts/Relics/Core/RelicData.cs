@@ -34,8 +34,20 @@ public class RelicData : ScriptableObject
     [Header("Orb HUD")]
     [SerializeField] private OrbHUDStyle orbHUDStyle;
 
+    [Header("Orb Awakening Colors")]
+    [Tooltip("Orb relics only. Overrides the player's glow, aura and nearby-light colors; brightness stays on PlayerAwakeningVisual.")]
+    [SerializeField] private bool overrideAwakeningColors;
+    [SerializeField, ColorUsage(false, true)] private Color awakeningGlowColor = new Color(0.2f, 0.5f, 1f);
+    [SerializeField, ColorUsage(false, true)] private Color awakeningAuraColor = new Color(0.15f, 0.45f, 1f);
+    [SerializeField] private Color awakeningLightColor = new Color(0.3f, 0.55f, 1f);
+
     [Header("Effects")]
     [SerializeField] private List<RelicEffect> effects = new();
+
+    public bool HasAwakeningColors => category == RelicCategory.Orb && overrideAwakeningColors;
+    public Color AwakeningGlowColor => awakeningGlowColor;
+    public Color AwakeningAuraColor => awakeningAuraColor;
+    public Color AwakeningLightColor => awakeningLightColor;
 
     public Sprite OrbSprite => orbSprite;
     public OrbHUDStyle OrbHUDStyle => orbHUDStyle;

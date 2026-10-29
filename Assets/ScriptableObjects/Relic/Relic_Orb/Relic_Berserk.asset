@@ -22,6 +22,10 @@ MonoBehaviour:
   cost: 1
   category: 1
   orbSprite: {fileID: 21300000, guid: aa4fd4d299cfadc4eb8bac21f1467d6c, type: 3}
+  overrideAwakeningColors: 1
+  awakeningGlowColor: {r: 0.08, g: 0.45, b: 1, a: 1}
+  awakeningAuraColor: {r: 1, g: 0.04, b: 0.12, a: 1}
+  awakeningLightColor: {r: 0.3, g: 0.45, b: 1, a: 1}
   orbHUDStyle:
     emptySprite: {fileID: 21300000, guid: a44041f626000864a84cda855e391731, type: 3}
     fillSprite: {fileID: 21300000, guid: 4f361784a46891d41a34712541e61ee5, type: 3}

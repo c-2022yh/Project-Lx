@@ -5,6 +5,8 @@ public class ScreenFXController : MonoBehaviour
     [SerializeField] private GameObject awakeningEdgeFX;
 
     private PlayerAwakening playerAwakening;
+    private PlayerAwakeningVisual awakeningVisual;
+    private PlayerHealth health;
 
     private void Start()
     {
@@ -19,12 +21,26 @@ public class ScreenFXController : MonoBehaviour
             return;
         }
 
+        awakeningVisual = playerAwakening.GetComponent<PlayerAwakeningVisual>();
+        health = playerAwakening.GetComponent<PlayerHealth>();
+
         playerAwakening.OnAwakeningStarted += ShowAwakening;
         playerAwakening.OnAwakeningEnded += HideAwakening;
 
         // 혹시 시작 시점부터 이미 각성 상태라면 동기화
         if (awakeningEdgeFX != null)
-            awakeningEdgeFX.SetActive(playerAwakening.IsAwakened);
+            RefreshEdge();
+    }
+
+    private void LateUpdate() => RefreshEdge();
+
+    private void RefreshEdge()
+    {
+        if (awakeningEdgeFX == null) return;
+        bool show = playerAwakening != null && (health == null || !health.IsDead)
+            && (awakeningVisual != null && awakeningVisual.UsesIntroSequence
+                ? awakeningVisual.ShouldShowScreenEdge : playerAwakening.IsAwakened);
+        if (awakeningEdgeFX.activeSelf != show) awakeningEdgeFX.SetActive(show);
     }
 
     private void OnDestroy()

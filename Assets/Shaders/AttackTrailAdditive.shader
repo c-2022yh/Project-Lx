@@ -3,6 +3,9 @@ Shader "ProjectLx/2D/AttackTrailAdditive"
     Properties
     {
         _MainTex ("Sprite Texture", 2D) = "white" {}
+        _GlowWidth ("Edge Width (Texture Pixels)", Range(0.5, 8)) = 3
+        _GlowIntensity ("Edge Intensity", Float) = 2.5
+        [HideInInspector] _GlowTexelSize ("Glow Texel Size", Vector) = (0.001953125,0.001953125,512,512)
         [MaterialToggle] _ZWrite("ZWrite", Float) = 0
 
         // Legacy properties. They're here so that materials using this shader can gracefully fallback to the legacy sprite shader.
@@ -51,6 +54,9 @@ Shader "ProjectLx/2D/AttackTrailAdditive"
             // NOTE: Do not ifdef the properties here as SRP batcher can not handle different layouts.
             CBUFFER_START(UnityPerMaterial)
                 half4 _Color;
+                float _GlowWidth;
+                float _GlowIntensity;
+                float4 _GlowTexelSize;
             CBUFFER_END
 
             Varyings UnlitVertex(Attributes input)
@@ -64,9 +70,30 @@ Shader "ProjectLx/2D/AttackTrailAdditive"
                 return o;
             }
 
+            // Sample the silhouette in eight directions to form a narrow outer halo.
+            half ExpandedAlpha(float2 uv, float2 offset)
+            {
+                half alpha = 0;
+                alpha = max(alpha, SAMPLE_TEXTURE2D(_MainTex, sampler_MainTex, uv + float2(offset.x, 0)).a);
+                alpha = max(alpha, SAMPLE_TEXTURE2D(_MainTex, sampler_MainTex, uv - float2(offset.x, 0)).a);
+                alpha = max(alpha, SAMPLE_TEXTURE2D(_MainTex, sampler_MainTex, uv + float2(0, offset.y)).a);
+                alpha = max(alpha, SAMPLE_TEXTURE2D(_MainTex, sampler_MainTex, uv - float2(0, offset.y)).a);
+                float2 diagonal = offset * 0.70710678;
+                alpha = max(alpha, SAMPLE_TEXTURE2D(_MainTex, sampler_MainTex, uv + diagonal).a);
+                alpha = max(alpha, SAMPLE_TEXTURE2D(_MainTex, sampler_MainTex, uv - diagonal).a);
+                alpha = max(alpha, SAMPLE_TEXTURE2D(_MainTex, sampler_MainTex, uv + float2(diagonal.x, -diagonal.y)).a);
+                alpha = max(alpha, SAMPLE_TEXTURE2D(_MainTex, sampler_MainTex, uv + float2(-diagonal.x, diagonal.y)).a);
+                return alpha;
+            }
+
             half4 UnlitFragment(Varyings input) : SV_Target
             {
-                return CommonUnlitFragment(input, input.color);
+                half center = SAMPLE_TEXTURE2D(_MainTex, sampler_MainTex, input.uv).a;
+                float2 offset = _GlowTexelSize.xy * _GlowWidth;
+                half nearAlpha = ExpandedAlpha(input.uv, offset * 0.5);
+                half farAlpha = ExpandedAlpha(input.uv, offset);
+                half halo = saturate(nearAlpha * 0.65 + farAlpha * 0.35) * (1 - center);
+                return half4(input.color.rgb * _GlowIntensity, halo * input.color.a);
             }
             ENDHLSL
         }
