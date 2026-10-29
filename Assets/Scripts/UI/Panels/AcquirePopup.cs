@@ -33,8 +33,8 @@ public class AcquirePopup : MonoBehaviour
     private static readonly Color TextDim = PearlStyle.TextBody;
 
     // 판 크기와 안쪽 여백. 여백은 창살 모서리 장식을 피할 만큼 둔다.
-    private const float PanelWidth = 880f;
-    private const float PanelHeight = 420f;
+    private const float PanelWidth = 1080f;    // 긴 유물 이름도 한 줄에 들어가게
+    private const float PanelHeight = 440f;
     private const float FrameLine = 4f;         // 바깥 자개 테두리 두께
     private const float LatticeInset = 12f;     // 창살을 자개 안쪽으로 들이는 거리
     private const float LatticeScale = 0.85f;   // 창살 장식 크기
@@ -459,6 +459,10 @@ public class AcquirePopup : MonoBehaviour
 
         messageText = NewText("Message", panelRect, font, 38f, TextMain);
         messageText.fontStyle = FontStyles.Bold;
+        // 그래도 넘치면 잘리지 않고 글자를 조금 줄인다.
+        messageText.enableAutoSizing = true;
+        messageText.fontSizeMin = 28f;
+        messageText.fontSizeMax = 38f;
         Place(messageText.rectTransform, TextLeft, -(ContentTop + 58f), PanelWidth - Inset - TextLeft, 52f);
 
         descriptionText = NewText("Description", panelRect, font, 21f, TextDim);
