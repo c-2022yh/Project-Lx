@@ -27,7 +27,8 @@ public static class MapRoomExporter
     private const int Pad = 3;                // 방 둘레 여백 (칸)
     private const float DoorGap = 3f;         // 방과 방 사이 (월드 단위)
 
-    private static readonly Color Fill = new Color(0.17f, 0.17f, 0.17f, 1f);
+    // 방 속은 시안의 푸른 먹색. 지도 창이 지금 방/가 본 방 색을 곱해서 입힌다.
+    private static readonly Color Fill = new Color(0.13f, 0.18f, 0.21f, 1f);
 
     private class Portal
     {
@@ -368,7 +369,7 @@ public static class MapRoomExporter
         }
 
         Color[] pixels = new Color[pw * ph];
-        const int line = 2, glow = 5;
+        const int line = 5, glow = 8;   // 지도에서 줄여 그려도 테두리가 또렷하게
         for (int py = 0; py < ph; py++)
         for (int px = 0; px < pw; px++)
         {
@@ -378,7 +379,7 @@ public static class MapRoomExporter
             if (inn)
                 pixels[py * pw + px] = nearest <= line ? Color.white : Fill;
             else if (nearest <= glow)
-                pixels[py * pw + px] = new Color(1f, 1f, 1f, 0.13f * (1f - (nearest - 1f) / glow));
+                pixels[py * pw + px] = new Color(1f, 1f, 1f, 0.16f * (1f - (nearest - 1f) / glow));
             else
                 pixels[py * pw + px] = Color.clear;
         }
