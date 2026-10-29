@@ -27,18 +27,25 @@ public class AcquirePopup : MonoBehaviour
     private const float InputGuardSeconds = 0.3f;
     private const float FadeSeconds = 0.15f;
 
-    private static readonly Color Accent = new Color(0.56f, 0.82f, 0.90f, 1f);
+    // 10.28 자개 시안. 색과 그림은 PearlStyle에 모았다.
+    private static readonly Color Accent = PearlStyle.Neutral;
+    private static readonly Color TextMain = PearlStyle.TextTitle;
+    private static readonly Color TextDim = PearlStyle.TextBody;
 
     // 판 크기와 안쪽 여백. 여백은 창살 모서리 장식을 피할 만큼 둔다.
     private const float PanelWidth = 880f;
     private const float PanelHeight = 420f;
-    private const float Inset = 96f;
-    private const float TextLeft = Inset + 128f + 28f;
-    private static readonly Color PanelColor = new Color(0.05f, 0.09f, 0.11f, 0.97f);
-    private static readonly Color ButtonIdle = new Color(0.12f, 0.19f, 0.22f, 1f);
-    private static readonly Color TextMain = new Color(0.90f, 0.93f, 0.95f, 1f);
-    private static readonly Color TextDim = new Color(0.62f, 0.70f, 0.74f, 1f);
-    private static readonly Color TextOnAccent = new Color(0.04f, 0.07f, 0.08f, 1f);
+    private const float FrameLine = 4f;         // 바깥 자개 테두리 두께
+    private const float LatticeInset = 12f;     // 창살을 자개 안쪽으로 들이는 거리
+    private const float LatticeScale = 0.85f;   // 창살 장식 크기
+    private const float Inset = 106f;
+    private const float ContentTop = 80f;
+    private const float MedallionSize = 176f;
+    private const float TextLeft = Inset + MedallionSize + 40f;
+    private const float ButtonWidth = 188f;
+    private const float ButtonHeight = 58f;
+    private const float ButtonGap = 18f;
+    private const float ButtonBottom = 55f;
 
     private static AcquirePopup instance;
 
@@ -83,10 +90,11 @@ public class AcquirePopup : MonoBehaviour
             Icon = relic.Icon,
             Name = relic.RelicName,
             Description = relic.Description,
-            // 계열마다 유물창 칸 테두리와 같은 색으로 칠한다.
+            // 계열 색은 시안의 덜 쨍한 색 (PearlStyle).
             Label = RelicLabels.NameOf(relic.Category),
-            Color = RelicLabels.ColorOf(relic.Category),
-            IsRelic = true
+            Color = PearlStyle.CategoryColor(relic.Category),
+            IsRelic = true,
+            Relic = relic
         });
     }
 
@@ -100,6 +108,7 @@ public class AcquirePopup : MonoBehaviour
         public string Label;
         public Color Color;
         public bool IsRelic;
+        public RelicData Relic;
     }
 
     private readonly Queue<Entry> queue = new Queue<Entry>();
@@ -121,11 +130,17 @@ public class AcquirePopup : MonoBehaviour
     private RectTransform iconFrame;
     private Image iconImage;
     private Image confirmBg;
+    private Image confirmLine;
     private TMP_Text confirmText;
     private Image viewBg;
+    private Image viewLine;
     private TMP_Text viewText;
     private GameObject frameObject;
+    private Image frameImage;
     private Image iconFrameImage;
+    private Image medallionGlow;
+    private Image chipLine;
+    private TMP_Text diamondText;
     private Color accent = Accent;
 
     // 유물 지켜보기
@@ -200,7 +215,7 @@ public class AcquirePopup : MonoBehaviour
         if (!holdingTime)
         {
             // 처음 뜰 때만 시간을 저장한다. 줄 선 알림이 이어서 뜰 땐 이미 0이다.
-            savedTimeScale = Time.timeScale > 0f ? Time.timeScale : 1f;
+            savedTimeScale = HitStop.IsActive ? HitStop.RestoreScale : (Time.timeScale > 0f ? Time.timeScale : 1f);
             holdingTime = true;
         }
 
@@ -210,14 +225,23 @@ public class AcquirePopup : MonoBehaviour
 
         string itemName = string.IsNullOrEmpty(entry.Name) ? "???" : entry.Name;
         accent = entry.Color.a > 0f ? entry.Color : Accent;
-        string accentHex = ColorUtility.ToHtmlStringRGB(accent);
+
+        // 유물이면 바깥 자개와 안쪽 창살에 계열 색을 섞는다. 다른 것은 흰 자개.
+        RelicCategory? category = entry.Relic != null ? entry.Relic.Category : (RelicCategory?)null;
+        frameImage.sprite = PearlStyle.Pearl(category, PanelWidth / PanelHeight);
+        LatticeFrame.SetColor(frameObject, PearlStyle.LatticeColor(category));
+
+        // 메달 안은 유물 주제 색 + 은은한 빛
+        PearlStyle.Theme theme = PearlStyle.ThemeOf(entry.Relic);
+        iconFrameImage.color = theme.Background;
+        medallionGlow.color = new Color(theme.Glow.r, theme.Glow.g, theme.Glow.b, 0.28f);
 
         labelText.text = entry.Label;
         labelText.color = accent;
-        LatticeFrame.SetColor(frameObject, new Color(accent.r, accent.g, accent.b, 0.9f));
-        // 아이콘 칸은 계열 색을 아주 어둡게 깐다.
-        if (iconFrameImage != null) iconFrameImage.color = Color.Lerp(ButtonIdle, accent, 0.22f);
-        messageText.text = $"<color=#{accentHex}>{itemName}</color>{ObjectParticle(itemName)} 획득했습니다";
+        chipLine.color = new Color(accent.r, accent.g, accent.b, 0.6f);
+        diamondText.color = accent;
+
+        messageText.text = $"{itemName}{ObjectParticle(itemName)} 획득했습니다";
         descriptionText.text = entry.Description ?? "";
         hintText.text = entry.IsRelic ? "제단에서 장착할 수 있어요" : "";
 
@@ -226,9 +250,16 @@ public class AcquirePopup : MonoBehaviour
         if (hasIcon) iconImage.sprite = entry.Icon;
 
         float textLeft = hasIcon ? TextLeft : Inset;
-        SetLeft(labelText.rectTransform, Inset);
         SetLeft(messageText.rectTransform, textLeft);
         SetLeft(descriptionText.rectTransform, textLeft);
+
+        // 칩은 글자 길이에 맞추고 ◆는 그 옆에
+        float chipWidth = labelText.GetPreferredValues(entry.Label).x + 26f;
+        RectTransform chipRect = chipLine.rectTransform;
+        chipRect.anchoredPosition = new Vector2(textLeft, chipRect.anchoredPosition.y);
+        chipRect.sizeDelta = new Vector2(chipWidth, chipRect.sizeDelta.y);
+        RectTransform diamondRect = diamondText.rectTransform;
+        diamondRect.anchoredPosition = new Vector2(textLeft + chipWidth + 12f, diamondRect.anchoredPosition.y);
 
         viewBg.gameObject.SetActive(entry.IsRelic);
         Select(0);
@@ -274,16 +305,19 @@ public class AcquirePopup : MonoBehaviour
     {
         selected = current != null && current.IsRelic ? Mathf.Clamp(index, 0, 1) : 0;
 
-        Paint(confirmBg, confirmText, selected == 0);
-        Paint(viewBg, viewText, selected == 1);
+        Paint(confirmBg, confirmLine, confirmText, selected == 0);
+        Paint(viewBg, viewLine, viewText, selected == 1);
     }
 
-    private void Paint(Image bg, TMP_Text text, bool on)
+    /// <summary>고른 버튼은 자개 판 + 어두운 글자, 아닌 버튼은 투명 판 + 얇은 테두리.</summary>
+    private static void Paint(Image bg, Image line, TMP_Text text, bool on)
     {
         if (bg == null) return;
 
-        bg.color = on ? accent : ButtonIdle;
-        text.color = on ? TextOnAccent : TextMain;
+        // 투명해도 마우스 클릭은 받는다.
+        bg.color = on ? Color.white : Color.clear;
+        if (line != null) line.enabled = !on;
+        text.color = on ? PearlStyle.Lacquer : PearlStyle.TextButton;
     }
 
     /// <summary>받침이 있으면 "을", 없으면 "를". 한글이 아니면 "을(를)".</summary>
@@ -356,71 +390,111 @@ public class AcquirePopup : MonoBehaviour
         group = root.GetComponent<CanvasGroup>();
 
         // 뒤를 어둡게
-        Image dim = NewImage("Dim", root.transform, new Color(0f, 0f, 0f, 0.55f));
+        Image dim = NewImage("Dim", root.transform, new Color(0f, 0f, 0f, 0.6f));
         Stretch(dim.rectTransform);
 
-        // 판
-        Image panel = NewImage("Panel", root.transform, PanelColor);
-        RectTransform panelRect = panel.rectTransform;
+        // 판 뒤 그림자
+        Image shadow = NewImage("Shadow", root.transform, new Color(0f, 0f, 0f, 0.55f));
+        shadow.sprite = PearlStyle.Glow();
+        shadow.raycastTarget = false;
+        RectTransform shadowRect = shadow.rectTransform;
+        shadowRect.anchorMin = shadowRect.anchorMax = new Vector2(0.5f, 0.5f);
+        shadowRect.sizeDelta = new Vector2(PanelWidth + 300f, PanelHeight + 300f);
+        shadowRect.anchoredPosition = new Vector2(0f, -10f);
+
+        // 바깥 자개 테두리 (10.28 시안). 유물이면 계열 색이 살짝 섞인 자개로 바꾼다.
+        frameImage = NewImage("Panel", root.transform, Color.white);
+        frameImage.sprite = PearlStyle.Pearl(null, PanelWidth / PanelHeight);
+        RectTransform panelRect = frameImage.rectTransform;
         panelRect.anchorMin = panelRect.anchorMax = new Vector2(0.5f, 0.5f);
         panelRect.pivot = new Vector2(0.5f, 0.5f);
         panelRect.sizeDelta = new Vector2(PanelWidth, PanelHeight);
         panelRect.anchoredPosition = new Vector2(0f, 20f);
 
-        // 창살 테두리 (10.19). 색은 Open에서 유물 계열 색으로 바꾼다.
-        frameObject = LatticeFrame.Attach(panelRect, PanelHeight, Accent);
+        // 옻칠 판
+        Image lacquer = NewImage("Lacquer", panelRect, PearlStyle.Lacquer);
+        Stretch(lacquer.rectTransform, FrameLine);
 
-        labelText = NewText("Label", panelRect, font, 22f, Accent);
-        Place(labelText.rectTransform, Inset, -46f, 500f, 32f);
+        // 창살 테두리는 자개 안쪽에 반투명하게 (10.28 시안). 색은 Open에서 계열 색으로.
+        frameObject = LatticeFrame.Attach(lacquer.rectTransform, PanelHeight - FrameLine * 2f,
+                                          PearlStyle.LatticeColor(null), -LatticeInset, LatticeScale);
 
-        Image frame = NewImage("IconFrame", panelRect, ButtonIdle);
-        iconFrameImage = frame;
-        iconFrame = frame.rectTransform;
-        Place(iconFrame, Inset, -96f, 128f, 128f);
+        // 메달: 자개 고리 + 유물 주제 색 + 은은한 빛 + 아이콘
+        Image ring = NewImage("Medallion", panelRect, Color.white);
+        ring.sprite = PearlStyle.PearlCircle();
+        iconFrame = ring.rectTransform;
+        Place(iconFrame, Inset, -ContentTop, MedallionSize, MedallionSize);
 
-        iconImage = NewImage("Icon", iconFrame, Color.white);
+        iconFrameImage = NewImage("MedallionFill", iconFrame, PearlStyle.Lacquer);
+        iconFrameImage.sprite = PearlStyle.Circle();
+        Stretch(iconFrameImage.rectTransform, 4f);
+
+        medallionGlow = NewImage("MedallionGlow", iconFrameImage.rectTransform, Color.clear);
+        medallionGlow.sprite = PearlStyle.Glow();
+        medallionGlow.raycastTarget = false;
+        Stretch(medallionGlow.rectTransform, 6f);
+
+        iconImage = NewImage("Icon", iconFrameImage.rectTransform, Color.white);
         iconImage.preserveAspect = true;
-        Stretch(iconImage.rectTransform, 12f);
+        Stretch(iconImage.rectTransform, 22f);
 
-        messageText = NewText("Message", panelRect, font, 34f, TextMain);
-        Place(messageText.rectTransform, TextLeft, -96f, 540f, 56f);
+        // 계열 칩 + ◆
+        chipLine = NewImage("Chip", panelRect, Accent);
+        chipLine.sprite = PearlStyle.Outline();
+        chipLine.type = Image.Type.Sliced;
+        chipLine.raycastTarget = false;
+        Place(chipLine.rectTransform, TextLeft, -(ContentTop + 8f), 120f, 32f);
 
-        descriptionText = NewText("Description", panelRect, font, 22f, TextDim);
+        labelText = NewText("Label", chipLine.rectTransform, font, 18f, Accent);
+        labelText.alignment = TextAlignmentOptions.Center;
+        labelText.characterSpacing = 8f;
+        Stretch(labelText.rectTransform);
+
+        diamondText = NewText("Diamond", panelRect, font, 18f, Accent);
+        diamondText.text = "◆";
+        Place(diamondText.rectTransform, TextLeft + 132f, -(ContentTop + 8f), 40f, 32f);
+
+        messageText = NewText("Message", panelRect, font, 38f, TextMain);
+        messageText.fontStyle = FontStyles.Bold;
+        Place(messageText.rectTransform, TextLeft, -(ContentTop + 58f), PanelWidth - Inset - TextLeft, 52f);
+
+        descriptionText = NewText("Description", panelRect, font, 21f, TextDim);
         descriptionText.textWrappingMode = TextWrappingModes.Normal;
         descriptionText.alignment = TextAlignmentOptions.TopLeft;
-        Place(descriptionText.rectTransform, TextLeft, -162f, 540f, 100f);
+        descriptionText.lineSpacing = 10f;
+        Place(descriptionText.rectTransform, TextLeft, -(ContentTop + 124f), PanelWidth - Inset - TextLeft, 110f);
 
-        hintText = NewText("Hint", panelRect, font, 20f, TextDim);
+        hintText = NewText("Hint", panelRect, font, 18f, TextDim);
         RectTransform hintRect = hintText.rectTransform;
         hintRect.anchorMin = hintRect.anchorMax = hintRect.pivot = Vector2.zero;
-        hintRect.anchoredPosition = new Vector2(Inset, 70f);
+        hintRect.anchoredPosition = new Vector2(Inset, ButtonBottom + (ButtonHeight - 30f) / 2f);
         hintRect.sizeDelta = new Vector2(280f, 30f);
 
-        confirmBg = NewButton("Confirm", panelRect, font, "확인", 180f, new Vector2(-Inset, 52f),
-                              out confirmText, 0);
-        viewBg = NewButton("ViewRelics", panelRect, font, "유물창 보기", 200f, new Vector2(-Inset - 196f, 52f),
-                           out viewText, 1);
-
-        TMP_Text keys = NewText("Keys", root.transform, font, 20f, TextDim);
-        RectTransform keysRect = keys.rectTransform;
-        keysRect.anchorMin = keysRect.anchorMax = new Vector2(0.5f, 0.5f);
-        keysRect.pivot = new Vector2(0.5f, 1f);
-        keysRect.anchoredPosition = new Vector2(0f, 20f - PanelHeight / 2f - 30f);
-        keysRect.sizeDelta = new Vector2(PanelWidth, 30f);
-        keys.alignment = TextAlignmentOptions.Center;
-        keys.text = "Z · Space  확인        ← →  선택";
+        confirmBg = NewButton("Confirm", panelRect, font, "확인", new Vector2(-Inset, ButtonBottom),
+                              out confirmLine, out confirmText, 0);
+        viewBg = NewButton("ViewRelics", panelRect, font, "유물창 보기",
+                           new Vector2(-Inset - ButtonWidth - ButtonGap, ButtonBottom),
+                           out viewLine, out viewText, 1);
 
         root.SetActive(false);
     }
 
     private Image NewButton(string name, RectTransform parent, TMP_FontAsset font, string label,
-                            float width, Vector2 fromBottomRight, out TMP_Text text, int index)
+                            Vector2 fromBottomRight, out Image line, out TMP_Text text, int index)
     {
-        Image bg = NewImage(name, parent, ButtonIdle);
+        // 고르면 자개 판 + 어두운 글자, 안 고르면 투명 판 + 얇은 테두리 (Paint에서 바꾼다)
+        Image bg = NewImage(name, parent, Color.white);
+        bg.sprite = PearlStyle.Pearl(null, ButtonWidth / ButtonHeight);
         RectTransform rect = bg.rectTransform;
         rect.anchorMin = rect.anchorMax = rect.pivot = new Vector2(1f, 0f);
         rect.anchoredPosition = fromBottomRight;
-        rect.sizeDelta = new Vector2(width, 64f);
+        rect.sizeDelta = new Vector2(ButtonWidth, ButtonHeight);
+
+        line = NewImage("Line", rect, PearlStyle.ButtonLine);
+        line.sprite = PearlStyle.Outline();
+        line.type = Image.Type.Sliced;
+        line.raycastTarget = false;
+        Stretch(line.rectTransform);
 
         Button button = bg.gameObject.AddComponent<Button>();
         button.transition = Selectable.Transition.None;
@@ -431,9 +505,10 @@ public class AcquirePopup : MonoBehaviour
             Press(index);
         });
 
-        text = NewText("Text", rect, font, 26f, TextMain);
+        text = NewText("Text", rect, font, 22f, PearlStyle.TextButton);
         Stretch(text.rectTransform);
         text.alignment = TextAlignmentOptions.Center;
+        text.characterSpacing = 4f;
         text.text = label;
 
         return bg;

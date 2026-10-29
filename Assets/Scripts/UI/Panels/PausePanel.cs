@@ -60,7 +60,7 @@ public class PausePanel : MonoBehaviour
     // "Quit" 버튼이 눌렸을 때 실행
     public void OnQuitButton()
     {
-        // 일단 로그만 (나중에 메인 메뉴로 가는 코드로 교체)
-        Debug.Log("[PausePanel] 나가기 버튼 눌림 - 메인 메뉴로 이동 예정");
+        // 진행도를 저장하고 타이틀로. 다음에 이어하면 마지막 제단에서 시작한다.
+        GameSession.SaveAndGoToTitle();
     }
 }

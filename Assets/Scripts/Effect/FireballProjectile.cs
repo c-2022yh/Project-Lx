@@ -20,6 +20,7 @@ public class FireballProjectile : MonoBehaviour
         isConsumed = true;
 
         fireBreakableWall.HitWall();
+        GetComponent<FireballVisual>()?.PlayImpact();
 
         //벽이 아직 부서지지 않았어도 화염구는 소멸
         Destroy(gameObject);

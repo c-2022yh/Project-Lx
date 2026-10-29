@@ -22,6 +22,9 @@ public interface ISaveSlotProvider
 
     /// <summary>해당 슬롯의 저장 데이터로 게임 이어하기.</summary>
     void LoadSlot(int slotIndex);
+
+    /// <summary>해당 슬롯의 저장 데이터를 지운다. 되돌릴 수 없다.</summary>
+    void DeleteSlot(int slotIndex);
 }
 
 public static class SaveSlotService
@@ -57,5 +60,10 @@ public class EmptySaveSlotProvider : ISaveSlotProvider
         // [SAVE_HOOK] 세이브 시스템이 생기면 여기서 저장 데이터를 불러온다.
         Debug.Log($"[SaveSlot] 슬롯 {slotIndex + 1}번 불러오기 (세이브 시스템 연결 전)");
         GameFlow.StartGameplay();
+    }
+
+    public void DeleteSlot(int slotIndex)
+    {
+        Debug.Log($"[SaveSlot] 슬롯 {slotIndex + 1}번 삭제 (세이브 시스템 연결 전)");
     }
 }

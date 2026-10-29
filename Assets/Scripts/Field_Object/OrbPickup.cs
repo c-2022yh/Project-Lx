@@ -17,6 +17,14 @@ public class OrbPickup : MonoBehaviour, IInteractable
 
     public string InteractionText => interactionText;
 
+    private void Awake()
+    {
+        // 이미 먹은 보주면 다시 나오지 않게 한다.
+        if (!FieldObjectState.IsDone(this)) return;
+        isAcquired = true;
+        if (destroyOnAcquire) Destroy(gameObject);
+    }
+
     private void Reset()
     {
         GetComponent<CircleCollider2D>().isTrigger = true;
@@ -44,6 +52,7 @@ public class OrbPickup : MonoBehaviour, IInteractable
             return;
         }
 
+        FieldObjectState.MarkDone(this);
         ClearPlayer();
         if (destroyOnAcquire) Destroy(gameObject);
     }

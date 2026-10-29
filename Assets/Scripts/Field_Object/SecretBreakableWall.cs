@@ -13,6 +13,10 @@ public class SecretBreakableWall : MonoBehaviour
     [SerializeField] private int requiredHitsToBreak = 1;
     [SerializeField] private GameObject breakEffectPrefab;
 
+    [Header("Debris")]
+    [SerializeField] private bool spawnDebris = true;
+    [SerializeField] private Color debrisColor = new Color(0.66f, 0.7f, 0.78f);
+
     // 타일 좌표별 맞은 횟수 저장
     private Dictionary<Vector3Int, int> hitCountByCellPosition = new Dictionary<Vector3Int, int>();
 
@@ -22,6 +26,19 @@ public class SecretBreakableWall : MonoBehaviour
         if (tilemapSecretWall == null)
         {
             tilemapSecretWall = GetComponent<Tilemap>();
+        }
+
+        RemoveBrokenTiles();
+    }
+
+    // 예전에 부순 타일은 씬을 다시 열어도 없는 상태로 둔다.
+    private void RemoveBrokenTiles()
+    {
+        if (tilemapSecretWall == null) return;
+
+        foreach (Vector3Int cell in FieldObjectState.BrokenTiles(gameObject.scene.name))
+        {
+            if (tilemapSecretWall.HasTile(cell)) tilemapSecretWall.SetTile(cell, null);
         }
     }
 
@@ -74,6 +91,9 @@ public class SecretBreakableWall : MonoBehaviour
         // 해당 칸의 타일만 제거한다. Tilemap_SecretWall 전체를 삭제하지 않는다.
         tilemapSecretWall.SetTile(cellPosition, null);
         tilemapSecretWall.RefreshTile(cellPosition);
+        FieldObjectState.MarkTileBroken(gameObject.scene.name, cellPosition);
+
+        if (spawnDebris) SpawnTileDebris(cellPosition, breakPosition);
 
         hitCountByCellPosition.Remove(cellPosition);
 
@@ -83,6 +103,29 @@ public class SecretBreakableWall : MonoBehaviour
         }
 
         Debug.Log("Secret wall tile broken: " + cellPosition);
+    }
+
+    // 타일 한 칸 크기만큼 파편을 뿌린다. 정렬 순서는 타일맵을 따른다.
+    private void SpawnTileDebris(Vector3Int cellPosition, Vector3 center)
+    {
+        Vector3 cellSize = tilemapSecretWall.layoutGrid != null ? tilemapSecretWall.layoutGrid.cellSize : Vector3.one;
+        Vector3 scale = tilemapSecretWall.transform.lossyScale;
+        Bounds area = new Bounds(center, new Vector3(cellSize.x * scale.x, cellSize.y * scale.y, 0.1f));
+
+        Color tint = debrisColor * tilemapSecretWall.GetColor(cellPosition) * tilemapSecretWall.color;
+        tint.a = 1f;
+
+        DebrisBurst.Options options = DebrisBurst.Options.Default(tint);
+        options.strength = 0.8f;
+
+        TilemapRenderer tilemapRenderer = tilemapSecretWall.GetComponent<TilemapRenderer>();
+        if (tilemapRenderer != null)
+        {
+            options.sortingLayerId = tilemapRenderer.sortingLayerID;
+            options.sortingOrder = tilemapRenderer.sortingOrder;
+        }
+
+        DebrisBurst.Spawn(area, options);
     }
 
     private bool TryFindNearbySecretWallTile(Vector3Int centerCell, out Vector3Int foundCell)

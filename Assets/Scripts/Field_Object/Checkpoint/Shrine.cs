@@ -58,6 +58,7 @@ public class Shrine : MonoBehaviour, IInteractable
         if (activeShrine == this)
         {
             playerHealth?.FullHeal();
+            GameSession.SaveAtShrine(RespawnPosition);
             return;
         }
 
@@ -77,8 +78,22 @@ public class Shrine : MonoBehaviour, IInteractable
         playerHealth?.FullHeal();
 
         SetActiveVisual();
+        GameSession.SaveAtShrine(RespawnPosition);
 
         Debug.Log("Shrine Activated : " + gameObject.name);
+    }
+
+    //이어하기/리스폰 때 마지막 제단을 켜진 상태로 되돌림 (저장·회복은 하지 않음)
+    public void RestoreActive()
+    {
+        if (activeShrine != null && activeShrine != this)
+        {
+            activeShrine.Deactivate();
+        }
+
+        activeShrine = this;
+        IsActive = true;
+        SetActiveVisual();
     }
 
     //제단 비활성화

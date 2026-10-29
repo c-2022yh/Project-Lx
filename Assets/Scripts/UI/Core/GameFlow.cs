@@ -16,13 +16,13 @@ public static class GameFlow
     public static void GoToTitle()
     {
         Time.timeScale = 1f;
-        SceneManager.LoadScene(TitleSceneName);
+        SceneFader.LoadScene(TitleSceneName);
     }
 
     public static void StartGameplay()
     {
         Time.timeScale = 1f;
-        SceneManager.LoadScene(GameplaySceneName);
+        SceneFader.LoadScene(GameplaySceneName);
     }
 
     public static void QuitGame()
