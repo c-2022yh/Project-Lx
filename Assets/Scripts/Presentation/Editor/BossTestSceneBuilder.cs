@@ -2,6 +2,7 @@
 using UnityEditor;
 using UnityEditor.SceneManagement;
 using UnityEngine;
+using UnityEngine.Rendering.Universal;
 using UnityEngine.SceneManagement;
 
 /// <summary>
@@ -54,9 +55,10 @@ public static class BossTestSceneBuilder
         SceneManager.SetActiveScene(scene);
 
         CopyMainCamera(scene);
-        InstantiatePrefab(GameplayRootPath, Vector3.zero);
+        GameObject gameplayRoot = InstantiatePrefab(GameplayRootPath, Vector3.zero);
         InstantiatePrefab(UiRootPath, Vector3.zero);
-        InstantiatePrefab(BackgroundPath, Vector3.zero);
+        GameObject background = InstantiatePrefab(BackgroundPath, Vector3.zero);
+        MatchAlphaLighting(gameplayRoot, background);
 
         BuildGround();
         MovePlayerSpawn(new Vector3(SpawnX, GroundTop + 1.5f, 0f));
@@ -127,6 +129,25 @@ public static class BossTestSceneBuilder
 
         EditorSceneManager.CloseScene(alpha, true);
         SceneManager.SetActiveScene(target);
+    }
+
+    // Test_Alpha와 같은 조명: 배경 쪽 전역 조명은 끄고, GamePlay_Root 전역 조명 세기 0.15
+    // (둘 다 켜져 있으면 "More than one global light" 경고가 나고 밝기도 달라진다)
+    private const float AlphaGlobalLightIntensity = 0.15f;
+
+    private static void MatchAlphaLighting(GameObject gameplayRoot, GameObject background)
+    {
+        if (background != null)
+        {
+            foreach (Light2D light in background.GetComponentsInChildren<Light2D>(true))
+                if (light.lightType == Light2D.LightType.Global) light.gameObject.SetActive(false);
+        }
+
+        if (gameplayRoot != null)
+        {
+            foreach (Light2D light in gameplayRoot.GetComponentsInChildren<Light2D>(true))
+                if (light.lightType == Light2D.LightType.Global) light.intensity = AlphaGlobalLightIntensity;
+        }
     }
 
     // 평평한 바닥과 양 끝 벽 (Ground 레이어)
