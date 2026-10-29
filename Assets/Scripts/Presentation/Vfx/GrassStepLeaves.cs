@@ -40,6 +40,9 @@ public class GrassStepLeaves : MonoBehaviour
     private readonly List<Tilemap> tilemaps = new();
     private ParticleSystem front;
     private ParticleSystem back;
+    // 걸을 때 차이는 잎은 더 무겁게: 덜 뜨고, 빨리 떨어지고, 덜 팔랑인다
+    private ParticleSystem stepFront;
+    private ParticleSystem stepBack;
 
     private Player player;
     private Rigidbody2D rb;
@@ -68,8 +71,10 @@ public class GrassStepLeaves : MonoBehaviour
     private void Awake()
     {
         Texture tex = VfxResources.Leaf;
-        front = Build("GrassLeaves_Front", tex, "Effects", -5);
-        back = Build("GrassLeaves_Back", tex, "GroundCover", 20);
+        front = Build("GrassLeaves_Front", tex, "Effects", -5, 0.32f, 0.9f, 0.5f);
+        back = Build("GrassLeaves_Back", tex, "GroundCover", 20, 0.32f, 0.9f, 0.5f);
+        stepFront = Build("GrassLeaves_Step_Front", tex, "Effects", -5, 0.75f, 1.7f, 0.2f);
+        stepBack = Build("GrassLeaves_Step_Back", tex, "GroundCover", 20, 0.75f, 1.7f, 0.2f);
         SceneManager.sceneLoaded += OnSceneLoaded;
         FindTilemaps();
     }
@@ -85,6 +90,8 @@ public class GrassStepLeaves : MonoBehaviour
         FindTilemaps();
         front.Clear();
         back.Clear();
+        stepFront.Clear();
+        stepBack.Clear();
         wasGrounded = false;
     }
 
@@ -189,14 +196,23 @@ public class GrassStepLeaves : MonoBehaviour
     private void Kick(Vector3 feet, float moveDir, bool dashing)
     {
         int count = dashing ? Random.Range(2, 4) : Random.Range(1, 3);
-        float lift = dashing ? 1.3f : 1f;
         for (int i = 0; i < count; i++)
         {
             Vector3 pos = feet + new Vector3(Random.Range(-0.2f, 0.2f), Random.Range(0.02f, 0.15f), 0f);
             // 걸어가는 반대쪽(뒤)으로 차인다
-            Vector3 vel = new Vector3(-moveDir * Random.Range(0.4f, 1.6f) + Random.Range(-0.3f, 0.3f),
-                                      Random.Range(1.4f, 2.6f) * lift, 0f);
-            Emit(pos, vel, Random.Range(0.2f, 0.3f));
+            if (dashing)
+            {
+                Vector3 vel = new Vector3(-moveDir * Random.Range(0.4f, 1.6f) + Random.Range(-0.3f, 0.3f),
+                                          Random.Range(1.4f, 2.6f) * 1.3f, 0f);
+                Emit(pos, vel, Random.Range(0.2f, 0.3f), false);
+            }
+            else
+            {
+                // 걷기: 낮게 툭 차였다가 금방 떨어진다
+                Vector3 vel = new Vector3(-moveDir * Random.Range(0.3f, 1.0f) + Random.Range(-0.2f, 0.2f),
+                                          Random.Range(0.9f, 1.6f), 0f);
+                Emit(pos, vel, Random.Range(0.2f, 0.3f), true);
+            }
         }
     }
 
@@ -208,30 +224,34 @@ public class GrassStepLeaves : MonoBehaviour
             Vector3 pos = feet + new Vector3(Random.Range(-0.35f, 0.35f), Random.Range(0.02f, 0.12f), 0f);
             float side = Random.value < 0.5f ? -1f : 1f;
             Vector3 vel = new Vector3(side * Random.Range(0.6f, 2.2f), Random.Range(1.6f, 3.4f) * Mathf.Lerp(1f, 1.3f, strength), 0f);
-            Emit(pos, vel, Random.Range(0.22f, 0.34f));
+            Emit(pos, vel, Random.Range(0.22f, 0.34f), false);
         }
     }
 
-    private void Emit(Vector3 position, Vector3 velocity, float size)
+    private void Emit(Vector3 position, Vector3 velocity, float size, bool heavy)
     {
         ParticleSystem.EmitParams e = new ParticleSystem.EmitParams
         {
             position = position,
             velocity = velocity,
             startSize = size,
-            startLifetime = Random.Range(1.6f, 2.6f),
+            startLifetime = heavy ? Random.Range(1.2f, 1.8f) : Random.Range(1.6f, 2.6f),
             rotation = Random.Range(0f, 360f),
-            angularVelocity = Random.Range(-420f, 420f),
+            angularVelocity = heavy ? Random.Range(-240f, 240f) : Random.Range(-420f, 420f),
             startColor = LeafColors[Random.Range(0, LeafColors.Length)] * Random.Range(0.9f, 1.12f)
         };
         Color c = e.startColor;
         c.a = 1f;
         e.startColor = c;
 
-        (Random.value < 0.6f ? front : back).Emit(e, 1);
+        bool inFront = Random.value < 0.6f;
+        if (heavy) (inFront ? stepFront : stepBack).Emit(e, 1);
+        else (inFront ? front : back).Emit(e, 1);
     }
 
-    private ParticleSystem Build(string name, Texture tex, string sortingLayer, int order)
+    // gravity: 중력 배율, fallLimit: 떨어지는 최고 속도, flutter: 팔랑임 세기
+    private ParticleSystem Build(string name, Texture tex, string sortingLayer, int order,
+                                 float gravity, float fallLimit, float flutter)
     {
         GameObject go = new GameObject(name);
         go.transform.SetParent(transform, false);
@@ -243,7 +263,7 @@ public class GrassStepLeaves : MonoBehaviour
         main.loop = true;
         main.playOnAwake = false;
         main.startSpeed = 0f;
-        main.gravityModifier = 0.32f;
+        main.gravityModifier = gravity;
         main.simulationSpace = ParticleSystemSimulationSpace.World;
         main.maxParticles = 120;
 
@@ -255,13 +275,13 @@ public class GrassStepLeaves : MonoBehaviour
         // 공기 저항: 처음엔 튀어 오르고, 금방 느려져서 팔랑팔랑 떨어진다
         ParticleSystem.LimitVelocityOverLifetimeModule limit = ps.limitVelocityOverLifetime;
         limit.enabled = true;
-        limit.limit = 0.9f;
+        limit.limit = fallLimit;
         limit.dampen = 0.05f;
         limit.drag = 0.6f;
 
         ParticleSystem.NoiseModule noise = ps.noise;
         noise.enabled = true;
-        noise.strength = 0.5f;
+        noise.strength = flutter;
         noise.frequency = 0.7f;
         noise.scrollSpeed = 0.4f;
         noise.damping = true;
