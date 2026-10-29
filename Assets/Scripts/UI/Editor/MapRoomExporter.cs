@@ -45,6 +45,7 @@ public static class MapRoomExporter
         public Rect Solid;     // 막힌 칸의 범위 (월드)
         public Vector2 AtlasMin;
         public bool Placed;
+        public int Group;      // 포털로 이어진 방 덩어리 번호
         public readonly List<Portal> Portals = new List<Portal>();
         public readonly Dictionary<string, Vector2> Spawns = new Dictionary<string, Vector2>();
         public Vector2 DefaultSpawn;
@@ -330,12 +331,13 @@ public static class MapRoomExporter
         for (int y = 1; y < h - 1; y++)
         {
             if (!inside[x, y]) continue;
-            if (blocked[x, y + 1] && rnd.NextDouble() < 0.14)
+            // 메운 발판 밑에는 달지 않는다. 진짜 바깥 벽(방 밖) 쪽만 본다.
+            if (!inside[x, y + 1] && rnd.NextDouble() < 0.14)
                 spikes[new Vector2Int(x, y)] = new Vector3(
                     x + 0.25f + (float)rnd.NextDouble() * 0.5f,      // 끝 x
                     0.55f + (float)rnd.NextDouble() * 0.6f,          // 길이
                     0.22f + (float)rnd.NextDouble() * 0.12f);        // 반폭
-            if (blocked[x, y - 1] && rnd.NextDouble() < 0.07)
+            if (!inside[x, y - 1] && rnd.NextDouble() < 0.07)
                 bumps[new Vector2Int(x, y)] = new Vector2(x + 0.5f, 0.25f + (float)rnd.NextDouble() * 0.2f);
         }
 
@@ -424,6 +426,7 @@ public static class MapRoomExporter
         foreach (SceneRoom r in rooms) byName[r.Name] = r;
 
         float nextFreeX = 0f;
+        int group = 0;
 
         foreach (SceneRoom start in rooms)
         {
@@ -432,6 +435,7 @@ public static class MapRoomExporter
             // 이어지지 않은 덩어리는 오른쪽에 띄워서 놓는다.
             start.AtlasMin = new Vector2(nextFreeX, 0f);
             start.Placed = true;
+            start.Group = ++group;
 
             Queue<SceneRoom> q = new Queue<SceneRoom>();
             q.Enqueue(start);
@@ -447,6 +451,7 @@ public static class MapRoomExporter
                     Vector2 arrive = ArrivalIn(b, p.TargetSpawn, a.Name);
                     Vector2 dir = Side(a, p.Position);
                     b.AtlasMin = MapRoomAtlas.ToAtlas(Temp(a), p.Position) + dir * DoorGap - (arrive - b.WorldMin);
+                    b.Group = a.Group;
                     PushApart(b, rooms, dir);
                     b.Placed = true;
                     q.Enqueue(b);
@@ -464,6 +469,7 @@ public static class MapRoomExporter
                         // b의 포털이 a의 도착 지점 바로 옆에 오게
                         Vector2 atlasArrive = MapRoomAtlas.ToAtlas(Temp(a), arrive);
                         b.AtlasMin = atlasArrive - dir * DoorGap - (p.Position - b.WorldMin);
+                        b.Group = a.Group;
                         PushApart(b, rooms, -dir);
                         b.Placed = true;
                         q.Enqueue(b);
@@ -488,7 +494,8 @@ public static class MapRoomExporter
             bool hit = false;
             foreach (SceneRoom o in rooms)
             {
-                if (o == b || !o.Placed) continue;
+                // 같은 덩어리(포털로 이어진 방)끼리만 비교한다. 따로 노는 방은 어차피 같이 안 보인다.
+            if (o == b || !o.Placed || o.Group != b.Group) continue;
                 if (rb.Overlaps(AtlasSolid(o))) { hit = true; break; }
             }
             if (!hit) return;
