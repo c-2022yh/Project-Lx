@@ -12,7 +12,7 @@ using UnityEditor;
 /// 스토리 대화창 (10.29 대화창 시안). DialogueBox.Play(대화)로 띄운다.
 ///
 /// 대화창(Box)
-///   화면 아래 자개 테두리 창. 위에 이름표, 왼쪽에 동그란 초상화, 글자는 한 글자씩 나온다.
+///   화면 아래 얇은 테두리 창. 위에 이름표, 왼쪽에 동그란 초상화, 글자는 한 글자씩 나온다.
 /// 내레이션(Narration)
 ///   화면이 어두워지고 가운데에 글이 한 줄씩 떠오른다. 앞 줄은 위에 흐리게 남는다.
 ///
@@ -368,12 +368,17 @@ public class DialogueBox : MonoBehaviour
 
     private void PaintTint(DialogueData.Tint tint)
     {
+        // 자개 없이 얇은 단색 테두리. 계열 색이 있으면 그 색으로.
         RelicCategory? c = CategoryOf(tint);
-        float boxWidth = 1920f - BoxSide * 2f;
+        Color line = c.HasValue ? PearlStyle.CategoryColor(c.Value) : DefaultAccent;
+        line.a = c.HasValue ? 0.7f : 0.45f;
 
-        frameImage.sprite = PearlStyle.Pearl(c, boxWidth / BoxHeight);
-        plateImage.sprite = PearlStyle.Pearl(c, 4f);
-        portraitRing.sprite = PearlStyle.PearlCircle();
+        frameImage.sprite = null;
+        frameImage.color = line;
+        plateImage.sprite = null;
+        plateImage.color = line;
+        portraitRing.sprite = PearlStyle.Circle();
+        portraitRing.color = new Color(line.r, line.g, line.b, Mathf.Min(1f, line.a + 0.2f));
 
         portraitFill.color = tint switch
         {
@@ -430,7 +435,7 @@ public class DialogueBox : MonoBehaviour
         fr.anchoredPosition = Vector2.zero;
         fr.sizeDelta = new Vector2(0f, 450f);
 
-        // 자개 테두리 → 옻칠 판 → 얇은 안쪽 선
+        // 얇은 테두리 → 옻칠 판 → 얇은 안쪽 선
         frameImage = NewImage("Frame", boxRoot.transform, Color.white);
         frameImage.raycastTarget = true;
         RectTransform frame = frameImage.rectTransform;
@@ -450,7 +455,7 @@ public class DialogueBox : MonoBehaviour
         });
 
         Image panel = NewImage("Panel", frame, PanelColor);
-        Stretch(panel.rectTransform, 3f);
+        Stretch(panel.rectTransform, 2f);
 
         Image line = NewImage("InnerLine", panel.rectTransform, InnerLine);
         line.sprite = PearlStyle.Outline();
@@ -468,7 +473,7 @@ public class DialogueBox : MonoBehaviour
 
         portraitFill = NewImage("Fill", pr, Color.black);
         portraitFill.sprite = PearlStyle.Circle();
-        Stretch(portraitFill.rectTransform, 4f);
+        Stretch(portraitFill.rectTransform, 3f);
         portraitFill.gameObject.AddComponent<Mask>().showMaskGraphic = true;
 
         portraitImage = NewImage("Image", portraitFill.rectTransform, Color.white);
@@ -512,7 +517,7 @@ public class DialogueBox : MonoBehaviour
         plate.sizeDelta = new Vector2(240f, 60f);
 
         Image plateInner = NewImage("Inner", plate, new Color(18f / 255f, 22f / 255f, 28f / 255f, 1f));
-        Stretch(plateInner.rectTransform, 3f);
+        Stretch(plateInner.rectTransform, 2f);
 
         plateText = NewText("Name", plate, 27f, PearlStyle.TextTitle);
         plateText.fontStyle = FontStyles.Bold;
