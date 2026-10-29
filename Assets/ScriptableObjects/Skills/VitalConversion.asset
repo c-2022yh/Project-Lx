@@ -118,3 +118,4 @@ MonoBehaviour:
   lockInputDuringSkill: 1
   invincibleDuringSkill: 0
   healAmount: 2
+  healingEffectPrefab: {fileID: 710300003, guid: 646e5feecef347699b8401d1f6391b66, type: 3}

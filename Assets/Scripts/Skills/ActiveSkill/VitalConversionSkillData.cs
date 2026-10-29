@@ -11,6 +11,33 @@ public class VitalConversionSkillData : UtilitySkillData
     [SerializeField, Min(0f)]
     private float healAmount = 2f;
 
+    [Header("Healing Effect")]
+    [SerializeField] private VitalConversionVisual healingEffectPrefab;
+
+    protected override IEnumerator WaitForWindup(Player p)
+    {
+        if (p != null && healingEffectPrefab != null)
+        {
+            var effect = Instantiate(healingEffectPrefab, p.transform.position, Quaternion.identity);
+            effect.Begin(p, this);
+        }
+        yield return base.WaitForWindup(p);
+    }
+
+    private VitalConversionVisual FindPreparingEffect(Player p)
+    {
+        if (p == null) return null;
+        foreach (var effect in p.GetComponentsInChildren<VitalConversionVisual>())
+            if (effect.Skill == this && !effect.IsFinishing) return effect;
+        return null;
+    }
+
+    public override void OnCastCancelled(Player p)
+    {
+        base.OnCastCancelled(p);
+        FindPreparingEffect(p)?.Cancel();
+    }
+
 
     //스킬 사용 가능 여부
     public override bool CanUse(Player p)
@@ -80,6 +107,7 @@ public class VitalConversionSkillData : UtilitySkillData
         //선딜 도중 사망했다면 회복하지 않음
         if (playerHealth.CurrentHealth <= 0f)
         {
+            FindPreparingEffect(p)?.Cancel();
             yield break;
         }
 
@@ -87,6 +115,7 @@ public class VitalConversionSkillData : UtilitySkillData
 
         //체력 회복
         playerHealth.Heal(healAmount);
+        FindPreparingEffect(p)?.Complete();
         PlayReleaseSound(p, p.transform.position);
 
     }

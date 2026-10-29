@@ -1,0 +1,74 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &710300001
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 710300002}
+  - component: {fileID: 710300003}
+  m_Layer: 12
+  m_Name: FX_VitalConversion
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &710300002
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 710300001}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &710300003
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 710300001}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2339bb2354464c898429f288e08c87dd, type: 3}
+  m_Name:
+  m_EditorClassIdentifier: Assembly-CSharp::VitalConversionVisual
+  effectMaterial: {fileID: 2100000, guid: c72ecd733ce84231bb85fd3684eb402c, type: 2}
+  energyColor: {r: 0.3, g: 2, b: 0.65, a: 1}
+  healColor: {r: 1.5, g: 2.5, b: 1.7, a: 1}
+  sortingLayer: Effects
+  sortingOrder: 3
+  positionOffset: {x: 0, y: 0.05}
+  height: 1.8
+  radius: 0.55
+  ribbonCount: 2
+  ribbonWidth: 0.055
+  swirlSpeed: 0.9
+  footRingWidth: 0.035
+  lightsPerSecond: 22
+  lightSize: 0.09
+  leavesPerSecond: 7
+  leafSize: 0.16
+  riseSpeed: 1.1
+  particleLifetime: 0.75
+  showPlus: 1
+  plusSize: 0.4
+  plusRiseSpeed: 0.9
+  finishDuration: 0.75
+  cancelFadeDuration: 0.25
+  pulseRadius: 1.05
+  pulseWidth: 0.045
+  enableBloom: 1
+  bloomIntensity: 0.35
+  bloomThreshold: 1.1
