@@ -21,7 +21,7 @@ GameObject:
   - component: {fileID: -3398159243529488567}
   - component: {fileID: 849854591839963007}
   m_Layer: 8
-  m_Name: Enemy_Mushroom_Brown
+  m_Name: Enemy_Leaf03
   m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -37,7 +37,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.75, y: 0.75, z: 1}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 2664611442116320621}
@@ -93,15 +93,15 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: 1278559193
-  m_SortingLayer: 6
+  m_SortingLayer: 5
   m_SortingOrder: 0
   m_MaskInteraction: 0
-  m_Sprite: {fileID: 21300000, guid: a185cf78f5adb5a4f8090df9c68f170d, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 6afa2d6ae2b697c4d825c49c2af51e4e, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
-  m_Size: {x: 3.9375, y: 4.1875}
+  m_Size: {x: 3.2, y: 3.2}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
@@ -140,8 +140,8 @@ CapsuleCollider2D:
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
-  m_Offset: {x: 0, y: -0.2}
-  m_Size: {x: 3, y: 3.5}
+  m_Offset: {x: 0, y: -0.3}
+  m_Size: {x: 2.4, y: 2.4}
   m_Direction: 1
 --- !u!50 &2594956225376429067
 Rigidbody2D:
@@ -295,17 +295,17 @@ MonoBehaviour:
   shootSprites: []
   shootFrameTime: 0.12
   walkSprites:
-  - {fileID: 21300000, guid: a185cf78f5adb5a4f8090df9c68f170d, type: 3}
-  - {fileID: 21300000, guid: 1451972073681ff4a91e317e3bcd168a, type: 3}
-  - {fileID: 21300000, guid: fee98982bc6169048a1b26bc717fe93f, type: 3}
-  walkFrameTime: 0.3
+  - {fileID: 21300000, guid: 3dffaeb432cce9c42846eec7695cf17f, type: 3}
+  - {fileID: 21300000, guid: f22d7f602dc417749b207814a7b52e7a, type: 3}
+  - {fileID: 21300000, guid: 4b6af08075e503e49b2813ea19739996, type: 3}
+  walkFrameTime: 0.31
   prepareSprite: {fileID: 0}
   dashSprites: []
   dashFrameTime: 0.1
   deathSprites:
-  - {fileID: 21300000, guid: afc5e65b76f23a64da1010bcedd4c798, type: 3}
-  - {fileID: 21300000, guid: ab7e5f8df35807f42a858566ad9a60a6, type: 3}
-  - {fileID: 21300000, guid: 73382740045c965459859d753c5d978e, type: 3}
+  - {fileID: 21300000, guid: 3f064964d2379e54ab4e1d1f1c1da5e1, type: 3}
+  - {fileID: 21300000, guid: ea3604702e5eadd4b8a7522b7320803e, type: 3}
+  - {fileID: 21300000, guid: d085d0dc9b3a83740993196c67ae8e6e, type: 3}
   deathFrameTime: 0.24
   deathEndHoldTime: 0.08
   idleWhenStationary: 0
@@ -414,7 +414,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: -0.2, z: 1}
-  m_LocalScale: {x: 4, y: 3.3, z: 1}
+  m_LocalScale: {x: 2.3, y: 2.3, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1145845473661622459}
