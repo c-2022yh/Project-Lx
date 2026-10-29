@@ -476,16 +476,6 @@ public class AcquirePopup : MonoBehaviour
                            new Vector2(-Inset - ButtonWidth - ButtonGap, ButtonBottom),
                            out viewLine, out viewText, 1);
 
-        TMP_Text keys = NewText("Keys", root.transform, font, 20f, new Color(0.93f, 0.91f, 0.89f, 0.6f));
-        RectTransform keysRect = keys.rectTransform;
-        keysRect.anchorMin = keysRect.anchorMax = new Vector2(0.5f, 0.5f);
-        keysRect.pivot = new Vector2(0.5f, 1f);
-        keysRect.anchoredPosition = new Vector2(0f, 20f - PanelHeight / 2f - 30f);
-        keysRect.sizeDelta = new Vector2(PanelWidth, 30f);
-        keys.alignment = TextAlignmentOptions.Center;
-        keys.characterSpacing = 6f;
-        keys.text = "Z · Enter  확인   ·   ← →  버튼 고르기   ·   Esc  닫기";
-
         root.SetActive(false);
     }
 

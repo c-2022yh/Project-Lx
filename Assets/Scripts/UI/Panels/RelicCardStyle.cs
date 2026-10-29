@@ -285,10 +285,9 @@ public class RelicCardStyle : MonoBehaviour
     }
 }
 
-/// <summary>유물 선택창 뒤 배경과 제목·조작 안내를 시안대로 맞춘다. 여러 번 불러도 한 번만 만든다.</summary>
+/// <summary>유물 선택창 뒤 배경과 조작 안내를 시안대로 맞춘다. 여러 번 불러도 한 번만 만든다.</summary>
 public static class RelicSelectionStyle
 {
-    private const string TitleName = "Style_Title";
     private const string HintName = "Style_Hint";
 
     public static void Apply(Transform panel)
@@ -310,14 +309,6 @@ public static class RelicSelectionStyle
         TMP_FontAsset font = null;
         TMP_Text any = panel.GetComponentInChildren<TMP_Text>(true);
         if (any != null) font = any.font;
-
-        TMP_Text title = Ensure(panel, TitleName, font);
-        title.text = "유물을 하나 고르세요";
-        title.fontSize = 32f * u;
-        title.fontStyle = FontStyles.Bold;
-        title.characterSpacing = 12f;
-        title.color = PearlStyle.TextTitle;
-        Place(title.rectTransform, 70f * u, 48f * u);
 
         TMP_Text hint = Ensure(panel, HintName, font);
         hint.text = "← →  고르기   ·   Enter  선택";
