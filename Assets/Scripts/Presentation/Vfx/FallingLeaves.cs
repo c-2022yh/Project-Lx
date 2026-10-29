@@ -4,8 +4,8 @@ using UnityEngine.SceneManagement;
 /// <summary>
 /// 화면 위에서 낙엽이 천천히 흩날리며 떨어진다. 카메라를 따라다닌다.
 ///
-/// 씬에 빈 오브젝트를 만들고 붙이면 된다. 아래 AutoScene 규칙에 맞는 씬(숲 씬)은
-/// 씬에 없어도 자동으로 하나 생긴다. 씬 파일을 안 건드리려고 이렇게 했다.
+/// 씬에 빈 오브젝트를 만들고 붙이면 된다.
+/// (10.29) 자동 생성은 꺼 두었다. 다시 쓰려면 AutoSceneKeywords에 씬 이름을 넣으면 된다.
 ///
 /// 뒤쪽(배경 앞, 지형 뒤)에 작은 잎이 많이, 앞쪽(플레이어 앞)에 큰 잎이 조금 나온다.
 /// </summary>
@@ -43,7 +43,7 @@ public class FallingLeaves : MonoBehaviour
     // ───────────── 자동 생성 ─────────────
 
     /// <summary>이 이름이 들어간 씬은 낙엽을 자동으로 깐다.</summary>
-    private static readonly string[] AutoSceneKeywords = { "Forest", "Test_Alpha", "Tutorial", "F_0" };
+    private static readonly string[] AutoSceneKeywords = { };
 
     [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterSceneLoad)]
     private static void Bootstrap()
