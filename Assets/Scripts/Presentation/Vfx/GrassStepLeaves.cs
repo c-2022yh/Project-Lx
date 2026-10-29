@@ -209,8 +209,8 @@ public class GrassStepLeaves : MonoBehaviour
             else
             {
                 // 걷기: 낮게 툭 차였다가 금방 떨어진다
-                Vector3 vel = new Vector3(-moveDir * Random.Range(0.3f, 1.0f) + Random.Range(-0.2f, 0.2f),
-                                          Random.Range(0.9f, 1.6f), 0f);
+                Vector3 vel = new Vector3(-moveDir * Random.Range(0.1f, 0.45f) + Random.Range(-0.12f, 0.12f),
+                                          Random.Range(0.5f, 0.9f), 0f);
                 Emit(pos, vel, Random.Range(0.2f, 0.3f), true);
             }
         }
