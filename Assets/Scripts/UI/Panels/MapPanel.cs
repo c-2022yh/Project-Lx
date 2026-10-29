@@ -211,16 +211,12 @@ public class MapPanel : MonoBehaviour
         return true;
     }
 
-    private static bool ShowInRoomMap(MapMarkerKind kind) =>
-        kind == MapMarkerKind.Shrine || kind == MapMarkerKind.RelicChest;
+    private static bool ShowInRoomMap(MapMarkerKind kind) => kind == MapMarkerKind.Shrine;
 
     private Transform legend;
-    private GameObject legendCurrentRoom;
-    private GameObject legendVisitedRoom;
 
     /// <summary>
-    /// 범례를 방 지도에 맞춘다: 앞에 "지금 있는 방 / 가 본 방"을 붙이고, 지도에 안 찍는 종류는 숨긴다.
-    /// 방 지도가 아니면 원래대로 돌린다. 프리팹은 건드리지 않고 실행 중에만 바꾼다.
+    /// 방 지도에서는 범례를 숨기고, 아니면 원래대로 보인다. 프리팹은 건드리지 않고 실행 중에만 바꾼다.
     /// </summary>
     private void ApplyLegend()
     {
@@ -232,54 +228,8 @@ public class MapPanel : MonoBehaviour
         }
         if (legend == null) return;
 
-        foreach (Transform entry in legend)
-        {
-            if (!entry.name.StartsWith("Legend_")) continue;
-            if (entry.gameObject == legendCurrentRoom || entry.gameObject == legendVisitedRoom) continue;
-
-            string kindName = entry.name.Substring("Legend_".Length);
-            bool known = System.Enum.TryParse(kindName, out MapMarkerKind kind);
-            entry.gameObject.SetActive(!atlasMode || (known && ShowInRoomMap(kind)));
-        }
-
-        if (atlasMode && legendCurrentRoom == null)
-        {
-            legendCurrentRoom = MakeRoomLegend("Legend_RoomCurrent", "지금 있는 방", CurrentRoomTint, 0);
-            legendVisitedRoom = MakeRoomLegend("Legend_RoomVisited", "가 본 방", VisitedRoomTint, 1);
-        }
-
-        if (legendCurrentRoom != null) legendCurrentRoom.SetActive(atlasMode);
-        if (legendVisitedRoom != null) legendVisitedRoom.SetActive(atlasMode);
-    }
-
-    /// <summary>있는 범례 한 칸을 복사해서 방 색 네모로 바꾼다.</summary>
-    private GameObject MakeRoomLegend(string name, string label, Color tint, int index)
-    {
-        Transform template = null;
-        foreach (Transform entry in legend)
-            if (entry.name.StartsWith("Legend_")) { template = entry; break; }
-        if (template == null) return null;
-
-        GameObject go = Instantiate(template.gameObject, legend, false);
-        go.name = name;
-        go.transform.SetSiblingIndex(index);
-
-        Image dot = go.GetComponentInChildren<Image>(true);
-        if (dot != null)
-        {
-            dot.sprite = PearlStyle.Outline();
-            dot.type = Image.Type.Sliced;
-            dot.preserveAspect = false;
-            dot.color = tint;
-
-            LayoutElement le = dot.GetComponent<LayoutElement>();
-            if (le != null) le.preferredWidth = 28f;
-        }
-
-        TMP_Text text = go.GetComponentInChildren<TMP_Text>(true);
-        if (text != null) text.text = label;
-
-        return go;
+        // 방 지도에서는 범례 글자를 통째로 뺀다.
+        legend.gameObject.SetActive(!atlasMode);
     }
 
     /// <summary>방 그림을 담는 층. 마커·플레이어 점보다 뒤(첫 번째 자식)에 둔다.</summary>
@@ -368,7 +318,7 @@ public class MapPanel : MonoBehaviour
         List<MarkerInfo> markers = new List<MarkerInfo>();
         Collect(markers);
 
-        // 방 지도는 시안처럼 제단·상자만 찍는다 (몬스터·출구 등은 뺀다).
+        // 방 지도는 제단과 내 위치만 찍는다 (몬스터·상자·출구 등은 뺀다).
         if (atlasMode) markers.RemoveAll(m => !ShowInRoomMap(m.Kind));
         ApplyLegend();
 
@@ -657,7 +607,8 @@ public class MapPanel : MonoBehaviour
         if (rect != null) rect.anchoredPosition = WorldToMap(info.Position);
 
         MapMarkerView view = go.GetComponent<MapMarkerView>();
-        if (view != null) view.Bind(info.Kind, info.Label);
+        // 방 지도에서는 마커 옆 이름 글자를 뺀다.
+        if (view != null) view.Bind(info.Kind, atlasMode ? "" : info.Label);
 
         spawnedMarkers.Add(go);
     }
