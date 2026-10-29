@@ -291,6 +291,8 @@ public static class TitleSceneUIBuilder
             // 좌우로 흔들려도 가장자리가 안 보이게 양옆을 60px씩 넓힌다
             K.Stretch(g, -60, 0, -60, 0);
             glows[i] = g.GetComponent<UnityEngine.UI.Image>();
+            // 10.29: 바닥의 푸른 얼룩(안개)은 끈다. 반딧불만 남긴다. 다시 켜려면 이 줄을 지우면 된다.
+            g.SetActive(false);
         }
 
         TitleAmbience comp = amb.AddComponent<TitleAmbience>();
