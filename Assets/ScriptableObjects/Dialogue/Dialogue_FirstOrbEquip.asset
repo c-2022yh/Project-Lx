@@ -15,12 +15,12 @@ MonoBehaviour:
   style: 0
   tint: 2
   lines:
-  - speaker: "{\uC720\uBB3C}"
-    portrait: {fileID: 0}
+  - speaker: "\uBCF4\uC8FC"
+    portrait: {fileID: 4367910026834163573, guid: e17938206cd65cd49875868bfed2cf3f, type: 3}
     text: "\u2026\uB4E4\uB9AC\uB290\uB0D0. \uB124 \uC190\uC5D0 \uB2FF\uC73C\uB2C8, \uC624\uB798 \uC7A0\uB4E4\uC5B4 \uC788\uB358 \uBE5B\uC774 \uAE68\uC5B4\uB098\uB294\uAD6C\uB098."
-  - speaker: "{\uC720\uBB3C}"
-    portrait: {fileID: 0}
+  - speaker: "\uBCF4\uC8FC"
+    portrait: {fileID: 4367910026834163573, guid: e17938206cd65cd49875868bfed2cf3f, type: 3}
     text: "\uAE30\uB825\uC774 \uAC00\uB4DD \uCC3C\uC744 \uB54C \uAC01\uC131\uD558\uBA74, \uB0B4 \uD798\uC774 \uB108\uC640 \uD568\uAED8 \uAE43\uB4E4 \uAC83\uC774\uB2E4."
-  - speaker: "{\uC720\uBB3C}"
-    portrait: {fileID: 0}
+  - speaker: "\uBCF4\uC8FC"
+    portrait: {fileID: 4367910026834163573, guid: e17938206cd65cd49875868bfed2cf3f, type: 3}
     text: "\uB2E4\uB978 \uBCF4\uC8FC\uB85C \uBC14\uAFB8\uACE0 \uC2F6\uB2E4\uBA74 \uC81C\uB2E8\uC5D0\uC11C \uC5B8\uC81C\uB4E0 \uBC14\uAFD4 \uC950\uAC70\uB77C."
