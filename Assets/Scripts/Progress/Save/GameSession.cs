@@ -119,7 +119,7 @@ public class GameSession : MonoBehaviour
         if (loaded.hasShrine) SetRespawn(scene, new Vector2(loaded.shrineX, loaded.shrineY));
         else ClearRespawn();
         Time.timeScale = 1f;
-        SceneManager.LoadScene(scene);
+        SceneFader.LoadScene(scene);
     }
 
     /// <summary>제단 활성화/휴식. 이어하기 위치를 이 제단으로 바꾸고 저장한다.</summary>
@@ -142,6 +142,12 @@ public class GameSession : MonoBehaviour
     {
         if (HasSlot && instance != null) instance.SaveProgress();
         GameFlow.GoToTitle();
+    }
+
+    /// <summary>보스 처치처럼 바로 남겨야 하는 일. 진행도만 저장하고 이어하기 위치(제단)는 그대로 둔다.</summary>
+    public static void SaveProgressNow()
+    {
+        if (HasSlot && instance != null) instance.SaveProgress();
     }
 
     /// <summary>

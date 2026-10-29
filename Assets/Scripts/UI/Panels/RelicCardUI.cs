@@ -1,11 +1,56 @@
 using System;
 using TMPro;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 //유물 선택 카드 UI
-public class RelicCardUI : MonoBehaviour
+public class RelicCardUI : MonoBehaviour, IPointerEnterHandler
 {
+    //키보드로 고른 카드는 살짝 커진다 (게임이 멈춘 동안에도 움직이도록 실제 시간 사용)
+    private const float HighlightScale = 1.07f;
+    private const float ScaleSpeed = 18f;
+
+    private Vector3 baseScale = Vector3.one;
+    private bool highlighted;
+    private Action onHovered;
+
+    public Button SelectButton => selectButton;
+
+    private void Awake()
+    {
+        baseScale = transform.localScale;
+    }
+
+    private void OnDisable()
+    {
+        highlighted = false;
+        transform.localScale = baseScale;
+    }
+
+    private void Update()
+    {
+        Vector3 target = highlighted ? baseScale * HighlightScale : baseScale;
+        float k = 1f - Mathf.Exp(-ScaleSpeed * Time.unscaledDeltaTime);
+        transform.localScale = Vector3.Lerp(transform.localScale, target, k);
+    }
+
+    public void SetHighlighted(bool on)
+    {
+        highlighted = on;
+    }
+
+    //마우스를 올려도 키보드 선택이 그 카드로 따라오게
+    public void OnPointerEnter(PointerEventData eventData)
+    {
+        onHovered?.Invoke();
+    }
+
+    public void SetHoverCallback(Action callback)
+    {
+        onHovered = callback;
+    }
+
     [Header("UI")]
     [SerializeField] private Image iconImage;
     [SerializeField] private TMP_Text relicNameText;

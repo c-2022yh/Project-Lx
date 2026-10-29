@@ -28,6 +28,6 @@ public class AutoScenePortal : MonoBehaviour
 
         SceneTransitionData.TargetSpawnId = targetSpawnId;
 
-        SceneManager.LoadScene(targetSceneName);
+        SceneFader.LoadScene(targetSceneName);
     }
 }

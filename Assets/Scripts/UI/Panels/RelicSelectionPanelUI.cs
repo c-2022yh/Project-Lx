@@ -1,9 +1,25 @@
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
+using UnityEngine.InputSystem;
 
 public class RelicSelectionPanelUI : MonoBehaviour
 {
     private const int ChoiceCount = 3;
+
+    //키보드 조작: 왼쪽/오른쪽(A/D) 카드 고르기, Enter/Space/Z 선택
+    //열린 직후 0.3초는 입력을 받지 않는다. 상자를 연 키가 그대로 넘어오지 않게.
+    private const float InputGuardSeconds = 0.3f;
+
+    private static RelicSelectionPanelUI openPanel;
+
+    /// <summary>유물 선택창이 떠 있는지. 떠 있는 동안 플레이어 조작과 다른 창 단축키를 막는다.</summary>
+    public static bool IsOpen => openPanel != null;
+
+    private int selectedIndex;
+    private float openedAt;
+    private float savedTimeScale = 1f;
+    private bool pausedByMe;
 
     [Header("Cards")]
     [SerializeField] private RelicCardUI[] relicCards;
@@ -86,6 +102,7 @@ public class RelicSelectionPanelUI : MonoBehaviour
 
         ShowRandomRelics(validPool);
         isSelectionOpen = true;
+        BeginKeyboardSelection();
         return true;
     }
 
@@ -124,6 +141,8 @@ public class RelicSelectionPanelUI : MonoBehaviour
             displayedRelics.Add(selectedRelic);
 
             relicCards[i].Setup(selectedRelic, HandleRelicSelected);
+            int index = i;
+            relicCards[i].SetHoverCallback(() => Select(index));
         }
     }
 
@@ -172,6 +191,77 @@ public class RelicSelectionPanelUI : MonoBehaviour
         bool wasOpen = isSelectionOpen;
         isSelectionOpen = false;
         displayedRelics.Clear();
+        EndKeyboardSelection();
         if (wasOpen) OnSelectionClosed?.Invoke();
+    }
+
+    //창이 열리면 게임을 멈추고 첫 카드를 고른 상태로 시작
+    private void BeginKeyboardSelection()
+    {
+        openPanel = this;
+        openedAt = Time.unscaledTime;
+
+        savedTimeScale = Time.timeScale > 0f ? Time.timeScale : 1f;
+        pausedByMe = true;
+        Time.timeScale = 0f;
+
+        Select(0);
+        if (UIManager.Instance != null) UIManager.Instance.RefreshInputBlock();
+    }
+
+    private void EndKeyboardSelection()
+    {
+        if (openPanel == this) openPanel = null;
+
+        if (relicCards != null)
+        {
+            foreach (RelicCardUI card in relicCards)
+                if (card != null) card.SetHighlighted(false);
+        }
+
+        //고른 유물의 획득 알림창이 바로 이어서 시간을 멈추므로, 그 창이 없을 때만 시간을 되돌린다.
+        if (pausedByMe && !AcquirePopup.IsOpen && Time.timeScale == 0f) Time.timeScale = savedTimeScale;
+        pausedByMe = false;
+
+        if (EventSystem.current != null) EventSystem.current.SetSelectedGameObject(null);
+        if (UIManager.Instance != null) UIManager.Instance.RefreshInputBlock();
+    }
+
+    private void Update()
+    {
+        if (!isSelectionOpen || isSelecting) return;
+        if (Time.unscaledTime - openedAt < InputGuardSeconds) return;
+
+        Keyboard kb = Keyboard.current;
+        if (kb == null || displayedRelics.Count == 0) return;
+
+        if (kb.leftArrowKey.wasPressedThisFrame || kb.aKey.wasPressedThisFrame) Select(selectedIndex - 1);
+        if (kb.rightArrowKey.wasPressedThisFrame || kb.dKey.wasPressedThisFrame) Select(selectedIndex + 1);
+
+        if (kb.enterKey.wasPressedThisFrame || kb.numpadEnterKey.wasPressedThisFrame ||
+            kb.spaceKey.wasPressedThisFrame || kb.zKey.wasPressedThisFrame)
+        {
+            if (selectedIndex >= 0 && selectedIndex < displayedRelics.Count)
+                HandleRelicSelected(displayedRelics[selectedIndex]);
+        }
+    }
+
+    //카드 하나를 고른 상태로 표시. 끝에서 더 가면 반대쪽으로 넘어간다.
+    private void Select(int index)
+    {
+        int count = displayedRelics.Count;
+        if (count == 0 || relicCards == null) return;
+
+        selectedIndex = ((index % count) + count) % count;
+
+        for (int i = 0; i < relicCards.Length; i++)
+        {
+            if (relicCards[i] != null) relicCards[i].SetHighlighted(i == selectedIndex);
+        }
+
+        //모서리 괄호(SelectionBrackets)도 같은 카드를 따라오게
+        RelicCardUI card = relicCards[selectedIndex];
+        if (card != null && card.SelectButton != null && EventSystem.current != null)
+            EventSystem.current.SetSelectedGameObject(card.SelectButton.gameObject);
     }
 }

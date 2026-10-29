@@ -22,7 +22,7 @@ public class ScenePortal : MonoBehaviour, IInteractable
 
         SceneTransitionData.TargetSpawnId = targetSpawnId;
 
-        SceneManager.LoadScene(targetSceneName);
+        SceneFader.LoadScene(targetSceneName);
     }
 
     private void OnTriggerEnter2D(Collider2D other)
