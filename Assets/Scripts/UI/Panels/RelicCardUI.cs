@@ -8,7 +8,7 @@ using UnityEngine.UI;
 public class RelicCardUI : MonoBehaviour, IPointerEnterHandler
 {
     //키보드로 고른 카드는 살짝 커진다 (게임이 멈춘 동안에도 움직이도록 실제 시간 사용)
-    private const float HighlightScale = 1.07f;
+    private const float HighlightScale = 1f;   //족자(RelicCardStyle)는 커지지 않고 살짝 내려온다
     private const float ScaleSpeed = 18f;
 
     private Vector3 baseScale = Vector3.one;

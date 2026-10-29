@@ -44,6 +44,10 @@ public class BossRoom : MonoBehaviour
     [SerializeField, Min(0f)] private float clearSlowSeconds = 1.1f;
     [SerializeField, Min(0f)] private float unlockDelay = 1.4f;
 
+    [Header("Story")]
+    [Tooltip("보스를 잡은 뒤 뜨는 대화. 비우면 안 뜬다. 다 읽어야 문이 열린다.")]
+    [SerializeField] private DialogueData clearDialogue;
+
     private enum State { Idle, Intro, Fighting, Cleared }
 
     private State state = State.Idle;
@@ -154,6 +158,12 @@ public class BossRoom : MonoBehaviour
         BossHealthBarUI.Hide();
 
         yield return new WaitForSecondsRealtime(unlockDelay);
+
+        if (clearDialogue != null)
+        {
+            DialogueBox.Play(clearDialogue);
+            while (DialogueBox.IsBusy) yield return null;
+        }
 
         if (useRoomCamera) SetRoomCamera(false);
         yield return MoveDoors(false);

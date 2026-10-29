@@ -362,7 +362,10 @@ public class AcquirePopup : MonoBehaviour
         foreach (RelicData relic in relicManager.OwnedRelics)
         {
             if (relic == null || !knownRelics.Add(relic)) continue;
-            if (!silent) ShowRelic(relic);
+            if (silent) continue;
+            ShowRelic(relic);
+            // 이 유물에 스토리 대화가 있으면 알림창을 닫은 다음 뜬다.
+            StoryDialogues.PlayForRelic(relic);
         }
     }
 
