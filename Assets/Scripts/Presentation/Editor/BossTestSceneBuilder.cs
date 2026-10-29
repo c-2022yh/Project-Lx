@@ -179,7 +179,8 @@ public static class BossTestSceneBuilder
         col.size = size;
     }
 
-    // SceneSpawnManager의 기본 시작 위치를 옮긴다 (없으면 새로 만든다).
+    // 이 씬 전용 시작 위치를 만들어 SceneSpawnManager에 연결한다.
+    // 기본 시작 위치는 프리팹(SpawnPoint.prefab)을 가리키고 있어서 옮기면 다른 씬까지 바뀐다. 그래서 건드리지 않는다.
     private static void MovePlayerSpawn(Vector3 position)
     {
         SceneSpawnManager spawner = Object.FindAnyObjectByType<SceneSpawnManager>();
@@ -189,19 +190,14 @@ public static class BossTestSceneBuilder
             return;
         }
 
+        Transform point = new GameObject("TestSpawnPoint").transform;
+        point.position = position;
+
         SerializedObject so = new SerializedObject(spawner);
         SerializedProperty prop = so.FindProperty("defaultSpawnPoint");
-        Transform point = prop != null ? prop.objectReferenceValue as Transform : null;
-        if (point == null)
-        {
-            point = new GameObject("TestSpawnPoint").transform;
-            if (prop != null)
-            {
-                prop.objectReferenceValue = point;
-                so.ApplyModifiedPropertiesWithoutUndo();
-            }
-        }
-        point.position = position;
+        if (prop == null) return;
+        prop.objectReferenceValue = point;
+        so.ApplyModifiedPropertiesWithoutUndo();
     }
 
     // 카메라가 테스트 바닥 밖으로 나가지 않게 경계를 새로 잡는다.
