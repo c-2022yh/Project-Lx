@@ -600,6 +600,9 @@ public class RelicInventoryPanel : MonoBehaviour, IRelicSlotHost
         SetHint(replaced != null
             ? $"{replaced.RelicName} → {relic.RelicName} 교체됨"
             : $"{relic.RelicName} 장착됨");
+
+        // 보주를 처음 장착하면 보주가 말을 건다 (유물창을 닫은 다음).
+        if (relic.Category == RelicCategory.Orb) StoryDialogues.PlayOrbEquip(relic);
     }
 
     private void TryUnequip(RelicData relic)

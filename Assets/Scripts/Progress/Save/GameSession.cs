@@ -203,6 +203,7 @@ public class GameSession : MonoBehaviour
         {
             pendingFirstSave = false;
             StartCoroutine(FirstSaveAfterFrame());
+            StoryDialogues.PlayGameStart();
         }
 
         // 아직 제단을 안 썼으면 처음 들어온 씬의 시작 위치로 돌아오게 한다.
