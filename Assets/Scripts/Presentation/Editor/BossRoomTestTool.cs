@@ -31,6 +31,19 @@ public static class BossRoomTestTool
         Undo.SetCurrentGroupName("보스방 테스트 만들기");
         int group = Undo.GetCurrentGroup();
 
+        GameObject room = CreateRoom(boss, HalfWidth, DoorHeight).gameObject;
+
+        Undo.CollapseUndoOperations(group);
+        Selection.activeGameObject = room;
+        Debug.Log("[BossRoomTestTool] 보스방 테스트를 만들었어요. 플레이어가 빨간 상자 안으로 들어가면 시작합니다. 씬은 저장하지 마세요.", room);
+    }
+
+    /// <summary>
+    /// boss를 가운데 두고 트리거·양쪽 문·BossMarker를 붙인 보스방을 만든다. 보스 테스트 씬 만들기에서도 쓴다.
+    /// </summary>
+    public static BossRoom CreateRoom(EnemyHealth boss, float halfWidth, float doorHeight)
+    {
+        Physics2D.SyncTransforms();   // 방금 만든 바닥도 레이캐스트에 잡히게
         Vector3 center = boss.transform.position;
         float groundY = FindGroundY(center);
 
@@ -53,14 +66,14 @@ public static class BossRoomTestTool
         // 방
         GameObject room = new GameObject("BossRoom_Test");
         Undo.RegisterCreatedObjectUndo(room, "보스방 테스트");
-        room.transform.position = new Vector3(center.x, groundY + DoorHeight * 0.5f, 0f);
+        room.transform.position = new Vector3(center.x, groundY + doorHeight * 0.5f, 0f);
 
         BoxCollider2D trigger = room.AddComponent<BoxCollider2D>();
         trigger.isTrigger = true;
-        trigger.size = new Vector2((HalfWidth - 2f) * 2f, DoorHeight);
+        trigger.size = new Vector2((halfWidth - 2f) * 2f, doorHeight);
 
-        Transform left = CreateDoor("Door_Left", room.transform, new Vector3(center.x - HalfWidth, groundY + DoorHeight * 0.5f, 0f));
-        Transform right = CreateDoor("Door_Right", room.transform, new Vector3(center.x + HalfWidth, groundY + DoorHeight * 0.5f, 0f));
+        Transform left = CreateDoor("Door_Left", room.transform, new Vector3(center.x - halfWidth, groundY + doorHeight * 0.5f, 0f), doorHeight);
+        Transform right = CreateDoor("Door_Right", room.transform, new Vector3(center.x + halfWidth, groundY + doorHeight * 0.5f, 0f), doorHeight);
 
         BossRoom bossRoom = room.AddComponent<BossRoom>();
         SerializedObject roomSo = new SerializedObject(bossRoom);
@@ -69,18 +82,16 @@ public static class BossRoomTestTool
         doors.arraySize = 2;
         doors.GetArrayElementAtIndex(0).objectReferenceValue = left;
         doors.GetArrayElementAtIndex(1).objectReferenceValue = right;
-        roomSo.FindProperty("doorDropHeight").floatValue = DoorHeight;
+        roomSo.FindProperty("doorDropHeight").floatValue = doorHeight;
         roomSo.ApplyModifiedProperties();
 
-        Undo.CollapseUndoOperations(group);
-        Selection.activeGameObject = room;
-        Debug.Log("[BossRoomTestTool] 보스방 테스트를 만들었어요. 플레이어가 빨간 상자 안으로 들어가면 시작합니다. 씬은 저장하지 마세요.", room);
+        return bossRoom;
     }
 
     [MenuItem(MenuPath, true)]
     private static bool CanCreate() => !EditorApplication.isPlaying;
 
-    private static Transform CreateDoor(string name, Transform parent, Vector3 position)
+    private static Transform CreateDoor(string name, Transform parent, Vector3 position, float doorHeight)
     {
         GameObject door = new GameObject(name);
         Undo.RegisterCreatedObjectUndo(door, "보스방 문");
@@ -93,13 +104,13 @@ public static class BossRoomTestTool
         SpriteRenderer sr = door.AddComponent<SpriteRenderer>();
         sr.sprite = AssetDatabase.GetBuiltinExtraResource<Sprite>("UI/Skin/UISprite.psd");
         sr.drawMode = SpriteDrawMode.Sliced;
-        sr.size = new Vector2(1f, DoorHeight);
+        sr.size = new Vector2(1f, doorHeight);
         sr.color = new Color(0.16f, 0.14f, 0.13f, 1f);
         sr.sortingLayerName = "Ground";
         sr.sortingOrder = 5;
 
         BoxCollider2D col = door.AddComponent<BoxCollider2D>();
-        col.size = new Vector2(1f, DoorHeight);
+        col.size = new Vector2(1f, doorHeight);
 
         return door.transform;
     }
