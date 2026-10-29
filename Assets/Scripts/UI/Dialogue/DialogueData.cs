@@ -42,4 +42,27 @@ public class DialogueData : ScriptableObject
     public Line[] lines = new Line[0];
 
     public bool IsEmpty => lines == null || lines.Length == 0;
+
+    /// <summary>
+    /// 이름·대사의 token(예: {보스})을 value로 바꾸고, 초상화가 빈 줄에는 portrait를 넣은 복사본.
+    /// 원본 에셋은 바뀌지 않는다.
+    /// </summary>
+    public DialogueData With(string token, string value, Sprite portrait = null)
+    {
+        DialogueData copy = Instantiate(this);
+        copy.lines = new Line[lines != null ? lines.Length : 0];
+
+        for (int i = 0; i < copy.lines.Length; i++)
+        {
+            Line from = lines[i] ?? new Line();
+            copy.lines[i] = new Line
+            {
+                speaker = (from.speaker ?? "").Replace(token, value ?? ""),
+                text = (from.text ?? "").Replace(token, value ?? ""),
+                portrait = from.portrait != null ? from.portrait : portrait
+            };
+        }
+
+        return copy;
+    }
 }

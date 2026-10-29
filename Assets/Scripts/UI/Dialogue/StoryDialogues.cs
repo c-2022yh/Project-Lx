@@ -7,7 +7,8 @@ using UnityEngine;
 ///   - 유물: 그 유물을 처음 얻으면 (획득 알림창을 닫은 다음)
 ///   - 보주 첫 장착: 보주를 처음으로 장착하면 (유물창을 닫은 다음). 한 번 보면 저장돼서 다시 안 뜬다.
 /// 대사와 이름에 {유물}이라고 쓰면 장착한 보주 이름으로 바뀐다.
-/// 보스를 잡았을 때 대사는 보스방(BossRoom)의 Clear Dialogue 칸에 넣는다.
+/// 보스를 잡았을 때 대사는 보스방(BossRoom)의 Clear Dialogue 칸에 넣는다. 비우면 여기 Boss Clear를 쓴다.
+/// 보스 대사에 {보스}라고 쓰면 그 보스 이름으로 바뀐다.
 /// 칸이 비어 있으면 아무것도 안 뜬다.
 /// </summary>
 [CreateAssetMenu(menuName = "여울잔/스토리 대화 목록", fileName = "StoryDialogues")]
@@ -28,6 +29,12 @@ public class StoryDialogues : ScriptableObject
 
     [Tooltip("보주를 처음 장착하면 (유물창을 닫은 다음). 대사에 {유물}을 쓰면 장착한 보주 이름이 된다.")]
     [SerializeField] private DialogueData firstOrbEquip;
+
+    [Tooltip("보스를 잡으면 (보스방에 따로 넣은 대사가 없을 때). {보스}는 보스 이름이 된다.")]
+    [SerializeField] private DialogueData bossClear;
+
+    /// <summary>보스방에 따로 넣은 대사가 없을 때 쓰는 기본 보스 처치 대사. 없으면 null.</summary>
+    public static DialogueData BossClear => Instance != null ? Instance.bossClear : null;
 
     private const float GameStartDelay = 0.8f;   // 화면이 밝아진 뒤에 뜨게
     private const string FirstOrbFlag = "story.firstOrbEquip";
@@ -78,22 +85,7 @@ public class StoryDialogues : ScriptableObject
     /// <summary>{유물}을 유물 이름으로 바꾸고, 빈 초상화에 보주 얼굴(없으면 유물 아이콘)을 넣은 복사본.</summary>
     private static DialogueData WithRelic(DialogueData source, RelicData relic)
     {
-        DialogueData copy = Instantiate(source);
-        copy.lines = new DialogueData.Line[source.lines.Length];
-
-        for (int i = 0; i < source.lines.Length; i++)
-        {
-            DialogueData.Line from = source.lines[i] ?? new DialogueData.Line();
-            copy.lines[i] = new DialogueData.Line
-            {
-                speaker = (from.speaker ?? "").Replace(RelicToken, relic.RelicName),
-                text = (from.text ?? "").Replace(RelicToken, relic.RelicName),
-                portrait = from.portrait != null ? from.portrait
-                         : relic.OrbSprite != null ? relic.OrbSprite : relic.Icon
-            };
-        }
-
-        return copy;
+        return source.With(RelicToken, relic.RelicName, relic.OrbSprite != null ? relic.OrbSprite : relic.Icon);
     }
 
     public static void PlayForRelic(RelicData relic)

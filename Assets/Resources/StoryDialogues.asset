@@ -15,3 +15,4 @@ MonoBehaviour:
   gameStart: {fileID: 0}
   relics: []
   firstOrbEquip: {fileID: 11400000, guid: bb97aff3f46049548f25ff9f9acc7cec, type: 2}
+  bossClear: {fileID: 11400000, guid: 94bfe514f8ea45e9a7f9a2124ae04ec4, type: 2}
