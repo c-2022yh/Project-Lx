@@ -38,6 +38,7 @@ public class RelicCardUI : MonoBehaviour, IPointerEnterHandler
     public void SetHighlighted(bool on)
     {
         highlighted = on;
+        RelicCardStyle.For(this).SetSelected(on);
     }
 
     //마우스를 올려도 키보드 선택이 그 카드로 따라오게
@@ -72,6 +73,9 @@ public class RelicCardUI : MonoBehaviour, IPointerEnterHandler
         }
 
         gameObject.SetActive(true);
+
+        //10.28 자개 시안대로 카드 꾸미기 (배경색, 테두리, 글자 위치)
+        RelicCardStyle.For(this).Show(currentRelic, iconImage, relicNameText, descriptionText);
 
         //아이콘
         if (iconImage != null)

@@ -24,9 +24,10 @@ public static class LatticeFrame
     /// <summary>
     /// target 창에 테두리를 붙인다. 이미 붙어 있으면 지우고 새로 붙인다.
     /// 창 안의 다른 내용보다 뒤(첫 번째 자식)에 둔다.
+    /// outset이 음수면 창 안쪽으로 들어온다. scale은 모서리·가운데 장식 크기 배율.
     /// </summary>
     public static GameObject Attach(RectTransform target, float height, Color? color = null,
-        float outset = DefaultOutset)
+        float outset = DefaultOutset, float scale = 1f)
     {
         if (target == null) return null;
 
@@ -53,16 +54,17 @@ public static class LatticeFrame
         Image body = NewImage("Body", root.transform, Load("Frame_Lattice"), c);
         body.type = Image.Type.Sliced;
         body.fillCenter = false;
+        body.pixelsPerUnitMultiplier = 1f / Mathf.Max(0.1f, scale);
         Stretch(body.rectTransform);
 
         // 가운데 장식
-        AddOrnament(root.transform, "Frame_Lattice_Top", new Vector2(0.5f, 1f), c);
-        AddOrnament(root.transform, "Frame_Lattice_Bottom", new Vector2(0.5f, 0f), c);
+        AddOrnament(root.transform, "Frame_Lattice_Top", new Vector2(0.5f, 1f), c, scale);
+        AddOrnament(root.transform, "Frame_Lattice_Bottom", new Vector2(0.5f, 0f), c, scale);
 
         if (height + outset * 2f >= MinHeightForSideOrnaments)
         {
-            AddOrnament(root.transform, "Frame_Lattice_Left", new Vector2(0f, 0.5f), c);
-            AddOrnament(root.transform, "Frame_Lattice_Right", new Vector2(1f, 0.5f), c);
+            AddOrnament(root.transform, "Frame_Lattice_Left", new Vector2(0f, 0.5f), c, scale);
+            AddOrnament(root.transform, "Frame_Lattice_Right", new Vector2(1f, 0.5f), c, scale);
         }
 
         return root;
@@ -76,7 +78,7 @@ public static class LatticeFrame
             image.color = color;
     }
 
-    private static void AddOrnament(Transform parent, string sprite, Vector2 anchor, Color color)
+    private static void AddOrnament(Transform parent, string sprite, Vector2 anchor, Color color, float scale)
     {
         Sprite s = Load(sprite);
         Image image = NewImage(sprite.Replace("Frame_Lattice_", "Ornament_"), parent, s, color);
@@ -84,7 +86,7 @@ public static class LatticeFrame
         rt.anchorMin = rt.anchorMax = anchor;
         rt.pivot = anchor;
         rt.anchoredPosition = Vector2.zero;
-        if (s != null) rt.sizeDelta = s.rect.size;
+        if (s != null) rt.sizeDelta = s.rect.size * scale;
     }
 
     private static Image NewImage(string name, Transform parent, Sprite sprite, Color color)

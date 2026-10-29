@@ -100,6 +100,7 @@ public class RelicSelectionPanelUI : MonoBehaviour
             return false;
         }
 
+        RelicSelectionStyle.Apply(transform);
         ShowRandomRelics(validPool);
         isSelectionOpen = true;
         BeginKeyboardSelection();
