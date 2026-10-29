@@ -38,6 +38,7 @@ public sealed class PlayerScreenEffects : MonoBehaviour
     private static PlayerScreenEffects owner;
     private PlayerHealth health;
     private PlayerAwakening awakening;
+    private PlayerAwakeningVisual awakeningVisual;
     private Volume volume;
     private VolumeProfile runtimeProfile;
     private Vignette vignette;
@@ -62,6 +63,7 @@ public sealed class PlayerScreenEffects : MonoBehaviour
     {
         health = GetComponent<PlayerHealth>();
         awakening = GetComponent<PlayerAwakening>();
+        awakeningVisual = GetComponent<PlayerAwakeningVisual>();
         //플레이어와 함께 유지되고 제거되는 자식 오브젝트 생성
         var holder = new GameObject("Player Screen Vignette (Runtime)");
         holder.transform.SetParent(transform, false);
@@ -145,11 +147,20 @@ public sealed class PlayerScreenEffects : MonoBehaviour
         //프레임 시간에 맞춰 부드러운 전환 비율 계산
         float blend = 1f - Mathf.Exp(-Mathf.Max(0.01f, transitionSpeed) * dt);
         //살아 있고 각성 준비 중이거나 각성 유지 중이면 각성 효과 적용
-        bool empowered = !health.IsDead && (awakening.IsAwakening || awakening.IsAwakened);
+        bool followsVisual = awakeningVisual != null && awakeningVisual.UsesIntroSequence;
+        bool empowered = !health.IsDead && (awakening.IsAwakening || awakening.IsAwakened
+            || (followsVisual && awakeningVisual.IsVisualActive));
         //각성 진입 시 타이머 초기화, 종료 시 현재 왜곡 강도 저장
         if (empowered && !wasAwakened) awakeningTime = 0f;
         if (!empowered && wasAwakened) { exitStart = distortion; exitTime = 0f; }
-        if (empowered)
+        if (empowered && followsVisual)
+        {
+            // Match the same release flash; do not trigger another peak when control returns.
+            distortion = Mathf.Lerp(sustainedDistortion, entryDistortion, awakeningVisual.IntroFlashStrength)
+                * awakeningVisual.ScreenEffectWeight;
+            awakeningTime += dt;
+        }
+        else if (empowered)
         {
             //시간을 더하기 전에 계산하여 각성 진입 첫 프레임의 왜곡을 0에서 시작
             float rise = Mathf.Max(0.01f, entryRise);

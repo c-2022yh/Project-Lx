@@ -54,9 +54,6 @@ TagManager:
   - name: Ground
     uniqueID: 3979320971
     locked: 0
-  - name: GroundCover
-    uniqueID: 1691898173
-    locked: 0
   - name: Player
     uniqueID: 841780471
     locked: 0
@@ -71,6 +68,9 @@ TagManager:
     locked: 0
   - name: HiddenAreaCover
     uniqueID: 3117241241
+    locked: 0
+  - name: GroundCover
+    uniqueID: 1691898173
     locked: 0
   - name: UI
     uniqueID: 2061393111

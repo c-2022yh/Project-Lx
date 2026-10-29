@@ -1,0 +1,819 @@
+fileFormatVersion: 2
+guid: 16bab59538c2cb9419631a14a7dfe369
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: -2883740603833034914
+    second: Awakening_Aura_0
+  - first:
+      213: -4675106993958560789
+    second: Awakening_Aura_1
+  - first:
+      213: 8986493450198885310
+    second: Awakening_Aura_2
+  - first:
+      213: 6752085916472147056
+    second: Awakening_Aura_3
+  - first:
+      213: 2908022786600112929
+    second: Awakening_Aura_4
+  - first:
+      213: -2041998563194480410
+    second: Awakening_Aura_5
+  - first:
+      213: -3602489193476930516
+    second: Awakening_Aura_6
+  - first:
+      213: -202820986942330318
+    second: Awakening_Aura_7
+  - first:
+      213: 5947184229967838291
+    second: Awakening_Aura_8
+  - first:
+      213: 4379759302241136557
+    second: Awakening_Aura_9
+  - first:
+      213: 3888809594885236795
+    second: Awakening_Aura_10
+  - first:
+      213: 201191635569546399
+    second: Awakening_Aura_11
+  - first:
+      213: -6961241129034883470
+    second: Awakening_Aura_12
+  - first:
+      213: -6916096327581688470
+    second: Awakening_Aura_13
+  - first:
+      213: -6674475633807891285
+    second: Awakening_Aura_14
+  - first:
+      213: -9000582349198714745
+    second: Awakening_Aura_15
+  - first:
+      213: 4869603255291564069
+    second: Awakening_Aura_16
+  - first:
+      213: 5294331784795363276
+    second: Awakening_Aura_17
+  - first:
+      213: -1781395347331271812
+    second: Awakening_Aura_18
+  - first:
+      213: 1305310069400165417
+    second: Awakening_Aura_19
+  - first:
+      213: 2931291874201630056
+    second: Awakening_Aura_20
+  - first:
+      213: 4016409939836878000
+    second: Awakening_Aura_21
+  - first:
+      213: 8308867413626180220
+    second: Awakening_Aura_22
+  - first:
+      213: 2075991101455531012
+    second: Awakening_Aura_23
+  - first:
+      213: -2827749255694071507
+    second: Awakening_Aura_24
+  - first:
+      213: -495245877080283009
+    second: Awakening_Aura_25
+  - first:
+      213: 4684369763229103134
+    second: Awakening_Aura_26
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 1
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 1
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 400
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: Awakening_Aura_0
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 0
+        width: 563
+        height: 1502
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e5759241335eaf7d0800000000000000
+      internalID: -2883740603833034914
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Awakening_Aura_1
+      rect:
+        serializedVersion: 2
+        x: 562
+        y: 0
+        width: 462
+        height: 1506
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: bebd72275feae1fb0800000000000000
+      internalID: -4675106993958560789
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Awakening_Aura_2
+      rect:
+        serializedVersion: 2
+        x: 582
+        y: 1427
+        width: 9
+        height: 17
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: eb3aa733e2076bc70800000000000000
+      internalID: 8986493450198885310
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Awakening_Aura_3
+      rect:
+        serializedVersion: 2
+        x: 584
+        y: 1387
+        width: 39
+        height: 54
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 07c7d30fd5a34bd50800000000000000
+      internalID: 6752085916472147056
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Awakening_Aura_4
+      rect:
+        serializedVersion: 2
+        x: 574
+        y: 967
+        width: 9
+        height: 9
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1239a0a215f5b5820800000000000000
+      internalID: 2908022786600112929
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Awakening_Aura_5
+      rect:
+        serializedVersion: 2
+        x: 578
+        y: 910
+        width: 13
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6e85fe0302d59a3e0800000000000000
+      internalID: -2041998563194480410
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Awakening_Aura_6
+      rect:
+        serializedVersion: 2
+        x: 590
+        y: 921
+        width: 9
+        height: 15
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c24cf935a23610ec0800000000000000
+      internalID: -3602489193476930516
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Awakening_Aura_7
+      rect:
+        serializedVersion: 2
+        x: 590
+        y: 806
+        width: 27
+        height: 60
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 23aee40136f6f2df0800000000000000
+      internalID: -202820986942330318
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Awakening_Aura_8
+      rect:
+        serializedVersion: 2
+        x: 576
+        y: 464
+        width: 7
+        height: 13
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 35cb9013c84a88250800000000000000
+      internalID: 5947184229967838291
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Awakening_Aura_9
+      rect:
+        serializedVersion: 2
+        x: 580
+        y: 421
+        width: 47
+        height: 86
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: dafabc361e708cc30800000000000000
+      internalID: 4379759302241136557
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Awakening_Aura_10
+      rect:
+        serializedVersion: 2
+        x: 22
+        y: 179
+        width: 9
+        height: 13
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b38e34609b3d7f530800000000000000
+      internalID: 3888809594885236795
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Awakening_Aura_11
+      rect:
+        serializedVersion: 2
+        x: 538
+        y: 167
+        width: 21
+        height: 25
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f9417e10ab6cac200800000000000000
+      internalID: 201191635569546399
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Awakening_Aura_12
+      rect:
+        serializedVersion: 2
+        x: 554
+        y: 175
+        width: 87
+        height: 54
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 27e590c4314b46f90800000000000000
+      internalID: -6961241129034883470
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Awakening_Aura_13
+      rect:
+        serializedVersion: 2
+        x: 566
+        y: 163
+        width: 11
+        height: 15
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a6d1c1a78071500a0800000000000000
+      internalID: -6916096327581688470
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Awakening_Aura_14
+      rect:
+        serializedVersion: 2
+        x: 516
+        y: 139
+        width: 13
+        height: 17
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ba461e026cf7f53a0800000000000000
+      internalID: -6674475633807891285
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Awakening_Aura_15
+      rect:
+        serializedVersion: 2
+        x: 144
+        y: 21
+        width: 9
+        height: 17
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7881c506a02871380800000000000000
+      internalID: -9000582349198714745
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Awakening_Aura_16
+      rect:
+        serializedVersion: 2
+        x: 166
+        y: 21
+        width: 9
+        height: 15
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5205db44c5e449340800000000000000
+      internalID: 4869603255291564069
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Awakening_Aura_17
+      rect:
+        serializedVersion: 2
+        x: 170
+        y: 15
+        width: 21
+        height: 31
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: cc799cb25be397940800000000000000
+      internalID: 5294331784795363276
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Awakening_Aura_18
+      rect:
+        serializedVersion: 2
+        x: 206
+        y: 13
+        width: 23
+        height: 21
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c7339cdae563747e0800000000000000
+      internalID: -1781395347331271812
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Awakening_Aura_19
+      rect:
+        serializedVersion: 2
+        x: 254
+        y: 13
+        width: 41
+        height: 37
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 92c5650a7946d1210800000000000000
+      internalID: 1305310069400165417
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Awakening_Aura_20
+      rect:
+        serializedVersion: 2
+        x: 396
+        y: 21
+        width: 21
+        height: 15
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 865f6cecd6a0ea820800000000000000
+      internalID: 2931291874201630056
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Awakening_Aura_21
+      rect:
+        serializedVersion: 2
+        x: 434
+        y: 15
+        width: 13
+        height: 17
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0bc33587f872db730800000000000000
+      internalID: 4016409939836878000
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Awakening_Aura_22
+      rect:
+        serializedVersion: 2
+        x: 454
+        y: 10
+        width: 27
+        height: 26
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c72d103f3e60f4370800000000000000
+      internalID: 8308867413626180220
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Awakening_Aura_23
+      rect:
+        serializedVersion: 2
+        x: 626
+        y: 17
+        width: 9
+        height: 14
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 40cf02f58e66fcc10800000000000000
+      internalID: 2075991101455531012
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Awakening_Aura_24
+      rect:
+        serializedVersion: 2
+        x: 712
+        y: 12
+        width: 25
+        height: 22
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d29ca74b801d1c8d0800000000000000
+      internalID: -2827749255694071507
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Awakening_Aura_25
+      rect:
+        serializedVersion: 2
+        x: 835
+        y: 0
+        width: 116
+        height: 51
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f78272caf788029f0800000000000000
+      internalID: -495245877080283009
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Awakening_Aura_26
+      rect:
+        serializedVersion: 2
+        x: 950
+        y: 14
+        width: 54
+        height: 32
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e14f9d51b79320140800000000000000
+      internalID: 4684369763229103134
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 5e97eb03825dee720800000000000000
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
+    nameFileIdTable:
+      Awakening_Aura_0: -2883740603833034914
+      Awakening_Aura_1: -4675106993958560789
+      Awakening_Aura_10: 3888809594885236795
+      Awakening_Aura_11: 201191635569546399
+      Awakening_Aura_12: -6961241129034883470
+      Awakening_Aura_13: -6916096327581688470
+      Awakening_Aura_14: -6674475633807891285
+      Awakening_Aura_15: -9000582349198714745
+      Awakening_Aura_16: 4869603255291564069
+      Awakening_Aura_17: 5294331784795363276
+      Awakening_Aura_18: -1781395347331271812
+      Awakening_Aura_19: 1305310069400165417
+      Awakening_Aura_2: 8986493450198885310
+      Awakening_Aura_20: 2931291874201630056
+      Awakening_Aura_21: 4016409939836878000
+      Awakening_Aura_22: 8308867413626180220
+      Awakening_Aura_23: 2075991101455531012
+      Awakening_Aura_24: -2827749255694071507
+      Awakening_Aura_25: -495245877080283009
+      Awakening_Aura_26: 4684369763229103134
+      Awakening_Aura_3: 6752085916472147056
+      Awakening_Aura_4: 2908022786600112929
+      Awakening_Aura_5: -2041998563194480410
+      Awakening_Aura_6: -3602489193476930516
+      Awakening_Aura_7: -202820986942330318
+      Awakening_Aura_8: 5947184229967838291
+      Awakening_Aura_9: 4379759302241136557
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

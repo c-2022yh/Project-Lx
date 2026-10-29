@@ -287,6 +287,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::AttackTrailFlash
   flashMaterial: {fileID: 2100000, guid: ba6fc0f32e784b7b8eef19bc6af3b7c5, type: 2}
-  duration: 0.07
-  brightness: 2
-  tint: {r: 1, g: 1, b: 1, a: 1}
+  duration: 0.2
+  holdTime: 0.06
+  brightness: 2.5
+  tint: {r: 0.55, g: 0.85, b: 1, a: 1}
+  edgeWidth: 3
+  keepVisibleForTesting: 0

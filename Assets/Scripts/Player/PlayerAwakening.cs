@@ -63,6 +63,8 @@ public class PlayerAwakening : MonoBehaviour
     [SerializeField, Min(0f)] private float awakeningEnergyDrainPerSecond = 5f;
 
     [Header("Awakening Color")]
+    [Tooltip("Legacy full-sprite tint. Leave off when using PlayerAwakeningVisual.")]
+    [SerializeField] private bool applySpriteTint = false;
     [SerializeField] private Color normalColor = Color.green;
     [SerializeField] private Color awakenedColor = Color.red;
 
@@ -100,9 +102,14 @@ public class PlayerAwakening : MonoBehaviour
     private OffensiveStats activeOffense;
     private Player activePlayer;
     private Coroutine awakeningCoroutine;
+    private float introStartedAt;
 
     public bool IsAwakened => isAwakened;
     public bool IsAwakening => isAwakening;
+    public float IntroDuration => Mathf.Max(0f, awakeningFreezeTime);
+    public float IntroElapsed => isAwakening
+        ? Mathf.Clamp(Time.time - introStartedAt, 0f, IntroDuration)
+        : isAwakened ? IntroDuration : 0f;
 
     // HUD effects follow the active drain phase, after the awakening intro.
     public bool IsDrainingEnergy => isAwakened
@@ -133,6 +140,7 @@ public class PlayerAwakening : MonoBehaviour
     //각성 연출과 기력 소모를 처리
     private IEnumerator AwakeningRoutine(Player p)
     {
+        introStartedAt = Time.time;
         isAwakening = true;
 
         p.ActionState.EnterAwakening();
@@ -187,7 +195,7 @@ public class PlayerAwakening : MonoBehaviour
 
         ApplyAwakeningCombatBonus(p);
 
-        if (p.sr != null)
+        if (applySpriteTint && p.sr != null)
         {
             p.sr.color = awakenedColor;
         }
@@ -230,7 +238,7 @@ public class PlayerAwakening : MonoBehaviour
         isAwakened = false;
         finisherInProgress = false;
 
-        if (p.sr != null)
+        if (applySpriteTint && p.sr != null)
         {
             p.sr.color = normalColor;
         }
