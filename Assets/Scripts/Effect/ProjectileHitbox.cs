@@ -98,6 +98,9 @@ public class ProjectileHitbox : MonoBehaviour
         //피해 정보 전달
         target.TakeDamage(damageInfo, new Vector2(dir, 0f));
 
+        //히트스탑·카메라 흔들림
+        CombatFeedback.OnPlayerHit(target, dir, damageInfo.isCritical);
+
 
         //맞으면 삭제
         if (destroyOnEnemyHit)
