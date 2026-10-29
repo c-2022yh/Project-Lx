@@ -16,6 +16,9 @@ public class TitleMenuPanel : MonoBehaviour
         // 저장된 설정을 읽어 반영. 타이틀이 게임의 첫 화면이므로 여기가 적절한 자리.
         GameSettings.LoadAndApply();
 
+        // 인트로·아무 키나 누르세요·여우불 메뉴 연출 (10.29 시안). 씬을 고치지 않고 여기서 붙인다.
+        if (GetComponent<TitleIntro>() == null) gameObject.AddComponent<TitleIntro>();
+
         SetVisible(true);
         saveSlotPanel?.SetVisible(false);
         settingsPanel?.SetVisible(false);

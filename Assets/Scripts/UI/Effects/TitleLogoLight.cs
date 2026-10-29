@@ -50,6 +50,25 @@ public class TitleLogoLight : MonoBehaviour
     private float startTime;
     private static readonly int ProgressId = Shader.PropertyToID("_Progress");
     private static readonly int WidthId = Shader.PropertyToID("_Width");
+    private static readonly int RevealId = Shader.PropertyToID("_Reveal");
+    private float shineHoldUntil;
+
+    /// <summary>
+    /// 인트로용: 로고를 왼쪽부터 x(로고 기준 0~1)까지만 보이게 한다. 2 이상이면 전부 보인다.
+    /// 꼬리 흔들기 재질이 없으면 아무것도 안 하고 false.
+    /// </summary>
+    public bool SetReveal(float x)
+    {
+        if (logoMat == null) return false;
+        logoMat.SetFloat(RevealId, x);
+        return true;
+    }
+
+    /// <summary>지나가는 빛을 지금부터 seconds초 동안 멈춘다 (인트로 중에 빛이 지나가지 않게).</summary>
+    public void HoldShine(float seconds)
+    {
+        shineHoldUntil = Time.unscaledTime + seconds;
+    }
 
     private void Awake()
     {
@@ -140,7 +159,8 @@ public class TitleLogoLight : MonoBehaviour
             glow.color = c;
         }
 
-        float cycle = t - firstDelay;
+        // 멈춰 둔 시간이 끝나면 그때부터 다시 센다 (빛이 중간부터 튀어나오지 않게)
+        float cycle = Time.unscaledTime - Mathf.Max(startTime + firstDelay, shineHoldUntil);
 
         if (pathMaterial != null)
         {

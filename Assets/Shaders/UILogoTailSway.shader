@@ -24,6 +24,8 @@
         _Wave ("Delay along tail", Float) = 2.0
         _UseMask ("Use Fox Mask", Float) = 1
         _SwayTime ("Time", Float) = 0
+        _Reveal ("Reveal Edge X (logo UV, 2 = all)", Float) = 2
+        _RevealSoft ("Reveal Softness", Float) = 0.12
 
         _StencilComp ("Stencil Comparison", Float) = 8
         _Stencil ("Stencil ID", Float) = 0
@@ -94,7 +96,7 @@
             float4 _ClipRect;
             float4 _MapST;
             float4 _Root;
-            float _Aspect, _TailStart, _Reach, _Amp, _Speed, _Wave, _UseMask, _SwayTime;
+            float _Aspect, _TailStart, _Reach, _Amp, _Speed, _Wave, _UseMask, _SwayTime, _Reveal, _RevealSoft;
 
             v2f vert(appdata_t v)
             {
@@ -154,6 +156,9 @@
                 color.a = moved.a + still.a * (1.0 - moved.a);
                 color.rgb = (moved.rgb * moved.a + still.rgb * still.a * (1.0 - moved.a)) / max(color.a, 0.0001);
                 color *= i.color;
+
+                // 인트로: 왼쪽부터 붓으로 쓰듯 드러난다 (_Reveal 오른쪽은 안 보임, 경계는 부드럽게)
+                color.a *= saturate((_Reveal - L.x) / max(_RevealSoft, 0.001));
 
                 #ifdef UNITY_UI_CLIP_RECT
                 color.a *= UnityGet2DClipping(i.worldPos.xy, _ClipRect);
