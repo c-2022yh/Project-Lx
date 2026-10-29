@@ -57,7 +57,7 @@ public sealed class VitalConversionVisual : MonoBehaviour
     private ParticleSystem plus;
     private ParticleSystem burst;
     private readonly List<Renderer> renderers = new();
-    private readonly MaterialPropertyBlock properties = new();
+    private MaterialPropertyBlock properties;
     private Volume volume;
     private VolumeProfile profile;
     private float age;
@@ -65,6 +65,11 @@ public sealed class VitalConversionVisual : MonoBehaviour
     private bool completed;
     private float opacity = 1f;
     private const int Segments = 48;
+
+    private void Awake()
+    {
+        properties = new MaterialPropertyBlock();
+    }
 
     public void Begin(Player player, VitalConversionSkillData skill)
     {
