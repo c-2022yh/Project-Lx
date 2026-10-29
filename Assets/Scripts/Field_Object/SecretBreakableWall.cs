@@ -23,6 +23,19 @@ public class SecretBreakableWall : MonoBehaviour
         {
             tilemapSecretWall = GetComponent<Tilemap>();
         }
+
+        RemoveBrokenTiles();
+    }
+
+    // 예전에 부순 타일은 씬을 다시 열어도 없는 상태로 둔다.
+    private void RemoveBrokenTiles()
+    {
+        if (tilemapSecretWall == null) return;
+
+        foreach (Vector3Int cell in FieldObjectState.BrokenTiles(gameObject.scene.name))
+        {
+            if (tilemapSecretWall.HasTile(cell)) tilemapSecretWall.SetTile(cell, null);
+        }
     }
 
     public void HitWallAtWorldPosition(Vector2 worldPosition)
@@ -74,6 +87,7 @@ public class SecretBreakableWall : MonoBehaviour
         // 해당 칸의 타일만 제거한다. Tilemap_SecretWall 전체를 삭제하지 않는다.
         tilemapSecretWall.SetTile(cellPosition, null);
         tilemapSecretWall.RefreshTile(cellPosition);
+        FieldObjectState.MarkTileBroken(gameObject.scene.name, cellPosition);
 
         hitCountByCellPosition.Remove(cellPosition);
 

@@ -46,6 +46,13 @@ public class RelicChest : MonoBehaviour, IInteractable
         if (spriteRenderer == null) spriteRenderer = GetComponentInChildren<SpriteRenderer>();
         if (closedSprite == null && spriteRenderer != null) closedSprite = spriteRenderer.sprite;
         SetSprite(closedSprite);
+
+        //이미 연 상자면 열린 모습으로 두고 다시 못 열게
+        if (FieldObjectState.IsDone(this))
+        {
+            isOpened = true;
+            SetSprite(openedSprite != null ? openedSprite : selectingSprite);
+        }
     }
 
     public void Interact(Player player)
@@ -62,6 +69,7 @@ public class RelicChest : MonoBehaviour, IInteractable
         if (!opened) return;
 
         isOpened = true;
+        FieldObjectState.MarkDone(this);
         relicSelectionPanel.OnSelectionClosed += HandleSelectionClosed;
         SetSprite(selectingSprite != null ? selectingSprite : closedSprite);
 
@@ -97,6 +105,7 @@ public class RelicChest : MonoBehaviour, IInteractable
             return;
         }
 
+        FieldObjectState.MarkDone(this);
         SetSprite(openedSprite != null ? openedSprite : selectingSprite);
         player.ClearInteractable(this);
         ClearNearbyPlayer();

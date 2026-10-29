@@ -18,9 +18,18 @@ public class GameSession : MonoBehaviour
     public static int CurrentSlot { get; private set; } = -1;
     public static bool HasSlot => CurrentSlot >= 0;
 
+    // 죽으면 돌아갈 곳. 슬롯과 상관없이 마지막으로 쓴 제단(없으면 처음 들어온 씬의 시작 위치).
+    private static string respawnScene;
+    private static Vector2 respawnPos;
+
+    public static bool HasRespawn => !string.IsNullOrEmpty(respawnScene);
+    public static string RespawnScene => respawnScene;
+    public static Vector2 RespawnPosition => respawnPos;
+
     private SaveData data;           // 현재 슬롯의 최신 저장 내용
     private bool pendingFirstSave;   // 새 게임: 첫 게임 씬이 뜨면 바로 저장
     private bool pendingRestore;     // 이어하기: 첫 게임 씬이 뜨면 위치/스킬 복구
+    private bool pendingRespawn;     // 사망 리스폰: 제단 씬이 뜨면 제단 위치로
 
 #if UNITY_EDITOR
     [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
@@ -28,6 +37,8 @@ public class GameSession : MonoBehaviour
     {
         instance = null;
         CurrentSlot = -1;
+        respawnScene = null;
+        respawnPos = Vector2.zero;
     }
 #endif
 
@@ -80,6 +91,7 @@ public class GameSession : MonoBehaviour
         GameSession s = EnsureInstance();
         CurrentSlot = slot;
         RunState.StartNewRun();
+        ClearRespawn();
         s.data = new SaveData { sceneName = GameFlow.GameplaySceneName };
         s.pendingFirstSave = true;
         s.pendingRestore = false;
@@ -104,6 +116,8 @@ public class GameSession : MonoBehaviour
         s.pendingRestore = true;
 
         string scene = string.IsNullOrEmpty(loaded.sceneName) ? GameFlow.GameplaySceneName : loaded.sceneName;
+        if (loaded.hasShrine) SetRespawn(scene, new Vector2(loaded.shrineX, loaded.shrineY));
+        else ClearRespawn();
         Time.timeScale = 1f;
         SceneManager.LoadScene(scene);
     }
@@ -111,6 +125,9 @@ public class GameSession : MonoBehaviour
     /// <summary>제단 활성화/휴식. 이어하기 위치를 이 제단으로 바꾸고 저장한다.</summary>
     public static void SaveAtShrine(Vector2 respawnPosition)
     {
+        // 리스폰 위치는 슬롯이 없어도(에디터에서 바로 재생) 갱신한다.
+        SetRespawn(SceneManager.GetActiveScene().name, respawnPosition);
+
         if (!HasSlot || instance == null || instance.data == null) return;
         SaveData d = instance.data;
         d.sceneName = SceneManager.GetActiveScene().name;
@@ -127,7 +144,28 @@ public class GameSession : MonoBehaviour
         GameFlow.GoToTitle();
     }
 
+    /// <summary>
+    /// PlayerRespawn이 제단 씬을 불러오기 직전에 부른다.
+    /// 씬이 뜨자마자(카메라가 잡기 전에) 플레이어를 제단 위치로 옮긴다.
+    /// </summary>
+    public static void BeginRespawnLoad()
+    {
+        EnsureInstance().pendingRespawn = true;
+    }
+
     // ───────────── 내부 ─────────────
+
+    private static void SetRespawn(string scene, Vector2 position)
+    {
+        respawnScene = scene;
+        respawnPos = position;
+    }
+
+    private static void ClearRespawn()
+    {
+        respawnScene = null;
+        respawnPos = Vector2.zero;
+    }
 
     private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
@@ -138,8 +176,15 @@ public class GameSession : MonoBehaviour
             if (leftover != null) Destroy(leftover.gameObject);
             CurrentSlot = -1;
             data = null;
-            pendingFirstSave = pendingRestore = false;
+            pendingFirstSave = pendingRestore = pendingRespawn = false;
+            ClearRespawn();
             return;
+        }
+
+        if (pendingRespawn)
+        {
+            pendingRespawn = false;
+            if (scene.name == respawnScene) PlacePlayer(respawnPos);
         }
 
         if (pendingRestore)
@@ -152,6 +197,28 @@ public class GameSession : MonoBehaviour
         {
             pendingFirstSave = false;
             StartCoroutine(FirstSaveAfterFrame());
+        }
+
+        // 아직 제단을 안 썼으면 처음 들어온 씬의 시작 위치로 돌아오게 한다.
+        if (!HasRespawn)
+        {
+            Player player = FindFirstObjectByType<Player>();
+            if (player != null) SetRespawn(scene.name, player.transform.position);
+        }
+
+        RestoreShrineVisual(scene);
+    }
+
+    // 마지막으로 쓴 제단이 이 씬에 있으면 켜진 상태로 보이게 한다.
+    private static void RestoreShrineVisual(Scene scene)
+    {
+        if (!HasRespawn || scene.name != respawnScene) return;
+        foreach (Shrine shrine in FindObjectsByType<Shrine>(FindObjectsSortMode.None))
+        {
+            if (shrine.gameObject.scene != scene) continue;
+            if (Vector2.Distance(shrine.RespawnPosition, respawnPos) > 0.5f) continue;
+            shrine.RestoreActive();
+            break;
         }
     }
 
@@ -167,10 +234,14 @@ public class GameSession : MonoBehaviour
     private void PlaceAtShrine()
     {
         if (data == null || !data.hasShrine) return;
+        PlacePlayer(new Vector2(data.shrineX, data.shrineY));
+    }
+
+    private static void PlacePlayer(Vector2 pos)
+    {
         Player player = FindFirstObjectByType<Player>();
         if (player == null) return;
 
-        Vector2 pos = new Vector2(data.shrineX, data.shrineY);
         player.transform.position = pos;
         Rigidbody2D rb = player.GetComponent<Rigidbody2D>();
         if (rb != null)
