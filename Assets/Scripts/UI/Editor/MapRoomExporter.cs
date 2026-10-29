@@ -39,7 +39,7 @@ public static class MapRoomExporter
     private class SceneRoom
     {
         public string Name;
-        public Texture2D Image;
+        public byte[] Png;     // 그림은 바로 PNG로 바꿔 둔다. 씬을 바꾸면 메모리의 텍스처가 지워지기 때문.
         public Vector2 WorldMin;
         public Vector2 WorldSize;
         public Rect Solid;     // 막힌 칸의 범위 (월드)
@@ -194,7 +194,9 @@ public static class MapRoomExporter
 
         room.WorldMin = origin;
         room.WorldSize = new Vector2(w, h);
-        room.Image = Bake(inside, blocked, w, h, name.GetHashCode());
+        Texture2D tex = Bake(inside, blocked, w, h, name.GetHashCode());
+        room.Png = tex.EncodeToPNG();
+        Object.DestroyImmediate(tex);
         return room;
     }
 
@@ -474,8 +476,7 @@ public static class MapRoomExporter
         foreach (SceneRoom r in rooms)
         {
             string path = $"{OutputFolder}/{r.Name}_room.png";
-            File.WriteAllBytes(path, r.Image.EncodeToPNG());
-            Object.DestroyImmediate(r.Image);
+            File.WriteAllBytes(path, r.Png);
             AssetDatabase.ImportAsset(path, ImportAssetOptions.ForceUpdate);
 
             TextureImporter ti = (TextureImporter)AssetImporter.GetAtPath(path);
