@@ -40,16 +40,26 @@ MonoBehaviour:
     atlasMin: {x: 383.3, y: 53.1}
   - sceneName: F_01
     image: {fileID: 21300000, guid: d719e4994ecedf842ac812da7c9591ff, type: 3}
-    worldMin: {x: -29, y: -44}
-    worldSize: {x: 232, y: 100}
+    worldMin: {x: -29, y: -43}
+    worldSize: {x: 251, y: 99}
     atlasMin: {x: 453.3, y: 0}
   - sceneName: F_02
     image: {fileID: 21300000, guid: 2e732130eb234f647b9945f7517188ce, type: 3}
-    worldMin: {x: -19, y: 13}
-    worldSize: {x: 435, y: 170}
-    atlasMin: {x: 444.3, y: -164.4}
+    worldMin: {x: 79, y: 34}
+    worldSize: {x: 337, y: 149}
+    atlasMin: {x: 542.3, y: -144.5}
   - sceneName: Tutorial
     image: {fileID: 21300000, guid: 741538eead9f926419a1e7a585360feb, type: 3}
-    worldMin: {x: -23, y: 12}
-    worldSize: {x: 51, y: 25}
-    atlasMin: {x: 513.8, y: 94}
+    worldMin: {x: -23, y: 5}
+    worldSize: {x: 54, y: 47}
+    atlasMin: {x: 404.8, y: 48.5}
+  - sceneName: F_03
+    image: {fileID: 21300000, guid: d2e011fdb8a25874994602056d6c23d4, type: 3}
+    worldMin: {x: -6, y: -19}
+    worldSize: {x: 106, y: 34}
+    atlasMin: {x: 442.3, y: -119.5}
+  - sceneName: F_04
+    image: {fileID: 21300000, guid: 14d6eba1c2c99b149a71b5d9de3590d7, type: 3}
+    worldMin: {x: 9, y: -7}
+    worldSize: {x: 171, y: 90}
+    atlasMin: {x: 698.89996, y: 9.799999}
