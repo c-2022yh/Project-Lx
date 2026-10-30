@@ -15,6 +15,12 @@ public sealed class ScorchedEarthProjectile : MonoBehaviour
     private bool noReplacement;
     private Action onResolved;
     private SoundHandle flightAudio;
+    private ScorchedEarthProjectileVisual visual;
+
+    private void Awake()
+    {
+        visual = GetComponent<ScorchedEarthProjectileVisual>();
+    }
 
     public void Launch(ScorchedEarthSkillData.BarrageSettings config, LayerMask enemies,
         DamageInfo preparedDamage, Enemy initialTarget, Vector2 outward,
@@ -29,20 +35,7 @@ public sealed class ScorchedEarthProjectile : MonoBehaviour
         launched = true;
         flightAudio.Stop();
         flightAudio = GameAudio.PlayLoop(settings.flightLoop, transform);
-        SpriteRenderer sprite = GetComponentInChildren<SpriteRenderer>();
-        if (sprite != null)
-        {
-            TrailRenderer trail = gameObject.AddComponent<TrailRenderer>();
-            trail.sharedMaterial = sprite.sharedMaterial;
-            trail.time = 0.18f;
-            trail.startWidth = 0.12f;
-            trail.endWidth = 0f;
-            trail.startColor = new Color(1f, 0.12f, 0.04f, 0.7f);
-            trail.endColor = new Color(1f, 0.02f, 0f, 0f);
-            trail.minVertexDistance = 0.04f;
-            trail.sortingLayerID = sprite.sortingLayerID;
-            trail.sortingOrder = sprite.sortingOrder - 1;
-        }
+        if (visual != null && visual.IsReady) visual.BeginFlight();
     }
 
     private void Update()
@@ -100,7 +93,8 @@ public sealed class ScorchedEarthProjectile : MonoBehaviour
         if (ScorchedEarthTargeting.IsValid(directHit))
         {
             directHit.TakeDamage(damage, direction);
-            SpawnEffect(settings.regularHitEffectPrefab);
+            if (visual != null && visual.IsReady) visual.PlayImpact();
+            else SpawnEffect(settings.regularHitEffectPrefab);
         }
         NotifyResolved();
         Destroy(gameObject);

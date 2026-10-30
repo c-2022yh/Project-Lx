@@ -25,6 +25,8 @@ public class ScorchedEarthSkillData : SkillData
         [Min(0f)] public float formationRadius = 1.2f;
         [Range(0f, 360f)] public float formationArc = 150f;
         [Min(0f)] public float preparationDuration = 0.15f;
+        [Tooltip("Seconds between projectile launches. 0 launches the volley simultaneously.")]
+        [Min(0f)] public float launchInterval = 0.025f;
 
         [Header("Flight")]
         [Min(0f)] public float outwardDuration = 0.04f;

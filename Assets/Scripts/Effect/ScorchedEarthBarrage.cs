@@ -58,7 +58,7 @@ public sealed class ScorchedEarthBarrage : MonoBehaviour
 
     private Vector2 FormationDirection(int index)
     {
-        // Spread the simultaneous volley across an arc behind the player.
+        // Alternate low/high slots across the arc behind the player.
         int count = waiting.Count;
         int slot = index % 2 == 0 ? index / 2 : count - 1 - index / 2;
         float angle = Mathf.Lerp(-settings.formationArc * 0.5f,
@@ -97,10 +97,12 @@ public sealed class ScorchedEarthBarrage : MonoBehaviour
                 OnProjectileResolved();
                 continue;
             }
+            waiting[i] = null; // Already-launched shots are independent of cancellation.
             audioSession?.Release(projectile.transform.position);
             projectile.Launch(settings, enemyLayer, damage.regular,
                 target, FormationDirection(i), OnProjectileResolved);
-            waiting[i] = null;
+            if (i + 1 < waiting.Count && settings.launchInterval > 0f)
+                yield return new WaitForSeconds(settings.launchInterval);
         }
         ClearPreparation();
         while (!completed) yield return null;
