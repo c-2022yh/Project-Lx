@@ -44,6 +44,14 @@ public class BossRoom : MonoBehaviour
     [SerializeField, Min(0f)] private float clearSlowSeconds = 1.1f;
     [SerializeField, Min(0f)] private float unlockDelay = 1.4f;
 
+    [Header("Story")]
+    [Tooltip("보스를 잡은 뒤 뜨는 대화. 비우면 Resources/StoryDialogues의 Boss Clear를 쓴다. 다 읽어야 문이 열린다.\n대사에 {보스}라고 쓰면 보스 이름이 된다.")]
+    [SerializeField] private DialogueData clearDialogue;
+    [Tooltip("대화 전에 \"격파\" 카드를 띄운다.")]
+    [SerializeField] private bool showDefeatCard = true;
+
+    private const float DefeatCardSeconds = 1.8f;
+
     private enum State { Idle, Intro, Fighting, Cleared }
 
     private State state = State.Idle;
@@ -53,6 +61,7 @@ public class BossRoom : MonoBehaviour
     private PlayerHealth playerHealth;
     private Coroutine routine;
     private bool shownCardOnce;
+    private string bossDisplayName;
 
     public bool IsCleared => state == State.Cleared;
 
@@ -115,6 +124,7 @@ public class BossRoom : MonoBehaviour
 
         BossMarker marker = boss.GetComponent<BossMarker>();
         string bossName = marker != null ? marker.BossName : boss.name;
+        bossDisplayName = bossName;
         string bossTitle = marker != null ? marker.BossTitle : "";
 
         // 두 번째 도전부터는 카드를 짧게
@@ -154,6 +164,22 @@ public class BossRoom : MonoBehaviour
         BossHealthBarUI.Hide();
 
         yield return new WaitForSecondsRealtime(unlockDelay);
+
+        // 격파 카드 → 쓰러진 보스의 마지막 말
+        DialogueData dialogue = clearDialogue != null ? clearDialogue : StoryDialogues.BossClear;
+        if (dialogue != null)
+        {
+            string shownName = string.IsNullOrEmpty(bossDisplayName) ? "보스" : bossDisplayName;
+
+            if (showDefeatCard)
+            {
+                BossTitleCard.Show("격 파", shownName, DefeatCardSeconds);
+                yield return new WaitForSecondsRealtime(DefeatCardSeconds + 0.3f);
+            }
+
+            DialogueBox.Play(dialogue.With("{보스}", shownName));
+            while (DialogueBox.IsBusy) yield return null;
+        }
 
         if (useRoomCamera) SetRoomCamera(false);
         yield return MoveDoors(false);

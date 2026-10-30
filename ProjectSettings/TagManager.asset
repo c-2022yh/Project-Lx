@@ -75,6 +75,12 @@ TagManager:
   - name: UI
     uniqueID: 2061393111
     locked: 0
+  - name: New Layer 12
+    uniqueID: 2762006561
+    locked: 0
+  - name: New Layer 13
+    uniqueID: 1720823097
+    locked: 0
   m_RenderingLayers:
   - Default
   m_MigratedRenderPipelines: []
