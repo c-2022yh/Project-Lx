@@ -38,7 +38,7 @@ public class StoryDialogues : ScriptableObject
     [Tooltip("까만 화면에 한 줄씩 떠오르는 글. 줄(Line)마다 하나씩. 이름·초상화는 안 쓴다.")]
     [SerializeField] private DialogueData introNarration;
 
-    [Tooltip("동굴에서 눈뜰 때 화면에 잠깐 뜨는 한마디 (첫 줄만 쓴다)")]
+    [Tooltip("동굴에서 눈뜬 캐릭터의 첫마디. 대화창 모양이면 대화창으로, 내레이션 모양이면 화면 가운데 글(첫 줄만)로 나온다.")]
     [SerializeField] private DialogueData introWake;
 
     [Tooltip("보주가 처음 말을 거는 대사 (대화창)")]

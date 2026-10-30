@@ -12,9 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8058562ecd1d4134bdee9babd8507055, type: 3}
   m_Name: Dialogue_IntroWake
   m_EditorClassIdentifier: 
-  style: 1
+  style: 0
   tint: 0
   lines:
-  - speaker: ""
-    portrait: {fileID: 0}
+  - speaker: "???"
+    portrait: {fileID: 21300000, guid: b8326dea0e744a30b9b9ee313f63ad30, type: 3}
     text: "\u2026\uCC28\uAC11\uB2E4."

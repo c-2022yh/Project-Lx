@@ -157,8 +157,20 @@ public class IntroCutscene : MonoBehaviour
         yield return Fade(curtain, 1f, 0f, RevealTime);
         if (skip) { Leave(); yield break; }
 
+        // 캐릭터의 첫마디 ("…차갑다."). 대화창으로 띄운다. 내레이션 모양으로 바꾸면 화면 가운데 글로 나온다.
         DialogueData wake = StoryDialogues.IntroWake;
-        if (wake != null && !wake.IsEmpty) yield return ShowLine(wake.lines[0].text, 165f);
+        if (wake != null && !wake.IsEmpty)
+        {
+            if (wake.style == DialogueData.Style.Box)
+            {
+                skipHint.enabled = false;
+                DialogueBox.Play(wake);
+                yield return null;
+                while (DialogueBox.IsBusy) yield return null;
+                skipHint.enabled = true;
+            }
+            else yield return ShowLine(wake.lines[0].text, 165f);
+        }
         yield return Wait(0.3f);
         if (skip) { Leave(); yield break; }
 
