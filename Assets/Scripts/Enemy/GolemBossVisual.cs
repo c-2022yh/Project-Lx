@@ -33,6 +33,7 @@ public class GolemBossVisual : MonoBehaviour
     private float progress;
     private int facing = 1;
     private bool singleArm;
+    private bool presentationVisible = true;
     private static Sprite square;
 
     // A code-generated white primitive, shared by indicators and placeholder parts.
@@ -64,6 +65,14 @@ public class GolemBossVisual : MonoBehaviour
 
     private void Awake()
     {
+        // Runtime clones inherit the already-generated parts. Rebuild only these owned parts once.
+        foreach (string partName in new[] { "Placeholder Left Arm", "Placeholder Right Arm", "Placeholder Core", "Boss HP Background", "Boss HP" })
+        {
+            Transform previous = transform.Find(partName);
+            if (previous == null) continue;
+            previous.gameObject.SetActive(false);
+            Destroy(previous.gameObject);
+        }
         body = GetComponent<SpriteRenderer>();
         health = GetComponent<EnemyHealth>();
         leftArm = MakeRectangle("Placeholder Left Arm", transform, new Color(0.38f, 0.42f, 0.46f), 1);
@@ -74,6 +83,16 @@ public class GolemBossVisual : MonoBehaviour
     }
 
     private void OnEnable() => SetPose(GolemBossPose.Idle);
+
+    public void SetPresentationVisible(bool visible)
+    {
+        presentationVisible = visible;
+        // Another component's OnEnable can run before this component's Awake.
+        if (body == null) body = GetComponent<SpriteRenderer>();
+        body.enabled = visible;
+        foreach (var part in new[] { leftArm, rightArm, core, barBack, barFill })
+            if (part != null) part.gameObject.SetActive(visible);
+    }
 
     public void SetPose(GolemBossPose next, float normalizedTime = 0f, int direction = 1, Sprite[] sprites = null, bool oneArm = false)
     {
@@ -86,6 +105,7 @@ public class GolemBossVisual : MonoBehaviour
 
     private void LateUpdate()
     {
+        if (!presentationVisible) { body.enabled = false; return; }
         if (health.IsDead)
         {
             leftArm.enabled = rightArm.enabled = core.enabled = false;

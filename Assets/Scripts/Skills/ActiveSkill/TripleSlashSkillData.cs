@@ -16,6 +16,24 @@ public class TripleSlashData : AttackSkillData
     public float[] slashRotations = new float[] { 35f, -25f, -60f };
     public float slashInterval = 0.08f;
 
+    [Header("Starlight Presentation")]
+    public SlashSkillVisual starlightPrefab;
+
+    protected override IEnumerator WaitForWindup(Player p)
+    {
+        if (p != null && starlightPrefab != null && starlightPrefab.IsConfigured)
+            Instantiate(starlightPrefab).BeginPreparation(p, this);
+        yield return base.WaitForWindup(p);
+    }
+
+    public override void OnCastCancelled(Player p)
+    {
+        base.OnCastCancelled(p);
+        if (p == null) return;
+        foreach (var visual in p.GetComponentsInChildren<SlashSkillVisual>())
+            if (visual.PreparingSkill == this) visual.CancelPreparation();
+    }
+
 
     public override IEnumerator ProcessSkill(Player p)
     {
@@ -32,7 +50,7 @@ public class TripleSlashData : AttackSkillData
             //공격 정보 생성
             DamageInfo damageInfo = CreateDamageInfo(p);
 
-            SpawnSlashEffect(p, dir, slashRotations[i], damageInfo);
+            SpawnSlashEffect(p, dir, slashRotations[i], damageInfo, i == slashRotations.Length - 1);
             yield return new WaitForSeconds(slashInterval);
         }
 
@@ -49,7 +67,7 @@ public class TripleSlashData : AttackSkillData
     }
 
     //베기 이펙트 소환하기
-    private void SpawnSlashEffect(Player p, float dir, float rotationZ, DamageInfo damageInfo)
+    private void SpawnSlashEffect(Player p, float dir, float rotationZ, DamageInfo damageInfo, bool isFinisher)
     {
         if (slashEffectPrefab == null) return;
 
@@ -65,6 +83,11 @@ public class TripleSlashData : AttackSkillData
         //플레이어가 바라보는 방향으로
         SpriteRenderer sr = effectObj.GetComponentInChildren<SpriteRenderer>();
         if (sr != null) sr.flipX = dir < 0f;
+        if (starlightPrefab != null && starlightPrefab.IsConfigured)
+        {
+            Instantiate(starlightPrefab).PlaySlash(spawnPos, rotation, effectScale, dir, isFinisher, sr);
+            Instantiate(starlightPrefab).PlayPlayerPulse(p, isFinisher);
+        }
 
 
         //히트박스 생성하면서 공격 적중 정보 전달
@@ -73,7 +96,19 @@ public class TripleSlashData : AttackSkillData
         if (hitbox != null)
         {
             PlayerAttack playerAttack = p.GetComponent<PlayerAttack>();
-            hitbox.SetAttackInfo(damageInfo, dir, playerAttack.NotifyAttackHit);
+            hitbox.SetAttackInfo(damageInfo, dir, (target, info) =>
+            {
+                playerAttack?.NotifyAttackHit(target, info);
+                if (starlightPrefab == null || !starlightPrefab.IsConfigured) return;
+                Vector3 impactPosition = spawnPos;
+                Component component = target as Component;
+                if (component != null)
+                {
+                    Collider2D targetCollider = component.GetComponentInChildren<Collider2D>();
+                    impactPosition = targetCollider != null ? (Vector3)targetCollider.ClosestPoint(spawnPos) : component.transform.position;
+                }
+                Instantiate(starlightPrefab).PlayImpact(impactPosition, isFinisher);
+            });
             
         }
 

@@ -33,7 +33,7 @@ MonoBehaviour:
     bonusPenetration: 0
     bonusDamageAmplification: 0
   knockbackDirection: {x: 1, y: 0}
-  slashEffectPrefab: {fileID: 3545481630792328146, guid: 94f295d40691486438e6c60e511b79e0, type: 3}
+  slashEffectPrefab: {fileID: 3545481630792328146, guid: ede8dcf63f48424680405390ef7d2ffc, type: 3}
   effectOffset: {x: 2, y: 0}
   effectScale: {x: 1.5, y: 1.5, z: 1}
   effectLifeTime: 0.3
@@ -42,3 +42,4 @@ MonoBehaviour:
   - 40
   - 0
   slashInterval: 0.1
+  starlightPrefab: {fileID: 710320003, guid: d05b4310e4704d90ae6920bf68f03d7b, type: 3}

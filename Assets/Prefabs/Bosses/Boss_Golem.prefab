@@ -471,6 +471,12 @@ MonoBehaviour:
   rockInterval: 0.45
   rockSprite: {fileID: 0}
   rockDropHeight: 7
+  splitEnabled: 1
+  fragmentScale: 0.65
+  splitDistance: 2.5
+  fragmentMoveSpeed: 1
+  fragmentStopDistance: 2.2
+  isFragment: 0
   phaseTwoHealth: 0.5
   phaseChangeTime: 1.6
   chainRecovery: 0.45

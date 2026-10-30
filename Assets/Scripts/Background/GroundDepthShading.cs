@@ -28,7 +28,9 @@ public sealed class GroundDepthShading : MonoBehaviour
     private Tilemap tilemap;
     private TilemapRenderer tileRenderer;
     private Texture2D depthMask;
-    private Material sourceMaterial;
+    // Keep the real asset through scene backups and script/domain reloads. The
+    // generated preview material must never become the only material reference.
+    [SerializeField, HideInInspector] private Material sourceMaterial;
     private Material depthMaterial;
     private bool previewSuspendedForSave;
     private BoundsInt maskBounds;
@@ -46,7 +48,18 @@ public sealed class GroundDepthShading : MonoBehaviour
     {
         tilemap = GetComponent<Tilemap>();
         tileRenderer = GetComponent<TilemapRenderer>();
-        sourceMaterial = tileRenderer.sharedMaterial;
+        Material assigned = tileRenderer.sharedMaterial;
+        if (assigned != null && (assigned.hideFlags & HideFlags.DontSaveInEditor) == 0)
+            sourceMaterial = assigned;
+#if UNITY_EDITOR
+        // Repair scenes that were backed up with a missing temporary material by
+        // the previous implementation, before the persistent reference existed.
+        if (sourceMaterial == null)
+            sourceMaterial = UnityEditor.AssetDatabase.LoadAssetAtPath<Material>("Assets/Materials/M_GroundDepthLit.mat");
+        previewSuspendedForSave = UnityEditor.EditorApplication.isPlaying !=
+            UnityEditor.EditorApplication.isPlayingOrWillChangePlaymode;
+#endif
+        if (sourceMaterial != null) tileRenderer.sharedMaterial = sourceMaterial;
         // A renderer-wide property block replaces Tilemap's per-texture draw data in
         // Individual mode. Clear the block left by older versions of this component.
         tileRenderer.SetPropertyBlock(null);
@@ -204,7 +217,7 @@ public sealed class GroundDepthShading : MonoBehaviour
     private bool EnsureMaterial()
     {
         Material current = tileRenderer.sharedMaterial;
-        if (current != depthMaterial && current != sourceMaterial)
+        if (current != null && current != depthMaterial && current != sourceMaterial)
         {
             ReleaseMaterial();
             sourceMaterial = current;
@@ -242,6 +255,10 @@ public sealed class GroundDepthShading : MonoBehaviour
 
     internal void ResumePreviewAfterSave()
     {
+        // A delayed save callback can run while Unity is making a Play Mode
+        // backup. Wait for EnteredPlayMode/EnteredEditMode before reassigning a clone.
+        if (UnityEditor.EditorApplication.isPlaying !=
+            UnityEditor.EditorApplication.isPlayingOrWillChangePlaymode) return;
         previewSuspendedForSave = false;
         if (isActiveAndEnabled && depthMask != null) ApplyProperties();
     }
@@ -261,6 +278,25 @@ public sealed class GroundDepthShading : MonoBehaviour
 // scenes and prefabs. Rendering resumes on the next editor callback after saving.
 internal sealed class GroundDepthShadingSaveProcessor : UnityEditor.AssetModificationProcessor
 {
+    [UnityEditor.InitializeOnLoadMethod]
+    private static void Initialize()
+    {
+        UnityEditor.EditorApplication.playModeStateChanged -= OnPlayModeChanged;
+        UnityEditor.EditorApplication.playModeStateChanged += OnPlayModeChanged;
+    }
+
+    private static void OnPlayModeChanged(UnityEditor.PlayModeStateChange state)
+    {
+        bool suspend = state == UnityEditor.PlayModeStateChange.ExitingEditMode ||
+            state == UnityEditor.PlayModeStateChange.ExitingPlayMode;
+        foreach (GroundDepthShading preview in Resources.FindObjectsOfTypeAll<GroundDepthShading>())
+        {
+            if (!preview.isActiveAndEnabled) continue;
+            if (suspend) preview.SuspendPreviewForSave();
+            else preview.ResumePreviewAfterSave();
+        }
+    }
+
     private static string[] OnWillSaveAssets(string[] paths)
     {
         GroundDepthShading[] previews = Resources.FindObjectsOfTypeAll<GroundDepthShading>();
