@@ -56,6 +56,9 @@ public static class MapRoomExporter
 
     private const string InProgressFolder = "Assets/Scenes/InProgress";
 
+    /// <summary>지도에 넣지 않는 씬 (전투 테스트 씬 등). 이름만 적으면 된다.</summary>
+    private static readonly HashSet<string> Excluded = new HashSet<string> { "Title", "Panyong_Combat_" };
+
     /// <summary>
     /// 뽑을 씬 목록: 빌드 목록의 켜진 씬(타이틀 제외) + InProgress 폴더의 F_ 맵.
     /// 10.30: 새 맵(F_03, F_04)이 아직 빌드 목록에 없어서 InProgress 폴더도 같이 본다. F_base는 틀이라 뺀다.
@@ -69,7 +72,7 @@ public static class MapRoomExporter
         {
             if (!s.enabled) continue;
             string name = Path.GetFileNameWithoutExtension(s.path);
-            if (name == "Title" || !names.Add(name)) continue;
+            if (Excluded.Contains(name) || !names.Add(name)) continue;
             paths.Add(s.path);
         }
 
@@ -79,7 +82,7 @@ public static class MapRoomExporter
             {
                 string path = AssetDatabase.GUIDToAssetPath(guid);
                 string name = Path.GetFileNameWithoutExtension(path);
-                if (!name.StartsWith("F_") || name == "F_base") continue;
+                if (!name.StartsWith("F_") || name == "F_base" || Excluded.Contains(name)) continue;
                 if (Path.GetDirectoryName(path).Replace('\\', '/') != InProgressFolder) continue;
                 if (names.Add(name)) paths.Add(path);
             }
