@@ -13,4 +13,4 @@ MonoBehaviour:
   m_Name: RFX_Thunder_Critical_Up
   m_EditorClassIdentifier: Assembly-CSharp::StatRelicEffect
   statType: 4
-  amount: 20
+  amount: 0.2

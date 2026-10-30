@@ -104,6 +104,7 @@ public class RelicSelectionPanelUI : MonoBehaviour
         ShowRandomRelics(validPool);
         isSelectionOpen = true;
         BeginKeyboardSelection();
+        GameAudio.Play(GameSound.UIChestOpen);
         return true;
     }
 

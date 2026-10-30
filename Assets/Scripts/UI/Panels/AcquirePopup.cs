@@ -266,6 +266,7 @@ public class AcquirePopup : MonoBehaviour
 
         if (group != null) group.alpha = 0f;
         root.SetActive(true);
+        GameAudio.Play(GameSound.UIAcquire);
 
         if (UIManager.Instance != null) UIManager.Instance.RefreshInputBlock();
     }
