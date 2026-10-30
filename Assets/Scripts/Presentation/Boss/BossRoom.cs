@@ -58,6 +58,8 @@ public class BossRoom : MonoBehaviour
     [SerializeField] private bool moonPresentation = true;
     [Tooltip("격파 뒤 처음 모습을 드러내는 보주 그림. 비우면 코드로 그린 빛 구슬을 쓴다.")]
     [SerializeField] private Sprite revealOrbSprite;
+    [Tooltip("HP바에서 2페이즈가 되는 자리(체력 비율). 골렘의 Phase Two Health와 맞춰 둔다.")]
+    [SerializeField, Range(0f, 1f)] private float phaseMark = 0.5f;
 
     private const float DefeatCardSeconds = 1.8f;
 
@@ -175,7 +177,7 @@ public class BossRoom : MonoBehaviour
             golem.onPhaseTwo.AddListener(HandlePhaseTwo);
         }
 
-        BossHealthBarUI.Show(boss, bossName, golem != null ? golem.PhaseTwoHealth : -1f);
+        BossHealthBarUI.Show(boss, bossName, golem != null ? phaseMark : -1f);
         state = State.Fighting;
 
         if (moonPresentation)
