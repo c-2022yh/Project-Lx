@@ -39,17 +39,9 @@ public class TitleMenuPanel : MonoBehaviour
     /// <summary>"가이드"</summary>
     public void OnGuideButton()
     {
-        if (controlGuidePanel == null)
-        {
-            Debug.LogWarning("[TitleMenuPanel] ControlGuidePanel이 연결되지 않았습니다.");
-            return;
-        }
-
-        // 조작법 패널은 인게임에서는 일시정지로, 여기서는 타이틀로 돌아가야 한다.
-        controlGuidePanel.OnClosed = () => SetVisible(true);
-
+        // 10.31: 조작법 화면은 코드로 그리는 ControlGuideView를 쓴다 (일시정지 "조작법"과 같은 화면).
         SetVisible(false);
-        controlGuidePanel.SetVisible(true);
+        ControlGuideView.Open(() => SetVisible(true));
     }
 
     /// <summary>"게임 종료"</summary>

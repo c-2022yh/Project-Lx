@@ -65,6 +65,17 @@ public class SettingsPanel : MonoBehaviour
 
         BuildDropdownOptions();
         HookControlEvents();
+
+        // 10.31 UI 통일: 제목·글자 탭·달빛 줄 강조·가는 테두리 (프리팹·씬은 그대로, 실행 중에 입힌다)
+        UnifiedPanels.StyleSettings(this);
+    }
+
+    private void Update()
+    {
+        // 타이틀에서 연 설정은 Esc로 닫는다. 게임 중에는 UIManager가 Esc를 받는다.
+        if (returnToTitle == null) return;
+        UnityEngine.InputSystem.Keyboard kb = UnityEngine.InputSystem.Keyboard.current;
+        if (kb != null && kb.escapeKey.wasPressedThisFrame) OnBackButton();
     }
 
     public void SetVisible(bool visible)
