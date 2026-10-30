@@ -92,14 +92,15 @@ public class SaveSlotPanel : MonoBehaviour
         for (int i = 0; i < count; i++)
             cards.Add(MakeCard(i, provider.GetSlot(i), Top + i * (h + CardGap), h));
 
-        // ↑↓로 카드 사이만 오가게
+        // ↑↓로 카드 사이를 오가고, →로 오른쪽 정보창 버튼(이어하기·지우기)으로 넘어간다
         for (int i = 0; i < cards.Count; i++)
         {
             Navigation nav = new Navigation
             {
                 mode = Navigation.Mode.Explicit,
                 selectOnUp = i > 0 ? cards[i - 1].button : null,
-                selectOnDown = i < cards.Count - 1 ? cards[i + 1].button : null
+                selectOnDown = i < cards.Count - 1 ? cards[i + 1].button : null,
+                selectOnRight = primaryButton
             };
             cards[i].button.navigation = nav;
         }
@@ -151,7 +152,7 @@ public class SaveSlotPanel : MonoBehaviour
         Navigation none = new Navigation { mode = Navigation.Mode.None };
         back.navigation = none;
 
-        UnifiedStyle.Hint(root, font, "↑↓ 고르기   ·   Enter 시작   ·   Delete 지우기   ·   Esc 돌아가기", Left, 48f);
+        UnifiedStyle.Hint(root, font, "↑↓ 고르기   ·   → 버튼으로   ·   Enter 선택   ·   Delete 지우기   ·   Esc 돌아가기", Left, 48f);
     }
 
     private void BuildDetail()
@@ -321,9 +322,33 @@ public class SaveSlotPanel : MonoBehaviour
         }
 
         ShowDetail(cards[current].info);
+        LinkDetailButtons();
 
         if (selectToo && EventSystem.current != null)
             EventSystem.current.SetSelectedGameObject(cards[current].button.gameObject);
+    }
+
+    /// <summary>
+    /// 정보창 버튼 사이 길: 이어하기 ←→ 지우기, 이어하기에서 ←는 지금 고른 카드로 돌아간다.
+    /// 빈 슬롯이면 지우기가 없으니 이어하기(새로 시작)만.
+    /// </summary>
+    private void LinkDetailButtons()
+    {
+        if (primaryButton == null || deleteButton == null || cards.Count == 0) return;
+        Button card = cards[current].button;
+        bool canDelete = deleteButton.gameObject.activeSelf;
+
+        primaryButton.navigation = new Navigation
+        {
+            mode = Navigation.Mode.Explicit,
+            selectOnLeft = card,
+            selectOnRight = canDelete ? deleteButton : null
+        };
+        deleteButton.navigation = new Navigation
+        {
+            mode = Navigation.Mode.Explicit,
+            selectOnLeft = primaryButton
+        };
     }
 
     private void ShowDetail(SaveSlotInfo info)
