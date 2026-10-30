@@ -10,7 +10,7 @@ using UnityEngine.UI;
 ///
 /// 1) 인트로: 까만 화면에 로고가 왼쪽부터 붓으로 쓰듯 나타남 → 뒤 빛이 켜짐 → 까만 막이 걷히며 배경이 보임
 /// 2) "아무 키나 누르세요"가 깜빡임 → 아무 키·클릭·패드 버튼을 누르면 메뉴가 하나씩 떠오름
-/// 3) 고른 메뉴 왼쪽에 여우불이 일렁이고, 글자 아래에 먹 붓줄이 그어짐 (마우스를 올려도 골라짐)
+/// 3) 고른 메뉴 글자 아래에 먹 붓줄이 그어짐 (마우스를 올려도 골라짐). 10.30: 왼쪽 여우불은 뺐다.
 /// 그 밖에: 배경이 아주 천천히 다가오고(켄 번스), 오른쪽 위에서 빛줄기가 비치고, 가장자리가 어두워짐(비네트),
 ///          오른쪽 아래에 버전 글씨.
 ///
@@ -187,7 +187,8 @@ public class TitleIntro : MonoBehaviour
         prompt.transform.SetAsLastSibling();
 
         // 여우불 + 먹 붓줄 (고른 메뉴에 붙인다)
-        Sprite fireSprite = Resources.Load<Sprite>("Title/Title_FoxFire");
+        // 10.30: 도깨비불(여우불)은 빼기로 했다. 먹 붓줄만 남긴다. 다시 쓰려면 아래 null을 Resources.Load로 되돌리면 된다.
+        Sprite fireSprite = null; // Resources.Load<Sprite>("Title/Title_FoxFire");
         Sprite inkSprite = Resources.Load<Sprite>("Title/Title_InkLine");
         if (fireSprite != null)
         {
