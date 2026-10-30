@@ -1,5 +1,36 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!1 &748219306312450003
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 748219306312450004}
+  m_Layer: 7
+  m_Name: AwakeningHandPoint
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &748219306312450004
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 748219306312450003}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 1.15, y: -0.18, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 9054328302197511164}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &2056732829808191594
 GameObject:
   m_ObjectHideFlags: 0
@@ -80,7 +111,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: 841780471
-  m_SortingLayer: 7
+  m_SortingLayer: 4
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_Sprite: {fileID: 21300000, guid: c128222adf88b044e80b73b2aacd0acf, type: 3}
@@ -251,6 +282,7 @@ MonoBehaviour:
   isGrounded: 0
   moveInput: {x: 0, y: 0}
   isFacingRight: 1
+  attackBufferTime: 0.15
   groundCheck: {fileID: 2611106410894655511}
   groundLayer:
     serializedVersion: 2
@@ -303,6 +335,36 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::PlayerHealth
   maxHealth: 5
   currentHealth: 0
+  hurtSound:
+    channel: 0
+    clip: {fileID: 0}
+    clips:
+    - {fileID: 0}
+    volume: 1
+    minimumInterval: 0.05
+    pitchRange: {x: 1, y: 1}
+    maxSimultaneous: 4
+    limitScope: 0
+    spatialBlend: 0
+    minDistance: 1
+    maxDistance: 15
+    useFallback: 0
+    fallbackSound: 5
+  deathSound:
+    channel: 0
+    clip: {fileID: 0}
+    clips:
+    - {fileID: 0}
+    volume: 1
+    minimumInterval: 0.05
+    pitchRange: {x: 1, y: 1}
+    maxSimultaneous: 4
+    limitScope: 0
+    spatialBlend: 0
+    minDistance: 1
+    maxDistance: 15
+    useFallback: 0
+    fallbackSound: 5
 --- !u!114 &26409342934325885
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -348,7 +410,7 @@ MonoBehaviour:
     magicalAttack: 1
     physicalPenetration: 0
     magicalPenetration: 0
-    criticalChance: 0
+    criticalChance: 0.1
     criticalMultiplier: 1.5
     damageAmplification: 0
   defense:
@@ -369,9 +431,41 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::PlayerAttack
   groundPatterns:
   - attackName: "\uC9E7\uAC8C \uBCA0\uAE30"
+    attackSound:
+      channel: 0
+      clip: {fileID: 0}
+      clips:
+      - {fileID: 0}
+      volume: 1
+      minimumInterval: 0.05
+      pitchRange: {x: 1, y: 1}
+      maxSimultaneous: 4
+      limitScope: 0
+      spatialBlend: 0
+      minDistance: 1
+      maxDistance: 15
+      useFallback: 0
+      fallbackSound: 5
+    impactSound:
+      channel: 0
+      clip: {fileID: 0}
+      clips:
+      - {fileID: 0}
+      volume: 1
+      minimumInterval: 0.05
+      pitchRange: {x: 1, y: 1}
+      maxSimultaneous: 4
+      limitScope: 0
+      spatialBlend: 0
+      minDistance: 1
+      maxDistance: 15
+      useFallback: 0
+      fallbackSound: 5
+    impactMode: 0
     startupTime: 0.05
     activeTime: 0.1
     recoveryTime: 0.02
+    recoveryMovementTime: 0
     damageSpec:
       damageType: 0
       damageMultiplier: 1
@@ -386,9 +480,41 @@ MonoBehaviour:
     followPlayer: 0
     followDuration: 0.1
   - attackName: "\uB0B4\uB824 \uCE58\uAE30"
+    attackSound:
+      channel: 0
+      clip: {fileID: 0}
+      clips:
+      - {fileID: 0}
+      volume: 1
+      minimumInterval: 0.05
+      pitchRange: {x: 1, y: 1}
+      maxSimultaneous: 4
+      limitScope: 0
+      spatialBlend: 0
+      minDistance: 1
+      maxDistance: 15
+      useFallback: 0
+      fallbackSound: 5
+    impactSound:
+      channel: 0
+      clip: {fileID: 0}
+      clips:
+      - {fileID: 0}
+      volume: 1
+      minimumInterval: 0.05
+      pitchRange: {x: 1, y: 1}
+      maxSimultaneous: 4
+      limitScope: 0
+      spatialBlend: 0
+      minDistance: 1
+      maxDistance: 15
+      useFallback: 0
+      fallbackSound: 5
+    impactMode: 0
     startupTime: 0.2
     activeTime: 0.3
     recoveryTime: 0.1
+    recoveryMovementTime: 0.05
     damageSpec:
       damageType: 0
       damageMultiplier: 1
@@ -405,9 +531,41 @@ MonoBehaviour:
   comboResetTime: 0.2
   airAttack:
     attackName: "\uACF5\uC911 \uBCA0\uAE30"
+    attackSound:
+      channel: 0
+      clip: {fileID: 0}
+      clips:
+      - {fileID: 0}
+      volume: 1
+      minimumInterval: 0.05
+      pitchRange: {x: 1, y: 1}
+      maxSimultaneous: 4
+      limitScope: 0
+      spatialBlend: 0
+      minDistance: 1
+      maxDistance: 15
+      useFallback: 0
+      fallbackSound: 5
+    impactSound:
+      channel: 0
+      clip: {fileID: 0}
+      clips:
+      - {fileID: 0}
+      volume: 1
+      minimumInterval: 0.05
+      pitchRange: {x: 1, y: 1}
+      maxSimultaneous: 4
+      limitScope: 0
+      spatialBlend: 0
+      minDistance: 1
+      maxDistance: 15
+      useFallback: 0
+      fallbackSound: 5
+    impactMode: 0
     startupTime: 0.03
     activeTime: 0.1
     recoveryTime: 0.15
+    recoveryMovementTime: 0
     damageSpec:
       damageType: 0
       damageMultiplier: 1
@@ -488,8 +646,8 @@ MonoBehaviour:
   applySpriteTint: 0
   normalColor: {r: 1, g: 1, b: 1, a: 1}
   awakenedColor: {r: 1, g: 1, b: 1, a: 1}
-  awakenedMoveMultiplier: 1.3
-  awakenedJumpMultiplier: 1.2
+  awakenedMoveMultiplier: 1.15
+  awakenedJumpMultiplier: 1
   awakeningCombatBonus:
     physicalAttack: 0
     magicalAttack: 0
@@ -497,7 +655,7 @@ MonoBehaviour:
     magicalPenetration: 0
     criticalChance: 0
     criticalMultiplier: 0
-    damageAmplification: 0
+    damageAmplification: 0.2
   awakeningEffect: {fileID: 0}
 --- !u!114 &6610567925237528462
 MonoBehaviour:
@@ -529,6 +687,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::PlayerAnimation
   respawnStateName: Base Layer.Player_Idle
   animator: {fileID: 1525868767661395568}
+  runStartDelay: 0.6
 --- !u!114 &8811411989047366458
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -616,6 +775,92 @@ MonoBehaviour:
   entrySettle: 0.45
   exitDuration: 0.25
   distortionScale: 1
+--- !u!114 &748219306312450001
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3993503971577391545}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2a8e9702723f46ff995fb7f09f218d6f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerAwakeningVisual
+  useEquippedOrbColors: 1
+  source: {fileID: 7915228961384660491}
+  glowMaterial: {fileID: 2100000, guid: 5ee4184e0777406cbf8d49eba6b8a565, type: 2}
+  glowColor: {r: 0.2, g: 0.5, b: 1, a: 1}
+  glowIntensity: 4
+  outlinePixels: 2
+  bodyGlow: 0.025
+  enableAura: 1
+  auraMaterial: {fileID: 2100000, guid: 6f4172dc78c345ebbd11ca4cc3689bd7, type: 2}
+  auraColor: {r: 0.15, g: 0.45, b: 1, a: 1}
+  auraIntensity: 2.5
+  auraOpacity: 0.4
+  auraSize: {x: 5.4, y: 4.2}
+  auraOffset: {x: -0.15, y: -1.65}
+  auraFanAngle: 80
+  auraStreamCount: 7
+  auraRiseSpeed: 0.65
+  auraNoiseScale: 5
+  auraTurbulence: 0.65
+  previewInPlayMode: 0
+  enableIntroSequence: 1
+  chargeDuration: 0.25
+  releaseDuration: 0.15
+  chargeBrightness: 0.65
+  chargeHeight: 0.22
+  chargeFanAngle: 20
+  chargeAuraBoost: 2
+  releaseHeight: 1.15
+  releaseAngle: 1.15
+  releaseSpeed: 3
+  fadeIn: 0.3
+  fadeOut: 0.3
+  entryPeak: 1.4
+  entrySettle: 0.35
+  pulseAmount: 0.1
+  pulseFrequency: 0.8
+  lightColor: {r: 0.3, g: 0.55, b: 1, a: 1}
+  lightIntensity: 0.8
+  lightRadius: 2.5
+  lightOffset: {x: 0, y: -0.3}
+  lightSortingLayers:
+  - Ground
+  enableBloom: 1
+  bloomIntensity: 0.6
+  bloomThreshold: 1.1
+  bloomScatter: 0.65
+--- !u!114 &748219306312450002
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3993503971577391545}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 31c76e57d3614743be3b3ae6d9c77c87, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerAwakeningOrb
+  playerSprite: {fileID: 7915228961384660491}
+  handPoint: {fileID: 748219306312450004}
+  handFlashMaterial: {fileID: 2100000, guid: 6f1b306353cd443ca82be53fc4482305, type: 2}
+  enableOrbMotion: 1
+  orbitCenter: {x: 0, y: 0.25}
+  orbitRadius: {x: 1.15, y: 0.9}
+  orbitTurns: 0.75
+  handApproachArc: 0.25
+  handOrbScale: 0.35
+  returnDuration: 0.25
+  flashDuration: 0.18
+  flashSize: 0.9
+  flashIntensity: 6
+  orbBrightnessBoost: 1.5
+  flashLightIntensity: 1.5
+  flashLightRadius: 1.2
 --- !u!1 &4178418756845537253
 GameObject:
   m_ObjectHideFlags: 0
@@ -793,120 +1038,3 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 6234295986293454894, guid: b67f57ed10ddf2f42b0cd17f2e8d0c19, type: 3}
   m_PrefabInstance: {fileID: 3864082654687442276}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &748219306312450001
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3993503971577391545}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2a8e9702723f46ff995fb7f09f218d6f, type: 3}
-  m_Name:
-  m_EditorClassIdentifier: Assembly-CSharp::PlayerAwakeningVisual
-  useEquippedOrbColors: 1
-  source: {fileID: 7915228961384660491}
-  glowMaterial: {fileID: 2100000, guid: 5ee4184e0777406cbf8d49eba6b8a565, type: 2}
-  glowColor: {r: 0.2, g: 0.5, b: 1, a: 1}
-  glowIntensity: 4
-  outlinePixels: 2
-  bodyGlow: 0.025
-  enableAura: 1
-  auraMaterial: {fileID: 2100000, guid: 6f4172dc78c345ebbd11ca4cc3689bd7, type: 2}
-  auraColor: {r: 0.15, g: 0.45, b: 1, a: 1}
-  auraIntensity: 2.5
-  auraOpacity: 0.4
-  auraSize: {x: 5.4, y: 4.2}
-  auraOffset: {x: -0.15, y: -1.65}
-  auraFanAngle: 80
-  auraStreamCount: 7
-  auraRiseSpeed: 0.65
-  auraNoiseScale: 5
-  auraTurbulence: 0.65
-  previewInPlayMode: 0
-  enableIntroSequence: 1
-  chargeDuration: 0.25
-  releaseDuration: 0.15
-  chargeBrightness: 0.65
-  chargeHeight: 0.22
-  chargeFanAngle: 20
-  chargeAuraBoost: 2
-  releaseHeight: 1.15
-  releaseAngle: 1.15
-  releaseSpeed: 3
-  fadeIn: 0.3
-  fadeOut: 0.3
-  entryPeak: 1.4
-  entrySettle: 0.35
-  pulseAmount: 0.1
-  pulseFrequency: 0.8
-  lightColor: {r: 0.3, g: 0.55, b: 1, a: 1}
-  lightIntensity: 0.8
-  lightRadius: 2.5
-  lightOffset: {x: 0, y: -0.3}
-  lightSortingLayers:
-  - Ground
-  enableBloom: 1
-  bloomIntensity: 0.6
-  bloomThreshold: 1.1
-  bloomScatter: 0.65
---- !u!1 &748219306312450003
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 748219306312450004}
-  m_Layer: 7
-  m_Name: AwakeningHandPoint
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &748219306312450004
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 748219306312450003}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 1.15, y: -0.18, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 9054328302197511164}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &748219306312450002
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3993503971577391545}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 31c76e57d3614743be3b3ae6d9c77c87, type: 3}
-  m_Name:
-  m_EditorClassIdentifier: Assembly-CSharp::PlayerAwakeningOrb
-  playerSprite: {fileID: 7915228961384660491}
-  handPoint: {fileID: 748219306312450004}
-  handFlashMaterial: {fileID: 2100000, guid: 6f1b306353cd443ca82be53fc4482305, type: 2}
-  enableOrbMotion: 1
-  orbitCenter: {x: 0, y: 0.25}
-  orbitRadius: {x: 1.15, y: 0.9}
-  orbitTurns: 0.75
-  handApproachArc: 0.25
-  handOrbScale: 0.35
-  returnDuration: 0.25
-  flashDuration: 0.18
-  flashSize: 0.9
-  flashIntensity: 6
-  orbBrightnessBoost: 1.5
-  flashLightIntensity: 1.5
-  flashLightRadius: 1.2

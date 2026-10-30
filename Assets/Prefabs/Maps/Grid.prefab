@@ -1625,6 +1625,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6576e91f7c054b0fb89dea20a4bc566f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  sourceMaterial: {fileID: 2100000, guid: 557b706167444d6fbae70475e2e15cd6, type: 2}
   surfaceWidth: 1
   fadeDistance: 1
   maxDarkness: 0.98

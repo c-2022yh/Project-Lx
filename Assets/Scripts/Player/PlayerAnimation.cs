@@ -15,8 +15,16 @@ public class PlayerAnimation : MonoBehaviour
     private bool hasAwakeningAnimationParameters;
     [SerializeField] private Animator animator;
 
+    [Header("Walk To Run Animation")]
+    [Tooltip("Seconds of continuous grounded movement in the same direction before the run animation starts.")]
+    [SerializeField, Min(0f)] private float runStartDelay = 0.6f;
+    private float continuousMoveTime;
+    private int continuousMoveDirection;
+    private bool hasRunningAnimationParameter;
+
     //애니메이션 제어 변수
     private static readonly int Speed = Animator.StringToHash("Speed");
+    private static readonly int IsRunning = Animator.StringToHash("IsRunning");
     private static readonly int IsGrounded = Animator.StringToHash("IsGrounded");
     private static readonly int VerticalVelocity = Animator.StringToHash("VerticalVelocity");
 
@@ -57,6 +65,7 @@ public class PlayerAnimation : MonoBehaviour
         CacheSkillAnimationParameters();
         CacheAwakeningAnimationParameters();
         CacheReactionAnimationParameters();
+        CacheRunningAnimationParameter();
     }
 
     private void OnEnable()
@@ -66,6 +75,7 @@ public class PlayerAnimation : MonoBehaviour
 
     private void OnDisable()
     {
+        ResetRunningAnimation();
         if (playerSkill != null) playerSkill.OnSkillUsed -= HandleSkillUsed;
         ResetAwakeningAnimation();
         if (animator != null && hasSkillAnimationParameters)
@@ -73,6 +83,53 @@ public class PlayerAnimation : MonoBehaviour
             animator.ResetTrigger(Skill);
             animator.SetBool(IsSkillActive, false);
         }
+    }
+
+    // Controllers without IsRunning can keep using their existing movement animations.
+    private void CacheRunningAnimationParameter()
+    {
+        if (animator == null || animator.runtimeAnimatorController == null) return;
+        foreach (AnimatorControllerParameter parameter in animator.parameters)
+        {
+            if (parameter.nameHash == IsRunning && parameter.type == AnimatorControllerParameterType.Bool)
+            {
+                hasRunningAnimationParameter = true;
+                break;
+            }
+        }
+    }
+
+    private void ResetRunningAnimation()
+    {
+        continuousMoveTime = 0f;
+        continuousMoveDirection = 0;
+        if (animator != null && hasRunningAnimationParameter)
+            animator.SetBool(IsRunning, false);
+    }
+
+    private void UpdateRunningAnimation()
+    {
+        float inputX = player.moveInput.x;
+        float velocityX = player.rb.linearVelocity.x;
+        // Require input and actual movement: holding against a wall must not build up run time.
+        if (!player.isGrounded || !player.ActionState.isNormal || IsDeadNow ||
+            isDashAnimating || Mathf.Abs(inputX) <= 0.01f || Mathf.Abs(velocityX) <= 0.1f ||
+            Mathf.Sign(inputX) != Mathf.Sign(velocityX))
+        {
+            ResetRunningAnimation();
+            return;
+        }
+
+        int direction = inputX > 0f ? 1 : -1;
+        if (direction != continuousMoveDirection)
+        {
+            ResetRunningAnimation();
+            continuousMoveDirection = direction;
+        }
+
+        continuousMoveTime += Time.deltaTime;
+        if (hasRunningAnimationParameter)
+            animator.SetBool(IsRunning, continuousMoveTime >= runStartDelay);
     }
 
     // Existing controllers remain usable until the skill parameters are added.
@@ -130,6 +187,7 @@ public class PlayerAnimation : MonoBehaviour
 
     private void CancelActionAnimation()
     {
+        ResetRunningAnimation();
         StopAllCoroutines();
         isDashAnimating = false;
         ResetAwakeningAnimation();
@@ -198,6 +256,7 @@ public class PlayerAnimation : MonoBehaviour
     public void PlaySkill(SkillAnimationType animationType)
     {
         if (animator == null || !hasSkillAnimationParameters || IsDeadNow || IsHitStunnedNow) return;
+        ResetRunningAnimation();
         animator.ResetTrigger(Skill);
         if (animationType == SkillAnimationType.None) return;
         animator.SetInteger(SkillIndex, (int)animationType);
@@ -208,6 +267,7 @@ public class PlayerAnimation : MonoBehaviour
     public void PlayAwakening()
     {
         if (animator == null || !hasAwakeningAnimationParameters || IsDeadNow || IsHitStunnedNow) return;
+        ResetRunningAnimation();
         animator.ResetTrigger(Awakening);
         animator.SetBool(IsAwakening, true);
         animator.SetTrigger(Awakening);
@@ -216,6 +276,7 @@ public class PlayerAnimation : MonoBehaviour
     private void Update()
     {
         if (animator == null || player == null || player.rb == null || player.ActionState == null) return;
+        UpdateRunningAnimation();
         bool blocked = IsDeadNow || IsHitStunnedNow;
         if (hasReactionAnimationParameters)
         {
@@ -265,6 +326,7 @@ public class PlayerAnimation : MonoBehaviour
     public void PlayAttack(int index)
     {
         if (animator == null || IsDeadNow || IsHitStunnedNow) return;
+        ResetRunningAnimation();
         animator.SetInteger(AttackIndex, index);
         animator.SetTrigger(Attack);
     }

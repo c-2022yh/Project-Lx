@@ -18,6 +18,9 @@ public class AttackPattern //공격 패턴
     public float activeTime = 0.1f;     //공격판정 시간
     public float recoveryTime = 0.1f;   //후딜
 
+    [Min(0f), Tooltip("Allow horizontal movement during the final seconds of ground attack recovery. Clamped to recovery time. 0 keeps movement locked; jump and next attack remain locked until recovery ends.")]
+    public float recoveryMovementTime = 0f;
+
     [Header("Combat")]
     public AttackDamageSpec damageSpec; //고유 데미지 값  
 
@@ -133,6 +136,8 @@ public class PlayerAttack : MonoBehaviour
     // Stop only the action routine; spawned effects retain their lifetime and hitbox cleanup.
     public void CancelCurrentAttack()
     {
+        if (player != null && player.ActionState != null)
+            player.ActionState.SetAttackRecoveryMovement(false);
         if (attackCoroutine == null) return;
         StopCoroutine(attackCoroutine);
         attackCoroutine = null;
@@ -177,7 +182,7 @@ public class PlayerAttack : MonoBehaviour
 
         
         //후딜
-        yield return new WaitForSeconds(pattern.recoveryTime);
+        yield return WaitForAttackRecovery(pattern, isAirAttack);
 
         lastAttackEndTime = Time.time;
 
@@ -186,6 +191,23 @@ public class PlayerAttack : MonoBehaviour
             player.ActionState.EnterNormal();
 
         attackCoroutine = null;
+    }
+
+    private IEnumerator WaitForAttackRecovery(AttackPattern pattern, bool isAirAttack)
+    {
+        float duration = Mathf.Max(0f, pattern.recoveryTime);
+        float movementTime = isAirAttack ? 0f : Mathf.Clamp(pattern.recoveryMovementTime, 0f, duration);
+        float endTime = Time.time + duration;
+        float movementStartTime = endTime - movementTime;
+
+        // Keep the attack state until its original end; only horizontal movement unlocks early.
+        while (Time.time < endTime)
+        {
+            player.ActionState.SetAttackRecoveryMovement(movementTime > 0f && Time.time >= movementStartTime);
+            yield return null;
+        }
+
+        player.ActionState.SetAttackRecoveryMovement(false);
     }
 
     //데미지 정보 생성

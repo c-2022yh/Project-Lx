@@ -62,6 +62,8 @@ public class BossHealthBarUI : MonoBehaviour
         if (instance == null) instance = Build();
 
         BossHealthBarUI ui = instance;
+        if (ui.splitBar != null) ui.splitBar.SetVisible(false);
+        ui.barRoot.anchoredPosition = new Vector2(0f, 64f);
         ui.target = boss;
         ui.nameText.text = bossName ?? "";
         ui.shown = ui.lagShown = Ratio(boss);
@@ -88,6 +90,7 @@ public class BossHealthBarUI : MonoBehaviour
     {
         if (instance == null) return;
         instance.SetVisible(false);
+        if (instance.splitBar != null) instance.splitBar.SetVisible(false);
     }
 
     private static float Ratio(EnemyHealth h)
@@ -101,6 +104,23 @@ public class BossHealthBarUI : MonoBehaviour
         {
             ApplyColors();
             return;
+        }
+
+        GolemBossController golem = target.GetComponent<GolemBossController>();
+        if (this == instance && golem != null && golem.HasSplit && golem.Fragments.Count == 2)
+        {
+            string label = nameText.text;
+            if (splitBar == null) splitBar = Build();
+            target = golem.Fragments[0].GetComponent<EnemyHealth>();
+            splitBar.target = golem.Fragments[1].GetComponent<EnemyHealth>();
+            nameText.text = label + " 1";
+            splitBar.nameText.text = label + " 2";
+            barRoot.anchoredPosition = new Vector2(0f, 64f);
+            splitBar.barRoot.anchoredPosition = new Vector2(0f, 132f);
+            shown = lagShown = Ratio(target);
+            splitBar.shown = splitBar.lagShown = Ratio(splitBar.target);
+            splitBar.Apply();
+            splitBar.SetVisible(true);
         }
 
         float now = Ratio(target);
@@ -157,6 +177,7 @@ public class BossHealthBarUI : MonoBehaviour
         ui.group = canvas.GetComponent<CanvasGroup>();
 
         RectTransform root = PresentationUI.NewRect("Bar", canvas.transform);
+        ui.barRoot = root;
         root.anchorMin = root.anchorMax = new Vector2(0.5f, 0f);
         root.pivot = new Vector2(0.5f, 0f);
         root.anchoredPosition = new Vector2(0f, 70f);
