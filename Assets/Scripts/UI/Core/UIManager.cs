@@ -67,7 +67,8 @@ public class UIManager : MonoBehaviour
         isInventoryOpen || isSkillOpen || isPaused ||
         (controlGuidePanel != null && controlGuidePanel.gameObject.activeSelf) ||
         (gameOverPanel != null && gameOverPanel.gameObject.activeSelf) ||
-        AcquirePopup.IsOpen || RelicSelectionPanelUI.IsOpen || DialogueBox.IsOpen;
+        AcquirePopup.IsOpen || RelicSelectionPanelUI.IsOpen || DialogueBox.IsOpen ||
+        IntroCutscene.IsPlaying;
 
    
     //  Input System 연결
@@ -120,7 +121,7 @@ public class UIManager : MonoBehaviour
       
 
         // 획득 알림창·유물 선택창·대화창이 떠 있으면 키는 그 창 몫이다. 맵만 손을 떼면 내린다.
-        if (AcquirePopup.BlocksInput || RelicSelectionPanelUI.IsOpen || DialogueBox.BlocksInput)
+        if (AcquirePopup.BlocksInput || RelicSelectionPanelUI.IsOpen || DialogueBox.BlocksInput || IntroCutscene.IsPlaying)
         {
             if (Keyboard.current.tabKey.wasReleasedThisFrame) SetMapVisible(false);
             return;
@@ -371,6 +372,9 @@ public class UIManager : MonoBehaviour
 
     public void TogglePause()
     {
+        // 시작 연출 중에는 Esc가 "건너뛰기"다. 일시정지창을 열지 않는다.
+        if (!isPaused && IntroCutscene.IsPlaying) return;
+
         SetMapVisible(false);
 
         isPaused = !isPaused;

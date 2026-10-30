@@ -16,3 +16,10 @@ MonoBehaviour:
   relics: []
   firstOrbEquip: {fileID: 11400000, guid: bb97aff3f46049548f25ff9f9acc7cec, type: 2}
   bossClear: {fileID: 11400000, guid: 94bfe514f8ea45e9a7f9a2124ae04ec4, type: 2}
+  introNarration: {fileID: 11400000, guid: 32f15b6f543d47a190495ef21a334d04, type: 2}
+  introWake: {fileID: 11400000, guid: 2541c6dc2dd348b5bbb2a8d6d88243dc, type: 2}
+  introOrb: {fileID: 11400000, guid: fbe266c5a7ec451eb328c9dc1bf0e01d, type: 2}
+  introOrbName: "\uBCF4\uC8FC"
+  introOrbDescription: "\uACC1\uC744 \uB530\uB77C\uB2E4\uB2C8\uBA70 \uD568\uAED8 \uC2F8\uC6B4\uB2E4. \uAE30\uB825\uC774 \uCC28\uBA74 \uAC01\uC131\uD560 \uC218 \uC788\uB2E4."
+  introAreaName: "\uC5EC\uC6B8 \uC232"
+  introAreaSubtitle: 
