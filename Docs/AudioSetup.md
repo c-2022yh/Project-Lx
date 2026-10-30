@@ -89,7 +89,7 @@ TripleSlash 여러 타격과 ScorchedEarth 여러 투사체는 시전 하나의 
 
 ## BGM / UI / 환경 소리
 
-씬별 BGM은 카탈로그의 Scene Music에 정확한 씬 이름을 넣습니다. 해당 항목의 Music이 비어 있으면 이전 곡을 페이드 아웃하고 무음으로 전환합니다. 등록되지 않은 씬은 Title이면 TitleBgm, 그 외는 GameplayBgm을 사용합니다. 같은 cue는 씬 이동 시 유지합니다. 자동 전환은 Single 씬 로드에서 적용하며, Additive 로드에서는 현재 음악을 유지합니다.
+씬별 BGM은 카탈로그의 Scene Music에 정확한 씬 이름을 넣습니다. 해당 항목의 Music이 비어 있으면 이전 곡을 페이드 아웃하고 무음으로 전환합니다. 등록되지 않은 씬은 Title이면 TitleBgm, 그 외는 GameplayBgm을 사용합니다. 같은 cue 또는 같은 AudioClip을 사용하면 씬 이동 시 기존 재생 위치를 유지합니다. 씬별 항목이 달라도 Music > Clip에 동일한 음원 에셋을 지정하면 됩니다. 자동 전환은 Single 씬 로드에서 적용하며, Additive 로드에서는 현재 음악을 유지합니다.
 
 공통 버튼음은 자동 연결됩니다. 동적으로 생성한 버튼은 최대 0.25초 뒤 연결되며, 즉시 연결하려면 프리팹에 GameAudioButton을 붙입니다. Use Custom Sound를 켜고 빈 cue를 두면 해당 버튼만 무음입니다. 오디오 컴포넌트를 비활성화하면 클릭음이 나오지 않습니다.
 
