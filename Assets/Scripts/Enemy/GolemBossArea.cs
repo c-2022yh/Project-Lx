@@ -19,6 +19,10 @@ public class GolemBossArea : MonoBehaviour
     private GameObject impactPrefab;
     private SpriteRenderer fallingRock;
     private float dropHeight;
+    // Presentation only (BossFx): default art rises from the ground; thin areas are summon markers.
+    private bool isMarker, growFromGround;
+    private float shownProgress;
+    private Vector2 GroundCenter => Center - Vector2.up * Size.y * 0.5f;
 
     public void SetFallingRock(Sprite sprite, float height)
     {
@@ -39,10 +43,23 @@ public class GolemBossArea : MonoBehaviour
         area.Size = new Vector2(Mathf.Max(0.05f, size.x), Mathf.Max(0.05f, size.y));
         area.warningColor = color;
         area.fill = GolemBossVisual.MakeRectangle("Area", obj.transform, color, 20);
-        area.SetRectangle(area.fill, Vector2.zero, area.Size, fillSprite);
+        area.fill.sharedMaterial = BossFxArt.Unlit;
+        area.isMarker = area.Size.y <= 0.3f;
+        if (area.isMarker && fillSprite == null)
+        {
+            // Summon marker: a soft glowing ellipse on the ground instead of a box.
+            area.SetRectangle(area.fill, Vector2.zero, new Vector2(area.Size.x * 1.4f, Mathf.Max(0.45f, area.Size.x * 0.3f)), BossFxArt.SoftDot);
+            area.SetProgress(0f);
+            return area;
+        }
+        area.growFromGround = fillSprite == null;
+        area.SetRectangle(area.fill, Vector2.zero, area.Size, fillSprite != null ? fillSprite : BossFxArt.UpFade);
         float edge = Mathf.Min(0.08f, Mathf.Min(area.Size.x, area.Size.y) * 0.15f);
-        area.AddEdge(new Vector2(0f, (area.Size.y - edge) / 2f), new Vector2(area.Size.x, edge), borderSprite);
-        area.AddEdge(new Vector2(0f, -(area.Size.y - edge) / 2f), new Vector2(area.Size.x, edge), borderSprite);
+        // Default look: open top, bright ground line and sides (moon style). Custom border art keeps the full box.
+        if (borderSprite != null)
+            area.AddEdge(new Vector2(0f, (area.Size.y - edge) / 2f), new Vector2(area.Size.x, edge), borderSprite);
+        float floorEdge = borderSprite != null ? edge : edge * 1.6f;
+        area.AddEdge(new Vector2(0f, -(area.Size.y - floorEdge) / 2f), new Vector2(area.Size.x, floorEdge), borderSprite);
         area.AddEdge(new Vector2((area.Size.x - edge) / 2f, 0f), new Vector2(edge, area.Size.y), borderSprite);
         area.AddEdge(new Vector2(-(area.Size.x - edge) / 2f, 0f), new Vector2(edge, area.Size.y), borderSprite);
         area.SetProgress(0f);
@@ -61,6 +78,7 @@ public class GolemBossArea : MonoBehaviour
     private void AddEdge(Vector2 offset, Vector2 size, Sprite sprite)
     {
         var border = GolemBossVisual.MakeRectangle("Border", transform, warningColor, 21);
+        border.sharedMaterial = BossFxArt.Unlit;
         SetRectangle(border, offset, size, sprite);
         borders.Add(border);
     }
@@ -68,9 +86,25 @@ public class GolemBossArea : MonoBehaviour
     public void SetProgress(float progress)
     {
         if (IsCommitted || fill == null) return;
+        float p = Mathf.Clamp01(progress);
+        shownProgress = p;
         Color color = warningColor;
-        color.a = Mathf.Lerp(0.18f, 0.55f, Mathf.Clamp01(progress));
+        if (isMarker && borders.Count == 0)
+        {
+            color.a = Mathf.Lerp(0.25f, 0.8f, p) * (0.85f + 0.15f * Mathf.Sin(Time.time * 10f));
+            fill.color = color;
+            if (Random.value < Time.deltaTime * 12f)
+                BossFx.MarkerSpark(GroundCenter, Size.x, new Color(warningColor.r, warningColor.g, warningColor.b, 0.9f));
+            return;
+        }
+        color.a = Mathf.Lerp(0.18f, 0.55f, p);
         fill.color = color;
+        if (growFromGround)
+        {
+            // The warning fills up from the ground as the hit gets closer.
+            float h = Size.y * Mathf.Lerp(0.15f, 1f, p);
+            SetRectangle(fill, new Vector2(0f, (h - Size.y) * 0.5f), new Vector2(Size.x, h), null);
+        }
         color.a = 0.9f;
         foreach (var border in borders) border.color = color;
         if (fallingRock != null)
@@ -91,11 +125,17 @@ public class GolemBossArea : MonoBehaviour
         lifetime = Mathf.Max(0.02f, activeDuration);
         impactPrefab = impact;
         fill.color = new Color(1f, 0.65f, 0.15f, 0.65f);
+        if (growFromGround) SetRectangle(fill, Vector2.zero, Size, null);
         foreach (var border in borders) border.enabled = false;
         if (impactPrefab != null)
         {
             GameObject effect = Instantiate(impactPrefab, Center, Quaternion.identity);
             Destroy(effect, 5f);
+        }
+        else if (!isMarker)
+        {
+            // No impact art yet: code-drawn ring, dust, debris and shake.
+            BossFx.Impact(Center, Size);
         }
         name = "Golem Impact";
         DealDamage();
@@ -129,6 +169,9 @@ public class GolemBossArea : MonoBehaviour
 
     public void CancelWarning()
     {
-        if (!IsCommitted) Destroy(gameObject);
+        if (IsCommitted) return;
+        // A summon marker that ran its full time is where a minion just appeared.
+        if (isMarker && shownProgress >= 0.95f) BossFx.SummonPop(GroundCenter, Size.x);
+        Destroy(gameObject);
     }
 }

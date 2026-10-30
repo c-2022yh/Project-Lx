@@ -108,6 +108,7 @@ public class GolemBossController : MonoBehaviour
 
     public bool IsEngaged => engaged;
     public bool IsPhaseTwo => phaseTwo;
+    public float PhaseTwoHealth => phaseTwoHealth;
     public int LivingMinionCount
     {
         get
