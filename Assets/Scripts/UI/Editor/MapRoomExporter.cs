@@ -9,7 +9,7 @@ using UnityEngine.Tilemaps;
 /// <summary>
 /// Tools/UI > 지도 방 그림 뽑기 (빌드 씬 전체)
 ///
-/// 빌드 목록의 씬(타이틀 제외)을 하나씩 열어서:
+/// 빌드 목록의 씬(타이틀 제외)과 Scenes/InProgress의 F_ 맵(F_base 제외)을 하나씩 열어서:
 ///   1. 벽·땅 타일맵(충돌이 있고 한쪽 발판이 아닌 것)을 "막힌 칸"으로 본다. 발판은 무시한다.
 ///   2. 스폰 위치·포털·제단에서 시작해 막히지 않은 칸을 채워 나간다 → 플레이어가 다닐 수 있는 굴 모양.
 ///   3. 그 모양을 손으로 판 땅굴처럼 울퉁불퉁하게, 천장에 가끔 종유석을 달아 그림으로 굽는다.
@@ -53,6 +53,40 @@ public static class MapRoomExporter
         public bool HasDefaultSpawn;
     }
 
+    private const string InProgressFolder = "Assets/Scenes/InProgress";
+
+    /// <summary>
+    /// 뽑을 씬 목록: 빌드 목록의 켜진 씬(타이틀 제외) + InProgress 폴더의 F_ 맵.
+    /// 10.30: 새 맵(F_03, F_04)이 아직 빌드 목록에 없어서 InProgress 폴더도 같이 본다. F_base는 틀이라 뺀다.
+    /// </summary>
+    private static List<string> ScenePaths()
+    {
+        List<string> paths = new List<string>();
+        HashSet<string> names = new HashSet<string>();
+
+        foreach (EditorBuildSettingsScene s in EditorBuildSettings.scenes)
+        {
+            if (!s.enabled) continue;
+            string name = Path.GetFileNameWithoutExtension(s.path);
+            if (name == "Title" || !names.Add(name)) continue;
+            paths.Add(s.path);
+        }
+
+        if (AssetDatabase.IsValidFolder(InProgressFolder))
+        {
+            foreach (string guid in AssetDatabase.FindAssets("t:Scene", new[] { InProgressFolder }))
+            {
+                string path = AssetDatabase.GUIDToAssetPath(guid);
+                string name = Path.GetFileNameWithoutExtension(path);
+                if (!name.StartsWith("F_") || name == "F_base") continue;
+                if (Path.GetDirectoryName(path).Replace('\\', '/') != InProgressFolder) continue;
+                if (names.Add(name)) paths.Add(path);
+            }
+        }
+
+        return paths;
+    }
+
     [MenuItem("Tools/UI/지도 방 그림 뽑기 (빌드 씬 전체)")]
     public static void ExportAll()
     {
@@ -69,15 +103,13 @@ public static class MapRoomExporter
 
         try
         {
-            EditorBuildSettingsScene[] scenes = EditorBuildSettings.scenes;
-            for (int i = 0; i < scenes.Length; i++)
+            List<string> paths = ScenePaths();
+            for (int i = 0; i < paths.Count; i++)
             {
-                if (!scenes[i].enabled) continue;
-                string name = Path.GetFileNameWithoutExtension(scenes[i].path);
-                if (name == "Title") continue;
+                string name = Path.GetFileNameWithoutExtension(paths[i]);
 
-                EditorUtility.DisplayProgressBar("지도 방 그림 뽑기", name, (float)i / scenes.Length);
-                Scene scene = EditorSceneManager.OpenScene(scenes[i].path, OpenSceneMode.Single);
+                EditorUtility.DisplayProgressBar("지도 방 그림 뽑기", name, (float)i / paths.Count);
+                Scene scene = EditorSceneManager.OpenScene(paths[i], OpenSceneMode.Single);
                 SceneRoom room = Capture(scene, name);
                 if (room != null) rooms.Add(room);
             }
