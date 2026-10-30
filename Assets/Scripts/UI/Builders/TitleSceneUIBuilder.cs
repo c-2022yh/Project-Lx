@@ -193,8 +193,8 @@ public static class TitleSceneUIBuilder
             // 10.23: 가장 밝을 때 조금 세다고 해서 기본 진하기 0.6 → 0.55, 오르내림 ±30% → ±20% (가장 밝을 때 0.78 → 0.66).
             // 10.27: 하늘색 → 바닥 안개와 같은 차분한 푸른 보라 톤
             // 10.29: 빛이 너무 세다고 해서 0.55 → 0.4
-            // 10.31: 아주 살짝 따뜻하게 (푸른 기를 덜고 붉은 기를 조금)
-            GameObject glow = K.Img("GameTitleGlow", panel, new Color(0.74f, 0.72f, 0.84f, 0.4f));
+            // 11.01: 살짝 따뜻하게 했던 것을 조금 다시 차갑게 (원래 푸른빛과 그 사이)
+            GameObject glow = K.Img("GameTitleGlow", panel, new Color(0.68f, 0.71f, 0.88f, 0.4f));
             glowImage = glow.GetComponent<UnityEngine.UI.Image>();
             glowImage.sprite = glowSprite;
 
@@ -207,7 +207,7 @@ public static class TitleSceneUIBuilder
         }
 
         // 2) 로고. 빛줄기가 보이도록 아주 살짝 푸른 회색
-        GameObject title = K.Img("GameTitle", panel, new Color(0.94f, 0.93f, 0.92f, 1f));
+        GameObject title = K.Img("GameTitle", panel, new Color(0.92f, 0.93f, 0.95f, 1f));
         UnityEngine.UI.Image titleImage = title.GetComponent<UnityEngine.UI.Image>();
         titleImage.sprite = logoSprite;
         titleImage.preserveAspect = true;
@@ -256,7 +256,7 @@ public static class TitleSceneUIBuilder
         RawImage raw = go.AddComponent<RawImage>();
         raw.texture = path.texture;
         raw.material = mat;
-        raw.color = new Color(0.98f, 0.94f, 0.90f, 0.9f);
+        raw.color = new Color(0.92f, 0.92f, 0.96f, 0.9f);
         raw.raycastTarget = false;
 
         // 로고(preserveAspect)가 실제로 그려지는 크기에 딱 맞춘다. 길 그림은 로고와 같은 크기다.
