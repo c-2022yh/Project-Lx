@@ -1,0 +1,11 @@
+# Pinecone D attack-state concept v1
+
+Built-in image_gen, reference Pinecone_D.png.
+
+Reading order: top left Idle; top right Prepare; bottom left Shoot; bottom right Recovery.
+
+Visual draft only: generated framing and shape variation require correction before sprite slicing/animation use. Seed shown in Shoot illustrates launch direction; a runtime projectile must be a separate sprite. Existing prefab and gameplay are unchanged.
+
+## Prompt
+
+Use case: game sprite animation concept sheet. Reference is the chosen pinecone enemy design D: preserve exactly its tall upright cone silhouette, big taupe gray-brown overlapping scales with thick dark teal outlines, tiny hidden dark face, pale cream eyes and single flattened woody base. It has NO FEET, NO LEGS, NO TOES and never walks. Create ONE transparent concept sheet of FOUR sequential states in a clean regular 2 by 2 grid. Same character, same size, same ground baseline within each cell, centered with wide clear transparent margins. Always faces RIGHT. Top left IDLE: adorable round cream eyes peeking through a very small gap, front scales closed around mouth, no seed visible. Top right PREPARE: eyes narrow into focused cream slits WITHOUT red glow, front upper and lower scales open to expose a single brown seed inside the dark mouth, upper body tenses slightly, base remains fixed. Bottom left SHOOT: focused narrowed eyes, mouth scales open wider as that one seed emerges just to the RIGHT horizontally, upper body recoils a LITTLE to the LEFT, base stays planted, no floating or big squash/stretch. Bottom right RECOVERY: front mouth scales mostly closed, eyes becoming round and cute again, torso returns upright, base unchanged. Attack expression comes only from eye shape and opening scales: no added eyebrows, teeth, spikes, flames, red eyes, cannon tube, limbs or angry monster redesign. Preserve the reference's simple cel-shaded woodland style with clear silhouettes, large shapes and quiet earthy palette. No scene, no soil platform, no shadows, no text, no labels, no grid lines. Transparent alpha background. Exactly four full-body sprites of the same creature, one in each cell, no extra characters. This is a visual behavior draft, not a different enemy.

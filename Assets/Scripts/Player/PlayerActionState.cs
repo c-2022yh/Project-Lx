@@ -22,6 +22,7 @@ public class PlayerActionState : MonoBehaviour
 
     public PlayerActionType CurrentState => currentState;
     private bool skillMovementAllowed;
+    private bool attackRecoveryMovementAllowed;
 
     //현재 상태 확인 함수
     public bool isNormal => currentState == PlayerActionType.Normal;
@@ -43,7 +44,8 @@ public class PlayerActionState : MonoBehaviour
     public bool CanMove() //이동 아무것도 안 하고 있어야 작동
     {
         return currentState == PlayerActionType.Normal
-            || (isSkillActive && skillMovementAllowed);
+            || (isSkillActive && skillMovementAllowed)
+            || (isAttacking && attackRecoveryMovementAllowed);
     }
 
     public bool CanJump() //점프도 아무것도 안 하고 있어야 작동
@@ -86,9 +88,18 @@ public class PlayerActionState : MonoBehaviour
     }
 
     //상태 전환
+    public void SetAttackRecoveryMovement(bool allowed)
+    {
+        attackRecoveryMovementAllowed = allowed && isAttacking;
+    }
+
     public void ChangeState(PlayerActionType newState)
     {
 
+        // Clear older input when another action or an interruption takes over.
+        if (newState != PlayerActionType.Normal && newState != PlayerActionType.Attacking)
+            GetComponent<Player>()?.ClearBufferedActionInputs();
+        attackRecoveryMovementAllowed = false;
         currentState = newState;
         if (newState != PlayerActionType.Skill) skillMovementAllowed = false;
     }

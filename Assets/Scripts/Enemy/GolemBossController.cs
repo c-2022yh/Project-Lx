@@ -19,14 +19,14 @@ public class GolemBossAttack
     public SoundCue impactSound = new SoundCue();
 }
 
-// Stationary ground boss. Enemy/EnemyHealth remain the sole owners of incoming damage,
+// Enemy/EnemyHealth remain the sole owners of incoming damage,
 // rewards and death. This component owns only encounter and pattern scheduling.
 [RequireComponent(typeof(Enemy), typeof(EnemyHealth), typeof(EnemyStats))]
 [RequireComponent(typeof(Rigidbody2D), typeof(GolemBossVisual))]
 [RequireComponent(typeof(CapsuleCollider2D))]
 public class GolemBossController : MonoBehaviour
 {
-    private enum State { Waiting, Prepare, Active, Recovery, Summon, PhaseChange }
+    private enum State { Waiting, Prepare, Active, Recovery, Summon, PhaseChange, Split }
     private enum Pattern { Slam, Crush, Rockfall }
 
     [Header("Encounter")]
@@ -60,9 +60,16 @@ public class GolemBossController : MonoBehaviour
     [SerializeField] private Sprite rockSprite;
     [SerializeField, Min(1f)] private float rockDropHeight = 7f;
 
-    [Header("Phase 2: full warnings, two-pattern chains")]
+    [Header("Phase 2: split into two independent golems")]
+    [SerializeField] private bool splitEnabled = true;
     [SerializeField, Range(0.05f, 0.95f)] private float phaseTwoHealth = 0.5f;
     [SerializeField, Min(0.1f)] private float phaseChangeTime = 1.6f;
+    [SerializeField, Range(0.2f, 0.95f)] private float fragmentScale = 0.65f;
+    [SerializeField, Min(0.5f)] private float splitDistance = 2.5f;
+    [SerializeField, Min(0f)] private float fragmentMoveSpeed = 1f;
+    [SerializeField, Min(0.1f)] private float fragmentStopDistance = 2.2f;
+    [SerializeField, HideInInspector] private bool isFragment;
+    [Tooltip("Used only when Split Enabled is off (legacy phase).")]
     [SerializeField, Min(0.1f)] private float chainRecovery = 0.45f;
 
     [Header("Summons: once per health threshold")]
@@ -92,6 +99,10 @@ public class GolemBossController : MonoBehaviour
     private readonly List<GameObject> minions = new List<GameObject>();
     private readonly List<GameObject> summonChoices = new List<GameObject>();
     private readonly RaycastHit2D[] groundHits = new RaycastHit2D[16];
+    private readonly List<GolemBossController> fragments = new List<GolemBossController>();
+    private GolemBossController fragmentOwner, attackingFragment;
+    private int nextFragment;
+    private Rigidbody2D body;
     private EnemyHealth health;
     private Collider2D bodyCollider;
     private EnemyStats stats;
@@ -108,6 +119,11 @@ public class GolemBossController : MonoBehaviour
 
     public bool IsEngaged => engaged;
     public bool IsPhaseTwo => phaseTwo;
+    public bool IsFragment => isFragment;
+    public bool HasSplit => state == State.Split;
+    public bool IsDefeated { get; private set; }
+    public IReadOnlyList<GolemBossController> Fragments => fragments;
+    public int LivingFragmentCount => fragments.FindAll(item => item != null && item.gameObject.activeInHierarchy && !item.health.IsDead).Count;
     public int LivingMinionCount
     {
         get
@@ -123,6 +139,7 @@ public class GolemBossController : MonoBehaviour
     private void Awake()
     {
         health = GetComponent<EnemyHealth>();
+        body = GetComponent<Rigidbody2D>();
         bodyCollider = GetComponent<Collider2D>();
         stats = GetComponent<EnemyStats>();
         visual = GetComponent<GolemBossVisual>();
@@ -131,14 +148,16 @@ public class GolemBossController : MonoBehaviour
     private void OnEnable()
     {
         state = State.Waiting;
+        IsDefeated = false;
         engaged = phaseTwo = hasLastPattern = false;
         armed = autoBegin;
         chainRemaining = 0;
-        spawnX = transform.position.x;
+        spawnX = fragmentOwner != null ? fragmentOwner.spawnX : transform.position.x;
         nextSearchTime = 0f;
         usedSummons = new bool[summonHealthThresholds.Length];
         Array.Clear(readyTimes, 0, readyTimes.Length);
         visual.SetPose(GolemBossPose.Idle);
+        visual.SetPresentationVisible(true);
     }
 
     private void OnDisable() => StopEncounter();
@@ -153,12 +172,27 @@ public class GolemBossController : MonoBehaviour
 
     public void StopEncounter()
     {
+        ReleaseFragmentTurn();
+        bool wasSplit = state == State.Split;
         bool wasEngaged = engaged;
         engaged = armed = false;
         CancelWarnings();
         chainRemaining = 0;
         state = State.Waiting;
         visual.SetPose(GolemBossPose.Idle);
+        StopHorizontalMovement();
+        foreach (var fragment in fragments)
+            if (fragment != null) { fragment.gameObject.SetActive(false); Destroy(fragment.gameObject); }
+        fragments.Clear();
+        attackingFragment = null;
+        if (wasSplit && !health.IsDead && gameObject.activeInHierarchy && !IsDefeated)
+        {
+            phaseTwo = false;
+            health.IsDamageSuppressed = false;
+            visual.SetPresentationVisible(true);
+            bodyCollider.enabled = true;
+            body.simulated = true;
+        }
         if (despawnMinionsOnEncounterEnd)
         {
             foreach (GameObject minion in minions) if (minion != null) Destroy(minion);
@@ -170,6 +204,16 @@ public class GolemBossController : MonoBehaviour
     private void FixedUpdate()
     {
         if (health.IsDead) { if (engaged) StopEncounter(); return; }
+        if (state == State.Split)
+        {
+            // Wait for each EnemyHealth death animation to finish before ending the encounter.
+            if (fragments.TrueForAll(item => item == null || !item.gameObject.activeInHierarchy))
+            {
+                IsDefeated = true;
+                gameObject.SetActive(false);
+            }
+            return;
+        }
         FindPlayer();
         if (player == null || player.IsDead || !player.isActiveAndEnabled)
         {
@@ -180,6 +224,7 @@ public class GolemBossController : MonoBehaviour
                 chainRemaining = 0;
                 nextActionTime = Time.time + firstAttackDelay;
                 visual.SetPose(GolemBossPose.Idle);
+                StopHorizontalMovement();
             }
             return;
         }
@@ -194,6 +239,7 @@ public class GolemBossController : MonoBehaviour
         switch (state)
         {
             case State.Waiting:
+                MoveFragment();
                 visual.SetPose(GolemBossPose.Idle, 0f, facing);
                 if (Time.time >= nextActionTime) ChooseNextAction();
                 break;
@@ -209,6 +255,7 @@ public class GolemBossController : MonoBehaviour
                 visual.SetPose(GolemBossPose.Recovery, elapsed / Mathf.Max(0.1f, duration), facing, current.motion.recovery, pattern == Pattern.Slam);
                 if (elapsed >= duration)
                 {
+                    ReleaseFragmentTurn();
                     Enter(State.Waiting);
                     nextActionTime = Time.time + (chainRemaining > 0 ? 0f : patternInterval);
                 }
@@ -218,7 +265,14 @@ public class GolemBossController : MonoBehaviour
                 break;
             case State.PhaseChange:
                 visual.SetPose(GolemBossPose.PhaseChange, elapsed / Mathf.Max(0.1f, phaseChangeTime), facing);
-                if (elapsed >= phaseChangeTime) { Enter(State.Waiting); nextActionTime = Time.time + patternInterval; }
+                if (elapsed >= phaseChangeTime)
+                {
+                    if (splitEnabled && !isFragment)
+                    {
+                        if (!CreateFragments()) elapsed = 0f; // No invisible spawns in walls or over gaps.
+                    }
+                    else { Enter(State.Waiting); nextActionTime = Time.time + patternInterval; }
+                }
                 break;
         }
     }
@@ -231,10 +285,130 @@ public class GolemBossController : MonoBehaviour
         player = FindAnyObjectByType<PlayerHealth>();
     }
 
+    private bool CreateFragments()
+    {
+        var capsule = (CapsuleCollider2D)bodyCollider;
+        Vector3 scale = transform.lossyScale * fragmentScale;
+        Vector2 size = Vector2.Scale(capsule.size, new Vector2(Mathf.Abs(scale.x), Mathf.Abs(scale.y)));
+        var positions = new Vector2[2];
+        for (int i = 0; i < 2; i++)
+        {
+            float x = Mathf.Clamp(transform.position.x + (i == 0 ? -splitDistance : splitDistance),
+                spawnX + arenaX.x + size.x / 2f, spawnX + arenaX.y - size.x / 2f);
+            if (!TryGround(x, FeetY + 3f, out Vector2 ground) ||
+                Physics2D.OverlapBox(ground + Vector2.up * (size.y / 2f + 0.06f), size * 0.9f, 0f, groundLayers)) return false;
+            positions[i] = ground + Vector2.up * (size.y / 2f - capsule.offset.y * scale.y + 0.06f);
+        }
+        if (Mathf.Abs(positions[0].x - positions[1].x) < size.x + 0.1f) return false;
+
+        // Configure clones while inactive: no full-HP frame, recursive split or copied encounter callbacks.
+        var staging = new GameObject("Golem Split Staging");
+        staging.SetActive(false);
+        try
+        {
+            for (int i = 0; i < 2; i++)
+            {
+                GameObject clone = Instantiate(gameObject, positions[i], transform.rotation, staging.transform);
+                clone.SetActive(false);
+                clone.name = name + (i == 0 ? " Left Fragment" : " Right Fragment");
+                clone.transform.localScale = scale;
+                var fragment = clone.GetComponent<GolemBossController>();
+                fragment.isFragment = true;
+                fragment.autoBegin = false;
+                fragment.fragmentOwner = this;
+                fragment.onEncounterStarted = new UnityEvent();
+                fragment.onEncounterEnded = new UnityEvent();
+                fragment.onPhaseTwo = new UnityEvent();
+                clone.GetComponent<EnemyHealth>().ConfigureSpawnHealth(Mathf.Max(1f, health.CurrentHp * 0.5f), health.EnergyReward * 0.5f);
+                var fragmentBody = clone.GetComponent<Rigidbody2D>();
+                fragmentBody.constraints &= ~RigidbodyConstraints2D.FreezePositionX;
+                fragmentBody.linearVelocity = Vector2.zero;
+                clone.transform.SetParent(null, true);
+                fragments.Add(fragment);
+            }
+            nextFragment = 0;
+            foreach (var fragment in fragments)
+            {
+                fragment.gameObject.SetActive(true);
+                fragment.BeginEncounter();
+            }
+        }
+        finally { Destroy(staging); }
+
+        CancelWarnings();
+        // Phase-one summons end here; fragments retain the same three attack patterns only.
+        foreach (GameObject minion in minions) if (minion != null) Destroy(minion);
+        minions.Clear();
+        StopHorizontalMovement();
+        bodyCollider.enabled = false;
+        body.simulated = false;
+        health.IsDamageSuppressed = true;
+        visual.SetPresentationVisible(false);
+        Enter(State.Split);
+        return true;
+    }
+
+    private bool TryAcquireFragmentTurn(GolemBossController candidate)
+    {
+        if (attackingFragment != null && attackingFragment.gameObject.activeInHierarchy && !attackingFragment.health.IsDead)
+            return attackingFragment == candidate;
+        attackingFragment = null;
+        for (int i = 0; i < fragments.Count; i++)
+        {
+            int index = (nextFragment + i) % fragments.Count;
+            var next = fragments[index];
+            if (next == null || !next.gameObject.activeInHierarchy || next.health.IsDead) continue;
+            if (next != candidate) return false;
+            attackingFragment = candidate;
+            return true;
+        }
+        return false;
+    }
+
+    private void ReleaseFragmentTurn()
+    {
+        if (fragmentOwner == null || fragmentOwner.attackingFragment != this) return;
+        int index = fragmentOwner.fragments.IndexOf(this);
+        fragmentOwner.nextFragment = fragmentOwner.fragments.Count > 0 ? (index + 1) % fragmentOwner.fragments.Count : 0;
+        fragmentOwner.attackingFragment = null;
+    }
+
+    private void StopHorizontalMovement()
+    {
+        if (body != null && body.simulated) body.linearVelocity = new Vector2(0f, body.linearVelocity.y);
+    }
+
+    private void MoveFragment()
+    {
+        if (!isFragment || player == null || fragmentMoveSpeed <= 0f) { StopHorizontalMovement(); return; }
+        float dx = player.transform.position.x - transform.position.x;
+        int direction = dx >= 0f ? 1 : -1;
+        facing = direction;
+        Bounds bounds = bodyCollider.bounds;
+        float step = fragmentMoveSpeed * Time.fixedDeltaTime;
+        float edge = bounds.center.x + direction * (bounds.extents.x + step + 0.05f);
+        if (Mathf.Abs(dx) <= fragmentStopDistance || edge < spawnX + arenaX.x || edge > spawnX + arenaX.y ||
+            !TryGround(edge, bounds.min.y + 0.15f, out Vector2 ground) || bounds.min.y - ground.y > 0.4f)
+        { StopHorizontalMovement(); return; }
+        if (fragmentOwner != null)
+            foreach (var other in fragmentOwner.fragments)
+                if (other != null && other != this && other.gameObject.activeInHierarchy && !other.health.IsDead &&
+                    (other.transform.position.x - transform.position.x) * direction > 0f &&
+                    Mathf.Abs(other.transform.position.x - transform.position.x) < bounds.extents.x + other.bodyCollider.bounds.extents.x + 0.15f)
+                { StopHorizontalMovement(); return; }
+        var filter = new ContactFilter2D();
+        filter.SetLayerMask(groundLayers);
+        filter.useTriggers = false;
+        int count = body.Cast(Vector2.right * direction, filter, groundHits, step + 0.05f);
+        for (int i = 0; i < count; i++)
+            if (groundHits[i].normal.x * direction < -0.1f) { StopHorizontalMovement(); return; }
+        body.linearVelocity = new Vector2(direction * fragmentMoveSpeed, body.linearVelocity.y);
+    }
+
     private void ChooseNextAction()
     {
         float hp = health.MaxHp > 0f ? health.CurrentHp / health.MaxHp : 0f;
-        if (!phaseTwo && hp <= phaseTwoHealth)
+        if (!isFragment && !phaseTwo && hp <= phaseTwoHealth)
         {
             phaseTwo = true;
             chainRemaining = 0;
@@ -242,7 +416,7 @@ public class GolemBossController : MonoBehaviour
             onPhaseTwo.Invoke();
             return;
         }
-        for (int i = 0; i < usedSummons.Length; i++)
+        for (int i = 0; !isFragment && i < usedSummons.Length; i++)
         {
             if (!usedSummons[i] && hp <= summonHealthThresholds[i] && LivingMinionCount < maxLivingMinions)
             {
@@ -260,10 +434,12 @@ public class GolemBossController : MonoBehaviour
             choices.Add((Pattern)i);
         }
         if (choices.Count == 0) { nextActionTime = Time.time + 0.2f; return; }
+        if (isFragment && fragmentOwner != null && !fragmentOwner.TryAcquireFragmentTurn(this))
+        { nextActionTime = Time.time + 0.1f; return; }
         if (hasLastPattern && choices.Count > 1) choices.Remove(lastPattern);
         Pattern next = choices[UnityEngine.Random.Range(0, choices.Count)];
         if (chainRemaining > 0) chainRemaining--;
-        else if (phaseTwo) chainRemaining = 1;
+        else if (phaseTwo && !isFragment && !splitEnabled) chainRemaining = 1;
         StartPattern(next);
     }
 
@@ -423,7 +599,12 @@ public class GolemBossController : MonoBehaviour
         summonChoices.Clear();
     }
 
-    private void Enter(State next) { state = next; elapsed = 0f; }
+    private void Enter(State next)
+    {
+        state = next;
+        elapsed = 0f;
+        if (next != State.Waiting) StopHorizontalMovement();
+    }
 
     private void OnValidate()
     {

@@ -143,7 +143,8 @@ public class BossRoom : MonoBehaviour
         BossHealthBarUI.Show(boss, bossName);
         state = State.Fighting;
 
-        while (boss != null && !boss.IsDead) yield return null;
+        GolemBossController golem = boss.GetComponent<GolemBossController>();
+        while (boss != null && !boss.IsDead && (golem == null || !golem.IsDefeated)) yield return null;
 
         yield return ClearRoutine();
     }

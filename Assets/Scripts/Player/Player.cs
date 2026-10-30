@@ -18,6 +18,11 @@ public class Player : MonoBehaviour
     public Vector2 moveInput;
     public bool isFacingRight = true;
 
+    [Header("Input Buffer")]
+    [Tooltip("Seconds to remember a basic attack pressed before the current action finishes. Jump uses PlayerMove > Buffer Time.")]
+    [SerializeField, Min(0f)] private float attackBufferTime = 0.15f;
+    private float lastAttackRequestTime = float.NegativeInfinity;
+
     //땅에 닿았는지 확인하는 변수
     [Header("Ground Check")]
     public Transform groundCheck;
@@ -95,6 +100,7 @@ public class Player : MonoBehaviour
         isGrounded = CheckGrounded();
 
         Move.ExecuteMove();
+        ProcessBufferedAttack();
         Move.ExecuteJump();
 
         //currentState?.DoFixedUpdate();
@@ -197,9 +203,56 @@ public class Player : MonoBehaviour
     //인풋시스템과 연결
     public void OnMove(InputValue value) { moveInput = value.Get<Vector2>(); } //방향값 설정
     
-    public void OnJump(InputValue value) { if (value.isPressed && ActionState.CanJump()) Move.RequestJump(); }
+    public void OnJump(InputValue value)
+    {
+        if (!value.isPressed || !CanBufferActionInput()) return;
+        lastAttackRequestTime = float.NegativeInfinity;
+        Move.RequestJump();
+    }
     public void OnDash(InputValue value) { if (value.isPressed && ActionState.CanDash()) Move.ExecuteDash(); }
-    public void OnAttack(InputValue value) { if (value.isPressed && ActionState.CanAttack()) Attack.ExecuteAttack(); }
+    public void OnAttack(InputValue value)
+    {
+        if (!value.isPressed || !CanBufferActionInput()) return;
+        Move.ClearJumpRequest();
+        lastAttackRequestTime = Time.time;
+        ProcessBufferedAttack();
+    }
+
+    private bool CanBufferActionInput()
+    {
+        return ActionState != null && !ActionState.isDead && !ActionState.isHitStunned
+            && !ActionState.isAwakening && (Health == null || !Health.IsDead);
+    }
+
+    private void ProcessBufferedAttack()
+    {
+        if (!CanBufferActionInput())
+        {
+            ClearBufferedActionInputs();
+            return;
+        }
+
+        if (Time.time - lastAttackRequestTime > attackBufferTime)
+        {
+            lastAttackRequestTime = float.NegativeInfinity;
+            return;
+        }
+
+        if (!ActionState.CanAttack()) return;
+        lastAttackRequestTime = float.NegativeInfinity;
+        Attack.ExecuteAttack();
+    }
+
+    public void ClearBufferedActionInputs()
+    {
+        lastAttackRequestTime = float.NegativeInfinity;
+        if (Move != null) Move.ClearJumpRequest();
+    }
+
+    private void OnDisable()
+    {
+        ClearBufferedActionInputs();
+    }
 
     public void OnSkillX(InputValue value) { if (value.isPressed && ActionState.CanSkill()) Skill.ExecuteSkillX(this); }
     public void OnSkillA(InputValue value) { if (value.isPressed && ActionState.CanSkill()) Skill.ExecuteSkillA(this); }

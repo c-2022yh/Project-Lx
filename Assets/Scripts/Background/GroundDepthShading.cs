@@ -28,7 +28,11 @@ public sealed class GroundDepthShading : MonoBehaviour
     private Tilemap tilemap;
     private TilemapRenderer tileRenderer;
     private Texture2D depthMask;
-    private MaterialPropertyBlock properties;
+    // Keep the real asset through scene backups and script/domain reloads. The
+    // generated preview material must never become the only material reference.
+    [SerializeField, HideInInspector] private Material sourceMaterial;
+    private Material depthMaterial;
+    private bool previewSuspendedForSave;
     private BoundsInt maskBounds;
     private bool pendingRebuild;
     private double nextRebuild;
@@ -44,7 +48,21 @@ public sealed class GroundDepthShading : MonoBehaviour
     {
         tilemap = GetComponent<Tilemap>();
         tileRenderer = GetComponent<TilemapRenderer>();
-        properties = new MaterialPropertyBlock();
+        Material assigned = tileRenderer.sharedMaterial;
+        if (assigned != null && (assigned.hideFlags & HideFlags.DontSaveInEditor) == 0)
+            sourceMaterial = assigned;
+#if UNITY_EDITOR
+        // Repair scenes that were backed up with a missing temporary material by
+        // the previous implementation, before the persistent reference existed.
+        if (sourceMaterial == null)
+            sourceMaterial = UnityEditor.AssetDatabase.LoadAssetAtPath<Material>("Assets/Materials/M_GroundDepthLit.mat");
+        previewSuspendedForSave = UnityEditor.EditorApplication.isPlaying !=
+            UnityEditor.EditorApplication.isPlayingOrWillChangePlaymode;
+#endif
+        if (sourceMaterial != null) tileRenderer.sharedMaterial = sourceMaterial;
+        // A renderer-wide property block replaces Tilemap's per-texture draw data in
+        // Individual mode. Clear the block left by older versions of this component.
+        tileRenderer.SetPropertyBlock(null);
         Tilemap.tilemapTileChanged += OnTilesChanged;
 #if UNITY_EDITOR
         UnityEditor.EditorApplication.update += EditorTick;
@@ -61,6 +79,7 @@ public sealed class GroundDepthShading : MonoBehaviour
 #endif
         DisableEffect();
         ReleaseMask();
+        ReleaseMaterial();
     }
 
     private void OnValidate()
@@ -93,6 +112,7 @@ public sealed class GroundDepthShading : MonoBehaviour
 
     private void Tick()
     {
+        if (previewSuspendedForSave) return;
         if (pendingRebuild && Time.realtimeSinceStartupAsDouble >= nextRebuild)
             RebuildMask();
         if (depthMask != null) ApplyProperties();
@@ -104,7 +124,6 @@ public sealed class GroundDepthShading : MonoBehaviour
         if (!isActiveAndEnabled) return;
         if (tilemap == null) tilemap = GetComponent<Tilemap>();
         if (tileRenderer == null) tileRenderer = GetComponent<TilemapRenderer>();
-        if (properties == null) properties = new MaterialPropertyBlock();
         pendingRebuild = false;
 
         BoundsInt bounds = tilemap.cellBounds;
@@ -169,6 +188,7 @@ public sealed class GroundDepthShading : MonoBehaviour
 
     private void ApplyProperties()
     {
+        if (previewSuspendedForSave || !EnsureMaterial()) return;
         // World-space lookup survives Tilemap chunk/dynamic batching and Grid transforms.
         Vector3 origin = tilemap.CellToLocal(Vector3Int.zero);
         Vector3 x = tilemap.CellToLocal(Vector3Int.right) - origin;
@@ -178,26 +198,71 @@ public sealed class GroundDepthShading : MonoBehaviour
         cellToLocal.SetColumn(1, new Vector4(y.x, y.y, y.z, 0));
         cellToLocal.SetColumn(3, new Vector4(origin.x, origin.y, origin.z, 1));
         Matrix4x4 worldToCell = (tilemap.transform.localToWorldMatrix * cellToLocal).inverse;
-        tileRenderer.GetPropertyBlock(properties);
-        properties.SetTexture(MaskId, depthMask);
-        properties.SetMatrix(MatrixId, worldToCell);
-        properties.SetVector(RectId, new Vector4(maskBounds.xMin, maskBounds.yMin,
+        depthMaterial.SetTexture(MaskId, depthMask);
+        depthMaterial.SetMatrix(MatrixId, worldToCell);
+        depthMaterial.SetVector(RectId, new Vector4(maskBounds.xMin, maskBounds.yMin,
             1f / maskBounds.size.x, 1f / maskBounds.size.y));
-        properties.SetVector(SettingsId, new Vector4(surfaceWidth, fadeDistance, maxDarkness, falloffPower));
-        properties.SetColor(TintId, depthTint);
-        properties.SetFloat(EnabledId, 1f);
-        tileRenderer.SetPropertyBlock(properties);
+        depthMaterial.SetVector(SettingsId, new Vector4(surfaceWidth, fadeDistance, maxDarkness, falloffPower));
+        depthMaterial.SetColor(TintId, depthTint);
+        depthMaterial.SetFloat(EnabledId, 1f);
     }
 
     private void DisableEffect()
     {
         if (tileRenderer == null) return;
-        if (properties == null) properties = new MaterialPropertyBlock();
-        tileRenderer.GetPropertyBlock(properties);
-        properties.SetFloat(EnabledId, 0f);
-        properties.SetTexture(MaskId, Texture2D.blackTexture);
-        tileRenderer.SetPropertyBlock(properties);
+        if (depthMaterial != null && tileRenderer.sharedMaterial == depthMaterial)
+            tileRenderer.sharedMaterial = sourceMaterial;
     }
+
+    private bool EnsureMaterial()
+    {
+        Material current = tileRenderer.sharedMaterial;
+        if (current != null && current != depthMaterial && current != sourceMaterial)
+        {
+            ReleaseMaterial();
+            sourceMaterial = current;
+        }
+        if (sourceMaterial == null || sourceMaterial.shader == null ||
+            sourceMaterial.shader.name != "ProjectLx/Ground Depth Lit") return false;
+        if (depthMaterial == null)
+        {
+            // Each map owns its parameters while Unity continues selecting each tile's
+            // sprite texture. Never change the shared project material.
+            depthMaterial = new Material(sourceMaterial)
+            {
+                name = sourceMaterial.name + " (Ground Depth Preview)",
+                hideFlags = HideFlags.HideAndDontSave
+            };
+        }
+        if (current != depthMaterial) tileRenderer.sharedMaterial = depthMaterial;
+        return true;
+    }
+
+    private void ReleaseMaterial()
+    {
+        if (depthMaterial == null) return;
+        if (Application.IsPlaying(gameObject)) Destroy(depthMaterial);
+        else DestroyImmediate(depthMaterial);
+        depthMaterial = null;
+    }
+
+#if UNITY_EDITOR
+    internal void SuspendPreviewForSave()
+    {
+        previewSuspendedForSave = true;
+        DisableEffect();
+    }
+
+    internal void ResumePreviewAfterSave()
+    {
+        // A delayed save callback can run while Unity is making a Play Mode
+        // backup. Wait for EnteredPlayMode/EnteredEditMode before reassigning a clone.
+        if (UnityEditor.EditorApplication.isPlaying !=
+            UnityEditor.EditorApplication.isPlayingOrWillChangePlaymode) return;
+        previewSuspendedForSave = false;
+        if (isActiveAndEnabled && depthMask != null) ApplyProperties();
+    }
+#endif
 
     private void ReleaseMask()
     {
@@ -207,6 +272,45 @@ public sealed class GroundDepthShading : MonoBehaviour
         depthMask = null;
     }
 }
+
+#if UNITY_EDITOR
+// Persist the source material reference, never an unsaved preview material, in
+// scenes and prefabs. Rendering resumes on the next editor callback after saving.
+internal sealed class GroundDepthShadingSaveProcessor : UnityEditor.AssetModificationProcessor
+{
+    [UnityEditor.InitializeOnLoadMethod]
+    private static void Initialize()
+    {
+        UnityEditor.EditorApplication.playModeStateChanged -= OnPlayModeChanged;
+        UnityEditor.EditorApplication.playModeStateChanged += OnPlayModeChanged;
+    }
+
+    private static void OnPlayModeChanged(UnityEditor.PlayModeStateChange state)
+    {
+        bool suspend = state == UnityEditor.PlayModeStateChange.ExitingEditMode ||
+            state == UnityEditor.PlayModeStateChange.ExitingPlayMode;
+        foreach (GroundDepthShading preview in Resources.FindObjectsOfTypeAll<GroundDepthShading>())
+        {
+            if (!preview.isActiveAndEnabled) continue;
+            if (suspend) preview.SuspendPreviewForSave();
+            else preview.ResumePreviewAfterSave();
+        }
+    }
+
+    private static string[] OnWillSaveAssets(string[] paths)
+    {
+        GroundDepthShading[] previews = Resources.FindObjectsOfTypeAll<GroundDepthShading>();
+        foreach (GroundDepthShading preview in previews)
+            if (preview.isActiveAndEnabled) preview.SuspendPreviewForSave();
+        UnityEditor.EditorApplication.delayCall += () =>
+        {
+            foreach (GroundDepthShading preview in previews)
+                if (preview != null) preview.ResumePreviewAfterSave();
+        };
+        return paths;
+    }
+}
+#endif
 
 /// <summary>Exact squared Euclidean distance to the nearest empty cell, in O(width * height).</summary>
 internal static class GroundDepthDistanceField

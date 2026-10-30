@@ -192,10 +192,12 @@ public sealed class GameAudio : MonoBehaviour
         instance.uiPool?.StopOwned(owner);
     }
 
-    // Keep the same music cue running across scenes; crossfade only on a change.
+    // Keep shared cues or identical clips running across scenes without restarting playback.
     private void PlayMusic(SoundCue cue, AudioClip clip)
     {
-        if (ReferenceEquals(currentMusic, cue) && musicSources[musicIndex].clip != null) return;
+        AudioSource current = musicSources[musicIndex];
+        if (currentMusic != null && current.clip != null
+            && (ReferenceEquals(currentMusic, cue) || current.clip == clip)) return;
         if (musicRoutine != null) StopCoroutine(musicRoutine);
         musicIndex = 1 - musicIndex;
         AudioSource target = musicSources[musicIndex];

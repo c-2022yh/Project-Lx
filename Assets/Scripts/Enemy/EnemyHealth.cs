@@ -66,9 +66,22 @@ public class EnemyHealth : MonoBehaviour
     private Coroutine hitFeedbackCoroutine;
 
     public bool IsDead => isDead;
+    public bool IsDamageSuppressed { get; set; }
 
     public float CurrentHp => currentHp;
     public float MaxHp => maxHp;
+    public float EnergyReward => energyReward;
+
+    // Spawn configuration only: call before activating an instantiated enemy.
+    public void ConfigureSpawnHealth(float spawnHp, float spawnReward)
+    {
+        if (gameObject.activeInHierarchy)
+            throw new InvalidOperationException("ConfigureSpawnHealth requires an inactive enemy.");
+        maxHp = Mathf.Max(1f, spawnHp);
+        currentHp = maxHp;
+        energyReward = Mathf.Max(0f, spawnReward);
+    }
+
 
     private void Awake()
     {
@@ -107,6 +120,7 @@ public class EnemyHealth : MonoBehaviour
     private void ResetHealth()
     {
         isDead = false;
+        IsDamageSuppressed = false;
 
         currentHp = maxHp;
 
@@ -138,7 +152,7 @@ public class EnemyHealth : MonoBehaviour
     //적이 피해를 입음
     public void TakeDamage(DamageInfo damageInfo,Vector2 hitDirection)
     {
-        if (isDead) return;
+        if (isDead || IsDamageSuppressed) return;
 
         //피해 타입에 맞는 방어스탯 계산
         float defense = 
@@ -253,7 +267,7 @@ public class EnemyHealth : MonoBehaviour
     //현재 체력이 처형 기준 이하인지 확인
     public bool CanExecute(float healthRatio)
     {
-        if (isDead) return false;
+        if (isDead || IsDamageSuppressed) return false;
 
         float currentHealthRatio = currentHp / maxHp;
 
@@ -263,7 +277,7 @@ public class EnemyHealth : MonoBehaviour
     //처형
     public void Execute(DamageInfo damageInfo)
     {
-        if (isDead) return;
+        if (isDead || IsDamageSuppressed) return;
 
         currentHp = 0f;
         damageInfo.impactAudio?.OnDamageApplied(transform);
@@ -274,7 +288,7 @@ public class EnemyHealth : MonoBehaviour
     //적이 사망 처리
     private void Die(DamageInfo lastDamageInfo)
     {
-        if (isDead) return;
+        if (isDead || IsDamageSuppressed) return;
 
         isDead = true;
         GameAudio.StopOwnedSounds(transform);
