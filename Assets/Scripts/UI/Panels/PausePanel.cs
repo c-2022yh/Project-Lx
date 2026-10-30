@@ -14,6 +14,9 @@ public class PausePanel : MonoBehaviour
     public void SetVisible(bool visible)
     {
         gameObject.SetActive(visible);
+
+        // 10.31 UI 통일: 어두운 판 + 글자 메뉴 + 먹 붓줄 (프리팹은 그대로, 실행 중에 입힌다)
+        if (visible) UnifiedPanels.StylePause(this);
     }
 
     // "Continue" 버튼이 눌렸을 때 실행
