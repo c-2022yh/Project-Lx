@@ -47,6 +47,17 @@ public static class PearlStyle
         };
     }
 
+    /// <summary>한지 위에 쓰는 계열 글자 색 (밝은 종이에서도 읽히게 진하게).</summary>
+    public static Color CategoryInk(RelicCategory category)
+    {
+        return category switch
+        {
+            RelicCategory.Sword => Hex(0x8e4f47),
+            RelicCategory.Orb => Hex(0x63598f),
+            _ => Hex(0x4d7a6b)
+        };
+    }
+
     /// <summary>바깥 자개 테두리 안쪽에 반투명하게 까는 창살 색.</summary>
     public static Color LatticeColor(RelicCategory? category)
     {
@@ -66,17 +77,48 @@ public static class PearlStyle
 
     public struct Theme
     {
-        public Color Background;
-        public Color Glow;
+        public Color Background;    // 어두운 바탕 (획득창 메달)
+        public Color Glow;          // 은은한 빛
+        public Color Silk;          // 족자 테두리 비단
+        public Color Line;          // 족자 안쪽 테두리선
+        public string Wash;         // 족자 수채화 그림 (Resources/UIFrame/Scroll/Scroll_WC_이름)
     }
 
-    private static readonly Theme Fire = new Theme { Background = Hex(0x2a1a1c), Glow = Rgb1(214, 160, 132) };
-    private static readonly Theme Cloud = new Theme { Background = Hex(0x1c2633), Glow = Rgb1(169, 194, 212) };
-    private static readonly Theme Water = new Theme { Background = Hex(0x152a2d), Glow = Rgb1(159, 192, 191) };
-    private static readonly Theme Moon = new Theme { Background = Hex(0x1e1b30), Glow = Rgb1(179, 171, 210) };
-    private static readonly Theme Thunder = new Theme { Background = Hex(0x1b1d33), Glow = Rgb1(199, 195, 234) };
-    private static readonly Theme Dawn = new Theme { Background = Hex(0x2b2230), Glow = Rgb1(208, 174, 163) };
-    private static readonly Theme Shade = new Theme { Background = Hex(0x18171f), Glow = Rgb1(150, 142, 170) };
+    private static readonly Theme Fire = new Theme
+    {
+        Background = Hex(0x2a1a1c), Glow = Rgb1(214, 160, 132),
+        Silk = Hex(0xa87f75), Line = new Color(110f / 255f, 62f / 255f, 54f / 255f, 0.75f), Wash = "Fire"
+    };
+    private static readonly Theme Cloud = new Theme
+    {
+        Background = Hex(0x1c2633), Glow = Rgb1(169, 194, 212),
+        Silk = Hex(0x879db2), Line = new Color(58f / 255f, 78f / 255f, 100f / 255f, 0.75f), Wash = "Cloud"
+    };
+    private static readonly Theme Water = new Theme
+    {
+        Background = Hex(0x152a2d), Glow = Rgb1(159, 192, 191),
+        Silk = Hex(0x81a19d), Line = new Color(48f / 255f, 88f / 255f, 84f / 255f, 0.75f), Wash = "Water"
+    };
+    private static readonly Theme Moon = new Theme
+    {
+        Background = Hex(0x1e1b30), Glow = Rgb1(179, 171, 210),
+        Silk = Hex(0x9c95b5), Line = new Color(78f / 255f, 70f / 255f, 112f / 255f, 0.75f), Wash = "Moon"
+    };
+    private static readonly Theme Thunder = new Theme
+    {
+        Background = Hex(0x1b1d33), Glow = Rgb1(199, 195, 234),
+        Silk = Hex(0x8e8ab0), Line = new Color(70f / 255f, 66f / 255f, 112f / 255f, 0.75f), Wash = "Thunder"
+    };
+    private static readonly Theme Dawn = new Theme
+    {
+        Background = Hex(0x2b2230), Glow = Rgb1(208, 174, 163),
+        Silk = Hex(0xb09191), Line = new Color(110f / 255f, 70f / 255f, 78f / 255f, 0.75f), Wash = "Dawn"
+    };
+    private static readonly Theme Shade = new Theme
+    {
+        Background = Hex(0x18171f), Glow = Rgb1(150, 142, 170),
+        Silk = Hex(0x7d7986), Line = new Color(52f / 255f, 48f / 255f, 60f / 255f, 0.75f), Wash = "Shade"
+    };
 
     // 유물 에셋 이름(영어)에 들어 있는 낱말로 고른다. 새 유물은 여기 한 줄 넣으면 된다.
     private static readonly (string key, Theme theme)[] ThemeKeys =
@@ -170,6 +212,25 @@ public static class PearlStyle
             float d = Mathf.Clamp01(Mathf.Sqrt(dx * dx + dy * dy));
             return new Color(1f, 1f, 1f, 1f - d);
         });
+    }
+
+    /// <summary>위는 투명하고 아래로 갈수록 진해지는 띠. 색은 Image.color로.</summary>
+    public static Sprite VerticalFade()
+    {
+        const int h = 64;
+        return Make("vfade", 4, h, (x, y) => new Color(1f, 1f, 1f, Mathf.SmoothStep(1f, 0f, (float)y / (h - 1))));
+    }
+
+    /// <summary>Resources에 둔 그림을 한 번만 읽어 둔다. 없으면 null.</summary>
+    public static Sprite Load(string path)
+    {
+        string key = "res_" + path;
+        if (cache.TryGetValue(key, out Sprite s) && s != null) return s;
+
+        s = Resources.Load<Sprite>(path);
+        if (s == null) Debug.LogWarning("[PearlStyle] 그림이 없습니다: Resources/" + path);
+        else cache[key] = s;
+        return s;
     }
 
     /// <summary>얇은 테두리만 있는 칸 (9-slice). 칩·버튼 테두리용.</summary>

@@ -270,6 +270,7 @@ GameObject:
   - component: {fileID: 3752653740329107597}
   - component: {fileID: 7206784008183632269}
   - component: {fileID: 1749049938573890950}
+  - component: {fileID: 6879182254107312011}
   m_Layer: 6
   m_Name: Tilemap_Ground
   m_TagString: Untagged
@@ -1400,7 +1401,7 @@ TilemapRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: a97c105638bdf8b4a8650670310a4cd3, type: 2}
+  - {fileID: 2100000, guid: 557b706167444d6fbae70475e2e15cd6, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -1577,7 +1578,7 @@ MonoBehaviour:
   m_HasRenderer: 1
   m_UseRendererSilhouette: 1
   m_CastsShadows: 1
-  m_SelfShadows: 0
+  m_SelfShadows: 1
   m_AlphaCutoff: 0.1
   m_ApplyToSortingLayers: 5d0f34f48b9e2fedf78c2c32d943354c
   m_ShapePath:
@@ -1587,15 +1588,15 @@ MonoBehaviour:
   - {x: 279, y: -47, z: 0}
   m_ShapePathHash: 0
   m_InstanceId: 0
-  m_ShadowShape2DComponent: {fileID: 3752653740329107597}
+  m_ShadowShape2DComponent: {fileID: 711081088328489523}
   m_ShadowShape2DProvider:
     rid: 3247329920651886664
   m_ShadowCastingSource: 2
   m_ShadowMesh:
     m_Mesh: {fileID: 0}
     m_LocalBounds:
-      m_Center: {x: -9.5, y: -9, z: 0}
-      m_Extent: {x: 23.5, y: 4, z: 0}
+      m_Center: {x: 2.5, y: -5.5, z: 0}
+      m_Extent: {x: 11.5, y: 0.5, z: 0}
     m_EdgeProcessing: 1
     m_TrimEdge: 0
     m_FlipX: 0
@@ -1605,13 +1606,32 @@ MonoBehaviour:
   m_PreviousTrimEdge: 0
   m_PreviousEdgeProcessing: 1
   m_PreviousShadowCastingSource: 2
-  m_PreviousShadowShape2DSource: {fileID: 3752653740329107597}
+  m_PreviousShadowShape2DSource: {fileID: 711081088328489523}
   references:
     version: 2
     RefIds:
     - rid: 3247329920651886664
       type: {class: ShadowShape2DProvider_Collider2D, ns: UnityEngine.Rendering.Universal, asm: Unity.RenderPipelines.Universal.2D.Runtime}
       data: 
+--- !u!114 &6879182254107312011
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2711367952561748094}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6576e91f7c054b0fb89dea20a4bc566f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  surfaceWidth: 1
+  fadeDistance: 1
+  maxDarkness: 0.98
+  depthTint: {r: 0, g: 0, b: 0, a: 1}
+  falloffPower: 0.5
+  autoRefresh: 1
+  refreshDelay: 0.15
 --- !u!1 &4357338579255560856
 GameObject:
   m_ObjectHideFlags: 0
@@ -3125,6 +3145,8 @@ MonoBehaviour:
   tilemapSecretWall: {fileID: 0}
   requiredHitsToBreak: 1
   breakEffectPrefab: {fileID: 0}
+  spawnDebris: 1
+  debrisColor: {r: 0.66, g: 0.7, b: 0.78, a: 1}
 --- !u!19719996 &8107006249591288675
 TilemapCollider2D:
   m_ObjectHideFlags: 0

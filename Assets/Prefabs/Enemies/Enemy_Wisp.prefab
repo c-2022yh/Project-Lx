@@ -169,10 +169,10 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: 1278559193
-  m_SortingLayer: 6
+  m_SortingLayer: 5
   m_SortingOrder: 0
   m_MaskInteraction: 0
-  m_Sprite: {fileID: 21300000, guid: ff6be4bfc4d07474eb56d124ee43a4b2, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 9a45c9fa474e43c3aa8d84d30d6db822, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -325,6 +325,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1fd63915f7f74cb4d9a03f6c8028e706, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EnemyAttack
+  impactSound:
+    channel: 0
+    clip: {fileID: 0}
+    clips:
+    - {fileID: 0}
+    volume: 1
+    minimumInterval: 0.05
+    pitchRange: {x: 1, y: 1}
+    maxSimultaneous: 4
+    limitScope: 0
+    spatialBlend: 0
+    minDistance: 1
+    maxDistance: 15
+    useFallback: 0
+    fallbackSound: 5
 --- !u!114 &-3363200476755289365
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -343,22 +358,25 @@ MonoBehaviour:
   shootSprites: []
   shootFrameTime: 0.12
   walkSprites:
-  - {fileID: 21300000, guid: ff6be4bfc4d07474eb56d124ee43a4b2, type: 3}
-  - {fileID: 21300000, guid: f01fe1d766d0ed24da222eb3ca717313, type: 3}
-  - {fileID: 21300000, guid: c234b4444239b6c4f964642f58f00112, type: 3}
+  - {fileID: 21300000, guid: 3c50e57edbcb4c49aaf3dd5eec82c8a7, type: 3}
+  - {fileID: 21300000, guid: 748236c8f30144599c33eae89b8704b8, type: 3}
+  - {fileID: 21300000, guid: 3c50e57edbcb4c49aaf3dd5eec82c8a7, type: 3}
+  - {fileID: 21300000, guid: 9a45c9fa474e43c3aa8d84d30d6db822, type: 3}
   walkFrameTime: 0.28
-  prepareSprite: {fileID: 21300000, guid: 638b7ef061dc217428c5e5802fb33a07, type: 3}
+  prepareSprite: {fileID: 21300000, guid: e6a4b3ec0b25437e9790c288bd8aa87d, type: 3}
   dashSprites:
-  - {fileID: 21300000, guid: 42579597f07078644af47b728e5bb957, type: 3}
-  - {fileID: 21300000, guid: 04a4453dd6c6ce846bb3740b3d08fcd6, type: 3}
-  - {fileID: 21300000, guid: 786a49ef90ae0be4b8eed79de41aa261, type: 3}
+  - {fileID: 21300000, guid: d5dae2a5d359432ebb944bab0020fed7, type: 3}
+  - {fileID: 21300000, guid: 6e9baf9ed51148b8be1f1e2e40a64a57, type: 3}
+  - {fileID: 21300000, guid: eb82b8e57ca7404589c8a80d1f1e5cff, type: 3}
   dashFrameTime: 0.1
   deathSprites:
-  - {fileID: 21300000, guid: ed490dc7744fa614e8f890a180bff28d, type: 3}
-  - {fileID: 21300000, guid: 6d114809fae98c8478816a88232b562e, type: 3}
-  - {fileID: 21300000, guid: f14c001092847e140879a47eb157cf96, type: 3}
-  deathFrameTime: 0.12
+  - {fileID: 21300000, guid: e05345b857664ede996c726727990d16, type: 3}
+  - {fileID: 21300000, guid: 076888552857457182e914ad537395b5, type: 3}
+  - {fileID: 21300000, guid: b91b56a3fd2942a5af8b2b4576fc3399, type: 3}
+  deathFrameTime: 0.18
   deathEndHoldTime: 0.08
+  idleWhenStationary: 0
+  hitSprite: {fileID: 0}
 --- !u!114 &-3398159243529488567
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -384,6 +402,36 @@ MonoBehaviour:
   playerEnergy: {fileID: 0}
   energyReward: 10
   logEnergyReward: 0
+  hurtSound:
+    channel: 0
+    clip: {fileID: 0}
+    clips:
+    - {fileID: 0}
+    volume: 1
+    minimumInterval: 0.05
+    pitchRange: {x: 1, y: 1}
+    maxSimultaneous: 4
+    limitScope: 0
+    spatialBlend: 0
+    minDistance: 1
+    maxDistance: 15
+    useFallback: 0
+    fallbackSound: 5
+  deathSound:
+    channel: 0
+    clip: {fileID: 0}
+    clips:
+    - {fileID: 0}
+    volume: 1
+    minimumInterval: 0.05
+    pitchRange: {x: 1, y: 1}
+    maxSimultaneous: 4
+    limitScope: 0
+    spatialBlend: 0
+    minDistance: 1
+    maxDistance: 15
+    useFallback: 0
+    fallbackSound: 5
 --- !u!114 &849854591839963007
 MonoBehaviour:
   m_ObjectHideFlags: 0

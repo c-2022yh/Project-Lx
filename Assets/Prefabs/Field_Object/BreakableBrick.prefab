@@ -151,5 +151,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5b553ab9decb24f46a7a34d2cd59c3dc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::BreakableBrick
-  requiredHitsToBreak: 1
+  requiredHitsToBreak: 3
   breakEffectPrefab: {fileID: 0}
+  spawnDebris: 1
+  debrisColor: {r: 0.7, g: 0.74, b: 0.82, a: 1}
