@@ -119,8 +119,17 @@ public static class UnifiedPanels
         Image windowBg = window.GetComponent<Image>();
         if (windowBg != null) windowBg.color = UnifiedStyle.Panel;
 
-        // 제목 (탭 레일 위 빈자리)
-        UnifiedStyle.Title(window, font, "설정", 60f, 22f, 44f);
+        // 제목 자리: 창을 위로 늘리고 안쪽을 아래로 내려, 왼쪽 위 창살 모서리(약 96px)와 안 겹치게 한다
+        RectTransform wr = (RectTransform)window;
+        const float titleBand = 80f;
+        wr.sizeDelta += new Vector2(0f, titleBand);
+        LatticeFrame.Attach(wr, wr.sizeDelta.y);
+        foreach (string inner in new[] { "TabRail", "SettingsScroll" })
+        {
+            RectTransform ir = window.Find(inner) as RectTransform;
+            if (ir != null) ir.offsetMax -= new Vector2(0f, titleBand);
+        }
+        UnifiedStyle.Title(window, font, "설정", 112f, 34f, 46f);
 
         // 탭: 회색 상자를 빼고 글자 + 먹 붓줄
         Transform rail = window.Find("TabRail");

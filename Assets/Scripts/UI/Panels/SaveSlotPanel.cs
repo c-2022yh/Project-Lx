@@ -6,7 +6,7 @@ using UnityEngine.InputSystem;
 using UnityEngine.UI;
 
 /// <summary>
-/// 저장 슬롯 선택 화면 ("기록 고르기").
+/// 저장 슬롯 선택 화면 ("게임 기록").
 /// 슬롯 정보는 SaveSlotService.Provider에서 가져오므로, 세이브 시스템이 바뀌어도 이 스크립트는 고칠 게 없다.
 ///
 /// 10.31 UI 통일 (시안 12번): 화면을 코드로 새로 그린다. 빌더가 만든 예전 회색 상자들은 숨긴다.
@@ -138,9 +138,7 @@ public class SaveSlotPanel : MonoBehaviour
         Image shade = UnifiedStyle.Backdrop(root, 0.93f, 0.84f);
         shade.transform.SetSiblingIndex(titleArt != null ? 1 : 0);
 
-        UnifiedStyle.Title(root, font, "기록 고르기", Left, 84f, 52f);
-        TextMeshProUGUI sub = UnifiedStyle.NewText("Sub", root, font, "이어 할 기록을 고르거나, 빈 칸에서 새로 시작하세요.", 24f, UnifiedStyle.TextMuted);
-        UnifiedStyle.PlaceTopLeft(sub.rectTransform, Left + 2f, 172f, 1200f, 36f);
+        UnifiedStyle.Title(root, font, "게임 기록", Left, 84f, 52f);
 
         BuildDetail();
 
