@@ -25,6 +25,7 @@ public static class MapRoomExporter
     private const int PixelsPerCell = 6;      // 타일 한 칸 = 6px
     private const int MaxSide = 4096;
     private const int Pad = 3;                // 방 둘레 여백 (칸)
+    private const int CloseRadius = 2;        // 이 두께(×2칸) 이하로 튀어나온 발판·턱은 메워서 바깥 테두리만 남긴다
     private const float DoorGap = 3f;         // 방과 방 사이 (월드 단위)
 
     // 방 속은 시안의 푸른 먹색. 지도 창이 지금 방/가 본 방 색을 곱해서 입힌다.
@@ -230,6 +231,11 @@ public static class MapRoomExporter
         // 그래야 발판 테두리 없이 방 전체 테두리만 남는다.
         FillHoles(inside, w, h);
 
+        // 10.30: 벽에 붙어 튀어나온 발판·턱도 지운다 (시안처럼 방 바깥 테두리만).
+        // 얇은 틈을 메우는 닫기(넓혔다가 다시 줄이기)를 한 뒤 갇힌 칸을 한 번 더 메운다.
+        Close(inside, w, h, CloseRadius);
+        FillHoles(inside, w, h);
+
         room.WorldMin = origin;
         room.WorldSize = new Vector2(w, h);
         Texture2D tex = Bake(inside, blocked, w, h, name.GetHashCode());
@@ -331,6 +337,38 @@ public static class MapRoomExporter
         for (int x = 0; x < w; x++)
         for (int y = 0; y < h; y++)
             inside[x, y] = !outside[x, y];
+    }
+
+    /// <summary>모양 닫기: r칸만큼 넓혔다가 다시 줄인다. 폭 2r 이하의 틈·홈이 메워진다.</summary>
+    private static void Close(bool[,] a, int w, int h, int r)
+    {
+        bool[,] grown = Morph(a, w, h, r, true);
+        bool[,] back = Morph(grown, w, h, r, false);
+        for (int x = 0; x < w; x++)
+        for (int y = 0; y < h; y++)
+            a[x, y] = back[x, y];
+    }
+
+    /// <summary>grow면 반경 r 안에 하나라도 있으면 true, 아니면 반경 r 안이 전부 true여야 true.</summary>
+    private static bool[,] Morph(bool[,] a, int w, int h, int r, bool grow)
+    {
+        bool[,] o = new bool[w, h];
+        int rr = r * r;
+        for (int x = 0; x < w; x++)
+        for (int y = 0; y < h; y++)
+        {
+            bool result = !grow;
+            for (int dx = -r; dx <= r && result != grow; dx++)
+            for (int dy = -r; dy <= r; dy++)
+            {
+                if (dx * dx + dy * dy > rr) continue;
+                int nx = x + dx, ny = y + dy;
+                bool v = nx >= 0 && ny >= 0 && nx < w && ny < h && a[nx, ny];
+                if (v == grow) { result = grow; break; }
+            }
+            o[x, y] = result;
+        }
+        return o;
     }
 
     private static bool Any(bool[,] a)
@@ -600,7 +638,8 @@ public static class MapRoomExporter
                 image = AssetDatabase.LoadAssetAtPath<Sprite>(path),
                 worldMin = r.WorldMin,
                 worldSize = r.WorldSize,
-                atlasMin = r.AtlasMin
+                atlasMin = r.AtlasMin,
+                group = r.Group
             });
         }
 

@@ -32,6 +32,9 @@ public class MapRoomAtlas : ScriptableObject
 
         [Tooltip("전체 지도에서 그림 왼쪽 아래가 놓이는 곳 (월드 단위)")]
         public Vector2 atlasMin;
+
+        [Tooltip("포털로 이어진 방 덩어리 번호. 지도는 지금 방과 같은 덩어리 전체를 한 화면에 담는다.")]
+        public int group;
     }
 
     [SerializeField] private List<Room> rooms = new List<Room>();

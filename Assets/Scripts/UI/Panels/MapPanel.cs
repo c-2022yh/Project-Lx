@@ -165,14 +165,19 @@ public class MapPanel : MonoBehaviour
             if (r == here || VisitedScenes.HasVisited(r.sceneName)) shown.Add(r);
         }
 
+        // 10.30: 할로우나이트처럼 전체 지도. 안 가 본 방도 자리는 차지해서(그림은 안 그림)
+        // 지도가 늘 같은 크기·위치로 보인다. 포털로 이어진 같은 덩어리 방들만 센다 (테스트 씬 제외).
         Vector2 min = here.atlasMin, max = here.atlasMin + here.worldSize;
-        foreach (MapRoomAtlas.Room r in shown)
+        foreach (MapRoomAtlas.Room r in atlas.Rooms)
         {
+            if (r == null || r.image == null) continue;
+            bool sameWorld = here.group != 0 ? r.group == here.group : shown.Contains(r);
+            if (!sameWorld) continue;
             min = Vector2.Min(min, r.atlasMin);
             max = Vector2.Max(max, r.atlasMin + r.worldSize);
         }
 
-        // 보이는 방이 판 안에 다 들어오게
+        // 전체 지도가 판 안에 다 들어오게
         Vector2 size = max - min;
         Rect board = mapContent.rect;
         float scale = Mathf.Min(board.width * RoomFitMargin / Mathf.Max(1f, size.x),
