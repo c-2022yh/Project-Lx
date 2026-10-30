@@ -14,6 +14,9 @@ using UnityEngine;
 ///
 /// 잡은 보스방은 FieldObjectState로 기억해서 다시 와도 문이 열려 있고 보스가 없다.
 /// 보스 오브젝트에 BossMarker를 붙이면 이름·칭호가 카드와 HP바에 나온다.
+///
+/// 달빛 연출(moonPresentation, 11.01): 방이 어두워지고 돌가루·달빛 → 2페이즈 충격파·붉은 빛
+/// → 격파 빛살 → 처치한 뒤에야 보주가 처음 드러나 플레이어에게 날아간다. (BossFx, BossScreenFx, BossOrbReveal)
 /// </summary>
 [RequireComponent(typeof(Collider2D))]
 public class BossRoom : MonoBehaviour
@@ -50,6 +53,14 @@ public class BossRoom : MonoBehaviour
     [Tooltip("대화 전에 \"격파\" 카드를 띄운다.")]
     [SerializeField] private bool showDefeatCard = true;
 
+    [Header("Presentation (달빛)")]
+    [Tooltip("등장 때 방이 어두워지고 돌가루·달빛, 2페이즈 충격파·붉은 빛, 격파 빛살·보주 등장을 켠다.")]
+    [SerializeField] private bool moonPresentation = true;
+    [Tooltip("격파 뒤 처음 모습을 드러내는 보주 그림. 비우면 코드로 그린 빛 구슬을 쓴다.")]
+    [SerializeField] private Sprite revealOrbSprite;
+    [Tooltip("HP바에서 2페이즈가 되는 자리(체력 비율). 골렘의 Phase Two Health와 맞춰 둔다.")]
+    [SerializeField, Range(0f, 1f)] private float phaseMark = 0.5f;
+
     private const float DefeatCardSeconds = 1.8f;
 
     private enum State { Idle, Intro, Fighting, Cleared }
@@ -62,6 +73,8 @@ public class BossRoom : MonoBehaviour
     private Coroutine routine;
     private bool shownCardOnce;
     private string bossDisplayName;
+    private BossMoonBeam beam;
+    private GolemBossController golem;
 
     public bool IsCleared => state == State.Cleared;
 
@@ -95,6 +108,7 @@ public class BossRoom : MonoBehaviour
     private void OnDisable()
     {
         UnwatchPlayer();
+        UnhookBoss();
     }
 
     private void OnTriggerEnter2D(Collider2D other)
@@ -120,6 +134,14 @@ public class BossRoom : MonoBehaviour
         StartCoroutine(MoveDoors(true));
         if (useRoomCamera) SetRoomCamera(true);
 
+        // 방이 어두워지고 천장에서 돌가루가 떨어진다
+        if (moonPresentation)
+        {
+            BossScreenFx.Darken(0.55f, 0.5f);
+            BossScreenFx.Letterbox(true, 0.6f);
+            BossFx.CeilingDust(RoomBounds(), 2.2f);
+        }
+
         yield return new WaitForSecondsRealtime(introDelay);
 
         BossMarker marker = boss.GetComponent<BossMarker>();
@@ -132,6 +154,14 @@ public class BossRoom : MonoBehaviour
         shownCardOnce = true;
         BossTitleCard.Show(bossTitle, bossName, card);
 
+        // 위에서 달빛이 내려와 보스 자리를 비춘다
+        if (moonPresentation)
+        {
+            if (beam == null) beam = CreateBeam();
+            if (beam != null) beam.SetMood(BossMoonBeam.Mood.Cool, 1.4f);
+            BossScreenFx.Darken(0.2f, 1.2f);
+        }
+
         yield return new WaitForSecondsRealtime(card * 0.5f);
 
         if (!boss.gameObject.activeSelf)
@@ -140,44 +170,105 @@ public class BossRoom : MonoBehaviour
             boss.gameObject.SetActive(true);
         }
 
-        BossHealthBarUI.Show(boss, bossName);
+        golem = boss.GetComponent<GolemBossController>();
+        if (golem != null)
+        {
+            golem.onPhaseTwo.RemoveListener(HandlePhaseTwo);
+            golem.onPhaseTwo.AddListener(HandlePhaseTwo);
+        }
+
+        BossHealthBarUI.Show(boss, bossName, golem != null ? phaseMark : -1f);
         state = State.Fighting;
 
-        GolemBossController golem = boss.GetComponent<GolemBossController>();
-        while (boss != null && !boss.IsDead && (golem == null || !golem.IsDefeated)) yield return null;
+        if (moonPresentation)
+        {
+            BossScreenFx.Darken(0f, 0.8f);
+            BossScreenFx.Letterbox(false, 0.5f);
+        }
+
+        while (boss != null && !boss.IsDead) yield return null;
 
         yield return ClearRoutine();
+    }
+
+    // 2페이즈: 큰 충격파 + 바닥 물결 + 방이 붉게 + HP바 주황
+    private void HandlePhaseTwo()
+    {
+        if (!moonPresentation || state != State.Fighting || boss == null) return;
+
+        BossFx.PhaseTwoBurst(BossCenter(), BossGroundY());
+        BossScreenFx.Flash(new Color(1f, 0.75f, 0.5f, 0.55f), 0.9f);
+        BossScreenFx.Tint(true, 1.2f);
+        if (beam != null) beam.SetMood(BossMoonBeam.Mood.Warm, 1f);
+        BossHealthBarUI.SetPhaseTwo(true);
+        StartCoroutine(PhaseLetterbox());
+    }
+
+    private IEnumerator PhaseLetterbox()
+    {
+        BossScreenFx.Letterbox(true, 0.3f);
+        yield return new WaitForSecondsRealtime(1.3f);
+        if (state == State.Fighting) BossScreenFx.Letterbox(false, 0.5f);
     }
 
     private IEnumerator ClearRoutine()
     {
         state = State.Cleared;
+        Transform player = playerHealth != null ? playerHealth.transform : null;
         UnwatchPlayer();
+        UnhookBoss();
         FieldObjectState.MarkDone(this);
+
+        // 보스가 사라지기 전에 자리를 기억해 둔다
+        Vector3 center = BossCenter();
 
         // 마지막 일격: 멈춤 → 슬로모션
         HitStop.Stop(clearHitStop);
         CameraShake.Shake(CameraShake.Heavy);
+        if (moonPresentation)
+        {
+            BossScreenFx.Flash(new Color(1f, 1f, 1f, 0.9f), 0.35f);
+            BossScreenFx.Letterbox(true, 0.4f);
+        }
         yield return new WaitForSecondsRealtime(clearHitStop);
         HitStop.Cancel();   // 멈춤이 남아 있으면 슬로모션이 멈춤에 묻히므로 먼저 끝낸다
         HitStop.Slow(clearSlowScale, clearSlowSeconds);
 
         BossHealthBarUI.Hide();
 
+        // 갈라진 틈에서 빛이 터지고 빛 조각이 흩어진다. 방은 다시 차가운 달빛으로.
+        if (moonPresentation)
+        {
+            BossFx.DefeatBurst(center);
+            BossScreenFx.Tint(false, 1.4f);
+            if (beam != null) beam.SetMood(BossMoonBeam.Mood.Bright, 1.6f);
+        }
+
         yield return new WaitForSecondsRealtime(unlockDelay);
 
-        // 격파 카드 → 쓰러진 보스의 마지막 말
+        // 보주는 처치한 뒤에야 처음 보인다
+        BossOrbReveal orb = moonPresentation ? BossOrbReveal.Play(center, player, revealOrbSprite) : null;
+
+        string shownName = string.IsNullOrEmpty(bossDisplayName) ? "보스" : bossDisplayName;
+        if (showDefeatCard)
+        {
+            BossTitleCard.ShowDefeat(shownName, DefeatCardSeconds);
+            yield return new WaitForSecondsRealtime(DefeatCardSeconds + 0.3f);
+        }
+
+        // 보주가 플레이어 곁으로 날아가 스며든다
+        if (orb != null)
+        {
+            orb.FlyToPlayer();
+            while (orb != null && !orb.IsDone) yield return null;
+        }
+
+        if (moonPresentation) BossScreenFx.Letterbox(false, 0.5f);
+
+        // 쓰러진 보스의 마지막 말
         DialogueData dialogue = clearDialogue != null ? clearDialogue : StoryDialogues.BossClear;
         if (dialogue != null)
         {
-            string shownName = string.IsNullOrEmpty(bossDisplayName) ? "보스" : bossDisplayName;
-
-            if (showDefeatCard)
-            {
-                BossTitleCard.Show("격 파", shownName, DefeatCardSeconds);
-                yield return new WaitForSecondsRealtime(DefeatCardSeconds + 0.3f);
-            }
-
             DialogueBox.Play(dialogue.With("{보스}", shownName));
             while (DialogueBox.IsBusy) yield return null;
         }
@@ -188,6 +279,56 @@ public class BossRoom : MonoBehaviour
         // 보스 처치는 바로 저장한다(제단 위치는 그대로).
         GameSession.SaveProgressNow();
         routine = null;
+    }
+
+    // ───────────── 연출 도우미 ─────────────
+
+    private Bounds RoomBounds() => GetComponent<Collider2D>().bounds;
+
+    private BossMoonBeam CreateBeam()
+    {
+        Bounds room = RoomBounds();
+        float x = boss != null ? bossStartPosition.x : room.center.x;
+        float top = room.max.y + 1f;
+        float height = Mathf.Max(4f, top - room.min.y);
+        return BossMoonBeam.Create(new Vector3(x, top, 0f), height, 5f);
+    }
+
+    /// <summary>보스 그림의 가운데. 그림이 없으면 위치에서 조금 위.</summary>
+    private Vector3 BossCenter()
+    {
+        if (boss == null) return transform.position;
+        bool found = false;
+        Bounds b = default;
+        foreach (SpriteRenderer sr in boss.GetComponentsInChildren<SpriteRenderer>())
+        {
+            if (!sr.enabled || sr.sprite == null) continue;
+            if (!found) { b = sr.bounds; found = true; }
+            else b.Encapsulate(sr.bounds);
+        }
+        if (found) return new Vector3(b.center.x, b.center.y, 0f);
+        return boss.transform.position + Vector3.up * 1.5f;
+    }
+
+    private float BossGroundY()
+    {
+        if (boss == null) return transform.position.y;
+        Collider2D col = boss.GetComponent<Collider2D>();
+        return col != null ? col.bounds.min.y : boss.transform.position.y;
+    }
+
+    private void UnhookBoss()
+    {
+        if (golem != null) golem.onPhaseTwo.RemoveListener(HandlePhaseTwo);
+        golem = null;
+    }
+
+    private void ClearPresentation()
+    {
+        BossScreenFx.Clear();
+        BossHealthBarUI.SetPhaseTwo(false);
+        if (beam != null) beam.FadeAndDestroy(0.4f);
+        beam = null;
     }
 
     // 보스전 중 플레이어 사망 → 부활을 기다렸다가 방을 처음 상태로
@@ -202,6 +343,8 @@ public class BossRoom : MonoBehaviour
     {
         BossHealthBarUI.Hide();
         BossTitleCard.Hide();
+        UnhookBoss();
+        ClearPresentation();
 
         while (playerHealth != null && playerHealth.IsDead) yield return null;
 
