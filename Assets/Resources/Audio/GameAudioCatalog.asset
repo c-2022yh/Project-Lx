@@ -173,8 +173,8 @@ MonoBehaviour:
       useFallback: 0
       fallbackSound: 0
   sounds:
-  - channel: 0
-    clip: {fileID: 0}
+  - channel: 1
+    clip: {fileID: 8300000, guid: b05012528f444af4aabc66d7437061f1, type: 3}
     clips:
     - {fileID: 0}
     volume: 1
@@ -187,9 +187,9 @@ MonoBehaviour:
     maxDistance: 15
     useFallback: 0
     fallbackSound: 5
-    sound: 0
-  - channel: 0
-    clip: {fileID: 0}
+    sound: 5
+  - channel: 1
+    clip: {fileID: 8300000, guid: 6722044c0f3007e45bd8585ca321e749, type: 3}
     clips:
     - {fileID: 0}
     volume: 1
@@ -201,10 +201,10 @@ MonoBehaviour:
     minDistance: 1
     maxDistance: 15
     useFallback: 0
-    fallbackSound: 5
-    sound: 1
-  - channel: 0
-    clip: {fileID: 0}
+    fallbackSound: 6
+    sound: 6
+  - channel: 1
+    clip: {fileID: 8300000, guid: a14309acdb0e63842baa286391054e53, type: 3}
     clips:
     - {fileID: 0}
     volume: 1
@@ -216,8 +216,8 @@ MonoBehaviour:
     minDistance: 1
     maxDistance: 15
     useFallback: 0
-    fallbackSound: 5
-    sound: 2
+    fallbackSound: 7
+    sound: 7
   - channel: 0
     clip: {fileID: 0}
     clips:
