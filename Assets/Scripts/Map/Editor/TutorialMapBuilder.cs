@@ -134,8 +134,8 @@ public static class TutorialMapBuilder
         Ceiling(82, 121, 21);    // 6 점프맵 (큰 동굴)
         Ceiling(122, 125, 23);   //   동굴 입구
                                  // 126~ 천장 없음 (밖)
-        Fill(12, 13, 7, 8);      // 종유석 (시작 방, 점프해도 안 닿는 높이)
-        Fill(64, 65, 13, 16);    // 종유석 (제단 방 왼쪽)
+        Fill(62, 69, 15, 16);    // 종유석 (제단 방): 계단처럼 위가 넓고 아래가 좁게
+        Fill(64, 67, 13, 14);    //   점프해도 머리가 안 닿는 높이 (바닥 5 + 점프 4 + 키 2.7 < 13)
 
         Floor(2, 21, 0);      // 1 시작
         Floor(22, 29, 2);     // 2 계단 +2
@@ -448,15 +448,14 @@ public static class TutorialMapBuilder
 
     private const string ArtDir = "Assets/Sprites/Backgrounds/Tutorial/";
 
-    // 근경: (그림, x, 그 자리 바닥 높이, 그림 높이). 상자·제단·슬라임은 가리지 않게 비켜 놓았다.
+    // 근경: (그림, x, 그 자리 바닥 높이, 그림 높이). 상자·제단·슬라임은 가리지 않게 비켜 놓았고,
+    // 구덩이(오목한 곳)에는 놓지 않는다.
     private static readonly (string sprite, float x, float floor, float height)[] Foregrounds =
     {
         ("FG_Cave_RockGrass", 15f, 1f, 3.4f),
         ("FG_Cave_Cairn", 33f, 5f, 2.2f),
         ("FG_Cave_Rock", 44f, 5f, 2.4f),
-        ("FG_Cave_RockTall", 51f, 3f, 4.2f),
-        ("FG_Cave_Pine", 88f, 3f, 5f),
-        ("FG_Cave_RockGrass", 104f, 3f, 3.6f),
+        ("FG_Cave_Pine", 72.5f, 5f, 4.6f),   // 제단 오른쪽, 더블 점프 벽 앞
         ("FG_Cave_Cairn", 119.5f, 5f, 2f),
         ("FG_Cave_RockTall", 139f, 5f, 4.4f),
     };
@@ -475,8 +474,10 @@ public static class TutorialMapBuilder
         if (bg == null) bg = Undo.AddComponent<CavePanoramaBackground>(cave.gameObject);
 
         SerializedObject so = new SerializedObject(bg);
-        so.FindProperty("insideSprite").objectReferenceValue = LoadSprite("BG_Cave_Inside");
-        so.FindProperty("exitSprite").objectReferenceValue = LoadSprite("BG_Cave_Exit");
+        // 동굴 안 → 출구가 한 장에 다 있는 그림. 끝에서 출구 구멍(그림의 77% 지점)이 화면 가운데
+        so.FindProperty("insideSprite").objectReferenceValue = null;
+        so.FindProperty("exitSprite").objectReferenceValue = LoadSprite("BG_Cave_Panorama");
+        so.FindProperty("exitFocus").floatValue = 0.77f;
         so.FindProperty("viewLeftX").floatValue = MinX;
         so.FindProperty("viewRightX").floatValue = CameraRight;
         so.ApplyModifiedProperties();

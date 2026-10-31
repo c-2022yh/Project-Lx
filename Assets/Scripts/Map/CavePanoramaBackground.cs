@@ -3,7 +3,9 @@
 /// <summary>
 /// 튜토리얼 동굴 배경.
 ///
-///   [동굴 안] [동굴 안(좌우 뒤집음)] [출구]  을 가로로 이어 붙인 긴 그림을 만들고,
+///   긴 그림 한 장(동굴 안 → 출구)을 쓴다. 동굴 안 그림(insideSprite)을 넣으면
+///   [동굴 안] [동굴 안(좌우 뒤집음)] [출구] 로 이어 붙인다 (지금은 안 씀).
+///   카메라 x에 맞춰 보이는 부분을 정한다.
 ///   카메라 x에 맞춰 보이는 부분을 정한다. 시작에서는 맨 왼쪽, 끝(전투 구역)에서는 출구 구멍이 화면 가운데에 온다.
 ///   두 번째 동굴 그림은 좌우를 뒤집어서 이음새가 자연스럽게 맞는다.
 ///   출구 그림은 왼쪽 끝이 흐려지게 만들어 둬서 동굴 그림 위에 겹쳐 이어진다.
@@ -49,9 +51,13 @@ public class CavePanoramaBackground : MonoBehaviour
 
         float wIn = Width(insideSprite);
         float wEx = Width(exitSprite);
-        Piece(insideSprite, 0f, false, 0);
-        Piece(insideSprite, wIn, true, 0);
-        float exitLeft = 2f * wIn - wEx * exitOverlap;
+        float exitLeft = 0f;
+        if (insideSprite != null)
+        {
+            Piece(insideSprite, 0f, false, 0);
+            Piece(insideSprite, wIn, true, 0);
+            exitLeft = 2f * wIn - wEx * exitOverlap;
+        }
         Piece(exitSprite, exitLeft, false, 1);
 
         stripWidth = exitLeft + wEx;
