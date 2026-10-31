@@ -70,7 +70,7 @@ MonoBehaviour:
   - sceneName: F_02
     music:
       channel: 2
-      clip: {fileID: 0}
+      clip: {fileID: 8300000, guid: 80cc116bc795a5147992b342a8a98845, type: 3}
       clips: []
       volume: 1
       minimumInterval: 0

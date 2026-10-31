@@ -1,0 +1,21 @@
+{
+  "scene": "Assets/Scenes/InProgress/F_02.unity",
+  "changes": [
+    [
+      "9219743499155216344",
+      "m_Mode",
+      "0"
+    ],
+    [
+      "711081088328489523",
+      "m_CompositeOperation",
+      "1"
+    ],
+    [
+      "3752653740329107597",
+      "m_GeometryType",
+      "1"
+    ]
+  ],
+  "user_scene_preserved": true
+}

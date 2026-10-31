@@ -1,0 +1,24 @@
+{
+    "before": {
+        "merged": false,
+        "tileCount": 11183,
+        "tileShapes": 11183,
+        "compositeShapes": 0,
+        "restingY": 63.5049934387207,
+        "solidInterior": true,
+        "standingContact": true,
+        "simulationMilliseconds": 5.4653
+    },
+    "after": {
+        "merged": true,
+        "tileCount": 11183,
+        "tileShapes": 0,
+        "compositeShapes": 2,
+        "restingY": 63.50497817993164,
+        "solidInterior": true,
+        "standingContact": true,
+        "simulationMilliseconds": 4.519
+    },
+    "passed": true,
+    "limitation": "Synthetic full-cell tile geometry. Not an F_02 frame-rate or rendering measurement."
+}
