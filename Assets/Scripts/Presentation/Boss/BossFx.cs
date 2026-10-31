@@ -151,6 +151,39 @@ public static class BossFx
 
     public static void PhaseTwoBurst(Vector3 center, float groundY)
     {
+        // 붉은 불꽃 고리 그림(Resources/Presentation/Boss/BossPhaseRing)이 있으면: 고리가 확 커지며 퍼지고, 안쪽에 하나가 일렁이며 남았다 사라짐
+        Sprite ringArt = Resources.Load<Sprite>("Presentation/Boss/BossPhaseRing");
+        if (ringArt != null)
+        {
+            float u = 1f / ringArt.bounds.size.x;   // 폭 1칸 기준
+            BossFxSprite burst = BossFxSprite.Create("Boss Phase Fire Ring", ringArt, center, Layer, 36);
+            burst.scaleFrom = new Vector3(u * 2f, u * 2f, 1f);
+            burst.scaleTo = new Vector3(u * 16f, u * 16f, 1f);
+            burst.spin = 30f;
+            burst.life = 1.1f;
+            burst.alphaFrom = 1f;
+            burst.alphaTo = 0f;
+
+            BossFxSprite hold = BossFxSprite.Create("Boss Phase Fire Core", ringArt, center, Layer, 37);
+            hold.scaleFrom = new Vector3(u * 1.5f, u * 1.5f, 1f);
+            hold.scaleTo = new Vector3(u * 6.5f, u * 6.5f, 1f);
+            hold.spin = -40f;
+            hold.fadeIn = 0.12f;
+            hold.life = 1.6f;
+            hold.alphaFrom = 1f;
+            hold.alphaTo = 0f;
+
+            BossFxSprite late = BossFxSprite.Create("Boss Phase Fire Ring 2", ringArt, center, Layer, 35);
+            late.color = new Color(1f, 0.6f, 0.45f, 0.8f);
+            late.delay = 0.2f;
+            late.scaleFrom = new Vector3(u * 3f, u * 3f, 1f);
+            late.scaleTo = new Vector3(u * 20f, u * 20f, 1f);
+            late.spin = 15f;
+            late.life = 1.2f;
+            late.alphaFrom = 0.8f;
+            late.alphaTo = 0f;
+        }
+        else
         for (int i = 0; i < 2; i++)
         {
             BossFxSprite ring = BossFxSprite.Create("Boss Phase Ring", BossFxArt.Ring, center, Layer, 35);

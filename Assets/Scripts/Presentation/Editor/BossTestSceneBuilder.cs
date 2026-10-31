@@ -4,6 +4,7 @@ using UnityEditor.SceneManagement;
 using UnityEngine;
 using UnityEngine.Rendering.Universal;
 using UnityEngine.SceneManagement;
+using UnityEngine.Tilemaps;
 
 /// <summary>
 /// 연출 테스트용 씬을 한 번에 만든다. 메뉴 [Tools/여울잔/보스 테스트 씬 만들기]
@@ -63,6 +64,8 @@ public static class BossTestSceneBuilder
         BuildGround();
         MovePlayerSpawn(new Vector3(SpawnX, GroundTop + 1.5f, 0f));
         FitCameraBounds();
+        AddRuinsBackground(background);
+        PlaceVines();
 
         SnapToGround(InstantiatePrefab(ShrinePath, new Vector3(ShrineX, GroundTop + 2f, 0f)));
         SnapToGround(InstantiatePrefab(BrickPath, new Vector3(BrickX, GroundTop + 2f, 0f)));
@@ -151,17 +154,276 @@ public static class BossTestSceneBuilder
     }
 
     // 평평한 바닥과 양 끝 벽 (Ground 레이어)
+    // 땅: 튜토리얼처럼 Grid 프리팹 타일맵에 검은 바위(Charcoal) 타일을 깐다. 보스방 바닥에는 풀을 안 얹는다.
+    // 충돌은 타일맵 것과 같은 모양의 보이지 않는 상자도 같이 둔다 (에디터에서 바로 바닥 높이를 잴 수 있게).
+    private const string GridPath = "Assets/Prefabs/Maps/Grid.prefab";
+    private const string RockDir = "Assets/Tiles/Ground_Rock/Charcoal/";
+    private const string GrassDir = "Assets/Tiles/Grass/";
+    private const int FloorDepth = 6;     // 바닥 두께 (칸)
+    private const int WallHeight = 18;
+
     private static void BuildGround()
     {
         float width = ArenaRight - ArenaLeft;
         float midX = (ArenaLeft + ArenaRight) * 0.5f;
 
-        CreateBlock("Ground", new Vector3(midX, GroundTop - 2f, 0f), new Vector2(width + 4f, 4f));
-        CreateBlock("Wall_Left", new Vector3(ArenaLeft - 1f, GroundTop + 7f, 0f), new Vector2(2f, 18f));
-        CreateBlock("Wall_Right", new Vector3(ArenaRight + 1f, GroundTop + 7f, 0f), new Vector2(2f, 18f));
+        bool tiled = PaintTiles();
+        CreateBlock("Ground", new Vector3(midX, GroundTop - 2f, 0f), new Vector2(width + 4f, 4f), !tiled);
+        CreateBlock("Wall_Left", new Vector3(ArenaLeft - 1f, GroundTop + 7f, 0f), new Vector2(2f, 18f), !tiled);
+        CreateBlock("Wall_Right", new Vector3(ArenaRight + 1f, GroundTop + 7f, 0f), new Vector2(2f, 18f), !tiled);
     }
 
-    private static void CreateBlock(string name, Vector3 center, Vector2 size)
+    private static bool PaintTiles()
+    {
+        GameObject grid = InstantiatePrefab(GridPath, Vector3.zero);
+        if (grid == null) return false;
+        Tilemap ground = null, grass = null;
+        foreach (Tilemap tm in grid.GetComponentsInChildren<Tilemap>(true))
+        {
+            tm.ClearAllTiles();
+            if (tm.name == "Tilemap_Ground") ground = tm;
+            else if (tm.name == "Tilemap_Grass") grass = tm;
+        }
+        TileBase[] rock =
+        {
+            AssetDatabase.LoadAssetAtPath<TileBase>(RockDir + "Ground_TopLeft.asset"),
+            AssetDatabase.LoadAssetAtPath<TileBase>(RockDir + "Ground_TopRight.asset"),
+            AssetDatabase.LoadAssetAtPath<TileBase>(RockDir + "Ground_BottomLeft.asset"),
+            AssetDatabase.LoadAssetAtPath<TileBase>(RockDir + "Ground_BottomRight.asset"),
+        };
+        if (ground == null || System.Array.Exists(rock, t => t == null))
+        {
+            Debug.LogWarning("[BossTestSceneBuilder] Grid 타일맵이나 Charcoal 타일을 못 찾아서 회색 상자로 땅을 만듭니다.");
+            Object.DestroyImmediate(grid);
+            return false;
+        }
+        System.Collections.Generic.List<TileBase> grassTops = new System.Collections.Generic.List<TileBase>();
+        for (int i = 1; i <= 5; i++)
+        {
+            TileBase g = AssetDatabase.LoadAssetAtPath<TileBase>(GrassDir + "Grass_Top_V0" + i + ".asset");
+            if (g != null) grassTops.Add(g);
+        }
+
+        int top = Mathf.RoundToInt(GroundTop);
+        int left = Mathf.RoundToInt(ArenaLeft), right = Mathf.RoundToInt(ArenaRight);
+        float roomL = GolemX - BossRoomHalfWidth - 1f, roomR = GolemX + BossRoomHalfWidth + 1f;
+
+        bool Solid(int x, int y)
+        {
+            bool floor = y < top && y >= top - FloorDepth && x >= left - 4 && x <= right + 3;
+            bool wall = y >= top && y < top + WallHeight && ((x >= left - 2 && x <= left - 1) || (x >= right && x <= right + 1));
+            int ceil = top + Mathf.RoundToInt(CeilingBottom);
+            bool ceiling = y >= ceil && y < ceil + CeilingThick && x >= left - 2 && x <= right + 1 && IsCeiling(x);
+            return floor || wall || ceiling;
+        }
+        Vector3Int Cell(Tilemap tm, int x, int y) => tm.WorldToCell(new Vector3(x + 0.5f, y + 0.5f, 0f));
+
+        var gPos = new System.Collections.Generic.List<Vector3Int>(); var gTiles = new System.Collections.Generic.List<TileBase>();
+        var wPos = new System.Collections.Generic.List<Vector3Int>(); var wTiles = new System.Collections.Generic.List<TileBase>();
+        for (int x = left - 4; x <= right + 3; x++)
+            for (int y = top - FloorDepth; y < top + WallHeight; y++)
+            {
+                if (!Solid(x, y)) continue;
+                // 2×2 그림: 바닥 맨 윗줄이 그림의 위쪽이 되게
+                int ceilBase = top + Mathf.RoundToInt(CeilingBottom);
+                int rowFromTop = y >= ceilBase ? (ceilBase + CeilingThick - 1 - y) : (top - 1 - y);   // 천장은 천장 윗줄 기준
+                int idx = ((rowFromTop & 1) == 0 ? 0 : 2) + ((x & 1) == 0 ? 0 : 1);
+                gPos.Add(Cell(ground, x, y));
+                gTiles.Add(rock[idx]);
+
+                // 바닥 윗면 풀 (보스방 바닥은 빼고)
+                bool exposed = y == top - 1 && !Solid(x, y + 1);
+                bool inRoom = x + 1 > roomL && x < roomR;
+                if (grass != null && grassTops.Count > 0 && exposed && !inRoom)
+                {
+                    wPos.Add(Cell(grass, x, y));
+                    wTiles.Add(grassTops[Mathf.Abs(x * 7 + 3) % grassTops.Count]);
+                }
+            }
+        ground.SetTiles(gPos.ToArray(), gTiles.ToArray());
+        if (grass != null) grass.SetTiles(wPos.ToArray(), wTiles.ToArray());
+        foreach (Tilemap tm in grid.GetComponentsInChildren<Tilemap>(true)) tm.CompressBounds();
+
+        TilemapCollider2D tc = ground.GetComponent<TilemapCollider2D>();
+        if (tc != null) tc.ProcessTilemapChanges();
+        CompositeCollider2D cc = ground.GetComponent<CompositeCollider2D>();
+        if (cc != null) cc.GenerateGeometry();
+
+        // 땅 깊이 그늘 (튜토리얼과 같은 값)
+        TilemapRenderer tr = ground.GetComponent<TilemapRenderer>();
+        if (tr != null) tr.mode = TilemapRenderer.Mode.Chunk;
+        GroundDepthShading depth = ground.GetComponent<GroundDepthShading>();
+        if (depth != null)
+        {
+            depth.surfaceWidth = 0.25f;
+            depth.fadeDistance = 2.5f;
+            depth.maxDarkness = 0.98f;
+            depth.falloffPower = 0.8f;
+            depth.enabled = false;
+            depth.enabled = true;
+        }
+        return true;
+    }
+
+    // 근경 덩굴: 천장 밑에 매달린다 (땅 뒤 여러 개 + 캐릭터 앞 몇 개). 넓은 덩굴(Cluster)도 섞는다.
+    // 보스방 가운데 위는 천장 없이 하늘이 뚫려 있어서 (빛줄기가 내려옴) 덩굴도 두지 않는다.
+    private const float CeilingBottom = 11f;   // 천장 아랫면 높이 (바닥 위 칸)
+    private const int CeilingThick = 4;
+    private const float SkyGap = 7f;           // 골렘 자리 좌우 이만큼은 천장 없음
+
+    private static readonly (string prefab, float x, float scale)[] Vines =
+    {
+        ("FG_Back_Ivy_Teal_1",         -36f, 1.0f),
+        ("FG_Back_Ivy_Light_2",        -31f, 1.1f),
+        ("FG_Back_Ivy_GlowCluster",    -25f, 1.0f),
+        ("FG_Back_Ivy_Dark_3",         -19f, 0.9f),
+        ("FG_Back_Ivy_Teal_5",         -12f, 1.0f),
+        ("FG_Back_Ivy_OrbCluster",      -5f, 1.0f),
+        ("FG_Back_Ivy_Light_4",          2f, 1.1f),
+        ("FG_Back_Ivy_Cluster",          8f, 1.1f),
+        ("FG_Back_Ivy_Dark_1",          13f, 0.9f),
+        ("FG_Back_Ivy_Teal_6",          31f, 1.1f),
+        ("FG_Back_Ivy_GlowCluster",     35f, 0.9f),
+        ("FG_Back_Ivy_Light_6",         38f, 1.0f),
+        ("FG_Front_Ivy_Dark_2",        -38f, 1.2f),
+        ("FG_Front_Ivy_Plain_1",       -15f, 1.0f),
+        ("FG_Front_Ivy_Cluster",        -1f, 0.9f),
+        ("FG_Front_Ivy_Dark_5",         39f, 1.2f),
+    };
+
+    // 덩굴 위쪽이 천장인지: 덩굴 좌우 4칸 안이고 하늘 구멍 밖
+    private static bool IsCeiling(int x)
+    {
+        if (x + 1 > GolemX - SkyGap && x < GolemX + SkyGap) return false;
+        foreach (var v in Vines) if (x + 1 > v.x - 4f && x < v.x + 4f) return true;
+        foreach (var v in WideVines) if (x + 1 > v.x - 5f && x < v.x + 5f) return true;
+        return false;
+    }
+
+    // 가로로 넓은 덩굴: 천장에서 U자로 늘어진 넓은 덩굴(Vine_A·B)을 천장 밑에 깐다 (scaleX 음수 = 좌우 뒤집기)
+    private static readonly (string prefab, float x, float scale, float scaleX)[] WideVines =
+    {
+        ("FG_Back_Vine_A",   -33f, 1.2f,  1f),
+        ("FG_Back_Vine_B",   -21f, 1.1f, -1f),
+        ("FG_Back_Vine_A",    -8f, 1.2f, -1f),
+        ("FG_Back_Vine_B",     5f, 1.1f,  1f),
+        ("FG_Back_Vine_A",    36f, 1.1f,  1f),
+        ("FG_Front_Vine_B",  -27f, 1.0f, -1f),
+    };
+
+    // 유적 근경: 밝은 것 2개(땅 뒤) + 어두운 것 1개(캐릭터 앞). 기준점이 아래 가운데라 땅 위에 놓는다.
+    private static readonly (string prefab, float x, float scale, float scaleX)[] Ruins =
+    {
+        ("FG_Back_Ruin_Pillar_Blue",  -27f, 1.0f,  1f),
+        ("FG_Back_Ruin_Block_Blue",     2f, 1.0f, -1f),
+        ("FG_Front_Ruin_Rubble_Dark", -15f, 0.9f,  1f),
+    };
+
+    private const string RuinMenu = "Tools/여울잔/보스 테스트 씬에 유적 근경 추가";
+
+    [MenuItem(RuinMenu)]
+    private static void AddRuinsMenu()
+    {
+        Undo.SetCurrentGroupName("유적 근경 추가");
+        int n = AddRuins(true);
+        EditorSceneManager.MarkSceneDirty(SceneManager.GetActiveScene());
+        Debug.Log($"[BossTestSceneBuilder] 유적 근경 {n}개를 Foreground_Ruins 아래에 놓았어요. 위치를 다듬고 Ctrl+S로 저장하세요.");
+    }
+
+    [MenuItem(RuinMenu, true)]
+    private static bool CanAddRuins() => !EditorApplication.isPlaying;
+
+    private static int AddRuins(bool undo)
+    {
+        GameObject root = GameObject.Find("Foreground_Ruins");
+        if (root == null)
+        {
+            root = new GameObject("Foreground_Ruins");
+            if (undo) Undo.RegisterCreatedObjectUndo(root, "유적 근경 추가");
+        }
+        int placed = 0;
+        for (int i = 0; i < Ruins.Length; i++)
+        {
+            var r = Ruins[i];
+            string name = "Ruin_" + i + "_" + r.prefab;
+            if (root.transform.Find(name) != null) continue;
+            GameObject go = InstantiatePrefab("Assets/Prefabs/Foreground/" + r.prefab + ".prefab", new Vector3(r.x, GroundTop - 0.15f, 0f));
+            if (go == null) continue;
+            if (undo) Undo.RegisterCreatedObjectUndo(go, "유적 근경 추가");
+            go.name = name;
+            go.transform.SetParent(root.transform, true);
+            go.transform.localScale = new Vector3(r.scale * r.scaleX, r.scale, 1f);
+            placed++;
+        }
+        return placed;
+    }
+
+    private const string WideMenu = "Tools/여울잔/보스 테스트 씬에 넓은 덩굴 추가";
+
+    // 씬을 다시 만들지 않고, 지금 열린 테스트 씬에 넓은 덩굴만 더한다 (직접 옮긴 덩굴은 그대로)
+    [MenuItem(WideMenu)]
+    private static void AddWideVinesMenu()
+    {
+        Undo.SetCurrentGroupName("넓은 덩굴 추가");
+        int n = AddWideVines(true);
+        EditorSceneManager.MarkSceneDirty(SceneManager.GetActiveScene());
+        Debug.Log($"[BossTestSceneBuilder] 넓은 덩굴 {n}개를 Foreground_Vines 아래에 놓았어요. 위치를 다듬고 Ctrl+S로 저장하세요.");
+    }
+
+    [MenuItem(WideMenu, true)]
+    private static bool CanAddWide() => !EditorApplication.isPlaying;
+
+    private static int AddWideVines(bool undo)
+    {
+        GameObject root = GameObject.Find("Foreground_Vines");
+        if (root == null)
+        {
+            root = new GameObject("Foreground_Vines");
+            if (undo) Undo.RegisterCreatedObjectUndo(root, "넓은 덩굴 추가");
+        }
+        // 예전 넓은 덩굴(담쟁이 덩어리)이 남아 있으면 지운다
+        System.Collections.Generic.HashSet<string> wanted = new System.Collections.Generic.HashSet<string>();
+        for (int i = 0; i < WideVines.Length; i++) wanted.Add("Wide_" + i + "_" + WideVines[i].prefab);
+        for (int c = root.transform.childCount - 1; c >= 0; c--)
+        {
+            Transform ch = root.transform.GetChild(c);
+            if (!ch.name.StartsWith("Wide_") || wanted.Contains(ch.name)) continue;
+            if (undo) Undo.DestroyObjectImmediate(ch.gameObject); else Object.DestroyImmediate(ch.gameObject);
+        }
+
+        int placed = 0;
+        for (int i = 0; i < WideVines.Length; i++)
+        {
+            var v = WideVines[i];
+            string name = "Wide_" + i + "_" + v.prefab;
+            if (root.transform.Find(name) != null) continue;   // 이미 있으면 또 놓지 않음
+            GameObject go = InstantiatePrefab("Assets/Prefabs/Foreground/" + v.prefab + ".prefab", new Vector3(v.x, GroundTop + CeilingBottom, 0f));
+            if (go == null) continue;
+            if (undo) Undo.RegisterCreatedObjectUndo(go, "넓은 덩굴 추가");
+            go.name = name;
+            go.transform.SetParent(root.transform, true);
+            go.transform.localScale = new Vector3(v.scale * v.scaleX, v.scale, 1f);
+            placed++;
+        }
+        return placed;
+    }
+
+    private static void PlaceVines()
+    {
+        GameObject root = new GameObject("Foreground_Vines");
+        AddWideVines(false);
+        AddRuins(false);
+        foreach (var v in Vines)
+        {
+            GameObject go = InstantiatePrefab("Assets/Prefabs/Foreground/" + v.prefab + ".prefab", new Vector3(v.x, GroundTop + CeilingBottom, 0f));
+            if (go == null) continue;
+            go.transform.SetParent(root.transform, true);
+            float flip = Mathf.Abs(Mathf.RoundToInt(v.x)) % 2 == 0 ? 1f : -1f;
+            go.transform.localScale = new Vector3(v.scale * flip, v.scale, 1f);
+        }
+    }
+
+    private static void CreateBlock(string name, Vector3 center, Vector2 size, bool visible = true)
     {
         GameObject go = new GameObject(name);
         go.transform.position = center;
@@ -174,6 +436,7 @@ public static class BossTestSceneBuilder
         sr.size = size;
         sr.color = new Color(0.12f, 0.15f, 0.17f, 1f);
         sr.sortingLayerName = "Ground";
+        sr.enabled = visible;   // 타일을 깔았으면 충돌용으로만 남긴다
 
         BoxCollider2D col = go.AddComponent<BoxCollider2D>();
         col.size = size;
@@ -201,6 +464,22 @@ public static class BossTestSceneBuilder
     }
 
     // 카메라가 테스트 바닥 밖으로 나가지 않게 경계를 새로 잡는다.
+    // 폐허 배경 (Resources/Presentation/Backgrounds/BG_Boss_Ruins). 숲 배경은 끈다.
+    // 카메라 이동 범위에 맞춰 그림 끝이 안 보이게 따라 움직인다 (FieldPanoramaBackground).
+    private const string RuinsPath = "Assets/Resources/Presentation/Backgrounds/BG_Boss_Ruins.png";
+
+    private static void AddRuinsBackground(GameObject forest)
+    {
+        Sprite ruins = AssetDatabase.LoadAssetAtPath<Sprite>(RuinsPath);
+        if (ruins == null) { Debug.LogWarning("[BossTestSceneBuilder] 폐허 배경 그림이 없어서 숲 배경을 그대로 둡니다."); return; }
+        if (forest != null) forest.SetActive(false);
+        GameObject go = new GameObject("Background_Ruins");
+        FieldPanoramaBackground bg = go.AddComponent<FieldPanoramaBackground>();
+        SerializedObject so = new SerializedObject(bg);
+        so.FindProperty("sprite").objectReferenceValue = ruins;
+        so.ApplyModifiedPropertiesWithoutUndo();
+    }
+
     private static void FitCameraBounds()
     {
         GameObject bounds = new GameObject("TestCameraBounds");

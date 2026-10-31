@@ -44,5 +44,8 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/InProgress/Boss.unity
     guid: 33fcdb06ac67ec8448599f9b3cc825a0
+  - enabled: 1
+    path: Assets/Scenes/Test/Test_BossRoom.unity
+    guid: 41f20aafba1bf3a4eb31cb7953d91f04
   m_configObjects:
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 2bcd2660ca9b64942af0de543d8d7100, type: 3}
