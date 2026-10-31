@@ -181,9 +181,28 @@ public sealed class GameAudio : MonoBehaviour
         if (instance == null || instance.catalog == null || cue == null) return default;
         SoundCue resolved = instance.Resolve(cue);
         AudioClip clip = resolved?.PickClip();
-        if (clip == null)
+        if (resolved == null)
         {
             if (cue.channel == GameAudioChannel.BGM) StopMusic();
+            return default;
+        }
+        return PlaySelectedClip(resolved, clip, position, owner, stopWithOwner);
+    }
+
+    // Keep the original cue identity so interval/voice limits still apply.
+    internal static SoundCue ResolveCueForPlayback(SoundCue cue)
+    {
+        if (cue == null) return null;
+        return cue.HasClip ? cue : instance != null && instance.catalog != null ? instance.Resolve(cue) : null;
+    }
+
+    internal static SoundHandle PlaySelectedClip(SoundCue resolved, AudioClip clip, Vector3 position,
+        Transform owner, bool stopWithOwner = false)
+    {
+        if (instance == null || instance.catalog == null || resolved == null) return default;
+        if (clip == null)
+        {
+            if (resolved.channel == GameAudioChannel.BGM) StopMusic();
             return default;
         }
         if (resolved.channel == GameAudioChannel.BGM)

@@ -79,8 +79,8 @@ SpriteRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_GlobalIlluminationMeshLod: 0
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
+  m_SortingLayerID: -315646325
+  m_SortingLayer: 3
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_Sprite: {fileID: 21300000, guid: d74bfd68938f48947a8eb31936861322, type: 3}
@@ -155,7 +155,7 @@ MonoBehaviour:
   breakEffectPrefab: {fileID: 0}
   hitSound:
     channel: 0
-    clip: {fileID: 0}
+    clip: {fileID: 8300000, guid: 6bbffbdd15967bc4a87c017ff4571073, type: 3}
     clips: []
     volume: 1
     minimumInterval: 0.05
@@ -169,7 +169,7 @@ MonoBehaviour:
     fallbackSound: 5
   breakSound:
     channel: 0
-    clip: {fileID: 0}
+    clip: {fileID: 8300000, guid: 902c26b5e185be440bcc734d7068eec2, type: 3}
     clips: []
     volume: 1
     minimumInterval: 0.05

@@ -96,7 +96,8 @@ public class ScorchedEarthSkillData : SkillData
     {
         var runner = new GameObject("ScorchedEarth_Barrage").AddComponent<ScorchedEarthBarrage>();
         damage.regular = AttachImpactAudio(p, damage.regular);
-        runner.Initialize(p, barrage, enemyLayer, damage, p.Skill != null ? p.Skill.GetAudioSession(this) : null);
+        runner.Initialize(p, barrage, enemyLayer, damage,
+            p.Skill != null ? p.Skill.GetAudioSession(this) : null, activeTime);
         return runner;
     }
 

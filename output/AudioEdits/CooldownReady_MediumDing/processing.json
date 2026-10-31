@@ -1,0 +1,9 @@
+{
+  "file": "SFX_CooldownReady_Minus5_MediumDing.wav",
+  "duration_seconds": 0.46,
+  "tail_damping_start_ms": 100,
+  "tail_decay_time_constant_ms": 150,
+  "end_fade_ms": 65,
+  "gain_db": 3.0,
+  "peak_dbfs": -8.33
+}

@@ -1,0 +1,29 @@
+{
+  "method": "Procedural synthesis with broad pressure envelopes and no sharp crack transients",
+  "variants": [
+    {
+      "file": "Footstep_DryLeaves_SoftCrush_01.wav",
+      "duration_seconds": 0.3689,
+      "peak_dbfs": -8.75,
+      "rms_dbfs": -23.0
+    },
+    {
+      "file": "Footstep_DryLeaves_SoftCrush_02.wav",
+      "duration_seconds": 0.3936,
+      "peak_dbfs": -8.42,
+      "rms_dbfs": -23.0
+    },
+    {
+      "file": "Footstep_DryLeaves_SoftCrush_03.wav",
+      "duration_seconds": 0.399,
+      "peak_dbfs": -9.31,
+      "rms_dbfs": -23.0
+    },
+    {
+      "file": "Footstep_DryLeaves_SoftCrush_04.wav",
+      "duration_seconds": 0.3544,
+      "peak_dbfs": -9.4,
+      "rms_dbfs": -23.0
+    }
+  ]
+}

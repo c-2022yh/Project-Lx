@@ -84,7 +84,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: -307728789
-  m_SortingLayer: 9
+  m_SortingLayer: 6
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_Sprite: {fileID: 21300000, guid: 2b210d4e646fec743afa397bc1871247, type: 3}
@@ -185,13 +185,13 @@ BoxCollider2D:
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
-    oldSize: {x: 0.14, y: 0.09}
+    oldSize: {x: 5.12, y: 5.12}
     newSize: {x: 0.14, y: 0.09}
     adaptiveTilingThreshold: 0.5
     drawMode: 0
     adaptiveTiling: 0
   m_AutoTiling: 0
-  m_Size: {x: 4, y: 3}
+  m_Size: {x: 5, y: 4}
   m_EdgeRadius: 0
 --- !u!50 &167186342221435089
 Rigidbody2D:
@@ -230,7 +230,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 420d08248c0346c68be3f7098a71a497, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::AttackTrailFlash
   flashMaterial: {fileID: 2100000, guid: ba6fc0f32e784b7b8eef19bc6af3b7c5, type: 2}
   duration: 0.25

@@ -46,11 +46,10 @@ public class DarkMoonRelicEffect : RelicEffect
 
             if (energy == null || awakening == null || offense == null) return;
 
-            awakening.SetAwakeningBlocked(true);
-
             if (awakening.IsAwakened || awakening.IsAwakening) awakening.EndAwakening();
 
             energy.SetMaxEnergyLimit(this, cap);
+            awakening.SetAwakeningBlocked(true);
             offense.damageAmplification += damageBonus;
 
             equipped = true;
