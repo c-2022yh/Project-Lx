@@ -10,6 +10,9 @@ public struct AttackDamageSpec
     //공격력 / 마력 계수
     public float damageMultiplier;
 
+    [Min(0f), Tooltip("Fixed damage added to the stat-scaled damage before critical hits, variance and mitigation. Set the multiplier to 0 for fixed damage only.")]
+    public float flatDamage;
+
     //치명타 가능 여부
     public bool canCritical;
 

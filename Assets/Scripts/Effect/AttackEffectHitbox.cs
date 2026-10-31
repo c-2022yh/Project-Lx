@@ -1,11 +1,16 @@
 using System;
 using System.Collections.Generic;
+using System.Collections;
 using UnityEngine;
 
 public class AttackEffectHitbox : MonoBehaviour
 {
     //히트박스가 전달할 피해 정보
     private DamageInfo damageInfo;
+    private DamageInfo followUpDamage;
+    private float followUpDelay;
+    private MonoBehaviour followUpRunner;
+    private bool hasFollowUp;
 
     //공격 방향
     private float attackDirection = 1f;
@@ -34,8 +39,19 @@ public class AttackEffectHitbox : MonoBehaviour
     public void SetAttackInfo(DamageInfo damageInfo, float direction, Action<IDamageable, DamageInfo> onHitConfirmed = null)
     {
         this.damageInfo = damageInfo;
+        hitTargets.Clear();
+        hasFollowUp = false;
+        followUpRunner = null;
         attackDirection = direction >= 0f ? 1f : -1f;
         this.onHitConfirmed = onHitConfirmed;
+    }
+
+    public void SetFollowUpHit(DamageInfo damage, float delay, MonoBehaviour runner)
+    {
+        followUpDamage = damage;
+        followUpDelay = Mathf.Max(0f, delay);
+        followUpRunner = runner;
+        hasFollowUp = runner != null;
     }
 
     //공격 히트박스 해제
@@ -78,21 +94,36 @@ public class AttackEffectHitbox : MonoBehaviour
         Vector2 hitPoint = other.bounds.center;
 
         //피해 정보 전달
-        target.TakeDamage(damageInfo, new Vector2(attackDirection, 0f));
+        ApplyHit(target, damageInfo, attackDirection, hitPoint,
+            hitEffectPrefab, criticalHitEffectPrefab, onHitConfirmed);
 
-        //히트스탑·카메라 흔들림
-        CombatFeedback.OnPlayerHit(target, attackDirection, damageInfo.isCritical);
+        if (hasFollowUp && followUpRunner != null)
+            followUpRunner.StartCoroutine(FollowUpRoutine(target, followUpDamage, attackDirection,
+                followUpDelay, hitEffectPrefab, criticalHitEffectPrefab, onHitConfirmed));
+    }
 
-        //치명타 여부에 따라 피격 이펙트 생성
-        GameObject effectPrefab = damageInfo.isCritical ? criticalHitEffectPrefab : hitEffectPrefab;
+    // Runs on the attacker so an already-confirmed hit survives the trail's short lifetime.
+    private static IEnumerator FollowUpRoutine(IDamageable target, DamageInfo damage, float direction,
+        float delay, GameObject normalEffect, GameObject criticalEffect, Action<IDamageable, DamageInfo> callback)
+    {
+        if (delay > 0f) yield return new WaitForSeconds(delay);
 
-        if (effectPrefab != null)
-        {
-            Instantiate(effectPrefab, hitPoint, Quaternion.identity);
-        }
+        Component component = target as Component;
+        if (component == null || !component.gameObject.activeInHierarchy) yield break;
+        if (target is Enemy enemy && enemy.IsDead) yield break;
+        if (target is EnemyHealth health && health.IsDead) yield break;
 
-        onHitConfirmed?.Invoke(target, damageInfo);
+        ApplyHit(target, damage, direction, component.transform.position,
+            normalEffect, criticalEffect, callback);
+    }
 
-
+    private static void ApplyHit(IDamageable target, DamageInfo damage, float direction, Vector2 hitPoint,
+        GameObject normalEffect, GameObject criticalEffect, Action<IDamageable, DamageInfo> callback)
+    {
+        target.TakeDamage(damage, new Vector2(direction, 0f));
+        CombatFeedback.OnPlayerHit(target, direction, damage.isCritical);
+        GameObject effect = damage.isCritical ? criticalEffect : normalEffect;
+        if (effect != null) Instantiate(effect, hitPoint, Quaternion.identity);
+        callback?.Invoke(target, damage);
     }
 }

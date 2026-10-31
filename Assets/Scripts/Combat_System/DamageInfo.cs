@@ -57,13 +57,13 @@ public struct DamageInfo
         switch (attack.damageType)
         {
             case DamageType.Physical: //물리 피해
-                damage = offense.physicalAttack * attack.damageMultiplier;
+                damage = offense.physicalAttack * attack.damageMultiplier + Mathf.Max(0f, attack.flatDamage);
                 penetration = offense.physicalPenetration;
                 break;
 
 
             case DamageType.Magical: //마법 피해
-                damage = offense.magicalAttack * attack.damageMultiplier;
+                damage = offense.magicalAttack * attack.damageMultiplier + Mathf.Max(0f, attack.flatDamage);
                 penetration = offense.magicalPenetration;
                 break;
 
