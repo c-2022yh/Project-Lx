@@ -42,6 +42,12 @@ public class AwakeningSilhouetteAura : MonoBehaviour
     [Tooltip("기존 부채꼴 줄기 아우라를 끈다")]
     [SerializeField] private bool hideOldAura = true;
 
+    [Header("기존 각성 연출 밝기 (실행 중에만 덮어씀, 0 이하면 안 건드림)")]
+    [Tooltip("몸 테두리 발광 세기 (원래 4)")]
+    [SerializeField] private float oldGlowIntensity = 1.5f;
+    [Tooltip("각성 중 블룸 세기 (원래 0.6)")]
+    [SerializeField] private float oldBloomIntensity = 0.3f;
+
     private const string ShaderPath = "Presentation/Awakening/AwakeningSilhouetteAura";
 
     private Player player;
@@ -106,6 +112,7 @@ public class AwakeningSilhouetteAura : MonoBehaviour
         props = new MaterialPropertyBlock();
         CreateQuad();
         if (hideOldAura) HideOldAura();
+        TuneOldVisual();
         Debug.Log("[각성 아우라] 플레이어에 붙었습니다." + (oldAuraHidden ? " 기존 줄기 아우라는 껐습니다." : ""));
     }
 
@@ -139,6 +146,21 @@ public class AwakeningSilhouetteAura : MonoBehaviour
         if (f == null || f.FieldType != typeof(bool)) return;
         f.SetValue(visual, false);
         oldAuraHidden = true;
+    }
+
+    // 기존 몸 테두리 발광·블룸 세기를 낮춘다 (파일·프리팹은 그대로, 실행 중에만)
+    private void TuneOldVisual()
+    {
+        if (visual == null) return;
+        SetOldFloat("glowIntensity", oldGlowIntensity);
+        SetOldFloat("bloomIntensity", oldBloomIntensity);
+    }
+
+    private void SetOldFloat(string field, float value)
+    {
+        if (value <= 0f) return;
+        FieldInfo f = typeof(PlayerAwakeningVisual).GetField(field, BindingFlags.Instance | BindingFlags.NonPublic);
+        if (f != null && f.FieldType == typeof(float)) f.SetValue(visual, value);
     }
 
     private void OnDestroy()
