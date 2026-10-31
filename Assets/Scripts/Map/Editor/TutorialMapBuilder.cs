@@ -318,7 +318,7 @@ public static class TutorialMapBuilder
 
         // 7 안 움직이는 슬라임
         Transform enemies = CleanGroup(field, "Tutorial_Enemies");
-        foreach (float x in new[] { 124f, 130f, 136f })
+        foreach (float x in new[] { 127f, 132f, 137f })
         {
             GameObject slime = Spawn(scene, SlimePrefab, new Vector3(x, 6f, 0f), enemies);
             if (slime != null) slime.name = "Enemy_SapSlime";
