@@ -1,0 +1,52 @@
+{
+ "items": [
+  {
+   "sprite": "FG_Vine_A",
+   "x": 16,
+   "y": 5,
+   "h": 4,
+   "flip": false,
+   "layer": "front"
+  },
+  {
+   "sprite": "FG_Bush_Round",
+   "x": 26,
+   "y": 1.5,
+   "h": 2.4,
+   "flip": false,
+   "layer": "front"
+  },
+  {
+   "sprite": "FG_Vine_B",
+   "x": 56,
+   "y": 12,
+   "h": 5,
+   "flip": false,
+   "layer": "back"
+  },
+  {
+   "sprite": "FG_Bush_Tall",
+   "x": 75,
+   "y": 4,
+   "h": 3,
+   "flip": true,
+   "layer": "back"
+  },
+  {
+   "sprite": "FG_Vine_A",
+   "x": 98,
+   "y": 15.5,
+   "h": 5.5,
+   "flip": true,
+   "layer": "front"
+  },
+  {
+   "sprite": "FG_Bush_Spiky",
+   "x": 122,
+   "y": 3.5,
+   "h": 3,
+   "flip": false,
+   "layer": "front"
+  }
+ ]
+}

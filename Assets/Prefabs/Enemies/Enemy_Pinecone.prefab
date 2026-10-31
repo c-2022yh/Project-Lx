@@ -285,9 +285,9 @@ MonoBehaviour:
   dashSprites: []
   dashFrameTime: 0.1
   deathSprites:
-  - {fileID: 21300000, guid: 8370822472933cf40b9cd30992327e4f, type: 3}
-  - {fileID: 21300000, guid: c80fe40ecf25207468886ef5bbcbb468, type: 3}
-  - {fileID: 21300000, guid: f9b6b212e9854f44fb9844ddeae66907, type: 3}
+  - {fileID: 21300000, guid: fab176f894c9c7e478ee545f29534bfe, type: 3}
+  - {fileID: 21300000, guid: 85e951e8a9e9c2e4da93797ebe3c23a1, type: 3}
+  - {fileID: 21300000, guid: d1a49bf0391a291429be5d9c26238b2a, type: 3}
   deathFrameTime: 0.2
   deathEndHoldTime: 0.08
   idleWhenStationary: 0
