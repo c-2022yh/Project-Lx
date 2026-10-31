@@ -12,6 +12,34 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 28214ba72c4bca746bbd03b1e9f1decb, type: 3}
   m_Name: RFX_Dawn
   m_EditorClassIdentifier: Assembly-CSharp::DawnRelicEffect
+  extraAttackSound:
+    channel: 0
+    clip: {fileID: 0}
+    clips: []
+    volume: 1
+    minimumInterval: 0.1
+    pitchRange: {x: 1, y: 1}
+    maxSimultaneous: 4
+    limitScope: 0
+    spatialBlend: 0
+    minDistance: 1
+    maxDistance: 15
+    useFallback: 0
+    fallbackSound: 5
+  extraImpactSound:
+    channel: 0
+    clip: {fileID: 0}
+    clips: []
+    volume: 1
+    minimumInterval: 0.1
+    pitchRange: {x: 1, y: 1}
+    maxSimultaneous: 4
+    limitScope: 0
+    spatialBlend: 0
+    minDistance: 1
+    maxDistance: 15
+    useFallback: 0
+    fallbackSound: 5
   secondAfterimageDelay: 0.2
   secondOffset: {x: 0.2, y: 0}
   secondColor: {r: 0, g: 1, b: 1, a: 0.14901961}

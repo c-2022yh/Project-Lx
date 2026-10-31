@@ -53,6 +53,11 @@ public class BossRoom : MonoBehaviour
     [Tooltip("대화 전에 \"격파\" 카드를 띄운다.")]
     [SerializeField] private bool showDefeatCard = true;
 
+    [Header("Audio")]
+    [SerializeField] private SoundCue introSound = new SoundCue();
+    [SerializeField] private SoundCue doorCloseSound = new SoundCue();
+    [SerializeField] private SoundCue doorOpenSound = new SoundCue();
+    [SerializeField] private SoundCue clearSound = new SoundCue();
     [Header("Presentation (달빛)")]
     [Tooltip("등장 때 방이 어두워지고 돌가루·달빛, 2페이즈 충격파·붉은 빛, 격파 빛살·보주 등장을 켠다.")]
     [SerializeField] private bool moonPresentation = true;
@@ -75,6 +80,8 @@ public class BossRoom : MonoBehaviour
     private string bossDisplayName;
     private BossMoonBeam beam;
     private GolemBossController golem;
+    private Vector3 lastFragmentCenter;
+    private bool hasFragmentCenter;
 
     public bool IsCleared => state == State.Cleared;
 
@@ -153,6 +160,7 @@ public class BossRoom : MonoBehaviour
         float card = shownCardOnce ? Mathf.Min(cardSeconds, 1.4f) : cardSeconds;
         shownCardOnce = true;
         BossTitleCard.Show(bossTitle, bossName, card);
+        GameAudio.Play(introSound, boss.transform.position);
 
         // 위에서 달빛이 내려와 보스 자리를 비춘다
         if (moonPresentation)
@@ -186,7 +194,18 @@ public class BossRoom : MonoBehaviour
             BossScreenFx.Letterbox(false, 0.5f);
         }
 
-        while (boss != null && !boss.IsDead) yield return null;
+        // 2페이즈에 골렘이 둘로 갈라지면 본체는 숨고 체력이 남은 채로 있다.
+        // 조각이 모두 쓰러질 때(IsDefeated)까지 기다린다. (조각 HP바 두 줄은 BossHealthBarUI가 맡음)
+        hasFragmentCenter = false;
+        while (boss != null && !boss.IsDead && (golem == null || !golem.IsDefeated))
+        {
+            if (golem != null && golem.HasSplit && TryFragmentCenter(out Vector3 c))
+            {
+                lastFragmentCenter = c;
+                hasFragmentCenter = true;
+            }
+            yield return null;
+        }
 
         yield return ClearRoutine();
     }
@@ -218,9 +237,11 @@ public class BossRoom : MonoBehaviour
         UnwatchPlayer();
         UnhookBoss();
         FieldObjectState.MarkDone(this);
+        GameAudio.Play(clearSound, transform.position);
 
         // 보스가 사라지기 전에 자리를 기억해 둔다
-        Vector3 center = BossCenter();
+        // 갈라졌으면 마지막 조각이 쓰러진 자리에서 격파 연출을 한다
+        Vector3 center = hasFragmentCenter ? lastFragmentCenter : BossCenter();
 
         // 마지막 일격: 멈춤 → 슬로모션
         HitStop.Stop(clearHitStop);
@@ -298,16 +319,34 @@ public class BossRoom : MonoBehaviour
     private Vector3 BossCenter()
     {
         if (boss == null) return transform.position;
+        return RendererCenter(boss.gameObject);
+    }
+
+    private static Vector3 RendererCenter(GameObject go)
+    {
         bool found = false;
         Bounds b = default;
-        foreach (SpriteRenderer sr in boss.GetComponentsInChildren<SpriteRenderer>())
+        foreach (SpriteRenderer sr in go.GetComponentsInChildren<SpriteRenderer>())
         {
             if (!sr.enabled || sr.sprite == null) continue;
             if (!found) { b = sr.bounds; found = true; }
             else b.Encapsulate(sr.bounds);
         }
         if (found) return new Vector3(b.center.x, b.center.y, 0f);
-        return boss.transform.position + Vector3.up * 1.5f;
+        return go.transform.position + Vector3.up * 1.5f;
+    }
+
+    private bool TryFragmentCenter(out Vector3 center)
+    {
+        center = default;
+        if (golem == null) return false;
+        foreach (GolemBossController f in golem.Fragments)
+        {
+            if (f == null || !f.gameObject.activeInHierarchy) continue;
+            center = RendererCenter(f.gameObject);
+            return true;
+        }
+        return false;
     }
 
     private float BossGroundY()
@@ -382,6 +421,10 @@ public class BossRoom : MonoBehaviour
     private IEnumerator MoveDoors(bool close)
     {
         if (doorClosedPositions.Length == 0) yield break;
+        bool hasDoor = false;
+        foreach (Transform door in doors) if (door != null) { hasDoor = true; break; }
+        if (!hasDoor) yield break;
+        if (!close) GameAudio.Play(doorOpenSound, transform.position);
 
         Vector3 up = Vector3.up * doorDropHeight;
         for (int i = 0; i < doorClosedPositions.Length; i++)
@@ -416,7 +459,11 @@ public class BossRoom : MonoBehaviour
             if (!close) doors[i].gameObject.SetActive(false);
         }
 
-        if (close) CameraShake.Shake(CameraShake.Medium);
+        if (close)
+        {
+            CameraShake.Shake(CameraShake.Medium);
+            GameAudio.Play(doorCloseSound, transform.position);
+        }
     }
 
     // ───────────── 카메라 ─────────────

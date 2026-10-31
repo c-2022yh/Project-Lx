@@ -12,5 +12,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 37100cd36ebad84469632c42e7dad2b1, type: 3}
   m_Name: RFX_WhiteFlower
   m_EditorClassIdentifier: Assembly-CSharp::RegenerationRelicEffect
+  healSound:
+    channel: 0
+    clip: {fileID: 0}
+    clips: []
+    volume: 1
+    minimumInterval: 0.1
+    pitchRange: {x: 1, y: 1}
+    maxSimultaneous: 4
+    limitScope: 0
+    spatialBlend: 0
+    minDistance: 1
+    maxDistance: 15
+    useFallback: 0
+    fallbackSound: 5
   healInterval: 1
   healAmount: 0.1

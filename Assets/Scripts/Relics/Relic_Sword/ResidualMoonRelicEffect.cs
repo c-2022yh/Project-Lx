@@ -11,15 +11,19 @@ public class ResidualMoonRelicEffect : RelicEffect
     private SkillData dashSkill;
 
     //플레이어별 유물 효과 Runtime 생성
+    [Header("Audio")]
+    [SerializeField] private SoundCue cooldownResetSound = new SoundCue();
+
     public override IRelicRuntime CreateRuntime(Player p)
     {
-        return new ResidualMoonRelicRuntime(p, dashSkill);
+        return new ResidualMoonRelicRuntime(p, dashSkill, this);
     }
 
     private sealed class ResidualMoonRelicRuntime : IRelicRuntime
     {
         private const int XSkillSlot = 0;
 
+        private readonly ResidualMoonRelicEffect audioSettings;
         private readonly Player player;
         private readonly SkillData dashSkill;
 
@@ -31,9 +35,10 @@ public class ResidualMoonRelicEffect : RelicEffect
         private bool isEquipped;
 
         //잔월 효과에 필요한 플레이어와 스킬 보관
-        public ResidualMoonRelicRuntime(Player player, SkillData dashSkill)
+        public ResidualMoonRelicRuntime(Player player, SkillData dashSkill, ResidualMoonRelicEffect audioSettings)
         {
             this.player = player;
+            this.audioSettings = audioSettings;
             this.dashSkill = dashSkill;
         }
 
@@ -104,7 +109,12 @@ public class ResidualMoonRelicEffect : RelicEffect
                 yield break;
             }
 
-            if (playerSkill.ExclusiveSkill == dashSkill) playerSkill.ResetCooldown(XSkillSlot);
+            if (playerSkill.ExclusiveSkill == dashSkill)
+            {
+                float before = playerSkill.GetCooldownRemaining(XSkillSlot);
+                playerSkill.ResetCooldown(XSkillSlot);
+                if (before > 0f) GameAudio.Play(audioSettings.cooldownResetSound, player.transform.position, player.transform);
+            }
             resetCooldownCoroutine = null;
 
             Debug.Log("[ResidualMoon] 적 처치: 대시 스킬 쿨타임 초기화");

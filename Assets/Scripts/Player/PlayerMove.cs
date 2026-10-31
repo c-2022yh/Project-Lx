@@ -1,6 +1,8 @@
 using System.Collections;
 using UnityEngine;
 using System.Collections.Generic;
+using UnityEngine.Tilemaps;
+using UnityEngine.SceneManagement;
 
 //플레이어 움직임 (이동, 점프, 대쉬) 구현한 스크립트
 public class PlayerMove : MonoBehaviour
@@ -60,6 +62,45 @@ public class PlayerMove : MonoBehaviour
     [Range(0f, 0.3f)] public float groundSmooth = 0.01f;
     [Range(0f, 0.5f)] public float airSmooth = 0.1f;
 
+    [Header("Movement Audio")]
+    [SerializeField] private SoundCue jumpSound = new SoundCue();
+    [SerializeField] private SoundCue dashSound = new SoundCue();
+    [Tooltip("Used only when no surface rule matches. Empty cues stay silent.")]
+    [SerializeField] private SoundCue defaultFootstepSound = new SoundCue();
+    [SerializeField] private SoundCue defaultLandingSound = new SoundCue();
+    [Tooltip("Ordered surface rules. Grass overlays are checked before solid floor names.")]
+    [SerializeField] private MovementSurfaceSounds[] movementSurfaces =
+    {
+        new MovementSurfaceSounds
+        {
+            surfaceName = "Grass",
+            overlayTilemapNames = new[] { "Tilemap_Grass", "Grass" }
+        },
+        new MovementSurfaceSounds
+        {
+            surfaceName = "Stone",
+            colliderObjectNames = new[] { "Tilemap_Ground", "Ground", "TIleMap_Platform", "MovingPlatform" }
+        }
+    };
+    [Tooltip("Horizontal walking distance between steps, in world units.")]
+    [SerializeField, Min(0.05f)] private float footstepDistance = 2f;
+    [SerializeField, Min(0f)] private float minimumFootstepInterval = 0.12f;
+    [SerializeField, Min(0f)] private float minimumLandingAirTime = 0.08f;
+    [Tooltip("Probe visible Grass tiles just above the actual supporting contact.")]
+    [SerializeField, Min(0f)] private float surfaceProbeHeight = 0.12f;
+    [SerializeField, Min(0f)] private float surfaceProbeHalfWidth = 0.12f;
+    [Tooltip("Ignore large position changes caused by teleports, not walking.")]
+    [SerializeField, Min(0.1f)] private float audioTeleportDistance = 4f;
+
+    private readonly PlayerMovementAudioState movementAudioState = new PlayerMovementAudioState();
+    private Vector2 lastAudioPosition;
+    private Collider2D lastAudioSupport;
+    private Vector3 lastAudioSupportPosition;
+    private bool hasAudioPosition;
+    private Tilemap[] audioTilemaps;
+    private int audioSceneHandle = int.MinValue;
+    private float nextAudioTilemapScan;
+
     //잔상 생성기
     private GhostPooler ghostPooler;
 
@@ -74,6 +115,117 @@ public class PlayerMove : MonoBehaviour
     }
 
     //방향전환
+    // Called immediately after Player's authoritative ground check, before jump input.
+    public void TickMovementAudio()
+    {
+        if (player == null || rb == null || player.Health == null || player.Health.IsDead)
+        {
+            ResetMovementAudio();
+            return;
+        }
+
+        int sceneHandle = SceneManager.GetActiveScene().handle;
+        if (audioSceneHandle != sceneHandle)
+        {
+            audioSceneHandle = sceneHandle;
+            audioTilemaps = null;
+            ResetMovementAudio();
+        }
+
+        Vector2 position = rb.position;
+        if (hasAudioPosition && Vector2.Distance(position, lastAudioPosition) > audioTeleportDistance)
+            ResetMovementAudio();
+
+        Collider2D support = null;
+        Vector2 surfacePoint = position;
+        bool grounded = player.isGrounded && player.TryGetGroundSupport(out support, out surfacePoint);
+        Vector3 supportPosition = support != null ? support.transform.position : Vector3.zero;
+        float distance = hasAudioPosition ? position.x - lastAudioPosition.x : 0f;
+        if (support != null && support == lastAudioSupport)
+            distance -= supportPosition.x - lastAudioSupportPosition.x;
+
+        bool canStep = grounded && player.ActionState != null && player.ActionState.CanMove()
+            && !player.ActionState.isDashing && Mathf.Abs(player.moveInput.x) > 0.1f
+            && Mathf.Abs(distance) > 0.0001f;
+        if (UIManager.Instance != null && UIManager.Instance.IsBlockingWindowOpen) canStep = false;
+
+        movementAudioState.Tick(grounded, canStep, Mathf.Abs(distance), Time.time,
+            footstepDistance, minimumFootstepInterval, minimumLandingAirTime,
+            out bool step, out bool land);
+        if (step || land)
+        {
+            MovementSurfaceSounds surface = ResolveMovementSurface(support, surfacePoint);
+            SoundCue cue = land
+                ? (surface != null ? surface.landingSound : defaultLandingSound)
+                : (surface != null ? surface.footstepSound : defaultFootstepSound);
+            PlayMovementSound(cue);
+        }
+
+        hasAudioPosition = true;
+        lastAudioPosition = position;
+        lastAudioSupport = support;
+        lastAudioSupportPosition = supportPosition;
+    }
+
+    public void ResetMovementAudio()
+    {
+        movementAudioState.Reset();
+        hasAudioPosition = false;
+        lastAudioSupport = null;
+    }
+
+    private void PlayMovementSound(SoundCue cue)
+    {
+        GameAudio.Play(cue, transform.position, transform, true);
+    }
+
+    private MovementSurfaceSounds ResolveMovementSurface(Collider2D support, Vector2 point)
+    {
+        if (movementSurfaces == null || support == null) return null;
+        if (audioTilemaps == null || Time.unscaledTime >= nextAudioTilemapScan)
+        {
+            audioTilemaps = FindObjectsByType<Tilemap>(FindObjectsInactive.Exclude);
+            nextAudioTilemapScan = Time.unscaledTime + 1f;
+        }
+
+        // Grass is visual-only in Grid: a collider-only lookup would always choose Ground.
+        foreach (MovementSurfaceSounds surface in movementSurfaces)
+        {
+            if (surface == null || surface.overlayTilemapNames == null || surface.overlayTilemapNames.Length == 0) continue;
+            foreach (Tilemap tilemap in audioTilemaps)
+            {
+                if (tilemap == null || !tilemap.gameObject.activeInHierarchy
+                    || tilemap.gameObject.scene != support.gameObject.scene
+                    || !MatchesSurfaceName(tilemap.name, surface.overlayTilemapNames)) continue;
+                for (int x = -1; x <= 1; x++)
+                {
+                    Vector3 sample = point + new Vector2(x * surfaceProbeHalfWidth, surfaceProbeHeight);
+                    if (tilemap.HasTile(tilemap.WorldToCell(sample))) return surface;
+                }
+            }
+        }
+
+        foreach (MovementSurfaceSounds surface in movementSurfaces)
+        {
+            if (surface == null) continue;
+            for (Transform floor = support.transform; floor != null; floor = floor.parent)
+                if (MatchesSurfaceName(floor.name, surface.colliderObjectNames)) return surface;
+        }
+        return null;
+    }
+
+    private static bool MatchesSurfaceName(string objectName, string[] names)
+    {
+        if (names == null) return false;
+        const string cloneSuffix = "(Clone)";
+        if (objectName.EndsWith(cloneSuffix, System.StringComparison.Ordinal))
+            objectName = objectName.Substring(0, objectName.Length - cloneSuffix.Length).TrimEnd();
+        foreach (string candidate in names)
+            if (!string.IsNullOrWhiteSpace(candidate)
+                && string.Equals(objectName, candidate.Trim(), System.StringComparison.OrdinalIgnoreCase)) return true;
+        return false;
+    }
+
     private void Flip()
     {
         if (player.ActionState.isAttacking ||
@@ -179,6 +331,7 @@ public class PlayerMove : MonoBehaviour
 
             player.rb.linearVelocity = new Vector2(player.rb.linearVelocity.x, jumpForce );
             player.NotifyJumpStarted();
+            PlayMovementSound(jumpSound);
         }
     }
 
@@ -251,6 +404,7 @@ public class PlayerMove : MonoBehaviour
         foreach (IgnoredPlatformCollision collision in ignoredPlatformCollisions)
             RestorePlatformCollision(collision);
         ignoredPlatformCollisions.Clear();
+        ResetMovementAudio();
         lastJumpRequestTime = -999f;
         lastGroundedTime = -999f;
     }
@@ -306,7 +460,8 @@ public class PlayerMove : MonoBehaviour
     private IEnumerator DashRoutine(float dir)
     {
         //상태 업데이트
-        player.ActionState.EnterDash(); 
+        player.ActionState.EnterDash();
+        PlayMovementSound(dashSound);
 
         //중력 제거
         player.SetPhysicsFreeze(true);
@@ -350,4 +505,64 @@ public class PlayerMove : MonoBehaviour
 
 }
 
+[System.Serializable]
+public sealed class MovementSurfaceSounds
+{
+    public string surfaceName;
+    [Tooltip("Exact GameObject names on the supporting collider or its parents. Case insensitive.")]
+    public string[] colliderObjectNames = new string[0];
+    [Tooltip("Visual-only Tilemaps sampled at the player's supporting foot position.")]
+    public string[] overlayTilemapNames = new string[0];
+    public SoundCue footstepSound = new SoundCue();
+    public SoundCue landingSound = new SoundCue();
+}
 
+// Pure timing state: no additional MonoBehaviour/script import is needed.
+internal sealed class PlayerMovementAudioState
+{
+    private bool initialized, wasGrounded, hasGroundedBaseline;
+    private float airborneSince, travel, lastStepTime;
+
+    public void Reset()
+    {
+        initialized = wasGrounded = hasGroundedBaseline = false;
+        travel = 0f;
+        lastStepTime = float.NegativeInfinity;
+    }
+
+    public void Tick(bool grounded, bool canStep, float distance, float time,
+        float stepDistance, float stepInterval, float landingAirTime, out bool step, out bool land)
+    {
+        step = land = false;
+        if (!initialized)
+        {
+            initialized = true;
+            wasGrounded = hasGroundedBaseline = grounded;
+            airborneSince = time;
+            travel = 0f;
+            lastStepTime = float.NegativeInfinity;
+            return;
+        }
+        if (!grounded)
+        {
+            if (wasGrounded) airborneSince = time;
+            wasGrounded = false;
+            travel = 0f;
+            return;
+        }
+        if (!wasGrounded)
+        {
+            land = hasGroundedBaseline && time - airborneSince >= System.Math.Max(0f, landingAirTime);
+            hasGroundedBaseline = wasGrounded = true;
+            travel = 0f;
+            return;
+        }
+        hasGroundedBaseline = true;
+        if (!canStep) { travel = 0f; return; }
+        travel += System.Math.Max(0f, distance);
+        if (travel < System.Math.Max(0.05f, stepDistance) || time - lastStepTime < System.Math.Max(0f, stepInterval)) return;
+        step = true;
+        travel = 0f;
+        lastStepTime = time;
+    }
+}

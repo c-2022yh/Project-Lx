@@ -5,7 +5,9 @@ using UnityEngine.Audio;
 public enum GameSound
 {
     PlayerAttack = 0, PlayerHurt = 1, PlayerDeath = 2, EnemyHurt = 3, EnemyDeath = 4,
-    UIClick = 5, WindowOpen = 6, WindowClose = 7, TitleBgm = 8, GameplayBgm = 9
+    UIClick = 5, WindowOpen = 6, WindowClose = 7, TitleBgm = 8, GameplayBgm = 9, UIHover = 10,
+    UIEquip = 11, UIUnequip = 12, UIReject = 13, UIAcquire = 14, UITabChange = 15, UIChestOpen = 16,
+    UIEquipSword = 17, UIEquipOrb = 18, UIEquipBody = 19
 }
 
 public enum GameAudioChannel { SFX, UI, BGM }
@@ -65,12 +67,14 @@ public class GameAudioCatalog : ScriptableObject
         {
             if ((int)sound < (int)GameSound.UIClick || Find(sound) != null) continue;
             bool music = sound == GameSound.TitleBgm || sound == GameSound.GameplayBgm;
-            bool ui = sound == GameSound.UIClick || sound == GameSound.WindowOpen || sound == GameSound.WindowClose;
+            bool ui = sound == GameSound.UIClick || sound == GameSound.WindowOpen || sound == GameSound.WindowClose || sound >= GameSound.UIHover;
             slots.Add(new GameSoundSlot
             {
                 sound = sound,
                 channel = music ? GameAudioChannel.BGM : ui ? GameAudioChannel.UI : GameAudioChannel.SFX,
-                minimumInterval = music ? 0f : 0.05f
+                volume = sound == GameSound.UIHover ? 0.4f : 1f,
+                minimumInterval = music ? 0f : sound == GameSound.UIHover ? 0.08f : 0.05f,
+                limitScope = sound >= GameSound.UIHover ? SoundLimitScope.Global : SoundLimitScope.PerOwner
             });
         }
         sounds = slots.ToArray();

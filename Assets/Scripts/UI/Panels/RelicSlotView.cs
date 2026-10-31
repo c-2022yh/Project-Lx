@@ -321,6 +321,7 @@ public class RelicSlotView : MonoBehaviour,
     {
         isHovered = true;
         RefreshBackground();
+        if (!IsEmpty) GameAudio.Play(GameSound.UIHover);
 
         if (host != null) host.OnSlotHoverEnter(this);
     }

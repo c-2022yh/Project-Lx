@@ -8,11 +8,15 @@ public class AutoScenePortal : MonoBehaviour
     [SerializeField] private string targetSceneName;
     [SerializeField] private string targetSpawnId;
 
+    [Header("Audio")]
+    [Tooltip("Plays once when scene travel starts. The shared audio service keeps its tail across scene loads.")]
+    [SerializeField] private SoundCue transitionSound = new SoundCue();
+
     private bool isTriggered;
 
     private void OnTriggerEnter2D(Collider2D other)
     {
-        if (isTriggered) return;
+        if (isTriggered || SceneFader.IsTransitioning) return;
 
         Player player = other.GetComponentInParent<Player>();
 
@@ -28,6 +32,7 @@ public class AutoScenePortal : MonoBehaviour
 
         SceneTransitionData.TargetSpawnId = targetSpawnId;
 
+        GameAudio.Play(transitionSound, transform.position);
         SceneFader.LoadScene(targetSceneName);
     }
 }

@@ -105,6 +105,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 38b54376be6d5124e893a234b1eb972e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::RelicChoicePickup
+  fixedOpenSound:
+    channel: 0
+    clip: {fileID: 0}
+    clips: []
+    volume: 1
+    minimumInterval: 0.1
+    pitchRange: {x: 1, y: 1}
+    maxSimultaneous: 4
+    limitScope: 0
+    spatialBlend: 0
+    minDistance: 1
+    maxDistance: 15
+    useFallback: 0
+    fallbackSound: 5
   rewardMode: 1
   fixedRelic: {fileID: 11400000, guid: bcde0833a4df729408e4f174e24e5eb5, type: 2}
   relicSelectionPanel: {fileID: 0}

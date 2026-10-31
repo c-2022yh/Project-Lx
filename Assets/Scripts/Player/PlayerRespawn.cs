@@ -154,6 +154,7 @@ public class PlayerRespawn : MonoBehaviour
         //부활할 때 다시 보이도록 투명도 복구
         SetSpriteAlpha(1f);
 
+        player?.Move?.ResetMovementAudio();
         if (sr != null) sr.enabled = true;
         if (player != null) player.SetPhysicsFreeze(false);
         if (hitReaction != null) hitReaction.StartRespawnInvincible();

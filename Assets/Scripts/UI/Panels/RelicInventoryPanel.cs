@@ -326,6 +326,7 @@ public class RelicInventoryPanel : MonoBehaviour, IRelicSlotHost
     public void OnToggleSort()
     {
         sortByName = !sortByName;
+        GameAudio.Play(GameSound.UITabChange);
 
         SetHint(sortByName ? "이름순으로 정렬" : "획득순으로 정렬");
         Refresh();
@@ -334,7 +335,9 @@ public class RelicInventoryPanel : MonoBehaviour, IRelicSlotHost
     private void SetFilter(RelicCategory? category)
     {
         // 같은 버튼을 다시 누르면 전체로 돌아온다.
+        RelicCategory? previousFilter = storageFilter;
         storageFilter = storageFilter == category ? null : category;
+        if (previousFilter != storageFilter) GameAudio.Play(GameSound.UITabChange);
 
         SetHint(storageFilter.HasValue
             ? $"{RelicLabels.NameOf(storageFilter.Value)}만 보는 중"
@@ -501,7 +504,7 @@ public class RelicInventoryPanel : MonoBehaviour, IRelicSlotHost
 
         if (relic.Category != category)
         {
-            SetHint($"{RelicLabels.NameOf(relic.Category)}은 {RelicLabels.NameOf(category)} 칸에 넣을 수 없습니다");
+            Reject($"{RelicLabels.NameOf(relic.Category)}은 {RelicLabels.NameOf(category)} 칸에 넣을 수 없습니다");
             return;
         }
 
@@ -563,12 +566,12 @@ public class RelicInventoryPanel : MonoBehaviour, IRelicSlotHost
 
     private void TryEquip(RelicData relic)
     {
-        if (relic == null) return;
+        if (relic == null || IsEquipped(relic)) return;
         if (!CheckShrine()) return;
 
         if (relicManager == null)
         {
-            SetHint("PlayerRelicManager가 없어 장착할 수 없습니다");
+            Reject("PlayerRelicManager가 없어 장착할 수 없습니다");
             return;
         }
 
@@ -577,7 +580,7 @@ public class RelicInventoryPanel : MonoBehaviour, IRelicSlotHost
         // 창에서는 된다고 하는데 게임이 거절하는 일이 벌어진다.
         if (!relicManager.CanEquipRelic(relic, out string reason))
         {
-            SetHint(reason);
+            Reject(reason);
             return;
         }
 
@@ -593,10 +596,17 @@ public class RelicInventoryPanel : MonoBehaviour, IRelicSlotHost
         {
             // 여기까지 왔다면 CanEquipRelic은 통과했는데 효과 적용에서 실패한 것이다.
             // 구체적인 이유는 PlayerRelicManager가 콘솔에 남긴다.
-            SetHint($"{relic.RelicName} 장착 실패 - 콘솔의 [PlayerRelicManager] 로그를 확인해주세요");
+            Reject($"{relic.RelicName} 장착 실패 - 콘솔의 [PlayerRelicManager] 로그를 확인해주세요");
             return;
         }
 
+        GameAudio.Play(relic.Category switch
+        {
+            RelicCategory.Sword => GameSound.UIEquipSword,
+            RelicCategory.Orb => GameSound.UIEquipOrb,
+            RelicCategory.Body => GameSound.UIEquipBody,
+            _ => GameSound.UIEquip
+        });
         SetHint(replaced != null
             ? $"{replaced.RelicName} → {relic.RelicName} 교체됨"
             : $"{relic.RelicName} 장착됨");
@@ -612,7 +622,7 @@ public class RelicInventoryPanel : MonoBehaviour, IRelicSlotHost
 
         if (relicManager == null)
         {
-            SetHint("PlayerRelicManager가 없어 해제할 수 없습니다");
+            Reject("PlayerRelicManager가 없어 해제할 수 없습니다");
             return;
         }
 
@@ -622,7 +632,12 @@ public class RelicInventoryPanel : MonoBehaviour, IRelicSlotHost
             return;
         }
 
-        relicManager.UnequipRelic(relic);
+        if (!relicManager.UnequipRelic(relic))
+        {
+            Reject("지금은 해제할 수 없습니다");
+            return;
+        }
+        GameAudio.Play(GameSound.UIUnequip);
         SetHint($"{relic.RelicName} 해제됨");
     }
 
@@ -909,8 +924,14 @@ public class RelicInventoryPanel : MonoBehaviour, IRelicSlotHost
     {
         if (ShrineAccess.CanEditLoadout) return true;
 
-        SetHint(ShrineAccess.LockedHint);
+        Reject(ShrineAccess.LockedHint);
         return false;
+    }
+
+    private void Reject(string message)
+    {
+        SetHint(message);
+        GameAudio.Play(GameSound.UIReject);
     }
 
     private void SetHint(string message)

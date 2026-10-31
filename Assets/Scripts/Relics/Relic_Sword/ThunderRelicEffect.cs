@@ -56,6 +56,10 @@ public class ThunderRelicEffect : RelicEffect
     [SerializeField]
     private LayerMask targetLayer;
 
+    [Header("Audio")]
+    [SerializeField] private SoundCue procSound = new SoundCue();
+    [SerializeField] private SoundCue impactSound = new SoundCue();
+
     public override IRelicRuntime CreateRuntime(Player p)
     {
         return new ThunderRelicRuntime(
@@ -70,12 +74,13 @@ public class ThunderRelicEffect : RelicEffect
             chainDelay,
             targetLayer,
             chainLightningPrefab,
-            thunderHitEffectPrefab
+            thunderHitEffectPrefab, this
         );
     }
 
     private sealed class ThunderRelicRuntime : IRelicRuntime
     {
+        private readonly ThunderRelicEffect audioSettings;
         private readonly Player player;
 
         private readonly ChainLightningEffect chainLightningPrefab;
@@ -109,9 +114,10 @@ public class ThunderRelicEffect : RelicEffect
              float chainDelay,
              LayerMask targetLayer,
              ChainLightningEffect chainLightningPrefab,
-             GameObject thunderHitEffectPrefab)
+             GameObject thunderHitEffectPrefab, ThunderRelicEffect audioSettings)
         {
             this.player = player;
+            this.audioSettings = audioSettings;
 
             this.damageType = damageType;
             this.damageMultiplier = damageMultiplier;
@@ -177,6 +183,9 @@ public class ThunderRelicEffect : RelicEffect
         //³úÀü ¿¬¼â °ø°Ý
         private IEnumerator ChainLightning(IDamageable firstTarget)
         {
+            if (!isEquipped || firstTarget == null) yield break;
+            GameAudio.Play(audioSettings.procSound, player.transform.position, player.transform);
+            var impactAudio = new AttackAudioContext(audioSettings.impactSound, ImpactSoundMode.OncePerTarget, player.transform);
             HashSet<IDamageable> hitTargets = new HashSet<IDamageable>();
 
             IDamageable currentTarget = firstTarget;
@@ -192,6 +201,7 @@ public class ThunderRelicEffect : RelicEffect
 
                 //¹ø°³ ÇÇÇØ
                 DamageInfo lightningDamage = CreateLightningDamageInfo(currentDamageMultiplier);
+                lightningDamage.impactAudio = impactAudio;
 
                 Vector2 hitDirection = GetHitDirection(currentTarget);
 

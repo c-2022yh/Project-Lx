@@ -12,6 +12,10 @@ public class ShadowSwapSkillData : UtilitySkillData
     [Min(0f), Tooltip("Minimum time between placing the shadow and teleporting. Full cooldown starts after teleport.")]
     public float recastDelay = 0.3f;
 
+    [Header("Audio")]
+    [SerializeField] private SoundCue placeSound = new SoundCue();
+    [SerializeField] private SoundCue teleportSound = new SoundCue();
+
     private ShadowSwapRuntime GetRuntime(Player p) => p != null ? p.GetComponent<ShadowSwapRuntime>() : null;
 
     public override float GetEnergyCost(Player p)
@@ -44,7 +48,7 @@ public class ShadowSwapSkillData : UtilitySkillData
         GameObject currentShadow = runtime.GetShadow(this);
         if (currentShadow == null && shadowPrefab == null) yield break;
         if (currentShadow != null && runtime.GetRecastRemaining(this) > 0f) yield break;
-        PlayReleaseSound(p, p.transform.position);
+        BeginEffectAudio(p);
         
 
         if (currentShadow == null)
@@ -52,6 +56,7 @@ public class ShadowSwapSkillData : UtilitySkillData
             currentShadow = Instantiate(shadowPrefab, p.transform.position, Quaternion.identity);
             currentShadow.GetComponent<ShadowAfterimageVisual>()?.Capture(p.sr);
             runtime.Install(this, currentShadow, recastDelay);
+            GameAudio.Play(placeSound, p.transform.position, p.transform);
             Debug.Log("그림자 설치");
             yield break;
         }
@@ -59,6 +64,8 @@ public class ShadowSwapSkillData : UtilitySkillData
         Vector3 shadowPos = currentShadow.transform.position;
 
         p.transform.position = shadowPos;
+        p.Move?.ResetMovementAudio();
+        GameAudio.Play(teleportSound, shadowPos, p.transform);
 
         var visual = currentShadow.GetComponent<ShadowAfterimageVisual>();
         if (visual != null) visual.Consume();

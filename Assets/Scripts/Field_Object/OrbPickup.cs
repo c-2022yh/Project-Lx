@@ -11,6 +11,9 @@ public class OrbPickup : MonoBehaviour, IInteractable
     [Tooltip("Destroy this object after successfully granting the orb. If disabled, leave it as scenery.")]
     [SerializeField] private bool destroyOnAcquire = true;
 
+    [Header("Audio")]
+    [SerializeField] private SoundCue acquireSound = new SoundCue();
+
     private readonly HashSet<Collider2D> playerContacts = new HashSet<Collider2D>();
     private Player nearbyPlayer;
     private bool isAcquired;
@@ -53,6 +56,7 @@ public class OrbPickup : MonoBehaviour, IInteractable
         }
 
         FieldObjectState.MarkDone(this);
+        GameAudio.Play(acquireSound, transform.position);
         ClearPlayer();
         if (destroyOnAcquire) Destroy(gameObject);
     }

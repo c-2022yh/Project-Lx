@@ -18,14 +18,23 @@ public class ProjectileHitbox : MonoBehaviour
     private SpriteRenderer spriteRenderer;
 
     private bool initialized;
+    private bool consumed;
+    private SoundCue terrainImpactSound, expireSound;
+    private LayerMask terrainLayers;
 
     //이 공격 이펙트가 이미 타격한 적들
     private readonly HashSet<IDamageable> hitTargets = new();
 
     //값을 받아오는 함수
     public void Init(float dir, float speed, float maxDistance, float rotationSpeed,
-        DamageInfo damageInfo, LayerMask enemyLayer, bool destroyOnEnemyHit, SoundCue flightLoop = null)
+        DamageInfo damageInfo, LayerMask enemyLayer, bool destroyOnEnemyHit, SoundCue flightLoop = null,
+        SoundCue terrainImpactSound = null, SoundCue expireSound = null, LayerMask terrainLayers = default)
     {
+        consumed = false;
+        hitTargets.Clear();
+        this.terrainImpactSound = terrainImpactSound;
+        this.expireSound = expireSound;
+        this.terrainLayers = terrainLayers;
         this.dir = dir;
         this.speed = speed;
         this.maxDistance = maxDistance;
@@ -56,7 +65,7 @@ public class ProjectileHitbox : MonoBehaviour
 
     private void Update()
     {
-        if (!initialized) return;
+        if (!initialized || consumed) return;
 
         //Rigidbody2D가 없을 경우를 대비
         if (rb == null)  transform.position += Vector3.right * dir * speed * Time.deltaTime;
@@ -66,14 +75,34 @@ public class ProjectileHitbox : MonoBehaviour
 
         //일정 거리 이상 날아가면 삭제
         float distance = Vector2.Distance(startPos, transform.position);
-        if (distance >= maxDistance) Destroy(gameObject);
+        if (distance >= maxDistance)
+        {
+            consumed = true;
+            flightAudio.Stop();
+            GameAudio.Play(expireSound, transform.position);
+            Destroy(gameObject);
+        }
         
 
     }
 
+    public bool ConsumeOnTerrain()
+    {
+        if (!initialized || consumed) return false;
+        consumed = true;
+        flightAudio.Stop();
+        GameAudio.Play(terrainImpactSound, transform.position);
+        GetComponent<FireballVisual>()?.PlayImpact();
+        Destroy(gameObject);
+        return true;
+    }
+
     private void OnTriggerEnter2D(Collider2D other)
     {
-        if (!initialized) return;
+        if (!initialized || consumed) return;
+        // Both components can receive this callback; share the consumed guard.
+        FireballProjectile fireball = GetComponent<FireballProjectile>();
+        if (fireball != null && fireball.TryHitFireWall(other)) return;
 
         //비밀벽 타일 처리
         SecretBreakableWall secretBreakableWall = other.GetComponentInParent<SecretBreakableWall>();
@@ -81,16 +110,18 @@ public class ProjectileHitbox : MonoBehaviour
         if (secretBreakableWall != null)
         {
             Vector2 hitPoint = other.ClosestPoint(transform.position);
-            secretBreakableWall.HitWallAtWorldPosition(hitPoint);
-            GetComponent<FireballVisual>()?.PlayImpact();
-            Destroy(gameObject);
+            if (ConsumeOnTerrain()) secretBreakableWall.HitWallAtWorldPosition(hitPoint);
             return;
         }
 
         //공통 피격 대상 탐색
         IDamageable target = other.GetComponentInParent<IDamageable>();
 
-        if (target == null) return;
+        if (target == null)
+        {
+            if (!other.isTrigger && (terrainLayers.value & (1 << other.gameObject.layer)) != 0) ConsumeOnTerrain();
+            return;
+        }
 
         //같은 대상은 이 히트박스에 한 번만 피격
         if (!hitTargets.Add(target)) return;
@@ -105,6 +136,8 @@ public class ProjectileHitbox : MonoBehaviour
         //맞으면 삭제
         if (destroyOnEnemyHit)
         {
+            consumed = true;
+            flightAudio.Stop();
             GetComponent<FireballVisual>()?.PlayImpact();
             Destroy(gameObject);
         }
