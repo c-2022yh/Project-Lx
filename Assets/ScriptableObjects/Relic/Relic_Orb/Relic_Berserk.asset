@@ -51,14 +51,15 @@ MonoBehaviour:
     - {fileID: 21300000, guid: a7ae8a1af4e305843bcdcebecdff83b3, type: 3}
     - {fileID: 21300000, guid: 589d49c4fb6495147a9efcde949b7350, type: 3}
     - {fileID: 21300000, guid: 2a646df33609b2649a6f599af72cd4a0, type: 3}
-    persistentEffectColor: {r: 1, g: 1, b: 1, a: 1}
+    persistentEffectColor: {r: 1, g: 1, b: 1, a: 0.85}
     persistentSizeMultiplier: 1
     persistentPulsePeriod: 2.4
     persistentAlphaRange: {x: 0.38, y: 0.8}
     persistentFrameRate: 12
-    persistentFrameCrossFade: 1
-    persistentFlashInterval: {x: 0.6, y: 1.8}
-    persistentFlashDuration: 0.25
+    persistentFrameCrossFade: 0
+    persistentFlashInterval: {x: 1.2, y: 2.2}
+    persistentSingleFramePerFlash: 1
+    persistentFlashDuration: 0.16
     persistentFadeSpeed: 5
     fullChargeBurstPrefab: {fileID: 0}
     fullChargeBurstLayer: 0

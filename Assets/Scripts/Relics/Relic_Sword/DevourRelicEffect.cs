@@ -13,7 +13,7 @@ public class DevourRelicEffect : RelicEffect
     [Header("Life Steal")]
     [Tooltip("기본공격 1회 적중 시 누적되는 회복량")]
     [SerializeField]
-    [Range(0.01f, 1f)]
+    [Range(0.01f, 5f)]
     private float healPerHit = 0.5f;
 
     //플레이어별 유물 효과 Runtime 생성

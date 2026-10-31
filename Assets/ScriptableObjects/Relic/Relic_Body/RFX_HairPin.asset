@@ -13,4 +13,4 @@ MonoBehaviour:
   m_Name: RFX_HairPin
   m_EditorClassIdentifier: Assembly-CSharp::StatRelicEffect
   statType: 1
-  amount: 1
+  amount: 20

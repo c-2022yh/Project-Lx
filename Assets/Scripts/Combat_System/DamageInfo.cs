@@ -25,7 +25,10 @@ public struct DamageInfo
         float penetration, bool isCritical, 
         float damageAmplification, GameObject attacker)
     {
-        this.damage = damage;
+        // Roll once per attack payload; struct copies retain the same damage for all targets.
+        // All mitigation is multiplicative, so this also scales the final damage by the rolled amount.
+        PlayerStats playerStats = attacker != null ? attacker.GetComponent<PlayerStats>() : null;
+        this.damage = damage * (playerStats != null ? playerStats.RollDamageMultiplier() : 1f);
         this.damageType = damageType;
 
         this.penetration = penetration;
@@ -54,13 +57,13 @@ public struct DamageInfo
         switch (attack.damageType)
         {
             case DamageType.Physical: //물리 피해
-                damage = offense.physicalAttack * attack.damageMultiplier;
+                damage = offense.physicalAttack * attack.damageMultiplier + Mathf.Max(0f, attack.flatDamage);
                 penetration = offense.physicalPenetration;
                 break;
 
 
             case DamageType.Magical: //마법 피해
-                damage = offense.magicalAttack * attack.damageMultiplier;
+                damage = offense.magicalAttack * attack.damageMultiplier + Mathf.Max(0f, attack.flatDamage);
                 penetration = offense.magicalPenetration;
                 break;
 

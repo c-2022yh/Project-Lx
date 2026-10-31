@@ -54,8 +54,8 @@ MonoBehaviour:
     persistentSizeMultiplier: 1
     persistentPulsePeriod: 2.4
     persistentAlphaRange: {x: 0.38, y: 0.8}
-    persistentFrameRate: 8
-    persistentFrameCrossFade: 1
+    persistentFrameRate: 6
+    persistentFrameCrossFade: 0.12
     persistentFlashInterval: {x: 0.6, y: 1.8}
     persistentFlashDuration: 0.3
     persistentFadeSpeed: 5

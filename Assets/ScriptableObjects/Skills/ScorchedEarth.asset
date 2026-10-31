@@ -16,7 +16,7 @@ MonoBehaviour:
   icon: {fileID: 0}
   description: "\uD3ED\uC8FC \uC720\uBB3C \uC7A5\uCC29 \uD6C4 \uAC01\uC131 \uC2DC
     \uC0AC\uC6A9\uD560 \uC218 \uC788\uB294 \uAC15\uB825\uD55C \uACF5\uACA9"
-  animationType: 0
+  animationType: 8
   audio:
     castSound:
       channel: 0
