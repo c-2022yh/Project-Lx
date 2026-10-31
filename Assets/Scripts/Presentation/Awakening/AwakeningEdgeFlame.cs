@@ -50,8 +50,11 @@ public class AwakeningEdgeFlame : MonoBehaviour
     private void OnSceneLoaded(Scene s, LoadSceneMode m) => nextScan = 0f;
 
     // UI가 늦게 생길 수 있어서 가끔 다시 찾는다 (1초에 한 번, 가볍게)
+    private static readonly int FlameColorId = Shader.PropertyToID("_FlameColor");
+
     private void Update()
     {
+        if (material != null) material.SetColor(FlameColorId, AwakeningColors.Main());   // 보주마다 원래 색
         if (Time.unscaledTime < nextScan) return;
         nextScan = Time.unscaledTime + 1f;
 
