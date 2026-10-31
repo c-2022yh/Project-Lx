@@ -267,6 +267,16 @@ public static class TutorialMapBuilder
     {
         GroundDepthShading depth = ground != null ? ground.GetComponent<GroundDepthShading>() : null;
         if (depth == null) return;
+
+        // 땅 타일맵을 Chunk 모드로: Individual 모드에서는 타일을 하나씩 따로 그려서
+        // 그늘 셰이더가 쓰는 월드 위치 계산이 맞지 않아 그늘이 안 보인다 (F_02도 성능 수정 때 Chunk로 바꿈).
+        TilemapRenderer tr = ground.GetComponent<TilemapRenderer>();
+        if (tr != null && tr.mode != TilemapRenderer.Mode.Chunk)
+        {
+            Undo.RecordObject(tr, "튜토리얼 맵 다시 그리기");
+            tr.mode = TilemapRenderer.Mode.Chunk;
+            EditorUtility.SetDirty(tr);
+        }
         Undo.RecordObject(depth, "튜토리얼 맵 다시 그리기");
         depth.surfaceWidth = 0.25f;  // 윗면 밝은 띠 (얇게: 가장자리 가까이부터 어두워짐)
         depth.fadeDistance = 2.5f;   // 이 칸 수에 걸쳐 어두워짐
@@ -517,6 +527,32 @@ public static class TutorialMapBuilder
     // 근경 배치판(claude.ai 아티팩트)에서 저장한 배치. x = 가운데, y = 그림 아래쪽, h = 높이 (전부 월드 칸)
     [System.Serializable] public class FgItem { public string sprite; public float x, y, h; public bool flip; public string layer; }
     [System.Serializable] public class FgLayout { public FgItem[] items; }
+
+    // 땅 그늘(GroundDepthShading)이 왜 안 보이는지 Console에 적고, 그늘을 다시 계산한다. Play 중에도 쓸 수 있다.
+    [MenuItem("Tools/Map/땅 그늘 상태 확인")]
+    private static void CheckDepthShading()
+    {
+        Tilemap tm = FindTilemap(FindGrid(SceneManager.GetActiveScene()), "Tilemap_Ground");
+        if (tm == null) { Debug.LogWarning("[땅 그늘] 열린 씬에서 Tilemap_Ground를 못 찾았습니다."); return; }
+        GroundDepthShading d = tm.GetComponent<GroundDepthShading>();
+        TilemapRenderer r = tm.GetComponent<TilemapRenderer>();
+        if (d == null) { Debug.LogWarning("[땅 그늘] Tilemap_Ground에 GroundDepthShading이 없습니다."); return; }
+
+        var flags = System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic;
+        Material src = typeof(GroundDepthShading).GetField("sourceMaterial", flags)?.GetValue(d) as Material;
+        object mask = typeof(GroundDepthShading).GetField("depthMask", flags)?.GetValue(d);
+        object suspended = typeof(GroundDepthShading).GetField("previewSuspendedForSave", flags)?.GetValue(d);
+        Material cur = r != null ? r.sharedMaterial : null;
+        Debug.Log("[땅 그늘] 켜짐=" + d.isActiveAndEnabled
+            + " | 지금 머티리얼=" + (cur != null ? cur.name + " / " + (cur.shader != null ? cur.shader.name : "셰이더 없음") : "없음")
+            + " | 원본 머티리얼=" + (src != null ? src.name + " / " + (src.shader != null ? src.shader.name : "셰이더 없음") : "없음")
+            + " | 타일 범위=" + tm.cellBounds.size
+            + " | 그늘 계산됨=" + (mask != null)
+            + " | 저장 중 멈춤=" + suspended
+            + " | 값 surface=" + d.surfaceWidth + " fade=" + d.fadeDistance + " max=" + d.maxDarkness + " power=" + d.falloffPower
+            + " | 렌더 모드=" + (r != null ? r.mode.ToString() : "?"));
+        d.RebuildMask();
+    }
 
     // 근경만 다시 놓기 (맵은 그대로, 땅 그늘 값도 같이 맞춤). 배치판에서 바꾼 뒤 이것만 눌러도 된다.
     [MenuItem("Tools/Map/튜토리얼 근경만 다시 놓기")]
