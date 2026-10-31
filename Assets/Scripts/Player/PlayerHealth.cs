@@ -23,10 +23,12 @@ public class PlayerHealth : MonoBehaviour, IDamageable
     [SerializeField] private SoundCue hurtSound = new SoundCue();
     [SerializeField] private SoundCue deathSound = new SoundCue();
 
+    private PlayerStats playerStats;
     private PlayerHitReaction hitReaction;
 
     private void Awake()
     {
+        playerStats = GetComponent<PlayerStats>();
         hitReaction = GetComponent<PlayerHitReaction>();
 
         currentHealth = maxHealth;
@@ -43,10 +45,18 @@ public class PlayerHealth : MonoBehaviour, IDamageable
 
         if (hitReaction != null && !hitReaction.CanTakeDamage()) return;
 
+        DefensiveStats defensiveStats = playerStats != null ? playerStats.Defense : null;
+        float defense = damageInfo.damageType switch
+        {
+            DamageType.Physical => defensiveStats?.physicalDefense ?? 0f,
+            DamageType.Magical => defensiveStats?.magicalDefense ?? 0f,
+            _ => 0f
+        };
+
         float damage = DamageCalculator.Calculate(
             damageInfo,
-            0f,
-            0f
+            defense,
+            defensiveStats?.durability ?? 0f
         );
 
         ApplyDamage(damage, damageInfo.attacker.transform.position, damageInfo.impactAudio);

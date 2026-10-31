@@ -12,6 +12,7 @@ public partial class OrbHUD
     private float persistentVisibility;
     private float nextFlashAt;
     private float flashStartedAt = -1f;
+    private int flashFrameIndex = -1;
     private bool persistentConditionWasActive;
 
     private GameObject CreatePersistentImages()
@@ -83,6 +84,7 @@ public partial class OrbHUD
         persistentElapsed = 0f;
         nextFlashAt = 0f;
         flashStartedAt = -1f;
+        flashFrameIndex = -1;
     }
 
     private float FlashInterval()
@@ -106,6 +108,7 @@ public partial class OrbHUD
         {
             persistentElapsed = 0f;
             flashStartedAt = -1f;
+            flashFrameIndex = -1;
             nextFlashAt = FlashInterval();
             persistentEffectInstance.SetActive(true);
         }
@@ -137,14 +140,19 @@ public partial class OrbHUD
             if (time >= nextFlashAt)
             {
                 flashStartedAt = time;
+                if (persistentFrames != null && persistentFrames.Length > 0)
+                    flashFrameIndex = (flashFrameIndex + 1) % persistentFrames.Length;
                 nextFlashAt = time + duration + FlashInterval();
             }
             time = flashStartedAt < 0f ? -1f : time - flashStartedAt;
             alpha = time < 0f || time >= duration ? 0f : OrbHUDAnimation.BurstAlpha(time / duration, 0.2f);
         }
 
-        bool sequence = activeStyle.persistentAnimation != OrbHUDPersistentAnimation.Pulse;
-        int index = sequence ? OrbHUDAnimation.FrameIndex(time, activeStyle.persistentFrameRate, persistentFrames.Length) : 0;
+        bool holdFlashFrame = activeStyle.persistentAnimation == OrbHUDPersistentAnimation.Intermittent
+            && activeStyle.persistentSingleFramePerFlash;
+        bool sequence = activeStyle.persistentAnimation != OrbHUDPersistentAnimation.Pulse && !holdFlashFrame;
+        int index = holdFlashFrame ? Mathf.Max(0, flashFrameIndex)
+            : sequence ? OrbHUDAnimation.FrameIndex(time, activeStyle.persistentFrameRate, persistentFrames.Length) : 0;
         float blend = sequence && persistentFrames.Length > 1
             ? OrbHUDAnimation.FrameBlend(time, activeStyle.persistentFrameRate, activeStyle.persistentFrameCrossFade) : 0f;
         persistentImage.sprite = persistentFrames[index];
