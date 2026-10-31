@@ -78,6 +78,10 @@ class Program {
   var directExtra=direct.CreateLinkedImpact(ImpactSoundMode.OncePerTarget);
   GameAudio.calls.Clear();direct.OnDamageApplied(target);directExtra.OnDamageApplied(target);
   Check(GameAudio.calls.Count==2&&ReferenceEquals(GameAudio.calls[0].clip,a)&&ReferenceEquals(GameAudio.calls[1].clip,a),"single Clip priority preserved");
+  GameAudio.calls.Clear();
+  var skillHits=new AttackAudioContext(cue,ImpactSoundMode.EveryHit,owner);
+  for(int hit=0;hit<3;hit++)skillHits.OnDamageApplied(target);
+  Check(GameAudio.calls.Count==3,"skill shared context emits all three hits");
   Console.WriteLine($"PASS: {checks} linked-impact checks (actual AttackAudioContext/SoundCue, playback stubbed)");
  }
 }

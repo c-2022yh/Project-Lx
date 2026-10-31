@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::SkillF_Shadow
   placeSound:
     channel: 0
-    clip: {fileID: 0}
+    clip: {fileID: 8300000, guid: 619dbebaa59a8d441aca950d4a431303, type: 3}
     clips: []
     volume: 1
     minimumInterval: 0.1
@@ -28,7 +28,7 @@ MonoBehaviour:
     fallbackSound: 5
   teleportSound:
     channel: 0
-    clip: {fileID: 0}
+    clip: {fileID: 8300000, guid: 86bb417a32479564dbc071088af30c53, type: 3}
     clips: []
     volume: 1
     minimumInterval: 0.1

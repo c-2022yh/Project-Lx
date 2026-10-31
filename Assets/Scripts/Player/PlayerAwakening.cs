@@ -155,10 +155,10 @@ public class PlayerAwakening : MonoBehaviour
 
     private void RefreshReadyAudio(bool allowSound)
     {
-        bool ready = audioEnergy != null && !isAwakened && !isAwakening && !awakeningBlocked
+        bool ready = audioEnergy != null && !isAwakened && !isAwakening
             && (audioHealth == null || !audioHealth.IsDead)
-            && audioEnergy.MaxEnergy >= awakeningRequiredEnergy
-            && audioEnergy.HasEnergy(awakeningRequiredEnergy);
+            && AwakeningReadyAudioState.IsEnergyReady(audioEnergy.CurrentEnergy,
+                audioEnergy.MaxEnergy, awakeningRequiredEnergy, awakeningBlocked);
         if (readyAudioState.Observe(ready, allowSound))
             readyVoice = GameAudio.Play(readySound, transform.position, transform, true);
     }
@@ -376,6 +376,14 @@ public class PlayerAwakening : MonoBehaviour
 internal sealed class AwakeningReadyAudioState
 {
     private bool initialized, wasReady;
+
+    // Full/Dark Moon still announce a full gauge even though awakening is blocked.
+    public static bool IsEnergyReady(float current, float maximum, float required, bool awakeningBlocked)
+    {
+        return maximum > 0f && (awakeningBlocked
+            ? current >= maximum
+            : maximum >= required && current >= required);
+    }
 
     public void Reset() { initialized = wasReady = false; }
 

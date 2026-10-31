@@ -1,0 +1,14 @@
+[
+  {
+    "file": "SFX_CooldownReady_PitchMinus3.wav",
+    "pitch_semitones": -3,
+    "duration_seconds": 0.8125396825396826,
+    "peak_dbfs": -1.4
+  },
+  {
+    "file": "SFX_CooldownReady_PitchMinus5.wav",
+    "pitch_semitones": -5,
+    "duration_seconds": 0.8125396825396826,
+    "peak_dbfs": -1.87
+  }
+]
