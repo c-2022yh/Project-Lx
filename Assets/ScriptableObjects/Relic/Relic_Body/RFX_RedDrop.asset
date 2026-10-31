@@ -13,4 +13,4 @@ MonoBehaviour:
   m_Name: RFX_RedDrop
   m_EditorClassIdentifier: Assembly-CSharp::StatRelicEffect
   statType: 6
-  amount: 1
+  amount: 0.15

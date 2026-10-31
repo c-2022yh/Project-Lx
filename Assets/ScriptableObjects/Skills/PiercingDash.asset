@@ -19,7 +19,9 @@ MonoBehaviour:
   animationType: 7
   cooldownTime: 4
   energyCost: 0
+  windupTime: 0.083333336
   activeTime: 0.05
+  recoveryTime: 0.083333336
   enemyLayer:
     serializedVersion: 2
     m_Bits: 256

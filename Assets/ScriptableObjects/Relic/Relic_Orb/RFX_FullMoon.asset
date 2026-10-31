@@ -12,5 +12,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cf6019b433935194a9bd46caf70771fe, type: 3}
   m_Name: RFX_FullMoon
   m_EditorClassIdentifier: Assembly-CSharp::FullMoonRelicEffect
-  energyGainBonus: 0.5
+  energyGainBonus: 0.33
   fullEnergyBasicAttackBonus: 0.4
