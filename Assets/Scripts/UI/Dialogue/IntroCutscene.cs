@@ -50,7 +50,15 @@ public class IntroCutscene : MonoBehaviour
     private TMP_FontAsset font;
 
     private RectTransform actor;
-    private Image kneelImg, idleImg, walkA, walkB;
+    private Image kneelImg, idleImg, walkImg;
+    private Sprite[] walkFrames;
+    private float walkStart;
+
+    // 게임의 걷기 애니메이션(Player_Walk.anim)과 같은 7장·같은 타이밍. 한 바퀴 1.333초
+    private static readonly float[] WalkKeys = { 0f, 0.1667f, 0.4167f, 0.6667f, 0.8333f, 1f, 1.25f };
+    private const float WalkLoop = 1.3333f;
+    // 걷기 그림은 대기 그림보다 오른쪽으로 넓게 잘라서(같은 기준점), 가운데가 18.5px 오른쪽에 있다
+    private const float WalkOffsetPx = 18.5f;
     private bool walking;
 
     private RectTransform orb;
@@ -120,12 +128,13 @@ public class IntroCutscene : MonoBehaviour
         Keyboard k = Keyboard.current;
         if (skipHint.enabled && k != null && k.escapeKey.wasPressedThisFrame) skip = true;
 
-        // 걷는 동안 두 장을 번갈아 보여 준다
-        if (walking)
+        // 걷는 동안 게임과 같은 걷기 7장을 같은 박자로 넘긴다
+        if (walking && walkFrames != null && walkFrames.Length > 0)
         {
-            bool a = Mathf.Repeat(Time.unscaledTime, 0.46f) < 0.23f;
-            walkA.enabled = a;
-            walkB.enabled = !a;
+            float t = Mathf.Repeat(Time.unscaledTime - walkStart, WalkLoop);
+            int i = 0;
+            while (i + 1 < WalkKeys.Length && i + 1 < walkFrames.Length && t >= WalkKeys[i + 1]) i++;
+            if (walkFrames[i] != null) walkImg.sprite = walkFrames[i];
         }
 
         // 보주는 늘 살짝 둥실거린다
@@ -288,7 +297,9 @@ public class IntroCutscene : MonoBehaviour
     private IEnumerator Walk(float fromX, float toX, float time)
     {
         walking = true;
+        walkStart = Time.unscaledTime;
         idleImg.enabled = false;
+        walkImg.enabled = true;
         for (float t = 0f; t < time && !skip; t += Time.unscaledDeltaTime)
         {
             PlaceActor(Mathf.Lerp(fromX, toX, t / time));
@@ -296,7 +307,7 @@ public class IntroCutscene : MonoBehaviour
         }
         PlaceActor(toX);
         walking = false;
-        walkA.enabled = walkB.enabled = false;
+        walkImg.enabled = false;
         idleImg.enabled = true;
     }
 
@@ -365,7 +376,7 @@ public class IntroCutscene : MonoBehaviour
     {
         kneelImg.enabled = kneel;
         idleImg.enabled = !kneel;
-        walkA.enabled = walkB.enabled = false;
+        walkImg.enabled = false;
     }
 
     private void SetOrb(float x, float y, float size, float alpha)
@@ -439,8 +450,9 @@ public class IntroCutscene : MonoBehaviour
         actor.pivot = new Vector2(0.5f, 0f);
         kneelImg = ActorPart("Kneel", "Intro_Kneel", -15f);
         idleImg = ActorPart("Idle", "Intro_Idle", 0f);
-        walkA = ActorPart("WalkA", "Intro_Walk1", 0f);
-        walkB = ActorPart("WalkB", "Intro_Walk2", 0f);
+        walkImg = ActorPart("Walk", "Intro_Walk1", WalkOffsetPx * ActorHeight / 368f);
+        walkFrames = new Sprite[WalkKeys.Length];
+        for (int i = 0; i < walkFrames.Length; i++) walkFrames[i] = Load("Intro_Walk" + (i + 1));
         SetActor(kneel: true);
 
         flash = NewImage("Flash", stage, new Color(0.85f, 0.93f, 1f, 0f), null);
