@@ -7,7 +7,7 @@ using UnityEngine.SceneManagement;
 ///   모으기   Q를 누른 순간부터 각성 도입 시간(기본 0.8초) 동안 작은 불이 모이며 커짐
 ///   방출     도입이 끝나는 순간 확 커지며 가장 밝아짐
 ///   가라앉기 0.45초 동안 조금 작고 옅어짐
-///   유지     각성 중에는 일렁이며 계속 타오름
+///   유지     각성 중에는 Hold Alpha만큼 남음 (기본 0: 터진 뒤 사라지고 실루엣 아우라가 이어받음)
 ///   꺼짐     각성이 끝나면 0.3초 동안 사라짐
 ///
 /// 기존 각성 연출(PlayerAwakeningVisual: 몸 발광·오라·화면 테두리)은 그대로 두고 그 위에 얹는다.
@@ -27,7 +27,7 @@ public class AwakeningBurstFx : MonoBehaviour
     [Header("각성 유지 중")]
     [Tooltip("유지 중 크기 (터질 때 = 1.15)")]
     [SerializeField, Range(0.3f, 1.2f)] private float holdScale = 0.85f;
-    [SerializeField, Range(0f, 1f)] private float holdAlpha = 0.6f;
+    [SerializeField, Range(0f, 1f)] private float holdAlpha = 0f;   // 각성 유지 중 아우라는 AwakeningSilhouetteAura가 맡는다 (0 = 터진 뒤 사라짐)
 
     private const string SpritePath = "Presentation/Awakening/AwakeningFx_Burst";
     private const float Release = 0.15f, Settle = 0.45f, FadeOut = 0.3f;
