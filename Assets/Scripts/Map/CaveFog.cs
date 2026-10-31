@@ -4,7 +4,8 @@
 /// 동굴 안개. 화면 전체에 옅은 안개가 천천히 흘러가고, 바닥 쪽에는 조금 더 진한 낮은 안개가 깔린다.
 ///
 ///   뒤 안개  배경과 땅 사이 (BackGround 레이어, 배경 바로 앞). 화면 전체를 덮는 옅은 안개
-///   앞 안개  캐릭터 앞 (GroundCover 레이어). 화면 아래쪽에만 깔리는 낮은 안개
+///   낮은 안개 화면 아래쪽에만 깔리는 조금 진한 안개 (Default 레이어: 배경 앞, 땅 타일 뒤).
+///            땅 타일에 가려져서 땅 아래로는 안 보이고, 바닥 위 공기에만 깔린다. 캐릭터보다 뒤.
 ///   그늘    화면 위·아래 끝을 어둡게 (Ground 레이어 맨 위). 땅·천장·배경만 어두워지고
 ///           캐릭터·몹은 그대로다. 아래가 어두워져서 검은 근경 실루엣과 자연스럽게 이어진다.
 ///
@@ -24,7 +25,7 @@ public class CaveFog : MonoBehaviour
     [SerializeField] private float backDrift = 0.25f;            // 저절로 흐르는 빠르기 (초당 칸)
     [SerializeField, Range(0f, 1f)] private float backFollow = 0.3f;   // 카메라 움직임에 따라 흐르는 정도
 
-    [Header("앞 안개 (캐릭터 앞, 바닥 쪽)")]
+    [Header("낮은 안개 (바닥 위, 땅 타일 뒤)")]
     [SerializeField, Range(0f, 1f)] private float frontAlpha = 0.22f;
     [SerializeField] private float frontDrift = 0.6f;
     [SerializeField, Range(0f, 1f)] private float frontFollow = 0.15f;
@@ -58,7 +59,7 @@ public class CaveFog : MonoBehaviour
     {
         Sprite fog = MakeFogSprite();
         back = MakeLayer("Fog_Back", fog, "BackGround", 50);
-        front = MakeLayer("Fog_Front", fog, "GroundCover", 5);
+        front = MakeLayer("Fog_Low", fog, "Default", 50);   // 땅 타일(Ground) 뒤라서 땅 아래로 안 비친다
 
         // 그늘: Ground 레이어 맨 위 (타일보다 위, 플레이어·몹보다 아래)
         Sprite ramp = MakeRampSprite();

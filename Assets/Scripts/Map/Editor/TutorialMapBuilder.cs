@@ -41,7 +41,8 @@ using UnityEngine.Tilemaps;
 /// 카메라 영역(CameraConfiner)은 맵 크기에 맞춰 늘리되, 출구 포탈 쪽(x 140~)은 뺀다.
 /// 배경: 숲 배경(Background_Forest)은 끄고 동굴 배경(Background_Cave, CavePanoramaBackground)을 쓴다.
 /// 안개: Tutorial_Fog (CaveFog). 화면 전체 옅은 안개 + 바닥 쪽 낮은 안개, 출구로 갈수록 옅어짐.
-/// 근경: Foreground_Cave 아래에 먹 실루엣(바위·소나무·풀·돌탑)을 놓는다 (ForegroundParallax, GroundCover 레이어).
+/// 근경: 지금은 뺀다 (RemoveForeground). 다시 넣으려면 Build에서 PlaceForeground를 부른다.
+///       Foreground_Cave 아래에 먹 실루엣(바위·소나무·풀·돌탑)을 놓는다 (ForegroundParallax, GroundCover 레이어).
 /// 그림: Assets/Sprites/Backgrounds/Tutorial/
 /// </summary>
 public static class TutorialMapBuilder
@@ -100,7 +101,7 @@ public static class TutorialMapBuilder
         FitCamera(scene);
         AddLightRamp(scene);
         SetupBackground(scene);
-        PlaceForeground(scene);
+        RemoveForeground(scene);   // 근경은 일단 뺀다 (다시 넣을 때 PlaceForeground로 바꾸면 됨)
 
         Undo.CollapseUndoOperations(group);
         EditorSceneManager.MarkSceneDirty(scene);
@@ -488,6 +489,12 @@ public static class TutorialMapBuilder
         so.FindProperty("viewLeftX").floatValue = MinX;
         so.FindProperty("viewRightX").floatValue = CameraRight;
         so.ApplyModifiedProperties();
+    }
+
+    private static void RemoveForeground(Scene scene)
+    {
+        Transform root = FindInScene(scene, "Foreground_Cave");
+        if (root != null) Undo.DestroyObjectImmediate(root.gameObject);
     }
 
     private static void PlaceForeground(Scene scene)
