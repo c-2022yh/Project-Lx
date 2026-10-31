@@ -455,7 +455,9 @@ public class IntroCutscene : MonoBehaviour
         curtain = NewImage("Curtain", transform, Color.black, null);
         Stretch(curtain.rectTransform, 400f);
 
-        lineText = NewText("Line", stage, "", 40f, new Color(0.91f, 0.92f, 0.94f, 1f));
+        // 내레이션 글자는 검은 막(Curtain) 위에 와야 한다. 무대(stage) 안에 두면 막 뒤에 가려져 안 보인다.
+        // 무대와 캔버스 모두 화면 가운데가 기준이라 위치 값은 그대로 쓴다.
+        lineText = NewText("Line", transform, "", 40f, new Color(0.91f, 0.92f, 0.94f, 1f));
         lineText.rectTransform.sizeDelta = new Vector2(1700f, 120f);
         lineText.characterSpacing = 6f;
         lineText.alpha = 0f;
