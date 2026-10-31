@@ -296,12 +296,65 @@ public static class BossTestSceneBuilder
     {
         if (x + 1 > GolemX - SkyGap && x < GolemX + SkyGap) return false;
         foreach (var v in Vines) if (x + 1 > v.x - 4f && x < v.x + 4f) return true;
+        foreach (var v in WideVines) if (x + 1 > v.x - 5f && x < v.x + 5f) return true;
         return false;
+    }
+
+    // 가로로 넓은 덩굴: 넓은 덩어리 그림을 옆으로 늘려서 천장 밑에 길게 깐다 (scaleX가 가로 늘림)
+    private static readonly (string prefab, float x, float scale, float scaleX)[] WideVines =
+    {
+        ("FG_Back_Ivy_Cluster",      -33f, 1.0f,  1.5f),
+        ("FG_Back_Ivy_OrbCluster",   -21f, 0.9f, -1.6f),
+        ("FG_Back_Ivy_GlowCluster",   -9f, 1.0f,  1.5f),
+        ("FG_Back_Ivy_Cluster",        5f, 0.9f, -1.6f),
+        ("FG_Back_Ivy_OrbCluster",    36f, 0.9f,  1.5f),
+        ("FG_Front_Ivy_GlowCluster", -27f, 0.8f, -1.4f),
+    };
+
+    private const string WideMenu = "Tools/여울잔/보스 테스트 씬에 넓은 덩굴 추가";
+
+    // 씬을 다시 만들지 않고, 지금 열린 테스트 씬에 넓은 덩굴만 더한다 (직접 옮긴 덩굴은 그대로)
+    [MenuItem(WideMenu)]
+    private static void AddWideVinesMenu()
+    {
+        Undo.SetCurrentGroupName("넓은 덩굴 추가");
+        int n = AddWideVines(true);
+        EditorSceneManager.MarkSceneDirty(SceneManager.GetActiveScene());
+        Debug.Log($"[BossTestSceneBuilder] 넓은 덩굴 {n}개를 Foreground_Vines 아래에 놓았어요. 위치를 다듬고 Ctrl+S로 저장하세요.");
+    }
+
+    [MenuItem(WideMenu, true)]
+    private static bool CanAddWide() => !EditorApplication.isPlaying;
+
+    private static int AddWideVines(bool undo)
+    {
+        GameObject root = GameObject.Find("Foreground_Vines");
+        if (root == null)
+        {
+            root = new GameObject("Foreground_Vines");
+            if (undo) Undo.RegisterCreatedObjectUndo(root, "넓은 덩굴 추가");
+        }
+        int placed = 0;
+        for (int i = 0; i < WideVines.Length; i++)
+        {
+            var v = WideVines[i];
+            string name = "Wide_" + i + "_" + v.prefab;
+            if (root.transform.Find(name) != null) continue;   // 이미 있으면 또 놓지 않음
+            GameObject go = InstantiatePrefab("Assets/Prefabs/Foreground/" + v.prefab + ".prefab", new Vector3(v.x, GroundTop + CeilingBottom, 0f));
+            if (go == null) continue;
+            if (undo) Undo.RegisterCreatedObjectUndo(go, "넓은 덩굴 추가");
+            go.name = name;
+            go.transform.SetParent(root.transform, true);
+            go.transform.localScale = new Vector3(v.scale * v.scaleX, v.scale, 1f);
+            placed++;
+        }
+        return placed;
     }
 
     private static void PlaceVines()
     {
         GameObject root = new GameObject("Foreground_Vines");
+        AddWideVines(false);
         foreach (var v in Vines)
         {
             GameObject go = InstantiatePrefab("Assets/Prefabs/Foreground/" + v.prefab + ".prefab", new Vector3(v.x, GroundTop + CeilingBottom, 0f));
