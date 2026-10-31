@@ -14,6 +14,7 @@ using UnityEngine.SceneManagement;
 /// 그림은 코드로 만든다. 나중에 진짜 그림이 오면 Art 안의 그림만 바꾸면 된다.
 ///
 /// Shrine.cs(관용님 파일)는 고치지 않는다. IsActive / IsPlayerInRange만 읽는다.
+/// 관용님 석등 빛(ShrineVisual)은 빛기둥이 석등에 닿는 순간 같이 켜지도록 SetLit만 불러 맞춘다.
 /// 씬이 열릴 때 모든 제단에 스스로 붙는다. 프리팹도 건드리지 않는다.
 /// UIManager는 IgniteThen으로 "불이 다 붙은 뒤에 유물창 열기"를 맡긴다.
 /// 창이 열려 게임이 멈춰도 불은 계속 일렁이도록 실제 시간(unscaled)으로 움직인다.
@@ -61,6 +62,8 @@ public class ShrineFire : MonoBehaviour
     private enum State { Off, Igniting, Lit, Fading }
 
     private Shrine shrine;
+    private ShrineVisual innerLight;   // 관용님 석등 빛 (없으면 null)
+    private bool innerLightOn;
     private SpriteRenderer shrineSr;
     private Color inactiveColor = Color.gray;
     private Color activeColor = Color.white;
@@ -132,6 +135,7 @@ public class ShrineFire : MonoBehaviour
     {
         shrine = GetComponent<Shrine>();
         if (shrine == null) { enabled = false; return; }
+        innerLight = GetComponent<ShrineVisual>();
 
         shrineSr = ReadField<SpriteRenderer>("spriteRenderer", null);
         if (shrineSr == null) shrineSr = GetComponentInChildren<SpriteRenderer>();
@@ -197,6 +201,7 @@ public class ShrineFire : MonoBehaviour
         fade = 1f;
         pending = null;
         pendingDone = false;
+        innerLightOn = false;
         emberTimer = sparkTime + 0.2f;
 
         Transform tr = shrineSr.transform;
@@ -263,6 +268,13 @@ public class ShrineFire : MonoBehaviour
             t += dt;
             // 석등 색: 불씨 뒤로 회색 → 원래 색
             shrineSr.color = Color.Lerp(inactiveColor, activeColor, Mathf.Clamp01((t - sparkTime + 0.3f) / 0.8f));
+
+            // 석등 빛: 빛기둥이 닿기 전에는 꺼 두고, 닿는 순간 반짝이며 켠다
+            if (innerLight != null)
+            {
+                if (t < sparkTime) innerLight.SetLit(false, false);
+                else if (!innerLightOn && active) { innerLight.SetLit(true, true); innerLightOn = true; }
+            }
 
             if (!pendingDone && t >= sparkTime + holdAfterLit)
             {
