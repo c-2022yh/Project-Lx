@@ -13,6 +13,7 @@ public static class BossStageFx
 {
     private const string Folder = "Presentation/Boss/";
     private static Sprite[] rocks;
+    private static Sprite[] fallRocks;   // 천장에서 떨어지는 이끼 낀 돌 (BossFallRock_1~9)
     private static Sprite crack;
     private static bool loaded;
 
@@ -27,12 +28,27 @@ public static class BossStageFx
             if (s != null) list.Add(s);
         }
         rocks = list.ToArray();
+        System.Collections.Generic.List<Sprite> fall = new System.Collections.Generic.List<Sprite>();
+        for (int i = 1; i <= 9; i++)
+        {
+            Sprite s = Resources.Load<Sprite>(Folder + "BossFallRock_" + i);
+            if (s != null) fall.Add(s);
+        }
+        fallRocks = fall.Count > 0 ? fall.ToArray() : rocks;
         crack = Resources.Load<Sprite>(Folder + "BossCrack");
     }
 
-    private static BossFxSprite Rock(Vector3 pos, float size, string layer, int order)
+    /// <summary>이끼 낀 돌 그림 하나 (떨어지는 돌)</summary>
+    public static Sprite RandomFallRock()
     {
-        Sprite s = rocks[Random.Range(0, rocks.Length)];
+        Load();
+        return fallRocks.Length > 0 ? fallRocks[Random.Range(0, fallRocks.Length)] : null;
+    }
+
+    private static BossFxSprite Rock(Vector3 pos, float size, string layer, int order, Sprite[] from = null)
+    {
+        Sprite[] set = from != null && from.Length > 0 ? from : rocks;
+        Sprite s = set[Random.Range(0, set.Length)];
         BossFxSprite fx = BossFxSprite.Create("BossRock", s, pos, layer, order);
         float k = size / Mathf.Max(s.bounds.size.x, s.bounds.size.y);
         fx.scaleFrom = fx.scaleTo = new Vector3(Random.value < 0.5f ? -k : k, k, 1f);
@@ -67,7 +83,8 @@ public static class BossStageFx
         for (int i = 0; i < count; i++)
         {
             Vector3 p = new Vector3(Random.Range(room.min.x + 1f, room.max.x - 1f), room.max.y + 1f, 0f);
-            BossFxSprite fx = Rock(p, Random.Range(0.15f, 0.4f), BossFx.Layer, 21);
+            BossFxSprite fx = Rock(p, Random.Range(0.2f, 0.6f), BossFx.Layer, 21, fallRocks);
+            fx.spin = Random.Range(-200f, 200f);
             fx.delay = Random.Range(0f, seconds);
             fx.velocity = new Vector2(Random.Range(-0.5f, 0.5f), Random.Range(-2f, 0f));
             fx.gravity = 18f;

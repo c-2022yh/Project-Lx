@@ -20,6 +20,8 @@ public class GolemWarningGlow : MonoBehaviour
     private float width;
     private GolemBossArea area;
     private bool landed;
+    private Transform rock;
+    private float rockSpin;
 
     private static Sprite gradient;
     private static float nextScan;
@@ -73,6 +75,16 @@ public class GolemWarningGlow : MonoBehaviour
             fill.sprite = Gradient(old);   // 같은 크기 그림이라 원래 크기 설정이 그대로 맞는다
         }
 
+        // 떨어지는 돌: 원래 1칸 크기 → 경고 폭에 맞춰 키우고 돌면서 떨어지게
+        Transform fr = transform.Find("Falling Rock");
+        if (fr != null)
+        {
+            rock = fr;
+            float k = Mathf.Clamp(width * 0.7f, 1.2f, 2.6f);
+            rock.localScale = new Vector3(rock.localScale.x * k, rock.localScale.y * k, 1f);
+            rockSpin = Random.Range(-160f, 160f);
+        }
+
         // 바닥 테두리 하나만 남긴다 (가장 아래에 있는 가로 테두리)
         float lowest = float.MaxValue;
         foreach (SpriteRenderer b in others)
@@ -115,6 +127,7 @@ public class GolemWarningGlow : MonoBehaviour
             BossStageFx.Crack(ground, ground.y, w * 1.1f, 1.2f);
             CameraShake.Shake(CameraShake.Light);
         }
+        if (rock != null && rock.gameObject.activeInHierarchy) rock.Rotate(0f, 0f, rockSpin * Time.deltaTime);
         if (fill == null) return;
         Color c = fill.color;
         float a = c.a;   // 경고가 진행될수록 GolemBossArea가 0.18 → 0.55로 올림, 공격 순간 0.65

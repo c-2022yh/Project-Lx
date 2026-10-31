@@ -457,6 +457,8 @@ public class BossRoom : MonoBehaviour
     // ───────────── 보스 모습 ─────────────
 
     private readonly System.Collections.Generic.HashSet<SpriteRenderer> tunedRenderers = new System.Collections.Generic.HashSet<SpriteRenderer>();
+    private static readonly System.Reflection.FieldInfo GolemRockField =
+        typeof(GolemBossController).GetField("rockSprite", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic);
     private static readonly System.Reflection.FieldInfo GolemBarField =
         typeof(GolemBossVisual).GetField("showHealthBar", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic);
 
@@ -472,6 +474,9 @@ public class BossRoom : MonoBehaviour
         foreach (GameObject t in targets)
         {
             if (t.GetComponent<BossHitFx>() == null && t.GetComponent<EnemyHealth>() != null) t.AddComponent<BossHitFx>();   // 피격 번쩍임·돌가루
+            GolemBossController gc = t.GetComponent<GolemBossController>();
+            if (gc != null && GolemRockField != null && GolemRockField.GetValue(gc) == null)
+                GolemRockField.SetValue(gc, BossStageFx.RandomFallRock());   // 낙석 공격: 회색 네모 대신 이끼 낀 돌
             if (!showHealthBar && GolemBarField != null)
                 foreach (GolemBossVisual v in t.GetComponentsInChildren<GolemBossVisual>(true)) GolemBarField.SetValue(v, false);
             if (!bossBehindPlayer) continue;
