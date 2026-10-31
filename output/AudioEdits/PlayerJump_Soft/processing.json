@@ -1,0 +1,20 @@
+{
+  "wind_source": "Assets\\Audio\\Clips\\SFX\\PlayerMove\\SFX_PlayerDash_GentleWhoosh.wav",
+  "footstep_source": "output\\AudioEdits\\SoftFootstep_Split\\Soft_Footstep_1.wav",
+  "variants": [
+    {
+      "file": "SFX_PlayerJump_SoftHup.wav",
+      "duration_seconds": 0.23,
+      "wind_pitch_semitones_relative_to_dash": 2,
+      "footstep_layer": true,
+      "peak_dbfs": -17.08
+    },
+    {
+      "file": "SFX_PlayerAirJump_SoftWhoosh.wav",
+      "duration_seconds": 0.23,
+      "wind_pitch_semitones_relative_to_dash": 2,
+      "footstep_layer": false,
+      "peak_dbfs": -19.08
+    }
+  ]
+}

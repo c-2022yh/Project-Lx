@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("LinkedImpactTests")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Release")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+02b57f9fba2fddcb9402af402da52b35a4d94ea4")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+a4a91e36eaf113a78d11df9e83b0fb1d79d7d9b7")]
 [assembly: System.Reflection.AssemblyProductAttribute("LinkedImpactTests")]
 [assembly: System.Reflection.AssemblyTitleAttribute("LinkedImpactTests")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

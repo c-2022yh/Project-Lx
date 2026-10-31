@@ -16,7 +16,7 @@ MonoBehaviour:
   bgmGroup: {fileID: -9017205309732219718, guid: 201a9b6629a15274ba1a0eec3974e6e5, type: 2}
   sfxGroup: {fileID: 4636222370684933176, guid: 201a9b6629a15274ba1a0eec3974e6e5, type: 2}
   uiGroup: {fileID: -3598000834021664023, guid: 201a9b6629a15274ba1a0eec3974e6e5, type: 2}
-  sfxVoices: 16
+  sfxVoices: 32
   uiVoices: 4
   musicFadeSeconds: 0.4
   autoPlaySceneMusic: 1

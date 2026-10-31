@@ -1,0 +1,15 @@
+{
+  "file": "SFX_PlayerDash_SoftWhoosh.wav",
+  "source": "Assets\\Audio\\Clips\\SFX\\Skill\\Air_Dash_2_S_EarlyStart_HighCut_6kHz.wav",
+  "duration_seconds": 0.5,
+  "source_start_seconds": 0.06,
+  "pitch_change_semitones": 0,
+  "presence_eq_hz": 2800,
+  "presence_eq_gain_db": -3,
+  "presence_eq_q": 0.8,
+  "additional_lowpass_cutoff_hz": 4000,
+  "additional_lowpass_slope_db_octave": 12,
+  "attack_fade_ms": 12,
+  "end_fade_ms": 120,
+  "peak_dbfs": -4.05
+}

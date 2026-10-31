@@ -51,9 +51,13 @@ MonoBehaviour:
       channel: 0
       clip: {fileID: 0}
       clips:
-      - {fileID: 0}
+      - {fileID: 8300000, guid: 4c4a9c6854d7c43449eb69e03189f7ac, type: 3}
+      - {fileID: 8300000, guid: 64f518349f5641d468307cf694f4f37e, type: 3}
+      - {fileID: 8300000, guid: 0ba96c2f0e4b9c2448d552acebe037b5, type: 3}
+      - {fileID: 8300000, guid: 7adf4a8a07b4a2f4d862c3272eb2b813, type: 3}
+      - {fileID: 8300000, guid: 430af4ecde1fa5e4c959e5267c8391bc, type: 3}
       volume: 1
-      minimumInterval: 0.05
+      minimumInterval: 0
       pitchRange: {x: 1, y: 1}
       maxSimultaneous: 4
       limitScope: 0
@@ -62,7 +66,7 @@ MonoBehaviour:
       maxDistance: 15
       useFallback: 0
       fallbackSound: 5
-    impactMode: 1
+    impactMode: 0
     activeLoop:
       channel: 0
       clip: {fileID: 0}
