@@ -17,7 +17,7 @@ public class BossTitleCard : MonoBehaviour
     private const float FadeIn = 0.6f;
     private const float FadeOut = 0.7f;
     private const float LineWidth = 1140f;
-    private const float InkWidth = 360f;
+    private const float InkWidth = 520f;
 
     private static readonly Color TitleColor = new Color(0.80f, 0.85f, 0.94f, 0.78f);
     private static readonly Color NameColor = new Color(0.93f, 0.95f, 0.98f, 1f);
@@ -170,7 +170,7 @@ public class BossTitleCard : MonoBehaviour
         RectTransform inkRt = card.ink.rectTransform;
         inkRt.anchorMin = inkRt.anchorMax = new Vector2(0.5f, 0.24f);
         inkRt.anchoredPosition = new Vector2(0f, -12f);
-        inkRt.sizeDelta = new Vector2(InkWidth, 12f);
+        inkRt.sizeDelta = new Vector2(InkWidth, 34f);   // 붓 자국 그림 비율
 
         // 격파 카드에서 줄 아래에 나오는 보스 이름
         card.subText = PresentationUI.NewText("Sub", root, 27f, TitleColor, TextAlignmentOptions.Center);

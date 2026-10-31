@@ -587,7 +587,8 @@ MonoBehaviour:
       channel: 0
       clip: {fileID: 0}
       clips:
-      - {fileID: 0}
+      - {fileID: 8300000, guid: 726d2054f77006d4995c692f10936c6c, type: 3}
+      - {fileID: 8300000, guid: 0c4475c4fab49dc48901fe42c78a32ca, type: 3}
       volume: 1
       minimumInterval: 0.05
       pitchRange: {x: 1, y: 1}
@@ -598,7 +599,7 @@ MonoBehaviour:
       maxDistance: 15
       useFallback: 0
       fallbackSound: 0
-    impactMode: 0
+    impactMode: 1
     startupTime: 0.05
     activeTime: 0.1
     recoveryTime: 0.02
@@ -606,9 +607,34 @@ MonoBehaviour:
     damageSpec:
       damageType: 0
       damageMultiplier: 0.95
+      flatDamage: 0
       canCritical: 1
       bonusPenetration: 0
       bonusDamageAmplification: 0
+    enableFollowUpHit: 0
+    followUpHitDelay: 0.06
+    followUpDamageSpec:
+      damageType: 0
+      damageMultiplier: 0
+      flatDamage: 0
+      canCritical: 0
+      bonusPenetration: 0
+      bonusDamageAmplification: 0
+    followUpImpactSound:
+      channel: 0
+      clip: {fileID: 0}
+      clips:
+      - {fileID: 0}
+      volume: 1
+      minimumInterval: 0.05
+      pitchRange: {x: 1, y: 1}
+      maxSimultaneous: 4
+      limitScope: 0
+      spatialBlend: 0
+      minDistance: 1
+      maxDistance: 15
+      useFallback: 0
+      fallbackSound: 5
     attackEffectPrefab: {fileID: 3545481630792328146, guid: c52d238b7df34dc8a6a1ef980761b78e, type: 3}
     effectOffset: {x: 3, y: 0}
     effectScale: {x: 1, y: 1, z: 1}
@@ -636,6 +662,43 @@ MonoBehaviour:
       channel: 0
       clip: {fileID: 0}
       clips:
+      - {fileID: 8300000, guid: 0c4475c4fab49dc48901fe42c78a32ca, type: 3}
+      - {fileID: 8300000, guid: 726d2054f77006d4995c692f10936c6c, type: 3}
+      volume: 1
+      minimumInterval: 0.05
+      pitchRange: {x: 1, y: 1}
+      maxSimultaneous: 4
+      limitScope: 0
+      spatialBlend: 0
+      minDistance: 1
+      maxDistance: 15
+      useFallback: 0
+      fallbackSound: 5
+    impactMode: 1
+    startupTime: 0.1
+    activeTime: 0.3
+    recoveryTime: 0.1
+    recoveryMovementTime: 0.05
+    damageSpec:
+      damageType: 0
+      damageMultiplier: 1.1
+      flatDamage: 0
+      canCritical: 1
+      bonusPenetration: 0
+      bonusDamageAmplification: 0
+    enableFollowUpHit: 0
+    followUpHitDelay: 0.06
+    followUpDamageSpec:
+      damageType: 0
+      damageMultiplier: 0
+      flatDamage: 0
+      canCritical: 0
+      bonusPenetration: 0
+      bonusDamageAmplification: 0
+    followUpImpactSound:
+      channel: 0
+      clip: {fileID: 0}
+      clips:
       - {fileID: 0}
       volume: 1
       minimumInterval: 0.05
@@ -647,17 +710,6 @@ MonoBehaviour:
       maxDistance: 15
       useFallback: 0
       fallbackSound: 5
-    impactMode: 0
-    startupTime: 0.1
-    activeTime: 0.3
-    recoveryTime: 0.1
-    recoveryMovementTime: 0.05
-    damageSpec:
-      damageType: 0
-      damageMultiplier: 1.1
-      canCritical: 1
-      bonusPenetration: 0
-      bonusDamageAmplification: 0
     attackEffectPrefab: {fileID: 2066522367392586507, guid: 692a85f7206e9714c93b470598cbc6a6, type: 3}
     effectOffset: {x: 3, y: 0}
     effectScale: {x: 1, y: 1, z: 1}
@@ -687,6 +739,43 @@ MonoBehaviour:
       channel: 0
       clip: {fileID: 0}
       clips:
+      - {fileID: 8300000, guid: 0c4475c4fab49dc48901fe42c78a32ca, type: 3}
+      - {fileID: 8300000, guid: 726d2054f77006d4995c692f10936c6c, type: 3}
+      volume: 1
+      minimumInterval: 0.05
+      pitchRange: {x: 1, y: 1}
+      maxSimultaneous: 4
+      limitScope: 0
+      spatialBlend: 0
+      minDistance: 1
+      maxDistance: 15
+      useFallback: 0
+      fallbackSound: 5
+    impactMode: 1
+    startupTime: 0.03
+    activeTime: 0.1
+    recoveryTime: 0.15
+    recoveryMovementTime: 0
+    damageSpec:
+      damageType: 0
+      damageMultiplier: 0.8
+      flatDamage: 0
+      canCritical: 1
+      bonusPenetration: 0
+      bonusDamageAmplification: 0
+    enableFollowUpHit: 0
+    followUpHitDelay: 0.06
+    followUpDamageSpec:
+      damageType: 0
+      damageMultiplier: 0
+      flatDamage: 0
+      canCritical: 0
+      bonusPenetration: 0
+      bonusDamageAmplification: 0
+    followUpImpactSound:
+      channel: 0
+      clip: {fileID: 0}
+      clips:
       - {fileID: 0}
       volume: 1
       minimumInterval: 0.05
@@ -698,17 +787,6 @@ MonoBehaviour:
       maxDistance: 15
       useFallback: 0
       fallbackSound: 5
-    impactMode: 0
-    startupTime: 0.03
-    activeTime: 0.1
-    recoveryTime: 0.15
-    recoveryMovementTime: 0
-    damageSpec:
-      damageType: 0
-      damageMultiplier: 0.8
-      canCritical: 1
-      bonusPenetration: 0
-      bonusDamageAmplification: 0
     attackEffectPrefab: {fileID: 2066522367392586507, guid: 692a85f7206e9714c93b470598cbc6a6, type: 3}
     effectOffset: {x: 1.5, y: 0}
     effectScale: {x: 0.8, y: 0.8, z: 1}

@@ -9,6 +9,9 @@ public sealed class AttackAudioContext
     private readonly Transform owner;
     private readonly HashSet<int> targets;
     private bool played;
+    private bool clipSelected;
+    private SoundCue selectedCue;
+    private AudioClip selectedClip;
 
     public AttackAudioContext(SoundCue cue, ImpactSoundMode mode, Transform owner)
     {
@@ -18,6 +21,23 @@ public sealed class AttackAudioContext
         if (mode == ImpactSoundMode.OncePerTarget) targets = new HashSet<int>();
     }
 
+    // Share only the chosen sound. Each hitbox keeps its own hit policy/state.
+    public AttackAudioContext CreateLinkedImpact(ImpactSoundMode linkedMode)
+    {
+        if (!clipSelected)
+        {
+            selectedCue = GameAudio.ResolveCueForPlayback(cue);
+            selectedClip = selectedCue?.PickClip();
+            clipSelected = true;
+        }
+        return new AttackAudioContext(cue, linkedMode, owner)
+        {
+            clipSelected = true,
+            selectedCue = this.selectedCue,
+            selectedClip = this.selectedClip
+        };
+    }
+
     // Call only after real damage is accepted, including a lethal hit.
     public void OnDamageApplied(Transform target)
     {
@@ -25,7 +45,9 @@ public sealed class AttackAudioContext
         if (mode == ImpactSoundMode.OncePerAction && played) return;
         int id = target.GetHashCode();
         if (mode == ImpactSoundMode.OncePerTarget && targets.Contains(id)) return;
-        SoundHandle handle = GameAudio.Play(cue, target.position, owner);
+        SoundHandle handle = clipSelected
+            ? GameAudio.PlaySelectedClip(selectedCue, selectedClip, target.position, owner)
+            : GameAudio.Play(cue, target.position, owner);
         if (!handle.IsPlaying) return;
         played = true;
         if (mode == ImpactSoundMode.OncePerTarget) targets.Add(id);

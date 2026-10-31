@@ -257,11 +257,11 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: -9061817179477788244, guid: 14a325aabafc6c340982162a32c51f1a, type: 3}
       propertyPath: targetSpawnId
-      value: Portal_From_F_01
+      value: 
       objectReference: {fileID: 0}
     - target: {fileID: -9061817179477788244, guid: 14a325aabafc6c340982162a32c51f1a, type: 3}
       propertyPath: targetSceneName
-      value: F_Boss
+      value: Test_BossRoom
       objectReference: {fileID: 0}
     - target: {fileID: 555942630264147511, guid: 14a325aabafc6c340982162a32c51f1a, type: 3}
       propertyPath: m_Name

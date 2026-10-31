@@ -77,7 +77,7 @@ public class PlayerAttack : MonoBehaviour
     private Vector3 originLocalPos;
 
     //기본공격 이펙트가 실제 생성됐을 때 알림
-    public event Action<AttackPattern, Vector3, Quaternion, float> AttackEffectCreated;
+    public event Action<AttackPattern, Vector3, Quaternion, float, AttackAudioContext> AttackEffectCreated;
 
     //기본공격이 적에게 실제로 적중했을 때 알림
     public event Action<IDamageable, DamageInfo> OnAttackHit;
@@ -253,7 +253,7 @@ public class PlayerAttack : MonoBehaviour
         if (sr != null) sr.flipX = dir < 0f;
 
         //기본공격 이펙트 생성을 알림
-        AttackEffectCreated?.Invoke(pattern, spawnPos, rotation, dir);
+        AttackEffectCreated?.Invoke(pattern, spawnPos, rotation, dir, damageInfo.impactAudio);
 
         //공격 히트박스 찾기
         AttackEffectHitbox hitbox = effectObj.GetComponentInChildren<AttackEffectHitbox>();
