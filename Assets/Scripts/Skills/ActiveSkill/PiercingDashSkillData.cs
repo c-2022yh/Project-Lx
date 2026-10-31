@@ -22,6 +22,9 @@ public class PiercingDashSkillData : AttackSkillData
     [Tooltip("이 거리보다 짧으면 쇄도 메인 이펙트를 생성하지 않음")]
     [SerializeField] private float minDashEffectDistance = 0.2f;
 
+    [Header("Pure White Flash")]
+    [SerializeField] private PiercingDashFlashVisual dashFlashPrefab;
+
     [Header("Hit Effect")]
     [SerializeField] private GameObject hitEffectPrefab;
     [SerializeField] private GameObject criticalHitEffectPrefab;
@@ -36,6 +39,8 @@ public class PiercingDashSkillData : AttackSkillData
     {
         base.OnCastCancelled(p);
         if (p == null) return;
+        foreach (var flash in p.GetComponentsInChildren<PiercingDashFlashVisual>())
+            if (flash.Skill == this) flash.CancelTravel();
         PlayerHitReaction hitReaction = p.GetComponent<PlayerHitReaction>();
         if (hitReaction != null && hitReaction.IsIgnoringEnemyContact)
             hitReaction.EndEnemyContactIgnoreAfterDelay(contactIgnoreAfterDash);
@@ -70,7 +75,14 @@ public class PiercingDashSkillData : AttackSkillData
         DamageInfo damageInfo = CreateDamageInfo(p);
 
         //실제 이동 거리에 맞춰 쇄도 이펙트 생성
-        SpawnDashEffect(p, dir, actualDist);
+        SpriteRenderer trail = SpawnDashEffect(p, dir, actualDist);
+        PiercingDashFlashVisual flash = null;
+        if (dashFlashPrefab != null)
+        {
+            flash = Instantiate(dashFlashPrefab);
+            Vector3 pathStart = p.transform.position + new Vector3(dashEffectOffset.x * dir, dashEffectOffset.y, 0f);
+            flash.Begin(p, this, trail, pathStart, dir, actualDist, activeTime);
+        }
 
         float timer = 0f;
         float speed = actualDist / activeTime;
@@ -114,6 +126,7 @@ public class PiercingDashSkillData : AttackSkillData
             damageInfo
         );
 
+        if (flash != null) flash.FinishTravel();
         p.SetPhysicsFreeze(false);
 
         //무적 판정 적용
@@ -124,10 +137,10 @@ public class PiercingDashSkillData : AttackSkillData
 
 
     //실제 쇄도 이동거리에 맞춰 메인 궤적 이펙트 생성
-    private void SpawnDashEffect(Player p, float dir, float actualDist)
+    private SpriteRenderer SpawnDashEffect(Player p, float dir, float actualDist)
     {
-        if (dashEffectPrefab == null) return;
-        if (actualDist < minDashEffectDistance) return;
+        if (dashEffectPrefab == null) return null;
+        if (actualDist < minDashEffectDistance) return null;
 
         //기본 이동거리 대비 실제 이동거리 비율
         float distanceRatio =
@@ -172,6 +185,7 @@ public class PiercingDashSkillData : AttackSkillData
         {
             sr.flipX = dir < 0f;
         }
+        return sr;
     }
 
 

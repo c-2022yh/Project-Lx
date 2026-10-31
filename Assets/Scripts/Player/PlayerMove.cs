@@ -117,6 +117,12 @@ public class PlayerMove : MonoBehaviour
 
 
     ///점프 함수
+    public void ClearJumpRequest()
+    {
+        lastJumpRequestTime = float.NegativeInfinity;
+        jumpRequestedDown = false;
+    }
+
     public void RequestJump()
     {
         lastJumpRequestTime = Time.time;
@@ -133,7 +139,7 @@ public class PlayerMove : MonoBehaviour
         }
 
         //액션 불가능 상태
-        if (!player.ActionState.CanMove()) return;
+        if (!player.ActionState.CanJump()) return;
 
         //땅에 닿으면 초기화
         if (player.isGrounded)

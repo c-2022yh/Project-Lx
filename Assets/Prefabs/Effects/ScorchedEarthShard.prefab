@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 1591578234433314899}
   - component: {fileID: 8325653982110308027}
   - component: {fileID: 11400000}
+  - component: {fileID: 11421001}
   m_Layer: 14
   m_Name: ScorchedEarthShard
   m_TagString: Untagged
@@ -104,3 +105,36 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: aad5eee068004b5e84e8ad2e10b14d19, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ScorchedEarthProjectile
+--- !u!114 &11421001
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2512384032804664592}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8be2661a842b4ea29e7492441ed5ee87, type: 3}
+  m_Name:
+  m_EditorClassIdentifier: Assembly-CSharp::ScorchedEarthProjectileVisual
+  glowMaterial: {fileID: 2100000, guid: c0b3466a032b40f4849f9d67cd878e91, type: 2}
+  coreColor: {r: 3.6, g: 0.035, b: 0.07, a: 1}
+  haloColor: {r: 1.8, g: 0.015, b: 0.04, a: 1}
+  coreSize: 0.32
+  haloSize: 0.78
+  haloStrength: 0.4
+  preparationScale: 0.8
+  pulseAmount: 0.06
+  sortingLayer: Effects
+  sortingOrder: 4
+  embersPerSecond: 55
+  emberSize: 0.14
+  emberLifetime: 0.16
+  sparklesPerSecond: 4
+  sparkleSize: 0.08
+  launchFlashDuration: 0.055
+  launchFlashScale: 1.25
+  impactSize: 0.6
+  impactDuration: 0.075
+  impactEmbers: 5
+  coreSoftness: 1.6

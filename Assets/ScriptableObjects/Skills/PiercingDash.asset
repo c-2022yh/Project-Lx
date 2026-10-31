@@ -43,3 +43,4 @@ MonoBehaviour:
   contactIgnoreAfterDash: 0.3
   allowUseInAir: 1
   stopHorizontalMovementOnStart: 1
+  dashFlashPrefab: {fileID: 710340003, guid: ce480276140e417e9dfef9435a8ad57e, type: 3}

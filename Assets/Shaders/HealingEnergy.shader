@@ -4,7 +4,7 @@ Shader "ProjectLx/Healing Energy"
     {
         [HDR] _Tint ("Tint", Color) = (0.3, 2, 0.65, 1)
         _Opacity ("Opacity", Range(0, 1)) = 1
-        _Shape ("Shape: Ribbon / Light / Leaf / Plus", Float) = 0
+        _Shape ("Shape: Ribbon / Light / Leaf / Plus / Core / Sparkle", Float) = 0
     }
     SubShader
     {
@@ -49,12 +49,23 @@ Shader "ProjectLx/Healing Energy"
                     float width = 0.45 * saturate(1.0 - leaf.y * leaf.y);
                     mask = (1.0 - smoothstep(-0.03, 0.03, abs(leaf.x) - width)) * (1.0 - smoothstep(0.85, 1.0, abs(leaf.y)));
                 }
-                else
+                else if (_Shape < 3.5)
                 {
                     float d = min(max(abs(p.x) - 0.23, abs(p.y) - 0.78), max(abs(p.x) - 0.78, abs(p.y) - 0.23));
                     mask = 1.0 - smoothstep(-0.035, 0.035, d);
                 }
-                return half4(_Tint.rgb * input.color.rgb, mask * _Tint.a * input.color.a * _Opacity);
+                else if (_Shape < 4.5)
+                    mask = pow(saturate(1.0 - length(p)), 2.2);
+                else
+                {
+                    float cross = min(abs(p.x), abs(p.y));
+                    float extent = max(abs(p.x), abs(p.y));
+                    mask = pow(saturate(1.0 - cross * 9.0), 2.0) * pow(saturate(1.0 - extent), 1.5);
+                }
+                half3 tint = _Tint.rgb * input.color.rgb;
+                if (_Shape > 3.5)
+                    tint = lerp(tint, max(tint, half3(1.6, 1.8, 1.7)), pow(saturate(1.0 - length(p) * 2.0), 2.0));
+                return half4(tint, mask * _Tint.a * input.color.a * _Opacity);
             }
             ENDHLSL
         }

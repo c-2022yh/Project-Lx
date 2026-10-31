@@ -16,9 +16,106 @@ MonoBehaviour:
   icon: {fileID: 0}
   description: "\uD3ED\uC8FC \uC720\uBB3C \uC7A5\uCC29 \uD6C4 \uAC01\uC131 \uC2DC
     \uC0AC\uC6A9\uD560 \uC218 \uC788\uB294 \uAC15\uB825\uD55C \uACF5\uACA9"
+  animationType: 0
+  audio:
+    castSound:
+      channel: 0
+      clip: {fileID: 0}
+      clips:
+      - {fileID: 0}
+      volume: 1
+      minimumInterval: 0.05
+      pitchRange: {x: 1, y: 1}
+      maxSimultaneous: 4
+      limitScope: 0
+      spatialBlend: 0
+      minDistance: 1
+      maxDistance: 15
+      useFallback: 0
+      fallbackSound: 5
+    releaseSound:
+      channel: 0
+      clip: {fileID: 0}
+      clips:
+      - {fileID: 0}
+      volume: 1
+      minimumInterval: 0.05
+      pitchRange: {x: 1, y: 1}
+      maxSimultaneous: 4
+      limitScope: 0
+      spatialBlend: 0
+      minDistance: 1
+      maxDistance: 15
+      useFallback: 0
+      fallbackSound: 5
+    impactSound:
+      channel: 0
+      clip: {fileID: 0}
+      clips:
+      - {fileID: 0}
+      volume: 1
+      minimumInterval: 0.05
+      pitchRange: {x: 1, y: 1}
+      maxSimultaneous: 4
+      limitScope: 0
+      spatialBlend: 0
+      minDistance: 1
+      maxDistance: 15
+      useFallback: 0
+      fallbackSound: 5
+    impactMode: 0
+    activeLoop:
+      channel: 0
+      clip: {fileID: 0}
+      clips:
+      - {fileID: 0}
+      volume: 1
+      minimumInterval: 0.05
+      pitchRange: {x: 1, y: 1}
+      maxSimultaneous: 4
+      limitScope: 0
+      spatialBlend: 0
+      minDistance: 1
+      maxDistance: 15
+      useFallback: 0
+      fallbackSound: 5
+    completeSound:
+      channel: 0
+      clip: {fileID: 0}
+      clips:
+      - {fileID: 0}
+      volume: 1
+      minimumInterval: 0.05
+      pitchRange: {x: 1, y: 1}
+      maxSimultaneous: 4
+      limitScope: 0
+      spatialBlend: 0
+      minDistance: 1
+      maxDistance: 15
+      useFallback: 0
+      fallbackSound: 5
+    cancelSound:
+      channel: 0
+      clip: {fileID: 0}
+      clips:
+      - {fileID: 0}
+      volume: 1
+      minimumInterval: 0.05
+      pitchRange: {x: 1, y: 1}
+      maxSimultaneous: 4
+      limitScope: 0
+      spatialBlend: 0
+      minDistance: 1
+      maxDistance: 15
+      useFallback: 0
+      fallbackSound: 5
   cooldownTime: 1
   energyCost: 0
-  activeTime: 0.2
+  allowUseInAir: 1
+  stopHorizontalMovementOnStart: 0
+  windupTime: 0
+  activeTime: 0.3
+  recoveryTime: 0.5
   enemyLayer:
     serializedVersion: 2
     m_Bits: 256
@@ -35,6 +132,7 @@ MonoBehaviour:
     formationRadius: 1.2
     formationArc: 150
     preparationDuration: 0.15
+    launchInterval: 0.015
     outwardDuration: 0.04
     projectileSpeed: 30
     turnSpeed: 2160
@@ -42,15 +140,26 @@ MonoBehaviour:
     hitRadius: 0.15
     regularDamage:
       damageType: 1
-      damageMultiplier: 0.35416667
+      damageMultiplier: 1
       canCritical: 0
       bonusPenetration: 0
       bonusDamageAmplification: 0
     preparationEffectPrefab: {fileID: 0}
     regularProjectilePrefab: {fileID: 2512384032804664592, guid: 81afb68c1264477e8f695c8bb04779e0, type: 3}
     regularHitEffectPrefab: {fileID: 7910235883446043059, guid: 42fb663768604a48bdb4761239a4c118, type: 3}
+    flightLoop:
+      channel: 0
+      clip: {fileID: 0}
+      clips:
+      - {fileID: 0}
+      volume: 1
+      minimumInterval: 0.05
+      pitchRange: {x: 1, y: 1}
+      maxSimultaneous: 4
+      limitScope: 0
+      spatialBlend: 0
+      minDistance: 1
+      maxDistance: 15
+      useFallback: 0
+      fallbackSound: 5
     hitEffectLifetime: 1
-  allowUseInAir: 1
-  stopHorizontalMovementOnStart: 0
-  windupTime: 0
-  recoveryTime: 0.2

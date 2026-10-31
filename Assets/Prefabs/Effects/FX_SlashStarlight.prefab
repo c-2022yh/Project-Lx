@@ -1,0 +1,74 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &710320001
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 710320002}
+  - component: {fileID: 710320003}
+  m_Layer: 12
+  m_Name: FX_SlashStarlight
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &710320002
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 710320001}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &710320003
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 710320001}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8804fba6e05741449a3656efc959da93, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SlashSkillVisual
+  starlightMaterial: {fileID: 2100000, guid: 5d7a6d58d5ae4006b84563d2561a1d0c, type: 2}
+  slashColor: {r: 2.2, g: 0.12, b: 0.22, a: 1}
+  finisherColor: {r: 2.8, g: 0.35, b: 0.15, a: 1}
+  sortingLayer: Effects
+  sortingOrder: 4
+  preparationOffset: {x: 1, y: 0}
+  preparationSize: 0.55
+  preparationDuration: 0.1
+  gatheringCount: 10
+  gatheringRadius: 0.45
+  edgeWidthPixels: 3
+  trailDuration: 0.3
+  trailSparkleCount: 6
+  sparkleSize: 0.14
+  impactSize: 0.65
+  impactDuration: 0.16
+  impactSparkleCount: 7
+  impactSparkleSpeed: 2.6
+  enablePlayerPulse: 1
+  playerPulseColor: {r: 2.2, g: 0.1, b: 0.2, a: 1}
+  playerEdgePixels: 2.5
+  playerPulseIntensity: 0.9
+  playerPulseDuration: 0.075
+  finisherPulseMultiplier: 1.35
+  enableFinisherAfterimage: 1
+  afterimageDuration: 0.18
+  afterimageOpacity: 0
+  afterimageBackOffset: 0.14

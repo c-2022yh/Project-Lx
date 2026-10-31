@@ -15,6 +15,7 @@ public class PlayerEnergy : MonoBehaviour
     [SerializeField] private bool startWithOrb = false;
     [SerializeField] private VitalConversionSkillData orbAcquisitionSkill;
 
+    private PlayerAwakening awakening;
     private EnergyOrb currentOrb;
     private bool hasOrb;
     private bool isEnergyGainBlocked;
@@ -38,7 +39,13 @@ public class PlayerEnergy : MonoBehaviour
     public bool IsFull => MaxEnergy > 0f && currentEnergy >= MaxEnergy;
     public bool HasOrb => hasOrb;
     public EnergyOrb CurrentOrb => currentOrb;
-    public bool IsEnergyGainBlocked => isEnergyGainBlocked;
+    public bool IsEnergyGainBlocked => isEnergyGainBlocked
+        || (awakening != null && (awakening.IsAwakening || awakening.IsAwakened));
+
+    private void Awake()
+    {
+        awakening = GetComponent<PlayerAwakening>();
+    }
 
     //테스트용 시작 보주가 설정되어 있으면 생성
     private void Start()
@@ -83,7 +90,7 @@ public class PlayerEnergy : MonoBehaviour
     //획득 배율을 적용한 뒤 기력을 최대치 안에서 증가
     public void GainEnergy(float amount)
     {
-        if (!hasOrb || isEnergyGainBlocked || amount <= 0f) return;
+        if (!hasOrb || IsEnergyGainBlocked || amount <= 0f) return;
         float next = Mathf.Clamp(currentEnergy + amount * Mathf.Max(0f, energyGainMultiplier), 0f, MaxEnergy);
         if (Mathf.Approximately(currentEnergy, next)) return;
         currentEnergy = next;
