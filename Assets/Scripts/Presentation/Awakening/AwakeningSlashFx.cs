@@ -15,7 +15,7 @@ using UnityEngine.SceneManagement;
 [DisallowMultipleComponent]
 public class AwakeningSlashFx : MonoBehaviour
 {
-    [SerializeField] private Color echoColor = new Color(0.35f, 0.65f, 1f, 0.95f);
+    [SerializeField] private Color echoColor = new Color(0.2f, 0.5f, 1f, 0.95f);
     [Tooltip("잔상 1 크기 (원래 베기 = 1)")]
     [SerializeField] private float echoScale = 1.2f;
     [Tooltip("잔상이 사라지는 시간 (초). 원래 베기 시간보다 짧으면 원래 시간을 따른다")]

@@ -10,7 +10,7 @@ Shader "ProjectLx/Awakening Slash Flame"
         _Distort ("Heat Distortion (UV)", Range(0, 0.05)) = 0.018
         _Speed ("Flicker Speed", Range(0, 4)) = 1.4
         _Intensity ("Brightness", Range(0, 3)) = 1.4
-        _White ("White Core", Range(0, 1)) = 0.45
+        _White ("White Core", Range(0, 1)) = 0
         [HideInInspector] _Color ("Tint", Color) = (1, 1, 1, 1)
         [HideInInspector] _RendererColor ("Renderer Color", Color) = (1, 1, 1, 1)
     }

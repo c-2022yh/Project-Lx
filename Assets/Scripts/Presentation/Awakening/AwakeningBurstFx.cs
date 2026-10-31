@@ -23,6 +23,8 @@ public class AwakeningBurstFx : MonoBehaviour
     [Tooltip("발밑 기준 위치 보정")]
     [SerializeField] private Vector2 offset = new Vector2(0f, -0.05f);
     [SerializeField, Range(0f, 1f)] private float maxAlpha = 0.95f;
+    [Tooltip("불꽃 색 (화면 가장자리 파랑과 같게)")]
+    [SerializeField] private Color tint = new Color(0.2f, 0.5f, 1f, 1f);
 
     [Header("각성 유지 중")]
     [Tooltip("유지 중 크기 (터질 때 = 1.15)")]
@@ -213,7 +215,7 @@ public class AwakeningBurstFx : MonoBehaviour
         float flicker = 1f + 0.04f * Mathf.Sin(Time.unscaledTime * 40f);
         burst.transform.localScale = new Vector3(s, s * flicker, 1f);
         burst.transform.position = Feet() + (Vector3)offset;
-        Color c = Color.white;
+        Color c = tint;
         c.a = Mathf.Clamp01(alpha) * maxAlpha;
         burst.color = c;
     }

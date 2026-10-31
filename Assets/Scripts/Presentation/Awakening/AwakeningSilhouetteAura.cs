@@ -28,11 +28,11 @@ public class AwakeningSilhouetteAura : MonoBehaviour
     [SerializeField, Min(0f)] private float riseHeight = 0.75f;
 
     [Header("밝기")]
-    [SerializeField, Min(0f)] private float intensity = 1.35f;   // 1을 넘기면 블룸 때문에 하얗게 날아감
+    [SerializeField, Min(0f)] private float intensity = 1f;   // 1을 넘기면 블룸 때문에 하얗게 날아감
     [SerializeField, Range(0f, 1f)] private float opacity = 0.9f;
     [SerializeField, Range(0f, 1f)] private float sparkle = 0.6f;
     [Tooltip("몸 테두리 흰빛 정도 (0 = 흰빛 없음)")]
-    [SerializeField, Range(0f, 1f)] private float whiteCore = 0.4f;
+    [SerializeField, Range(0f, 1f)] private float whiteCore = 0f;
     [Tooltip("흐르는 빠르기")]
     [SerializeField, Min(0f)] private float flowSpeed = 1.4f;
 
@@ -158,7 +158,21 @@ public class AwakeningSilhouetteAura : MonoBehaviour
     {
         if (visual == null) return;
         SetOldFloat("glowIntensity", oldGlowIntensity);
+        if (useEdgeColor)
+        {
+            // 몸 테두리 발광·주변 빛도 같은 파랑으로 (보주 유물 색 대신)
+            SetOldField("useEquippedOrbColors", false);
+            SetOldField("glowColor", edgeColor);
+            SetOldField("auraColor", edgeColor);
+            SetOldField("lightColor", edgeColor);
+        }
         SetOldFloat("bloomIntensity", oldBloomIntensity);
+    }
+
+    private void SetOldField<T>(string field, T value)
+    {
+        FieldInfo f = typeof(PlayerAwakeningVisual).GetField(field, BindingFlags.Instance | BindingFlags.NonPublic);
+        if (f != null && f.FieldType == typeof(T)) f.SetValue(visual, value);
     }
 
     private void SetOldFloat(string field, float value)

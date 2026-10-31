@@ -163,7 +163,7 @@ Shader "ProjectLx/Awakening Silhouette Aura"
                 // 몸 테두리에만 살짝 흰빛, 나머지는 푸른빛
                 float core = smoothstep(0.3, 0.6, nearGlow);
                 half3 col = lerp(_AuraColor.rgb, half3(1.0, 1.0, 1.0), core * _White) * _Intensity;
-                col += spark * 3.0;
+                col += _AuraColor.rgb * spark * 2.0;   // 반짝이도 같은 파랑
                 float alpha = saturate((density + spark * 2.0) * edge) * _Opacity;
                 return half4(col, alpha);
             }
