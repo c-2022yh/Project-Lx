@@ -40,6 +40,7 @@ using UnityEngine.Tilemaps;
 /// 슬라임과 안내 영역은 Field_Object/Tutorial_Enemies, Tutorial_Triggers 아래에 새로 만든다.
 /// 카메라 영역(CameraConfiner)은 맵 크기에 맞춰 늘리되, 출구 포탈 쪽(x 140~)은 뺀다.
 /// 배경: 숲 배경(Background_Forest)은 끄고 동굴 배경(Background_Cave, CavePanoramaBackground)을 쓴다.
+/// 안개: Tutorial_Fog (CaveFog). 화면 전체 옅은 안개 + 바닥 쪽 낮은 안개, 출구로 갈수록 옅어짐.
 /// 근경: Foreground_Cave 아래에 먹 실루엣(바위·소나무·풀·돌탑)을 놓는다 (ForegroundParallax, GroundCover 레이어).
 /// 그림: Assets/Sprites/Backgrounds/Tutorial/
 /// </summary>
@@ -442,6 +443,10 @@ public static class TutorialMapBuilder
             t = go.transform;
         }
         if (t.GetComponent<CaveLightRamp>() == null) Undo.AddComponent<CaveLightRamp>(t.gameObject);
+
+        // 안개 (화면 전체 옅은 안개 + 바닥 쪽 낮은 안개)
+        Transform fog = FindOrCreateRoot(scene, "Tutorial_Fog");
+        if (fog.GetComponent<CaveFog>() == null) Undo.AddComponent<CaveFog>(fog.gameObject);
     }
 
     // ── 배경·근경 ──────────────────────────
