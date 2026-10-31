@@ -190,7 +190,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EnemyStats
   offense:
-    physicalAttack: 1
+    physicalAttack: 20
     magicalAttack: 1
     physicalPenetration: 0
     magicalPenetration: 0

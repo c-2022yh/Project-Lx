@@ -19,7 +19,10 @@ public class DawnRelicEffect : RelicEffect
     [Header("Extra Attack Color")]
     [SerializeField]
     private Color secondColor =
-        new Color(0.6f, 0.85f, 1f, 0.7f);
+        new Color(0.6f, 0.85f, 1f, 1f);
+
+    [SerializeField, Min(0f), Tooltip("Edge glow brightness relative to the original attack trail. 2 doubles its brightness.")]
+    private float extraTrailBrightnessMultiplier = 2f;
 
     [Header("Lifetime")]
     [SerializeField]
@@ -178,7 +181,8 @@ public class DawnRelicEffect : RelicEffect
             ApplyVisual(
                 extraAttack,
                 extraAttackColor,
-                dir
+                dir,
+                audioSettings.extraTrailBrightnessMultiplier
             );
 
             AttackEffectHitbox hitbox =
@@ -222,7 +226,7 @@ public class DawnRelicEffect : RelicEffect
             Object.Destroy(extraAttack, lifeTime);
         }
 
-        private static void ApplyVisual(GameObject extraAttack, Color color, float direction)
+        private static void ApplyVisual(GameObject extraAttack, Color color, float direction, float brightnessMultiplier)
         {
             SpriteRenderer[] renderers = extraAttack.GetComponentsInChildren<SpriteRenderer>(true);
             foreach (SpriteRenderer renderer in renderers)
@@ -230,6 +234,9 @@ public class DawnRelicEffect : RelicEffect
                 renderer.flipX = direction < 0f;
                 renderer.color = color;
             }
+
+            foreach (AttackTrailFlash flash in extraAttack.GetComponentsInChildren<AttackTrailFlash>(true))
+                flash.SetBrightnessMultiplier(brightnessMultiplier);
         }
 
         private static IEnumerator DisableCollidersAfter(

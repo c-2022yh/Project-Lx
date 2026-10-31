@@ -333,7 +333,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8d795e9348e5706499cde7a4d8c4319b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerHealth
-  maxHealth: 5
+  maxHealth: 100
   currentHealth: 0
   hurtSound:
     channel: 0
@@ -541,8 +541,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerStats
   offense:
-    physicalAttack: 1
-    magicalAttack: 1
+    physicalAttack: 100
+    magicalAttack: 100
     physicalPenetration: 0
     magicalPenetration: 0
     criticalChance: 0.1
@@ -552,6 +552,8 @@ MonoBehaviour:
     physicalDefense: 0
     magicalDefense: 0
     durability: 0
+  minDamageMultiplier: 0.9
+  maxDamageMultiplier: 1.1
 --- !u!114 &3959913638912958144
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -603,7 +605,7 @@ MonoBehaviour:
     recoveryMovementTime: 0
     damageSpec:
       damageType: 0
-      damageMultiplier: 1
+      damageMultiplier: 0.95
       canCritical: 1
       bonusPenetration: 0
       bonusDamageAmplification: 0
@@ -652,7 +654,7 @@ MonoBehaviour:
     recoveryMovementTime: 0.05
     damageSpec:
       damageType: 0
-      damageMultiplier: 1
+      damageMultiplier: 1.1
       canCritical: 1
       bonusPenetration: 0
       bonusDamageAmplification: 0
@@ -703,7 +705,7 @@ MonoBehaviour:
     recoveryMovementTime: 0
     damageSpec:
       damageType: 0
-      damageMultiplier: 1
+      damageMultiplier: 0.8
       canCritical: 1
       bonusPenetration: 0
       bonusDamageAmplification: 0

@@ -271,7 +271,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EnemyStats
   offense:
-    physicalAttack: 1
+    physicalAttack: 20
     magicalAttack: 1
     physicalPenetration: 0
     magicalPenetration: 0
@@ -464,6 +464,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 24803a3410a04a23ab2d8f75991bdb76, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EnemyFlyingChargeAI
+  hoverAmplitude: 0.5
+  hoverPeriod: 2
+  hoverSpeed: 3
+  detectionRadius: 8
+  sightObstacleLayer:
+    serializedVersion: 2
+    m_Bits: 64
+  detectionDelay: 0.3
+  windupTime: 1
+  chargeSpeed: 15
+  recoveryTime: 1.5
   prepareSound:
     channel: 0
     clip: {fileID: 0}
@@ -506,17 +517,6 @@ MonoBehaviour:
     maxDistance: 15
     useFallback: 0
     fallbackSound: 5
-  hoverAmplitude: 0.5
-  hoverPeriod: 2
-  hoverSpeed: 3
-  detectionRadius: 8
-  sightObstacleLayer:
-    serializedVersion: 2
-    m_Bits: 64
-  detectionDelay: 0.3
-  windupTime: 1
-  chargeSpeed: 15
-  recoveryTime: 1.5
 --- !u!1 &3095458375250088132
 GameObject:
   m_ObjectHideFlags: 0

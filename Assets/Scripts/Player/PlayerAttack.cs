@@ -24,6 +24,13 @@ public class AttackPattern //공격 패턴
     [Header("Combat")]
     public AttackDamageSpec damageSpec; //고유 데미지 값  
 
+    [Header("Follow-up Hit")]
+    [Tooltip("Each target touched by this trail receives a second hit, without needing to overlap the trail again.")]
+    public bool enableFollowUpHit;
+    [Min(0f)] public float followUpHitDelay = 0.06f;
+    public AttackDamageSpec followUpDamageSpec;
+    public SoundCue followUpImpactSound = new SoundCue();
+
     [Header("Effect")] //공격 이펙트 프리펩 설정
     public GameObject attackEffectPrefab;
     public Vector2 effectOffset = new Vector2(0.8f, 0f);
@@ -211,11 +218,15 @@ public class PlayerAttack : MonoBehaviour
     }
 
     //데미지 정보 생성
-    private DamageInfo CreateDamageInfo(AttackPattern pattern)
+    private DamageInfo CreateDamageInfo(AttackPattern pattern, bool followUp = false)
     {
-        DamageInfo damageInfo = DamageInfo.Create(playerStats.Offense, pattern.damageSpec, gameObject);
+        AttackDamageSpec spec = followUp ? pattern.followUpDamageSpec : pattern.damageSpec;
+        DamageInfo damageInfo = DamageInfo.Create(playerStats.Offense, spec, gameObject);
         damageInfo.damage *= Mathf.Max(0f, 1f + basicAttackDamageBonus);
-        damageInfo.impactAudio = new AttackAudioContext(pattern.impactSound, pattern.impactMode, transform);
+        SoundCue impactSound = followUp ? pattern.followUpImpactSound : pattern.impactSound;
+        damageInfo.impactAudio = new AttackAudioContext(impactSound, pattern.impactMode, transform);
+        // Keep the target in place until the second hit, then apply normal knockback.
+        if (!followUp && pattern.enableFollowUpHit) damageInfo.suppressKnockback = true;
         return damageInfo;
     }
 
@@ -249,6 +260,8 @@ public class PlayerAttack : MonoBehaviour
         if (hitbox != null)
         {
             hitbox.SetAttackInfo(damageInfo, dir, NotifyAttackHit);
+            if (pattern.enableFollowUpHit)
+                hitbox.SetFollowUpHit(CreateDamageInfo(pattern, true), pattern.followUpHitDelay, this);
 
             //히트박스 활성화 후 일정 시간 뒤 비활성화
             StartCoroutine(DisableHitboxAfter(hitbox, pattern.activeTime));

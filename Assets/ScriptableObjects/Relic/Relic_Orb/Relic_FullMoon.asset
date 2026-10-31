@@ -15,16 +15,13 @@ MonoBehaviour:
   relicId: orb_fullmoon
   relicName: "\uB9CC\uC6D4"
   icon: {fileID: 21300000, guid: 634dcff5a03bb4d4c95dacc208de7289, type: 3}
-  description: "\uAE30\uB825 \uD68D\uB4DD\uB7C9\uC774 \uC99D\uAC00\uD558\uACE0 \uAE30\uB825\uC774
+  description: "\uB354 \uC774\uC0C1 \uAC01\uC131\uD560 \uC218 \uC5C6\uC9C0\uB9CC
+    \uAE30\uB825 \uD68D\uB4DD\uB7C9\uC774 \uC99D\uAC00\uD558\uACE0 \uAE30\uB825\uC774
     \uCD5C\uB300\uC77C \uB54C \uAE30\uBCF8 \uACF5\uACA9 \uD53C\uD574\uB7C9\uC774
     \uC99D\uAC00\uD55C\uB2E4."
   cost: 1
   category: 1
   orbSprite: {fileID: 21300000, guid: 18171dd6e73140644943cc6e5882b10d, type: 3}
-  overrideAwakeningColors: 1
-  awakeningGlowColor: {r: 1, g: 0.82, b: 0.4, a: 1}
-  awakeningAuraColor: {r: 1, g: 0.64, b: 0.16, a: 1}
-  awakeningLightColor: {r: 1, g: 0.83, b: 0.46, a: 1}
   orbHUDStyle:
     emptySprite: {fileID: 21300000, guid: fc00b4c934ada7e4d9ab2814a164dd1b, type: 3}
     fillSprite: {fileID: 21300000, guid: 203d68fa66acd7d45b7206d2f1f0857d, type: 3}
@@ -54,6 +51,7 @@ MonoBehaviour:
     persistentFrameRate: 8
     persistentFrameCrossFade: 1
     persistentFlashInterval: {x: 0.6, y: 1.8}
+    persistentSingleFramePerFlash: 0
     persistentFlashDuration: 0.3
     persistentFadeSpeed: 5
     fullChargeBurstPrefab: {fileID: 0}
@@ -76,6 +74,11 @@ MonoBehaviour:
     gaugeMode: 0
     gaugeMaterial: {fileID: 2100000, guid: df8d6b4dce269c74fb779fe300733e73, type: 2}
     crescentRadius: 0.38
+    crescentCenter: {x: 0.5, y: 0.5}
     crescentWidth: 0.3
+  overrideAwakeningColors: 1
+  awakeningGlowColor: {r: 1, g: 0.82, b: 0.4, a: 1}
+  awakeningAuraColor: {r: 1, g: 0.64, b: 0.16, a: 1}
+  awakeningLightColor: {r: 1, g: 0.83, b: 0.46, a: 1}
   effects:
   - {fileID: 11400000, guid: 64e4967e0510063488dc223ccea768cd, type: 2}
