@@ -398,7 +398,7 @@ MonoBehaviour:
   maxHp: 30000
   healthBar: {fileID: 0}
   damagePopupPrefab: {fileID: 4418119550550923920, guid: f9203d53f7bdee24b9be1417d4647687, type: 3}
-  damagePopupOffset: {x: 0, y: 2.3, z: 0}
+  damagePopupOffset: {x: 0, y: 6.2, z: 0}
   damagePopupSpacing: 0.6
   damagePopupResetTime: 0.15
   hitBlinkCount: 0
