@@ -33,7 +33,7 @@ public class HealthBarSkin : MonoBehaviour
     [Tooltip("보주 반지름 대비, 프레임 왼쪽 끝이 보주 가운데에서 오른쪽으로 떨어진 정도 (보주가 왼쪽 끝을 덮음)")]
     [SerializeField, Range(-1f, 1.2f)] private float orbOverlap = 0.35f;
     [Tooltip("보주 기준 자리에서 더 옮기기 (+y = 위)")]
-    [SerializeField] private Vector2 orbOffset = new Vector2(0f, 12f);
+    [SerializeField] private Vector2 orbOffset = new Vector2(0f, 18f);
     [Tooltip("자리 옮길 때 걸리는 시간 (초). 0이면 바로 (맵마다 같은 자리에 고정)")]
     [SerializeField] private float moveTime = 0f;
 
