@@ -44,5 +44,23 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/InProgress/Boss.unity
     guid: 33fcdb06ac67ec8448599f9b3cc825a0
+  - enabled: 1
+    path: Assets/Scenes/InProgress/F_05.unity
+    guid: 922a47cb99157e94fb6d0281e4362f19
+  - enabled: 1
+    path: Assets/Scenes/InProgress/F_06.unity
+    guid: ef90a9289320a824daef7773b700ea01
+  - enabled: 1
+    path: Assets/Scenes/InProgress/F_07.unity
+    guid: 1c5fb0d2c5b0e40489a4184a209da804
+  - enabled: 1
+    path: Assets/Scenes/InProgress/F_08.unity
+    guid: 3733e534748696b4c9016a54704a475c
+  - enabled: 1
+    path: Assets/Scenes/InProgress/F_09.unity
+    guid: 54f61312a29a788408c675d2607fac81
+  - enabled: 1
+    path: Assets/Scenes/InProgress/F_10.unity
+    guid: ecbac3684386778418500f102ce82b4e
   m_configObjects:
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 2bcd2660ca9b64942af0de543d8d7100, type: 3}
