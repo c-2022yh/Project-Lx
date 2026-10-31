@@ -73,8 +73,10 @@ public class BossRoom : MonoBehaviour
     [Tooltip("바닥 안개 + 보스 등장 때 안개가 모였다 흩어짐 + 잡으면 걷힘")]
     [SerializeField] private bool fog = true;
     [Header("Health Bar")]
-    [Tooltip("보스 HP바를 띄운다 (지금은 끔)")]
+    [Tooltip("보스 HP바를 띄운다 (지금은 끔). 끄면 골렘 머리 위 작은 HP바도 같이 숨긴다.")]
     [SerializeField] private bool showHealthBar = false;
+    [Tooltip("보스를 캐릭터 뒤에 그린다 (원래는 Enemy 레이어라 캐릭터 앞에 그려짐)")]
+    [SerializeField] private bool bossBehindPlayer = true;
     [Tooltip("HP바에서 2페이즈가 되는 자리(체력 비율). 골렘의 Phase Two Health와 맞춰 둔다.")]
     [SerializeField, Range(0f, 1f)] private float phaseMark = 0.5f;
 
@@ -217,6 +219,7 @@ public class BossRoom : MonoBehaviour
         }
 
         if (showHealthBar) BossHealthBarUI.Show(boss, bossName, golem != null ? phaseMark : -1f);
+        TuneBossLook();
         state = State.Fighting;
 
         if (moonPresentation)
@@ -228,8 +231,10 @@ public class BossRoom : MonoBehaviour
         // 2페이즈에 골렘이 둘로 갈라지면 본체는 숨고 체력이 남은 채로 있다.
         // 조각이 모두 쓰러질 때(IsDefeated)까지 기다린다. (조각 HP바 두 줄은 BossHealthBarUI가 맡음)
         hasFragmentCenter = false;
+        float nextTune = 0f;
         while (boss != null && !boss.IsDead && (golem == null || !golem.IsDefeated))
         {
+            if (Time.unscaledTime >= nextTune) { nextTune = Time.unscaledTime + 0.3f; TuneBossLook(); }   // 갈라진 조각도
             if (golem != null && golem.HasSplit && TryFragmentCenter(out Vector3 c))
             {
                 lastFragmentCenter = c;
@@ -342,6 +347,39 @@ public class BossRoom : MonoBehaviour
         // 보스 처치는 바로 저장한다(제단 위치는 그대로).
         GameSession.SaveProgressNow();
         routine = null;
+    }
+
+    // ───────────── 보스 모습 ─────────────
+
+    private readonly System.Collections.Generic.HashSet<SpriteRenderer> tunedRenderers = new System.Collections.Generic.HashSet<SpriteRenderer>();
+    private static readonly System.Reflection.FieldInfo GolemBarField =
+        typeof(GolemBossVisual).GetField("showHealthBar", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic);
+
+    // 보스(와 갈라진 조각)를 캐릭터 뒤로 보내고, 머리 위 HP바를 숨긴다. 골렘 코드·프리팹은 그대로 (실행 중에만).
+    private void TuneBossLook()
+    {
+        if (boss == null) return;
+        System.Collections.Generic.List<GameObject> targets = new System.Collections.Generic.List<GameObject> { boss.gameObject };
+        foreach (GolemBossController g in FindObjectsByType<GolemBossController>())
+            if (g != null && !targets.Contains(g.gameObject)) targets.Add(g.gameObject);
+
+        int ground = SortingLayer.NameToID("Ground");
+        foreach (GameObject t in targets)
+        {
+            if (!showHealthBar && GolemBarField != null)
+                foreach (GolemBossVisual v in t.GetComponentsInChildren<GolemBossVisual>(true)) GolemBarField.SetValue(v, false);
+            if (!bossBehindPlayer) continue;
+            foreach (SpriteRenderer sr in t.GetComponentsInChildren<SpriteRenderer>(true))
+            {
+                if (sr == null || tunedRenderers.Contains(sr)) continue;
+                string layer = SortingLayer.IDToName(sr.sortingLayerID);
+                if (layer != "Enemy" && layer != "Effects") continue;
+                // 땅 타일(0)보다 위, 캐릭터(Player 레이어)보다 뒤. 원래 앞뒤 순서는 유지.
+                sr.sortingLayerID = ground;
+                sr.sortingOrder = 100 + sr.sortingOrder + (layer == "Effects" ? 20 : 0);
+                tunedRenderers.Add(sr);
+            }
+        }
     }
 
     // ───────────── 연출 도우미 ─────────────
