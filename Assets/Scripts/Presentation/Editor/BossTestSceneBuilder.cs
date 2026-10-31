@@ -347,7 +347,7 @@ public static class BossTestSceneBuilder
             var r = Ruins[i];
             string name = "Ruin_" + i + "_" + r.prefab;
             if (root.transform.Find(name) != null) continue;
-            GameObject go = InstantiatePrefab("Assets/Prefabs/Foreground/" + r.prefab + ".prefab", new Vector3(r.x, GroundTop - 0.15f, 0f));
+            GameObject go = InstantiatePrefab(FgPath(r.prefab), new Vector3(r.x, GroundTop - 0.15f, 0f));
             if (go == null) continue;
             if (undo) Undo.RegisterCreatedObjectUndo(go, "유적 근경 추가");
             go.name = name;
@@ -397,7 +397,7 @@ public static class BossTestSceneBuilder
             var v = WideVines[i];
             string name = "Wide_" + i + "_" + v.prefab;
             if (root.transform.Find(name) != null) continue;   // 이미 있으면 또 놓지 않음
-            GameObject go = InstantiatePrefab("Assets/Prefabs/Foreground/" + v.prefab + ".prefab", new Vector3(v.x, GroundTop + CeilingBottom, 0f));
+            GameObject go = InstantiatePrefab(FgPath(v.prefab), new Vector3(v.x, GroundTop + CeilingBottom, 0f));
             if (go == null) continue;
             if (undo) Undo.RegisterCreatedObjectUndo(go, "넓은 덩굴 추가");
             go.name = name;
@@ -415,7 +415,7 @@ public static class BossTestSceneBuilder
         AddRuins(false);
         foreach (var v in Vines)
         {
-            GameObject go = InstantiatePrefab("Assets/Prefabs/Foreground/" + v.prefab + ".prefab", new Vector3(v.x, GroundTop + CeilingBottom, 0f));
+            GameObject go = InstantiatePrefab(FgPath(v.prefab), new Vector3(v.x, GroundTop + CeilingBottom, 0f));
             if (go == null) continue;
             go.transform.SetParent(root.transform, true);
             float flip = Mathf.Abs(Mathf.RoundToInt(v.x)) % 2 == 0 ? 1f : -1f;
@@ -523,5 +523,14 @@ public static class BossTestSceneBuilder
         if (!found) return;
 
         go.transform.position += new Vector3(0f, GroundTop - b.min.y, 0f);
+    }
+
+    // 근경 프리팹은 종류별 폴더에 있다 (Foreground/Bush, Vine, Ivy, Ruin, Cave)
+    private static string FgPath(string prefab)
+    {
+        string[] kinds = { "Bush", "Vine", "Ivy", "Ruin", "Cave" };
+        foreach (string k in kinds)
+            if (prefab.Contains("_" + k + "_")) return "Assets/Prefabs/Foreground/" + k + "/" + prefab + ".prefab";
+        return "Assets/Prefabs/Foreground/" + prefab + ".prefab";
     }
 }

@@ -220,10 +220,10 @@ public static class TutorialPlantsPlacer
 
     private static GameObject Spawn(Transform parent, string prefabName, Vector3 pos, string name)
     {
-        GameObject prefab = AssetDatabase.LoadAssetAtPath<GameObject>(Folder + prefabName + ".prefab");
+        GameObject prefab = AssetDatabase.LoadAssetAtPath<GameObject>(FgPath(prefabName));
         if (prefab == null)
         {
-            Debug.LogWarning("[TutorialPlantsPlacer] 프리팹이 없어요: " + Folder + prefabName);
+            Debug.LogWarning("[TutorialPlantsPlacer] 프리팹이 없어요: " + FgPath(prefabName));
             return null;
         }
         GameObject go = (GameObject)PrefabUtility.InstantiatePrefab(prefab, parent);
@@ -258,4 +258,13 @@ public static class TutorialPlantsPlacer
 
     // FG_Back_Ivy_Teal_1 → Ivy_Teal_1 (앞·뒤는 같은 종류로 센다)
     private static string Kind(string prefab) => prefab.Replace("FG_Back_", "").Replace("FG_Front_", "");
+
+    // 근경 프리팹은 종류별 폴더에 있다 (Foreground/Bush, Vine, Ivy, Ruin, Cave)
+    private static string FgPath(string prefab)
+    {
+        string[] kinds = { "Bush", "Vine", "Ivy", "Ruin", "Cave" };
+        foreach (string k in kinds)
+            if (prefab.Contains("_" + k + "_")) return "Assets/Prefabs/Foreground/" + k + "/" + prefab + ".prefab";
+        return "Assets/Prefabs/Foreground/" + prefab + ".prefab";
+    }
 }
