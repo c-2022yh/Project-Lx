@@ -559,6 +559,9 @@ public class BossRoom : MonoBehaviour
         return box.transform.TransformPoint(edge).x;
     }
 
+    // 달빛 기둥 시작점을 화면 위로 더 올린다 (11.01: 빛이 낮게 시작해 보이던 것)
+    private const float BeamRaise = 4f;
+
     private BossMoonBeam CreateBeam()
     {
         Bounds room = RoomBounds();
@@ -567,7 +570,7 @@ public class BossRoom : MonoBehaviour
         Camera main = Camera.main;
         float half = cameraSize > 0f ? cameraSize : main != null && main.orthographic ? main.orthographicSize : 7f;
         Vector3 c = cameraCenter != null ? cameraCenter.position : room.center;
-        float top = Mathf.Max(room.max.y + 1f, c.y + half + 2f);
+        float top = Mathf.Max(room.max.y + 1f, c.y + half + 2f) + BeamRaise;
         float height = Mathf.Max(4f, top - room.min.y);
         return BossMoonBeam.Create(new Vector3(x, top, 0f), height, 5f);
     }

@@ -101,7 +101,7 @@ public class GolemWarningGlow : MonoBehaviour
         l.transform.localPosition = new Vector3(0f, -height * 0.5f + 0.3f, 0f);
         glow = l.AddComponent<Light2D>();
         glow.lightType = Light2D.LightType.Point;
-        glow.pointLightOuterRadius = Mathf.Max(2.5f, width * 0.75f);
+        glow.pointLightOuterRadius = Mathf.Max(3f, width * 0.95f);
         glow.pointLightInnerRadius = 0f;
         glow.falloffIntensity = 0.65f;
         glow.shadowsEnabled = false;
@@ -111,10 +111,13 @@ public class GolemWarningGlow : MonoBehaviour
         foreach (SortingLayer sl in SortingLayer.layers)
             if (sl.name != "UI" && sl.name != "BackGround") ids.Add(sl.id);
         glow.targetSortingLayers = ids.ToArray();
-        Update();
+        LateUpdate();
     }
 
-    private void Update()
+    // 골렘 코드가 Update에서 경고 색을 정한 다음에 바꾸도록 LateUpdate
+    private float sourceAlpha = -1f, writtenAlpha = -1f;
+
+    private void LateUpdate()
     {
         // 공격이 땅에 닿는 순간 (경고 → 실제 공격): 돌 파편·먼지·작은 균열·흔들림
         if (!landed && area != null && area.IsCommitted)
@@ -130,20 +133,31 @@ public class GolemWarningGlow : MonoBehaviour
         if (rock != null && rock.gameObject.activeInHierarchy) rock.Rotate(0f, 0f, rockSpin * Time.deltaTime);
         if (fill == null) return;
         Color c = fill.color;
-        float a = c.a;   // 경고가 진행될수록 GolemBossArea가 0.18 → 0.55로 올림, 공격 순간 0.65
-        float pulse = 1f + 0.15f * Mathf.Sin(Time.time * 12f);
+        // 경고가 진행될수록 GolemBossArea가 0.18 → 0.55로 올림, 공격 순간 0.65.
+        // 내가 진하게 바꾼 값이 그대로 남아 있으면(골렘 코드가 이번에 안 바꿈) 원래 값을 쓴다 (계속 진해지지 않게)
+        float a = Mathf.Approximately(c.a, writtenAlpha) && sourceAlpha >= 0f ? sourceAlpha : c.a;
+        sourceAlpha = a;
+        // 11.01: 더 확실하게 — 공격이 가까울수록(a가 클수록) 빠르고 크게 깜빡인다
+        float near = Mathf.Clamp01((a - 0.18f) / 0.4f);
+        float pulse = 1f + Mathf.Lerp(0.2f, 0.4f, near) * Mathf.Sin(Time.time * Mathf.Lerp(10f, 22f, near));
+
+        // 채움을 더 진하게 (원래 값의 1.7배, 최대 0.9)
+        Color f = c;
+        f.a = Mathf.Min(0.9f, a * 1.7f);
+        fill.color = f;
+        writtenAlpha = f.a;
 
         if (bottom != null && bottom.enabled)
         {
-            Color b = Color.Lerp(c, Color.white, 0.35f);
-            b.a = Mathf.Clamp01(a * 2.1f) * pulse;
+            Color b = Color.Lerp(c, Color.white, 0.45f);
+            b.a = Mathf.Clamp01(a * 3f) * pulse;
             bottom.color = b;
         }
 
         if (glow != null)
         {
             glow.color = new Color(Mathf.Max(c.r, 0.3f), c.g * 0.8f + 0.1f, c.b * 0.8f + 0.08f, 1f);
-            glow.intensity = Mathf.Clamp01((a - 0.1f) / 0.5f) * 1.9f * pulse;
+            glow.intensity = Mathf.Clamp01((a - 0.1f) / 0.5f) * 2.8f * pulse;
         }
     }
 
