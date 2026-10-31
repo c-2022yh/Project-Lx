@@ -53,6 +53,7 @@ public class FallingRockHazard : MonoBehaviour
         mark.sharedMaterial = BossFxArt.Unlit;
         mark.sortingLayerName = "Effects";
         mark.sortingOrder = 19;
+        mark.enabled = false;
         Vector2 ms = mark.sprite.bounds.size;
         m.transform.localScale = new Vector3(Size * 1.3f / ms.x, 1.6f / ms.y, 1f);
         m.transform.localPosition = new Vector3(0f, 0.8f, 0f);
@@ -84,13 +85,11 @@ public class FallingRockHazard : MonoBehaviour
 
         if (!falling)
         {
-            float blink = 0.55f + 0.45f * Mathf.Sin(t * 22f);
-            mark.color = new Color(1f, 0.25f, 0.15f, Mathf.Lerp(0.15f, 0.55f, t / WarnTime) * blink);
+            // 바닥 예고 표시는 안 보여 준다 (천장 돌가루만 살짝)
             if (t >= WarnTime) { falling = true; rock.enabled = true; vy = 0f; }
             return;
         }
 
-        mark.color = new Color(1f, 0.3f, 0.15f, 0.55f);
         Transform rt = rock.transform;
         vy -= Gravity * dt;
         Vector3 p = rt.position + new Vector3(0f, vy * dt, 0f);

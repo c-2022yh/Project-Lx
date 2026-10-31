@@ -529,7 +529,11 @@ public class BossRoom : MonoBehaviour
     {
         Bounds room = RoomBounds();
         float x = boss != null ? bossStartPosition.x : room.center.x;
-        float top = room.max.y + 1f;
+        // 화면 맨 위 바깥에서 시작하게 (방 카메라 = 방 가운데, 화면 절반 높이 = 카메라 크기)
+        Camera main = Camera.main;
+        float half = cameraSize > 0f ? cameraSize : main != null && main.orthographic ? main.orthographicSize : 7f;
+        Vector3 c = cameraCenter != null ? cameraCenter.position : room.center;
+        float top = Mathf.Max(room.max.y + 1f, c.y + half + 2f);
         float height = Mathf.Max(4f, top - room.min.y);
         return BossMoonBeam.Create(new Vector3(x, top, 0f), height, 5f);
     }
