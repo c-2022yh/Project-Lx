@@ -1,36 +1,49 @@
-﻿using UnityEngine;
+using UnityEngine;
 using UnityEngine.SceneManagement;
 
 /// <summary>
-/// 각성할 때 발밑에서 파란 여우불이 터지는 연출 (미드저니 그림 예시 적용).
+/// 각성 연출: 발밑에서 파란 여우불이 모였다가 터지고, 각성이 이어지는 동안 계속 타오른다 (미드저니 그림 예시 적용).
 ///
-///   모으기 (0 ~ 0.25초)   발밑에 작은 불이 모이며 조금씩 커짐
-///   방출   (0.25 ~ 0.4초)  확 커지며 가장 밝아짐 (각성 섬광과 같은 박자)
-///   사라짐 (0.4 ~ 1.0초)   천천히 흐려지며 사라짐
+///   모으기   Q를 누른 순간부터 각성 도입 시간(기본 0.8초) 동안 작은 불이 모이며 커짐
+///   방출     도입이 끝나는 순간 확 커지며 가장 밝아짐
+///   가라앉기 0.45초 동안 조금 작고 옅어짐
+///   유지     각성 중에는 일렁이며 계속 타오름
+///   꺼짐     각성이 끝나면 0.3초 동안 사라짐
 ///
 /// 기존 각성 연출(PlayerAwakeningVisual: 몸 발광·오라·화면 테두리)은 그대로 두고 그 위에 얹는다.
-/// PlayerAwakening.OnAwakeningStarted만 듣는다. 플레이어 프리팹은 건드리지 않고, 씬이 열릴 때 스스로 붙는다.
+/// PlayerAwakening의 IsAwakening / IsAwakened만 읽는다. 플레이어 프리팹은 건드리지 않고, 씬이 열릴 때 스스로 붙는다.
 /// 그림: Resources/Presentation/Awakening/AwakeningFx_Burst (피벗 = 바닥 고리 가운데). 없으면 아무것도 안 한다.
-/// 캐릭터 바로 뒤(Player 레이어, 순서 -5)에 그려서 캐릭터를 가리지 않는다.
+/// 캐릭터 그림 바로 뒤에 그려서 캐릭터를 가리지 않는다.
 /// </summary>
 [DisallowMultipleComponent]
 public class AwakeningBurstFx : MonoBehaviour
 {
-    [Tooltip("다 터졌을 때 불꽃 그림의 가로 폭 (월드 칸). 캐릭터 키가 약 2.7")]
+    [Tooltip("가장 크게 터졌을 때 불꽃 그림의 가로 폭 (월드 칸). 캐릭터 키가 약 2.7")]
     [SerializeField] private float width = 3.4f;
     [Tooltip("발밑 기준 위치 보정")]
     [SerializeField] private Vector2 offset = new Vector2(0f, -0.05f);
     [SerializeField, Range(0f, 1f)] private float maxAlpha = 0.95f;
 
+    [Header("각성 유지 중")]
+    [Tooltip("유지 중 크기 (터질 때 = 1.15)")]
+    [SerializeField, Range(0.3f, 1.2f)] private float holdScale = 0.85f;
+    [SerializeField, Range(0f, 1f)] private float holdAlpha = 0.6f;
+
     private const string SpritePath = "Presentation/Awakening/AwakeningFx_Burst";
+    private const float Release = 0.15f, Settle = 0.45f, FadeOut = 0.3f;
 
     private Player player;
     private PlayerAwakening awakening;
     private Collider2D body;
     private Sprite sprite;
-
     private SpriteRenderer burst;
-    private float t = -1f;
+
+    private enum Phase { Off, Intro, On, Ending }
+    private Phase phase = Phase.Off;
+    private float t;          // 지금 단계가 시작된 뒤 흐른 시간
+    private float introLen;   // 모으기 시간
+    private float endFrom;    // 꺼지기 시작할 때의 밝기
+    private float endScale;
 
     // ── 붙이기 ─────────────────────────────
 
@@ -59,77 +72,149 @@ public class AwakeningBurstFx : MonoBehaviour
         foreach (Collider2D c in GetComponents<Collider2D>())
             if (!c.isTrigger) { body = c; break; }   // 몸 충돌 범위 (감지용 트리거 말고)
         sprite = Resources.Load<Sprite>(SpritePath);
-        if (awakening == null || sprite == null) { enabled = false; return; }
-        awakening.OnAwakeningStarted += Play;
+        if (awakening == null || sprite == null)
+        {
+            Debug.LogWarning($"[각성 연출] 꺼짐: PlayerAwakening {(awakening != null ? "있음" : "없음")}, 그림 {(sprite != null ? "있음" : "없음")}");
+            enabled = false;
+            return;
+        }
+        Debug.Log("[각성 연출] 플레이어에 붙었습니다. Q로 각성하면 발밑 여우불이 나옵니다.");
     }
 
     private void OnDestroy()
     {
-        if (awakening != null) awakening.OnAwakeningStarted -= Play;
         if (burst != null) Destroy(burst.gameObject);
     }
 
-    private void Play()
+    private void EnsureRenderer()
     {
-        if (burst == null)
-        {
-            GameObject go = new GameObject("AwakeningBurst");
-            burst = go.AddComponent<SpriteRenderer>();
-            burst.sprite = sprite;
-            burst.sharedMaterial = BossFxArt.Unlit;
-            burst.sortingLayerName = "Player";
-            burst.sortingOrder = -5;
-        }
-        // 불꽃이 오른쪽으로 기울어 있어서, 왼쪽을 보고 있으면 뒤집는다
-        bool facingLeft = transform.lossyScale.x < 0f || (player != null && player.sr != null && player.sr.flipX);
-        burst.flipX = facingLeft;
-        t = 0f;
-        burst.enabled = true;
-        Apply();
+        if (burst != null) return;
+        GameObject go = new GameObject("AwakeningBurst");
+        burst = go.AddComponent<SpriteRenderer>();
+        burst.sprite = sprite;
+        burst.sharedMaterial = BossFxArt.Unlit;
+        burst.enabled = false;
     }
+
+    // ── 매 프레임 ──────────────────────────
 
     private void LateUpdate()
     {
-        if (t < 0f || burst == null) return;
-        t += Time.unscaledDeltaTime;   // 각성 도입 중 게임이 멈춰도 연출은 흐른다
-        if (t >= 1f)
+        bool intro = awakening.IsAwakening;
+        bool on = awakening.IsAwakened;
+        float dt = Time.unscaledDeltaTime;   // 각성 도입 중 게임이 멈춰도 연출은 흐른다
+
+        switch (phase)
         {
-            t = -1f;
-            burst.enabled = false;
-            return;
+            case Phase.Off:
+                if (intro || on)
+                {
+                    EnsureRenderer();
+                    introLen = intro ? Mathf.Max(0.1f, awakening.IntroDuration - awakening.IntroElapsed) : 0.1f;
+                    phase = Phase.Intro;
+                    t = 0f;
+                    burst.enabled = true;
+                }
+                break;
+            case Phase.Intro:
+                t += dt;
+                if (!intro && on) { phase = Phase.On; t = 0f; }
+                else if (!intro && !on) BeginEnding();
+                break;
+            case Phase.On:
+                t += dt;
+                if (!on) BeginEnding();
+                break;
+            case Phase.Ending:
+                t += dt;
+                if (intro || on) { phase = Phase.Off; break; }   // 끝나자마자 다시 각성하면 처음부터
+                if (t >= FadeOut)
+                {
+                    phase = Phase.Off;
+                    burst.enabled = false;
+                    return;
+                }
+                break;
         }
-        Apply();
+
+        if (phase == Phase.Off || burst == null) return;
+        Evaluate(out float scale, out float alpha);
+        Apply(scale, alpha);
     }
 
-    private void Apply()
+    private void BeginEnding()
     {
-        float scale, alpha;
-        if (t < 0.25f)            // 모으기
+        Evaluate(out endScale, out endFrom);
+        phase = Phase.Ending;
+        t = 0f;
+    }
+
+    private void Evaluate(out float scale, out float alpha)
+    {
+        float time = Time.unscaledTime;
+        switch (phase)
         {
-            float k = t / 0.25f;
-            scale = Mathf.Lerp(0.3f, 0.55f, k);
-            alpha = Mathf.Lerp(0f, 0.55f, k);
+            case Phase.Intro:   // 모으기
+            {
+                float k = Mathf.Clamp01(t / introLen);
+                scale = Mathf.Lerp(0.3f, 0.6f, k);
+                alpha = Mathf.Lerp(0f, 0.6f, k);
+                return;
+            }
+            case Phase.On:
+            {
+                if (t < Release)   // 방출
+                {
+                    float k = t / Release;
+                    k = 1f - (1f - k) * (1f - k);
+                    scale = Mathf.Lerp(0.6f, 1.15f, k);
+                    alpha = Mathf.Lerp(0.6f, 1f, k);
+                    return;
+                }
+                float wobbleS = 1f + 0.05f * Mathf.Sin(time * 5.3f) + 0.02f * Mathf.Sin(time * 11.7f);
+                float wobbleA = 1f + 0.12f * Mathf.Sin(time * 3.1f);
+                float s = Mathf.Clamp01((t - Release) / Settle);   // 가라앉기
+                s = s * s * (3f - 2f * s);
+                scale = Mathf.Lerp(1.15f, holdScale * wobbleS, s);
+                alpha = Mathf.Lerp(1f, holdAlpha * wobbleA, s);
+                return;
+            }
+            case Phase.Ending:
+            {
+                float k = Mathf.Clamp01(t / FadeOut);
+                scale = Mathf.Lerp(endScale, endScale * 0.9f, k);
+                alpha = endFrom * (1f - k) * (1f - k);
+                return;
+            }
         }
-        else if (t < 0.4f)        // 방출
+        scale = 0f;
+        alpha = 0f;
+    }
+
+    private void Apply(float scale, float alpha)
+    {
+        // 캐릭터 그림 바로 뒤 (기존 오라보다도 뒤)
+        SpriteRenderer src = player != null ? player.sr : null;
+        if (src != null)
         {
-            float k = (t - 0.25f) / 0.15f;
-            k = 1f - (1f - k) * (1f - k);
-            scale = Mathf.Lerp(0.55f, 1.15f, k);
-            alpha = Mathf.Lerp(0.55f, 1f, k);
+            burst.sortingLayerID = src.sortingLayerID;
+            burst.sortingOrder = src.sortingOrder - 2;
         }
-        else                      // 사라짐
+        else
         {
-            float k = (t - 0.4f) / 0.6f;
-            scale = Mathf.Lerp(1.15f, 1.05f, k);
-            alpha = 1f - k * k;
+            burst.sortingLayerName = "Player";
+            burst.sortingOrder = -5;
         }
 
+        // 불꽃이 오른쪽으로 기울어 있어서, 왼쪽을 보고 있으면 뒤집는다
+        burst.flipX = transform.lossyScale.x < 0f || (src != null && src.flipX);
+
         float s = width * scale / sprite.bounds.size.x;
-        float flicker = 1f + 0.04f * Mathf.Sin(t * 40f);
+        float flicker = 1f + 0.04f * Mathf.Sin(Time.unscaledTime * 40f);
         burst.transform.localScale = new Vector3(s, s * flicker, 1f);
         burst.transform.position = Feet() + (Vector3)offset;
         Color c = Color.white;
-        c.a = alpha * maxAlpha;
+        c.a = Mathf.Clamp01(alpha) * maxAlpha;
         burst.color = c;
     }
 
