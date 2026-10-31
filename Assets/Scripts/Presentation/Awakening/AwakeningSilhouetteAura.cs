@@ -36,7 +36,10 @@ public class AwakeningSilhouetteAura : MonoBehaviour
     [Tooltip("흐르는 빠르기")]
     [SerializeField, Min(0f)] private float flowSpeed = 1.4f;
 
-    [Header("색 (기존 각성 연출 색을 못 읽을 때)")]
+    [Header("색")]
+    [Tooltip("켜면 화면 가장자리 불꽃과 같은 파랑을 쓴다. 끄면 기존 각성 연출 색(보주 유물 색)을 따른다")]
+    [SerializeField] private bool useEdgeColor = true;
+    [SerializeField] private Color edgeColor = new Color(0.2f, 0.5f, 1f, 1f);
     [SerializeField] private Color fallbackColor = new Color(0.3f, 0.62f, 1f, 1f);
 
     [Tooltip("기존 부채꼴 줄기 아우라를 끈다")]
@@ -279,6 +282,7 @@ public class AwakeningSilhouetteAura : MonoBehaviour
     // 기존 각성 연출 색(보주 유물 색 포함)을 밝기 1로 맞춰 쓴다
     private Color ResolveColor()
     {
+        if (useEdgeColor) return edgeColor;
         Color c = visual != null ? visual.CurrentGlowColor : fallbackColor;
         float m = Mathf.Max(c.r, Mathf.Max(c.g, c.b));
         if (m <= 0.0001f) c = fallbackColor;
