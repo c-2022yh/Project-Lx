@@ -4,6 +4,7 @@ using UnityEditor.SceneManagement;
 using UnityEngine;
 using UnityEngine.Rendering.Universal;
 using UnityEngine.SceneManagement;
+using UnityEngine.Tilemaps;
 
 /// <summary>
 /// 연출 테스트용 씬을 한 번에 만든다. 메뉴 [Tools/여울잔/보스 테스트 씬 만들기]
@@ -64,6 +65,7 @@ public static class BossTestSceneBuilder
         MovePlayerSpawn(new Vector3(SpawnX, GroundTop + 1.5f, 0f));
         FitCameraBounds();
         AddRuinsBackground(background);
+        PlaceVines();
 
         SnapToGround(InstantiatePrefab(ShrinePath, new Vector3(ShrineX, GroundTop + 2f, 0f)));
         SnapToGround(InstantiatePrefab(BrickPath, new Vector3(BrickX, GroundTop + 2f, 0f)));
@@ -152,17 +154,145 @@ public static class BossTestSceneBuilder
     }
 
     // 평평한 바닥과 양 끝 벽 (Ground 레이어)
+    // 땅: 튜토리얼처럼 Grid 프리팹 타일맵에 검은 바위(Charcoal) 타일을 깐다. 보스방 바닥에는 풀을 안 얹는다.
+    // 충돌은 타일맵 것과 같은 모양의 보이지 않는 상자도 같이 둔다 (에디터에서 바로 바닥 높이를 잴 수 있게).
+    private const string GridPath = "Assets/Prefabs/Maps/Grid.prefab";
+    private const string RockDir = "Assets/Tiles/Ground_Rock/Charcoal/";
+    private const string GrassDir = "Assets/Tiles/Grass/";
+    private const int FloorDepth = 6;     // 바닥 두께 (칸)
+    private const int WallHeight = 18;
+
     private static void BuildGround()
     {
         float width = ArenaRight - ArenaLeft;
         float midX = (ArenaLeft + ArenaRight) * 0.5f;
 
-        CreateBlock("Ground", new Vector3(midX, GroundTop - 2f, 0f), new Vector2(width + 4f, 4f));
-        CreateBlock("Wall_Left", new Vector3(ArenaLeft - 1f, GroundTop + 7f, 0f), new Vector2(2f, 18f));
-        CreateBlock("Wall_Right", new Vector3(ArenaRight + 1f, GroundTop + 7f, 0f), new Vector2(2f, 18f));
+        bool tiled = PaintTiles();
+        CreateBlock("Ground", new Vector3(midX, GroundTop - 2f, 0f), new Vector2(width + 4f, 4f), !tiled);
+        CreateBlock("Wall_Left", new Vector3(ArenaLeft - 1f, GroundTop + 7f, 0f), new Vector2(2f, 18f), !tiled);
+        CreateBlock("Wall_Right", new Vector3(ArenaRight + 1f, GroundTop + 7f, 0f), new Vector2(2f, 18f), !tiled);
     }
 
-    private static void CreateBlock(string name, Vector3 center, Vector2 size)
+    private static bool PaintTiles()
+    {
+        GameObject grid = InstantiatePrefab(GridPath, Vector3.zero);
+        if (grid == null) return false;
+        Tilemap ground = null, grass = null;
+        foreach (Tilemap tm in grid.GetComponentsInChildren<Tilemap>(true))
+        {
+            tm.ClearAllTiles();
+            if (tm.name == "Tilemap_Ground") ground = tm;
+            else if (tm.name == "Tilemap_Grass") grass = tm;
+        }
+        TileBase[] rock =
+        {
+            AssetDatabase.LoadAssetAtPath<TileBase>(RockDir + "Ground_TopLeft.asset"),
+            AssetDatabase.LoadAssetAtPath<TileBase>(RockDir + "Ground_TopRight.asset"),
+            AssetDatabase.LoadAssetAtPath<TileBase>(RockDir + "Ground_BottomLeft.asset"),
+            AssetDatabase.LoadAssetAtPath<TileBase>(RockDir + "Ground_BottomRight.asset"),
+        };
+        if (ground == null || System.Array.Exists(rock, t => t == null))
+        {
+            Debug.LogWarning("[BossTestSceneBuilder] Grid 타일맵이나 Charcoal 타일을 못 찾아서 회색 상자로 땅을 만듭니다.");
+            Object.DestroyImmediate(grid);
+            return false;
+        }
+        System.Collections.Generic.List<TileBase> grassTops = new System.Collections.Generic.List<TileBase>();
+        for (int i = 1; i <= 5; i++)
+        {
+            TileBase g = AssetDatabase.LoadAssetAtPath<TileBase>(GrassDir + "Grass_Top_V0" + i + ".asset");
+            if (g != null) grassTops.Add(g);
+        }
+
+        int top = Mathf.RoundToInt(GroundTop);
+        int left = Mathf.RoundToInt(ArenaLeft), right = Mathf.RoundToInt(ArenaRight);
+        float roomL = GolemX - BossRoomHalfWidth - 1f, roomR = GolemX + BossRoomHalfWidth + 1f;
+
+        bool Solid(int x, int y)
+        {
+            bool floor = y < top && y >= top - FloorDepth && x >= left - 4 && x <= right + 3;
+            bool wall = y >= top && y < top + WallHeight && ((x >= left - 2 && x <= left - 1) || (x >= right && x <= right + 1));
+            return floor || wall;
+        }
+        Vector3Int Cell(Tilemap tm, int x, int y) => tm.WorldToCell(new Vector3(x + 0.5f, y + 0.5f, 0f));
+
+        var gPos = new System.Collections.Generic.List<Vector3Int>(); var gTiles = new System.Collections.Generic.List<TileBase>();
+        var wPos = new System.Collections.Generic.List<Vector3Int>(); var wTiles = new System.Collections.Generic.List<TileBase>();
+        for (int x = left - 4; x <= right + 3; x++)
+            for (int y = top - FloorDepth; y < top + WallHeight; y++)
+            {
+                if (!Solid(x, y)) continue;
+                // 2×2 그림: 바닥 맨 윗줄이 그림의 위쪽이 되게
+                int rowFromTop = top - 1 - y;
+                int idx = ((rowFromTop & 1) == 0 ? 0 : 2) + ((x & 1) == 0 ? 0 : 1);
+                gPos.Add(Cell(ground, x, y));
+                gTiles.Add(rock[idx]);
+
+                // 바닥 윗면 풀 (보스방 바닥은 빼고)
+                bool exposed = y == top - 1 && !Solid(x, y + 1);
+                bool inRoom = x + 1 > roomL && x < roomR;
+                if (grass != null && grassTops.Count > 0 && exposed && !inRoom)
+                {
+                    wPos.Add(Cell(grass, x, y));
+                    wTiles.Add(grassTops[Mathf.Abs(x * 7 + 3) % grassTops.Count]);
+                }
+            }
+        ground.SetTiles(gPos.ToArray(), gTiles.ToArray());
+        if (grass != null) grass.SetTiles(wPos.ToArray(), wTiles.ToArray());
+        foreach (Tilemap tm in grid.GetComponentsInChildren<Tilemap>(true)) tm.CompressBounds();
+
+        TilemapCollider2D tc = ground.GetComponent<TilemapCollider2D>();
+        if (tc != null) tc.ProcessTilemapChanges();
+        CompositeCollider2D cc = ground.GetComponent<CompositeCollider2D>();
+        if (cc != null) cc.GenerateGeometry();
+
+        // 땅 깊이 그늘 (튜토리얼과 같은 값)
+        TilemapRenderer tr = ground.GetComponent<TilemapRenderer>();
+        if (tr != null) tr.mode = TilemapRenderer.Mode.Chunk;
+        GroundDepthShading depth = ground.GetComponent<GroundDepthShading>();
+        if (depth != null)
+        {
+            depth.surfaceWidth = 0.25f;
+            depth.fadeDistance = 2.5f;
+            depth.maxDarkness = 0.98f;
+            depth.falloffPower = 0.8f;
+            depth.enabled = false;
+            depth.enabled = true;
+        }
+        return true;
+    }
+
+    // 근경 덩굴: 화면 위쪽에서 늘어진다 (땅 뒤 여러 개 + 캐릭터 앞 몇 개, 보스방 가운데는 앞 덩굴을 피함)
+    private static readonly (string prefab, float x, float topY, float scale)[] Vines =
+    {
+        ("FG_Back_Ivy_Teal_1",  -35f, 11.5f, 1.0f),
+        ("FG_Back_Ivy_Light_2", -27f, 12.0f, 1.1f),
+        ("FG_Back_Ivy_Dark_3",  -19f, 11.0f, 0.9f),
+        ("FG_Back_Ivy_Teal_5",   -9f, 12.0f, 1.0f),
+        ("FG_Back_Ivy_Light_4",   2f, 11.5f, 1.1f),
+        ("FG_Back_Ivy_Dark_1",   11f, 11.0f, 0.9f),
+        ("FG_Back_Ivy_Teal_6",   19f, 12.0f, 1.2f),
+        ("FG_Back_Ivy_Light_6",  27f, 11.5f, 1.0f),
+        ("FG_Back_Ivy_Teal_4",   33f, 12.0f, 1.1f),
+        ("FG_Front_Ivy_Dark_2", -38f, 11.0f, 1.2f),
+        ("FG_Front_Ivy_Plain_1",-15f, 10.5f, 1.0f),
+        ("FG_Front_Ivy_Dark_5",  38f, 11.0f, 1.2f),
+    };
+
+    private static void PlaceVines()
+    {
+        GameObject root = new GameObject("Foreground_Vines");
+        foreach (var v in Vines)
+        {
+            GameObject go = InstantiatePrefab("Assets/Prefabs/Foreground/" + v.prefab + ".prefab", new Vector3(v.x, GroundTop + v.topY, 0f));
+            if (go == null) continue;
+            go.transform.SetParent(root.transform, true);
+            float flip = Mathf.Abs(Mathf.RoundToInt(v.x)) % 2 == 0 ? 1f : -1f;
+            go.transform.localScale = new Vector3(v.scale * flip, v.scale, 1f);
+        }
+    }
+
+    private static void CreateBlock(string name, Vector3 center, Vector2 size, bool visible = true)
     {
         GameObject go = new GameObject(name);
         go.transform.position = center;
@@ -175,6 +305,7 @@ public static class BossTestSceneBuilder
         sr.size = size;
         sr.color = new Color(0.12f, 0.15f, 0.17f, 1f);
         sr.sortingLayerName = "Ground";
+        sr.enabled = visible;   // 타일을 깔았으면 충돌용으로만 남긴다
 
         BoxCollider2D col = go.AddComponent<BoxCollider2D>();
         col.size = size;
