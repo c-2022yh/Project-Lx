@@ -402,7 +402,7 @@ MonoBehaviour:
     channel: 0
     clip: {fileID: 8300000, guid: 74a48f1c63a1ef04e83af8f17b293bbf, type: 3}
     clips: []
-    volume: 1
+    volume: 0.7
     minimumInterval: 0.05
     pitchRange: {x: 1, y: 1}
     maxSimultaneous: 4
@@ -446,9 +446,9 @@ MonoBehaviour:
     fallbackSound: 5
   defaultLandingSound:
     channel: 0
-    clip: {fileID: 0}
+    clip: {fileID: 8300000, guid: 61a1ad44ad2a95741bb922809f1a83e1, type: 3}
     clips: []
-    volume: 1
+    volume: 0.07
     minimumInterval: 0.05
     pitchRange: {x: 1, y: 1}
     maxSimultaneous: 4
@@ -484,9 +484,9 @@ MonoBehaviour:
       fallbackSound: 5
     landingSound:
       channel: 0
-      clip: {fileID: 0}
+      clip: {fileID: 8300000, guid: 61a1ad44ad2a95741bb922809f1a83e1, type: 3}
       clips: []
-      volume: 1
+      volume: 0.7
       minimumInterval: 0.05
       pitchRange: {x: 1, y: 1}
       maxSimultaneous: 4
@@ -523,9 +523,9 @@ MonoBehaviour:
       fallbackSound: 5
     landingSound:
       channel: 0
-      clip: {fileID: 0}
+      clip: {fileID: 8300000, guid: 61a1ad44ad2a95741bb922809f1a83e1, type: 3}
       clips: []
-      volume: 1
+      volume: 0.7
       minimumInterval: 0.05
       pitchRange: {x: 1, y: 1}
       maxSimultaneous: 4

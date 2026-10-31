@@ -1,0 +1,21 @@
+{
+  "source": "C:\\Users\\Ayumi\\Desktop\\Argo\\SoundAssetTest_\\Assets\\Book of the Dead - URP\\New Content\\Audio\\Battle Sound Library\\Magic (Mono)\\HolyLight\\Vibration\\Vibration_Holy_M.wav",
+  "source_sha256": "24f40a8c19b93bc45c2259e0b5308384afff2baee7a91194cf9408828c19473d",
+  "output": "Assets\\Audio\\Clips\\SFX\\Field_Object\\Portal_Enter_2s.wav",
+  "start_seconds": 0,
+  "duration_seconds": 2,
+  "fade_in_ms": 15,
+  "fade_out_ms": 450,
+  "gain_db": 0,
+  "sample_rate": 44100,
+  "bits": 24,
+  "channels": 2,
+  "peak_dbfs": -16.024427705430945,
+  "clipping_samples": 0,
+  "guid": "f9e328bf0e8b41588b879bf7e90f66ef",
+  "source_unchanged": true,
+  "connected_to": [
+    "ScenePortal",
+    "AutoScenePortal"
+  ]
+}
