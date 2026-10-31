@@ -25,7 +25,7 @@ public class AwakeningSilhouetteAura : MonoBehaviour
     [Tooltip("넓게 퍼지는 빛의 두께")]
     [SerializeField, Min(0.01f)] private float farRadius = 0.15f;
     [Tooltip("위로 피어오르는 자락 높이")]
-    [SerializeField, Min(0f)] private float riseHeight = 0.5f;
+    [SerializeField, Min(0f)] private float riseHeight = 0.75f;
 
     [Header("밝기")]
     [SerializeField, Min(0f)] private float intensity = 1.35f;   // 1을 넘기면 블룸 때문에 하얗게 날아감
@@ -34,7 +34,7 @@ public class AwakeningSilhouetteAura : MonoBehaviour
     [Tooltip("몸 테두리 흰빛 정도 (0 = 흰빛 없음)")]
     [SerializeField, Range(0f, 1f)] private float whiteCore = 0.4f;
     [Tooltip("흐르는 빠르기")]
-    [SerializeField, Min(0f)] private float flowSpeed = 1f;
+    [SerializeField, Min(0f)] private float flowSpeed = 1.4f;
 
     [Header("색 (기존 각성 연출 색을 못 읽을 때)")]
     [SerializeField] private Color fallbackColor = new Color(0.3f, 0.62f, 1f, 1f);

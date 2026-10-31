@@ -7,11 +7,11 @@ Shader "ProjectLx/UI Awakening Edge Flame"
     {
         [PerRendererData] _MainTex ("Sprite Texture", 2D) = "white" {}
         _Color ("Tint", Color) = (1, 1, 1, 1)
-        _FlameColor ("Flame Color", Color) = (0.35, 0.62, 1, 1)
+        _FlameColor ("Flame Color", Color) = (0.2, 0.5, 1, 1)
         _Thickness ("Thickness (screen height)", Range(0.02, 0.4)) = 0.11
         _Wave ("Wave", Range(0, 0.2)) = 0.08
         _Intensity ("Brightness", Range(0, 2)) = 1
-        _Opacity ("Opacity", Range(0, 1)) = 0.55
+        _Opacity ("Opacity", Range(0, 1)) = 0.4
         _Speed ("Flow Speed", Range(0, 4)) = 1
         _White ("Bokeh Lightness", Range(0, 1)) = 0.6
 
@@ -115,8 +115,9 @@ Shader "ProjectLx/UI Awakening Edge Flame"
                 float rnd = Hash(cell);
                 float2 c = float2(Hash(cell + 3.1), Hash(cell + 7.7)) * 0.5 + 0.25;
                 float2 f = frac(bp) - c;
-                float size = lerp(30.0, 90.0, Hash(cell + 1.3));
-                float bokeh = step(0.8, rnd) * exp2(-size * dot(f, f))
+                float sr = Hash(cell + 1.3);
+                float size = lerp(10.0, 220.0, sr * sr * (3.0 - 2.0 * sr));   // 큰 망울부터 아주 작은 점까지 크기가 제각각
+                float bokeh = step(0.78, rnd) * lerp(0.55, 1.0, sr) * exp2(-size * dot(f, f))
                     * (0.55 + 0.45 * sin(t * 1.7 + rnd * 40.0))
                     * (1.0 - smoothstep(0.0, _Thickness * 2.5, d));
 

@@ -133,13 +133,13 @@ Shader "ProjectLx/Awakening Silhouette Aura"
                 [unroll] for (int k = 1; k <= 4; k++)
                 {
                     float h = k / 4.0;
-                    float sway = (Noise(float2(q.y * 1.3 - t * 0.9, k * 3.1)) - 0.5) * 0.2 * h;
+                    float sway = (Noise(float2(q.y * 1.3 - t * 0.9, k * 3.1)) - 0.5) * 0.32 * h;
                     wisp += Soft(q - float2(sway, h * _Rise), _FarRadius * (0.6 + h)) * (1.0 - h * 0.7);
                 }
                 wisp *= 0.5;
                 float flame = FlowNoise(float2(q.x * 2.2, q.y * 1.4 - t * 1.6));
                 float flameFine = Noise(float2(q.x * 5.0 + 7.0, q.y * 3.0 - t * 2.4));
-                wisp *= smoothstep(0.38, 0.78, flame * 0.7 + flameFine * 0.3) * 2.0;
+                wisp *= smoothstep(0.34, 0.74, flame * 0.7 + flameFine * 0.3) * 2.6;
 
                 // 떠오르는 반짝이
                 float2 sp = float2(q.x * 7.0, q.y * 7.0 - t * 1.5);
@@ -151,6 +151,9 @@ Shader "ProjectLx/Awakening Silhouette Aura"
                 spark *= saturate(farGlow * 3.0 + wisp) * _Sparkle;
 
                 float density = nearGlow * 1.2 + farGlow * 0.45 + wisp * 0.55;
+                // 이글거림: 빛 세기가 자리마다 빠르게 일렁인다
+                float flick = 0.8 + 0.4 * Noise(float2(q.x * 3.5, q.y * 3.0 - t * 3.2));
+                density *= flick;
                 density *= 1.0 + _Flash * 0.6;
 
                 // 사각형 가장자리에서는 0으로
