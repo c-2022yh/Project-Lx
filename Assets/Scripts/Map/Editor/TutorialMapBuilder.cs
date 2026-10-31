@@ -39,6 +39,9 @@ using UnityEngine.Tilemaps;
 /// 보주 줍기(OrbPickup)는 인트로 연출에서 보주를 주므로 지운다.
 /// 슬라임과 안내 영역은 Field_Object/Tutorial_Enemies, Tutorial_Triggers 아래에 새로 만든다.
 /// 카메라 영역(CameraConfiner)은 맵 크기에 맞춰 늘리되, 출구 포탈 쪽(x 140~)은 뺀다.
+/// 배경: 숲 배경(Background_Forest)은 끄고 동굴 배경(Background_Cave, CavePanoramaBackground)을 쓴다.
+/// 근경: Foreground_Cave 아래에 먹 실루엣(바위·소나무·풀·돌탑)을 놓는다 (ForegroundParallax, GroundCover 레이어).
+/// 그림: Assets/Sprites/Backgrounds/Tutorial/
 /// </summary>
 public static class TutorialMapBuilder
 {
@@ -95,6 +98,8 @@ public static class TutorialMapBuilder
         PlaceObjects(scene);
         FitCamera(scene);
         AddLightRamp(scene);
+        SetupBackground(scene);
+        PlaceForeground(scene);
 
         Undo.CollapseUndoOperations(group);
         EditorSceneManager.MarkSceneDirty(scene);
@@ -437,6 +442,90 @@ public static class TutorialMapBuilder
             t = go.transform;
         }
         if (t.GetComponent<CaveLightRamp>() == null) Undo.AddComponent<CaveLightRamp>(t.gameObject);
+    }
+
+    // ── 배경·근경 ──────────────────────────
+
+    private const string ArtDir = "Assets/Sprites/Backgrounds/Tutorial/";
+
+    // 근경: (그림, x, 그 자리 바닥 높이, 그림 높이). 상자·제단·슬라임은 가리지 않게 비켜 놓았다.
+    private static readonly (string sprite, float x, float floor, float height)[] Foregrounds =
+    {
+        ("FG_Cave_RockGrass", 15f, 1f, 3.4f),
+        ("FG_Cave_Cairn", 33f, 5f, 2.2f),
+        ("FG_Cave_Rock", 44f, 5f, 2.4f),
+        ("FG_Cave_RockTall", 51f, 3f, 4.2f),
+        ("FG_Cave_Pine", 88f, 3f, 5f),
+        ("FG_Cave_RockGrass", 104f, 3f, 3.6f),
+        ("FG_Cave_Cairn", 119.5f, 5f, 2f),
+        ("FG_Cave_RockTall", 139f, 5f, 4.4f),
+    };
+
+    private static void SetupBackground(Scene scene)
+    {
+        Transform forest = FindInScene(scene, "Background_Forest");
+        if (forest != null && forest.gameObject.activeSelf)
+        {
+            Undo.RecordObject(forest.gameObject, "튜토리얼 맵 다시 그리기");
+            forest.gameObject.SetActive(false);
+        }
+
+        Transform cave = FindOrCreateRoot(scene, "Background_Cave");
+        CavePanoramaBackground bg = cave.GetComponent<CavePanoramaBackground>();
+        if (bg == null) bg = Undo.AddComponent<CavePanoramaBackground>(cave.gameObject);
+
+        SerializedObject so = new SerializedObject(bg);
+        so.FindProperty("insideSprite").objectReferenceValue = LoadSprite("BG_Cave_Inside");
+        so.FindProperty("exitSprite").objectReferenceValue = LoadSprite("BG_Cave_Exit");
+        so.FindProperty("endCameraX").floatValue = CameraRight - 9f;
+        so.ApplyModifiedProperties();
+    }
+
+    private static void PlaceForeground(Scene scene)
+    {
+        Transform root = FindOrCreateRoot(scene, "Foreground_Cave");
+        for (int i = root.childCount - 1; i >= 0; i--) Undo.DestroyObjectImmediate(root.GetChild(i).gameObject);
+
+        Material unlit = Resources.Load<Material>("Presentation/M_VfxSprite");
+        foreach ((string spriteName, float x, float floor, float h) in Foregrounds)
+        {
+            Sprite s = LoadSprite(spriteName);
+            if (s == null) continue;
+
+            GameObject go = new GameObject(spriteName);
+            Undo.RegisterCreatedObjectUndo(go, "튜토리얼 맵 다시 그리기");
+            go.transform.SetParent(root, false);
+
+            SpriteRenderer sr = go.AddComponent<SpriteRenderer>();
+            sr.sprite = s;
+            if (unlit != null) sr.sharedMaterial = unlit;
+            sr.sortingLayerName = "GroundCover";
+            sr.sortingOrder = 10;
+
+            // 그림 아래쪽이 바닥보다 1 아래에 오게 (화면 아래에서 솟아 보이게)
+            float scale = h / s.bounds.size.y;
+            go.transform.localScale = new Vector3(scale, scale, 1f);
+            go.transform.position = new Vector3(x, floor - 1f - s.bounds.min.y * scale, 0f);
+
+            go.AddComponent<ForegroundParallax>();
+        }
+    }
+
+    private static Sprite LoadSprite(string name)
+    {
+        Sprite s = AssetDatabase.LoadAssetAtPath<Sprite>(ArtDir + name + ".png");
+        if (s == null) Debug.LogWarning("[TutorialMapBuilder] 그림 없음 (Sprite로 불러와졌는지 확인): " + ArtDir + name + ".png");
+        return s;
+    }
+
+    private static Transform FindOrCreateRoot(Scene scene, string name)
+    {
+        Transform t = FindInScene(scene, name);
+        if (t != null) return t;
+        GameObject go = new GameObject(name);
+        Undo.RegisterCreatedObjectUndo(go, "튜토리얼 맵 다시 그리기");
+        SceneManager.MoveGameObjectToScene(go, scene);
+        return go.transform;
     }
 
     // ── 찾기 ───────────────────────────────
