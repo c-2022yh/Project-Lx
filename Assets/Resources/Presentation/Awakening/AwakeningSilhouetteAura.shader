@@ -150,8 +150,8 @@ Shader "ProjectLx/Awakening Silhouette Aura"
                     * (0.5 + 0.5 * sin(t * 6.0 + rnd * 40.0));
                 spark *= saturate(farGlow * 3.0 + wisp) * _Sparkle;
 
-                float density = nearGlow * 1.3 + farGlow * 0.9 + wisp * 0.8;
-                density *= 1.0 + _Flash * 1.5;
+                float density = nearGlow * 1.2 + farGlow * 0.45 + wisp * 0.55;
+                density *= 1.0 + _Flash * 0.6;
 
                 // 사각형 가장자리에서는 0으로
                 float edge = smoothstep(0.0, 0.1, input.uv.x) * (1.0 - smoothstep(0.9, 1.0, input.uv.x))
