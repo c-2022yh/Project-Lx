@@ -124,6 +124,9 @@ public class AwakeningSilhouetteAura : MonoBehaviour
     private void CreateQuad()
     {
         GameObject go = new GameObject("Awakening Silhouette Aura (Runtime)");
+        // 플레이어가 씬을 넘어가도 남는 오브젝트면 아우라 판도 같이 남긴다 (씬이 바뀌면 지워져서 오류가 났음)
+        if (gameObject.scene.name == "DontDestroyOnLoad") DontDestroyOnLoad(go);
+        if (mesh != null) { go.AddComponent<MeshFilter>().sharedMesh = mesh; AddRenderer(go); return; }
         mesh = new Mesh { name = "Awakening Silhouette Aura Quad", hideFlags = HideFlags.DontSave };
         mesh.vertices = new[]
         {
@@ -134,6 +137,11 @@ public class AwakeningSilhouetteAura : MonoBehaviour
         mesh.triangles = new[] { 0, 2, 1, 0, 3, 2 };
         mesh.RecalculateBounds();
         go.AddComponent<MeshFilter>().sharedMesh = mesh;
+        AddRenderer(go);
+    }
+
+    private void AddRenderer(GameObject go)
+    {
         quad = go.AddComponent<MeshRenderer>();
         quad.sharedMaterial = material;
         quad.shadowCastingMode = ShadowCastingMode.Off;
@@ -193,6 +201,7 @@ public class AwakeningSilhouetteAura : MonoBehaviour
 
     private void LateUpdate()
     {
+        if (quad == null) CreateQuad();   // 씬이 바뀌며 판이 지워졌으면 다시 만든다
         SpriteRenderer src = player.sr;
         bool active = visual != null && visual.isActiveAndEnabled
             ? visual.IsVisualActive
