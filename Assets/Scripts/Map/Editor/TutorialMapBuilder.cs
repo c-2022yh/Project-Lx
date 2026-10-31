@@ -27,6 +27,8 @@ using UnityEngine.Tilemaps;
 ///   가시 프리팹으로 뺄 예정이라 쓰지 않는다. Tilemap_Spike 는 비운다.
 ///
 /// 높이 기준: 점프 약 4칸, 더블 점프 약 8칸 (PlayerMove jumpForce 20, 중력 5).
+/// 좌표는 전부 월드 기준. Grid 프리팹의 Tilemap_Ground·Grass는 (1, 1) 옮겨져 있어서
+/// 칠할 때 타일맵마다 WorldToCell로 바꿔 넣는다 (오브젝트와 땅 높이가 어긋나지 않게).
 ///
 /// 다시 실행하면 Grid 안 타일을 전부 지우고 새로 그린다.
 /// 상자·제단·포탈·시작 위치는 이름으로 찾아서 자리만 옮긴다 (없으면 프리팹으로 새로 놓는다).
@@ -195,18 +197,14 @@ public static class TutorialMapBuilder
 
                 TileBase[] set = BlockTouchesAir(x, y) ? blue : charcoal;
                 int idx = ((y & 1) == 0 ? 0 : 2) + ((x & 1) == 0 ? 0 : 1);   // 위왼·위오·아래왼·아래오
-                gPos.Add(new Vector3Int(x, y, 0));
+                gPos.Add(ToCell(ground, x, y));
                 gTiles.Add(set[idx]);
 
-                // 윗면 풀. 가끔 비워서 덜 반복돼 보이게
+                // 윗면 풀 (끊기지 않게 전부 깔고, 모양만 섞는다)
                 if (y < CeilingBottom && !IsSolid(x, y + 1))
                 {
-                    int h = Hash(x);
-                    if (h % 7 != 0)
-                    {
-                        wPos.Add(new Vector3Int(x, y, 0));
-                        wTiles.Add(grassTops[h % grassTops.Length]);
-                    }
+                    wPos.Add(ToCell(grass, x, y));
+                    wTiles.Add(grassTops[Hash(x) % grassTops.Length]);
                 }
             }
         }
@@ -221,7 +219,7 @@ public static class TutorialMapBuilder
             for (int k = 0; k < len; k++)
             {
                 TileBase t = k == 0 ? set[0] : k == len - 1 ? set[3] : set[1 + (k - 1) % 2];
-                pPos.Add(new Vector3Int(x0 + k, y, 0));
+                pPos.Add(ToCell(platform, x0 + k, y));
                 pTiles.Add(t);
             }
         }
@@ -230,6 +228,9 @@ public static class TutorialMapBuilder
         foreach (Tilemap tm in grid.GetComponentsInChildren<Tilemap>(true)) tm.CompressBounds();
         return true;
     }
+
+    // 월드 칸 (x, y) = [x, x+1] × [y, y+1] 을 그 타일맵의 칸 번호로
+    private static Vector3Int ToCell(Tilemap tm, int x, int y) => tm.WorldToCell(new Vector3(x + 0.5f, y + 0.5f, 0f));
 
     private static TileBase[] LoadQuad(string color)
     {
