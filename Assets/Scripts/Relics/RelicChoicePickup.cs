@@ -31,6 +31,9 @@ public class RelicChest : MonoBehaviour, IInteractable
     [Tooltip("선택창이 닫힌 후 필드에 남는 열린 상자 스프라이트.")]
     [SerializeField] private Sprite openedSprite;
 
+    [Header("Audio")]
+    [SerializeField] private SoundCue fixedOpenSound = new SoundCue();
+
     private bool isOpened;
     private Player nearbyPlayer;
 
@@ -107,6 +110,7 @@ public class RelicChest : MonoBehaviour, IInteractable
 
         FieldObjectState.MarkDone(this);
         SetSprite(openedSprite != null ? openedSprite : selectingSprite);
+        GameAudio.Play(fixedOpenSound, transform.position);
         player.ClearInteractable(this);
         ClearNearbyPlayer();
         Debug.Log("Relic Chest Reward Acquired : " + fixedRelic.RelicName, this);

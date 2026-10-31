@@ -15,6 +15,9 @@ public class FoliageRustle : MonoBehaviour
     [SerializeField] private Sprite leafSprite;
     [SerializeField] private Color leafColor = new Color(0.45f, 0.62f, 0.6f);
 
+    [Header("Audio")]
+    [SerializeField] private SoundCue rustleSound = new SoundCue();
+
     private float nextTime;
     private ParticleSystem ps;
 
@@ -34,6 +37,7 @@ public class FoliageRustle : MonoBehaviour
         if (rb != null && rb.linearVelocity.magnitude < minSpeed) return;
 
         nextTime = Time.time + cooldown;
+        GameAudio.Play(rustleSound, transform.position);
         Emit(other.bounds.center);
     }
 

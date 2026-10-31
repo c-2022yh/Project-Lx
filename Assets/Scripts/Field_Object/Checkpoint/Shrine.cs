@@ -10,10 +10,17 @@ public class Shrine : MonoBehaviour, IInteractable
     [Header("Respawn")]
     [SerializeField] private Transform respawnPoint;
 
+    [Header("Audio")]
+    [Tooltip("Plays when interaction makes this the active checkpoint. RestoreActive stays silent.")]
+    [SerializeField] private SoundCue activationSound = new SoundCue();
+    [Tooltip("Plays on repeat interaction only when health actually increases.")]
+    [SerializeField] private SoundCue healSound = new SoundCue();
+
     [Header("Visual")]
     [SerializeField] private SpriteRenderer spriteRenderer;
     [SerializeField] private Color inactiveColor = Color.gray;
     [SerializeField] private Color activeColor = Color.white;
+    [SerializeField] private ShrineVisual shrineVisual;
 
     public string InteractionText => "활성화";
 
@@ -57,7 +64,10 @@ public class Shrine : MonoBehaviour, IInteractable
         //이미 활성화된 제단이면 회복만
         if (activeShrine == this)
         {
+            float healthBefore = playerHealth != null ? playerHealth.CurrentHealth : 0f;
             playerHealth?.FullHeal();
+            if (playerHealth != null && playerHealth.CurrentHealth > healthBefore)
+                GameAudio.Play(healSound, transform.position, transform);
             GameSession.SaveAtShrine(RespawnPosition);
             return;
         }
@@ -77,7 +87,8 @@ public class Shrine : MonoBehaviour, IInteractable
         //체력 전체 회복
         playerHealth?.FullHeal();
 
-        SetActiveVisual();
+        SetActiveVisual(true);
+        GameAudio.Play(activationSound, transform.position, transform);
         GameSession.SaveAtShrine(RespawnPosition);
 
         Debug.Log("Shrine Activated : " + gameObject.name);
@@ -106,8 +117,9 @@ public class Shrine : MonoBehaviour, IInteractable
         Debug.Log("Shrine Deactivated : " + gameObject.name);
     }
 
-    private void SetActiveVisual()
+    private void SetActiveVisual(bool ignite = false)
     {
+        if (shrineVisual != null) shrineVisual.SetLit(true, ignite);
         if (spriteRenderer != null)
         {
             spriteRenderer.color = activeColor;
@@ -116,6 +128,7 @@ public class Shrine : MonoBehaviour, IInteractable
 
     private void SetInactiveVisual()
     {
+        if (shrineVisual != null) shrineVisual.SetLit(false, false);
         if (spriteRenderer != null)
         {
             spriteRenderer.color = inactiveColor;

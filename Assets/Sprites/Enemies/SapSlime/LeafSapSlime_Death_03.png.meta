@@ -1,0 +1,819 @@
+fileFormatVersion: 2
+guid: 77532498b95082a44a36460dd8da6532
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: 2967039137893599123
+    second: LeafSapSlime_Death_03_0
+  - first:
+      213: 3988709237762339683
+    second: LeafSapSlime_Death_03_1
+  - first:
+      213: -6729385762928693474
+    second: LeafSapSlime_Death_03_2
+  - first:
+      213: 4640009547293143842
+    second: LeafSapSlime_Death_03_3
+  - first:
+      213: -8474050791252120661
+    second: LeafSapSlime_Death_03_4
+  - first:
+      213: -2992403118739937389
+    second: LeafSapSlime_Death_03_5
+  - first:
+      213: 188158478183888000
+    second: LeafSapSlime_Death_03_6
+  - first:
+      213: 3316727747758326440
+    second: LeafSapSlime_Death_03_7
+  - first:
+      213: -5740149710892952766
+    second: LeafSapSlime_Death_03_8
+  - first:
+      213: -270652552568855559
+    second: LeafSapSlime_Death_03_9
+  - first:
+      213: 3573852895489687942
+    second: LeafSapSlime_Death_03_10
+  - first:
+      213: 513263026256115396
+    second: LeafSapSlime_Death_03_11
+  - first:
+      213: -3555707623725251210
+    second: LeafSapSlime_Death_03_12
+  - first:
+      213: -1952224321216040207
+    second: LeafSapSlime_Death_03_13
+  - first:
+      213: 8210229292918107152
+    second: LeafSapSlime_Death_03_14
+  - first:
+      213: 8082588672906821334
+    second: LeafSapSlime_Death_03_15
+  - first:
+      213: -3026194475954599750
+    second: LeafSapSlime_Death_03_16
+  - first:
+      213: 8721805115467448026
+    second: LeafSapSlime_Death_03_17
+  - first:
+      213: 5939277116315082291
+    second: LeafSapSlime_Death_03_18
+  - first:
+      213: -1610085445034243325
+    second: LeafSapSlime_Death_03_19
+  - first:
+      213: -6742067276687682597
+    second: LeafSapSlime_Death_03_20
+  - first:
+      213: 6842151403249130421
+    second: LeafSapSlime_Death_03_21
+  - first:
+      213: -7581827272805351256
+    second: LeafSapSlime_Death_03_22
+  - first:
+      213: 1446207282692876472
+    second: LeafSapSlime_Death_03_23
+  - first:
+      213: -5490743155865220643
+    second: LeafSapSlime_Death_03_24
+  - first:
+      213: 3231636363119238508
+    second: LeafSapSlime_Death_03_25
+  - first:
+      213: -3581524954377636898
+    second: LeafSapSlime_Death_03_26
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 1
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 1
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 240
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: LeafSapSlime_Death_03_0
+      rect:
+        serializedVersion: 2
+        x: 90
+        y: 300
+        width: 46
+        height: 29
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 39744d8306a0d2920800000000000000
+      internalID: 2967039137893599123
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LeafSapSlime_Death_03_1
+      rect:
+        serializedVersion: 2
+        x: 133
+        y: 306
+        width: 6
+        height: 7
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 363b42d2bedba5730800000000000000
+      internalID: 3988709237762339683
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LeafSapSlime_Death_03_2
+      rect:
+        serializedVersion: 2
+        x: 138
+        y: 273
+        width: 63
+        height: 125
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e1f601c6d4b6c92a0800000000000000
+      internalID: -6729385762928693474
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LeafSapSlime_Death_03_3
+      rect:
+        serializedVersion: 2
+        x: 374
+        y: 296
+        width: 28
+        height: 32
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 22334d47910a46040800000000000000
+      internalID: 4640009547293143842
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LeafSapSlime_Death_03_4
+      rect:
+        serializedVersion: 2
+        x: 480
+        y: 274
+        width: 36
+        height: 133
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: babaccae3bf166a80800000000000000
+      internalID: -8474050791252120661
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LeafSapSlime_Death_03_5
+      rect:
+        serializedVersion: 2
+        x: 59
+        y: 221
+        width: 50
+        height: 52
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3972cbac739d876d0800000000000000
+      internalID: -2992403118739937389
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LeafSapSlime_Death_03_6
+      rect:
+        serializedVersion: 2
+        x: 98
+        y: 260
+        width: 35
+        height: 21
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 084f0a593297c9200800000000000000
+      internalID: 188158478183888000
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LeafSapSlime_Death_03_7
+      rect:
+        serializedVersion: 2
+        x: 144
+        y: 191
+        width: 32
+        height: 77
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8a201d55052670e20800000000000000
+      internalID: 3316727747758326440
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LeafSapSlime_Death_03_8
+      rect:
+        serializedVersion: 2
+        x: 205
+        y: 255
+        width: 30
+        height: 27
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2431aa42044e650b0800000000000000
+      internalID: -5740149710892952766
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LeafSapSlime_Death_03_9
+      rect:
+        serializedVersion: 2
+        x: 220
+        y: 277
+        width: 15
+        height: 9
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9f3a49affe27e3cf0800000000000000
+      internalID: -270652552568855559
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LeafSapSlime_Death_03_10
+      rect:
+        serializedVersion: 2
+        x: 224
+        y: 147
+        width: 143
+        height: 147
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6810a2bf540e89130800000000000000
+      internalID: 3573852895489687942
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LeafSapSlime_Death_03_11
+      rect:
+        serializedVersion: 2
+        x: 402
+        y: 257
+        width: 51
+        height: 44
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4c67654c00a7f1700800000000000000
+      internalID: 513263026256115396
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LeafSapSlime_Death_03_12
+      rect:
+        serializedVersion: 2
+        x: 452
+        y: 269
+        width: 22
+        height: 17
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 67545b251c697aec0800000000000000
+      internalID: -3555707623725251210
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LeafSapSlime_Death_03_13
+      rect:
+        serializedVersion: 2
+        x: 471
+        y: 238
+        width: 22
+        height: 20
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1f23a0cb25e48e4e0800000000000000
+      internalID: -1952224321216040207
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LeafSapSlime_Death_03_14
+      rect:
+        serializedVersion: 2
+        x: 492
+        y: 242
+        width: 28
+        height: 32
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 01ce3e0da0890f170800000000000000
+      internalID: 8210229292918107152
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LeafSapSlime_Death_03_15
+      rect:
+        serializedVersion: 2
+        x: 73
+        y: 200
+        width: 20
+        height: 39
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6def43a139f1b2070800000000000000
+      internalID: 8082588672906821334
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LeafSapSlime_Death_03_16
+      rect:
+        serializedVersion: 2
+        x: 182
+        y: 238
+        width: 19
+        height: 15
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ab80a77582cc006d0800000000000000
+      internalID: -3026194475954599750
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LeafSapSlime_Death_03_17
+      rect:
+        serializedVersion: 2
+        x: 190
+        y: 225
+        width: 28
+        height: 18
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ade3f9bda831a0970800000000000000
+      internalID: 8721805115467448026
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LeafSapSlime_Death_03_18
+      rect:
+        serializedVersion: 2
+        x: 433
+        y: 200
+        width: 39
+        height: 48
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 33e1194d11d8c6250800000000000000
+      internalID: 5939277116315082291
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LeafSapSlime_Death_03_19
+      rect:
+        serializedVersion: 2
+        x: 175
+        y: 179
+        width: 33
+        height: 32
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 30b05be71d3d7a9e0800000000000000
+      internalID: -1610085445034243325
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LeafSapSlime_Death_03_20
+      rect:
+        serializedVersion: 2
+        x: 462
+        y: 194
+        width: 22
+        height: 24
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: bd3de39688d5f62a0800000000000000
+      internalID: -6742067276687682597
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LeafSapSlime_Death_03_21
+      rect:
+        serializedVersion: 2
+        x: 486
+        y: 167
+        width: 42
+        height: 29
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5bbda12337434fe50800000000000000
+      internalID: 6842151403249130421
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LeafSapSlime_Death_03_22
+      rect:
+        serializedVersion: 2
+        x: 196
+        y: 185
+        width: 7
+        height: 7
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8a081100440f7c690800000000000000
+      internalID: -7581827272805351256
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LeafSapSlime_Death_03_23
+      rect:
+        serializedVersion: 2
+        x: 446
+        y: 126
+        width: 68
+        height: 55
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8b8ed7c7cd5f11410800000000000000
+      internalID: 1446207282692876472
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LeafSapSlime_Death_03_24
+      rect:
+        serializedVersion: 2
+        x: 60
+        y: 17
+        width: 200
+        height: 96
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: dd90fb1e036fcc3b0800000000000000
+      internalID: -5490743155865220643
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LeafSapSlime_Death_03_25
+      rect:
+        serializedVersion: 2
+        x: 285
+        y: 41
+        width: 56
+        height: 41
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c6d15fa762419dc20800000000000000
+      internalID: 3231636363119238508
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LeafSapSlime_Death_03_26
+      rect:
+        serializedVersion: 2
+        x: 356
+        y: 41
+        width: 149
+        height: 73
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ed3bf1c970edb4ec0800000000000000
+      internalID: -3581524954377636898
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 5e97eb03825dee720800000000000000
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
+    nameFileIdTable:
+      LeafSapSlime_Death_03_0: 2967039137893599123
+      LeafSapSlime_Death_03_1: 3988709237762339683
+      LeafSapSlime_Death_03_10: 3573852895489687942
+      LeafSapSlime_Death_03_11: 513263026256115396
+      LeafSapSlime_Death_03_12: -3555707623725251210
+      LeafSapSlime_Death_03_13: -1952224321216040207
+      LeafSapSlime_Death_03_14: 8210229292918107152
+      LeafSapSlime_Death_03_15: 8082588672906821334
+      LeafSapSlime_Death_03_16: -3026194475954599750
+      LeafSapSlime_Death_03_17: 8721805115467448026
+      LeafSapSlime_Death_03_18: 5939277116315082291
+      LeafSapSlime_Death_03_19: -1610085445034243325
+      LeafSapSlime_Death_03_2: -6729385762928693474
+      LeafSapSlime_Death_03_20: -6742067276687682597
+      LeafSapSlime_Death_03_21: 6842151403249130421
+      LeafSapSlime_Death_03_22: -7581827272805351256
+      LeafSapSlime_Death_03_23: 1446207282692876472
+      LeafSapSlime_Death_03_24: -5490743155865220643
+      LeafSapSlime_Death_03_25: 3231636363119238508
+      LeafSapSlime_Death_03_26: -3581524954377636898
+      LeafSapSlime_Death_03_3: 4640009547293143842
+      LeafSapSlime_Death_03_4: -8474050791252120661
+      LeafSapSlime_Death_03_5: -2992403118739937389
+      LeafSapSlime_Death_03_6: 188158478183888000
+      LeafSapSlime_Death_03_7: 3316727747758326440
+      LeafSapSlime_Death_03_8: -5740149710892952766
+      LeafSapSlime_Death_03_9: -270652552568855559
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

@@ -70,7 +70,7 @@ MonoBehaviour:
   - sceneName: F_02
     music:
       channel: 2
-      clip: {fileID: 0}
+      clip: {fileID: 8300000, guid: 80cc116bc795a5147992b342a8a98845, type: 3}
       clips: []
       volume: 1
       minimumInterval: 0
@@ -218,38 +218,8 @@ MonoBehaviour:
     useFallback: 0
     fallbackSound: 7
     sound: 7
-  - channel: 0
-    clip: {fileID: 0}
-    clips:
-    - {fileID: 0}
-    volume: 1
-    minimumInterval: 0.05
-    pitchRange: {x: 1, y: 1}
-    maxSimultaneous: 4
-    limitScope: 0
-    spatialBlend: 0
-    minDistance: 1
-    maxDistance: 15
-    useFallback: 0
-    fallbackSound: 5
-    sound: 3
-  - channel: 0
-    clip: {fileID: 0}
-    clips:
-    - {fileID: 0}
-    volume: 1
-    minimumInterval: 0.05
-    pitchRange: {x: 1, y: 1}
-    maxSimultaneous: 4
-    limitScope: 0
-    spatialBlend: 0
-    minDistance: 1
-    maxDistance: 15
-    useFallback: 0
-    fallbackSound: 5
-    sound: 4
   - channel: 1
-    clip: {fileID: 0}
+    clip: {fileID: 8300000, guid: 8038cc250559514449bc130b76de0456, type: 3}
     clips:
     - {fileID: 0}
     volume: 1
@@ -261,10 +231,10 @@ MonoBehaviour:
     minDistance: 1
     maxDistance: 15
     useFallback: 0
-    fallbackSound: 5
-    sound: 5
+    fallbackSound: 10
+    sound: 10
   - channel: 1
-    clip: {fileID: 0}
+    clip: {fileID: 8300000, guid: 375b29ef3670a154ab2b7c67dac64fad, type: 3}
     clips:
     - {fileID: 0}
     volume: 1
@@ -276,10 +246,10 @@ MonoBehaviour:
     minDistance: 1
     maxDistance: 15
     useFallback: 0
-    fallbackSound: 5
-    sound: 6
+    fallbackSound: 11
+    sound: 11
   - channel: 1
-    clip: {fileID: 0}
+    clip: {fileID: 8300000, guid: b8b7f05d6c2ee9b419d87e453f5585c2, type: 3}
     clips:
     - {fileID: 0}
     volume: 1
@@ -291,14 +261,14 @@ MonoBehaviour:
     minDistance: 1
     maxDistance: 15
     useFallback: 0
-    fallbackSound: 5
-    sound: 7
-  - channel: 2
-    clip: {fileID: 0}
+    fallbackSound: 12
+    sound: 12
+  - channel: 1
+    clip: {fileID: 8300000, guid: d651122a79cc1444d8f52fd7a3f1aaef, type: 3}
     clips:
     - {fileID: 0}
     volume: 1
-    minimumInterval: 0
+    minimumInterval: 0.05
     pitchRange: {x: 1, y: 1}
     maxSimultaneous: 4
     limitScope: 0
@@ -306,14 +276,14 @@ MonoBehaviour:
     minDistance: 1
     maxDistance: 15
     useFallback: 0
-    fallbackSound: 5
-    sound: 8
-  - channel: 2
-    clip: {fileID: 0}
+    fallbackSound: 13
+    sound: 13
+  - channel: 1
+    clip: {fileID: 8300000, guid: 4d33d4d8c30c25d47a86e66e794a425d, type: 3}
     clips:
     - {fileID: 0}
     volume: 1
-    minimumInterval: 0
+    minimumInterval: 0.05
     pitchRange: {x: 1, y: 1}
     maxSimultaneous: 4
     limitScope: 0
@@ -321,5 +291,80 @@ MonoBehaviour:
     minDistance: 1
     maxDistance: 15
     useFallback: 0
-    fallbackSound: 5
-    sound: 9
+    fallbackSound: 14
+    sound: 14
+  - channel: 1
+    clip: {fileID: 8300000, guid: 4d0f6dfa8e1c2434089c66cc216c6893, type: 3}
+    clips:
+    - {fileID: 0}
+    volume: 1
+    minimumInterval: 0.05
+    pitchRange: {x: 1, y: 1}
+    maxSimultaneous: 4
+    limitScope: 0
+    spatialBlend: 0
+    minDistance: 1
+    maxDistance: 15
+    useFallback: 0
+    fallbackSound: 15
+    sound: 15
+  - channel: 1
+    clip: {fileID: 8300000, guid: 0023eaf4cde1a6d49879f75d88820eed, type: 3}
+    clips:
+    - {fileID: 0}
+    volume: 1
+    minimumInterval: 0.05
+    pitchRange: {x: 1, y: 1}
+    maxSimultaneous: 4
+    limitScope: 0
+    spatialBlend: 0
+    minDistance: 1
+    maxDistance: 15
+    useFallback: 0
+    fallbackSound: 16
+    sound: 16
+  - channel: 1
+    clip: {fileID: 8300000, guid: ca5e8d71b6ddc25499f55b98a51705e2, type: 3}
+    clips:
+    - {fileID: 0}
+    volume: 1
+    minimumInterval: 0.05
+    pitchRange: {x: 1, y: 1}
+    maxSimultaneous: 4
+    limitScope: 0
+    spatialBlend: 0
+    minDistance: 1
+    maxDistance: 15
+    useFallback: 0
+    fallbackSound: 17
+    sound: 17
+  - channel: 1
+    clip: {fileID: 8300000, guid: 95e48a1f2b2b88c4b88af7c7374d011f, type: 3}
+    clips:
+    - {fileID: 0}
+    volume: 1
+    minimumInterval: 0.05
+    pitchRange: {x: 1, y: 1}
+    maxSimultaneous: 4
+    limitScope: 0
+    spatialBlend: 0
+    minDistance: 1
+    maxDistance: 15
+    useFallback: 0
+    fallbackSound: 18
+    sound: 18
+  - channel: 1
+    clip: {fileID: 8300000, guid: e74dd69a20445e64589d3529a482277f, type: 3}
+    clips:
+    - {fileID: 0}
+    volume: 1
+    minimumInterval: 0.05
+    pitchRange: {x: 1, y: 1}
+    maxSimultaneous: 4
+    limitScope: 0
+    spatialBlend: 0
+    minDistance: 1
+    maxDistance: 15
+    useFallback: 0
+    fallbackSound: 19
+    sound: 19

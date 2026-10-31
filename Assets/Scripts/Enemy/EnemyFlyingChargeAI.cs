@@ -28,6 +28,13 @@ public class EnemyFlyingChargeAI : MonoBehaviour
     [Tooltip("Pause after charging before hovering and detecting the player again.")]
     [SerializeField, Min(0f)] private float recoveryTime = 1.5f;
 
+    [Header("Audio")]
+    [SerializeField] private SoundCue prepareSound = new SoundCue();
+    [SerializeField] private SoundCue chargeSound = new SoundCue();
+    [SerializeField] private SoundCue chargeLoop = new SoundCue();
+
+    private SoundHandle prepareVoice, chargeVoice, chargeLoopVoice;
+
     private Rigidbody2D rb;
     private EnemyAI ai;
     private EnemyHealth health;
@@ -55,6 +62,7 @@ public class EnemyFlyingChargeAI : MonoBehaviour
     private void OnEnable()
     {
         // Poolers may position an instance after OnEnable. Capture it on its first tick.
+        StopChargeAudio();
         needsSpawnReset = true;
         state = State.Hover;
         stateTime = 0f;
@@ -62,8 +70,14 @@ public class EnemyFlyingChargeAI : MonoBehaviour
         chargeTarget = Vector2.zero;
     }
 
+    private void Update()
+    {
+        if (Time.timeScale <= 0f) StopChargeAudio();
+    }
+
     private void OnDisable()
     {
+        StopChargeAudio();
         rb.linearVelocity = Vector2.zero;
         enemyAnimation?.StopCharge();
     }
@@ -78,6 +92,7 @@ public class EnemyFlyingChargeAI : MonoBehaviour
 
         if (!ai.BeginBehaviourTick())
         {
+            StopChargeAudio();
             if (!health.IsDead && knockback != null && knockback.IsKnockbackActive)
             {
                 // Let knockback own velocity; restart recovery at its final position.
@@ -125,6 +140,7 @@ public class EnemyFlyingChargeAI : MonoBehaviour
                 break;
 
             case State.Charge:
+                if (!chargeLoopVoice.IsPlaying) chargeLoopVoice = GameAudio.PlayLoop(chargeLoop, transform);
                 if (stateTime <= 0f || (chargeTarget - rb.position).sqrMagnitude <= 0.0001f)
                 {
                     BeginRecovery();
@@ -175,6 +191,7 @@ public class EnemyFlyingChargeAI : MonoBehaviour
         stateTime = windupTime;
         FaceDirection(chargeTarget - rb.position);
         enemyAnimation?.PlayPrepare();
+        prepareVoice = GameAudio.Play(prepareSound, transform.position, transform, true);
     }
 
     private void BeginCharge()
@@ -186,6 +203,9 @@ public class EnemyFlyingChargeAI : MonoBehaviour
             return;
         }
         FaceDirection(difference);
+        prepareVoice.Stop();
+        chargeVoice = GameAudio.Play(chargeSound, transform.position, transform, true);
+        chargeLoopVoice = GameAudio.PlayLoop(chargeLoop, transform);
         state = State.Charge;
         // Allow the expected travel time plus a little tolerance, so a wall cannot trap us in Charge.
         stateTime = difference.magnitude / chargeSpeed + 0.1f;
@@ -195,10 +215,16 @@ public class EnemyFlyingChargeAI : MonoBehaviour
 
     private void BeginRecovery()
     {
+        StopChargeAudio();
         rb.linearVelocity = Vector2.zero;
         state = State.Recovery;
         stateTime = recoveryTime;
         enemyAnimation?.StopCharge();
+    }
+
+    private void StopChargeAudio()
+    {
+        prepareVoice.Stop(); chargeVoice.Stop(); chargeLoopVoice.Stop();
     }
 
     private void FaceDirection(Vector2 direction)

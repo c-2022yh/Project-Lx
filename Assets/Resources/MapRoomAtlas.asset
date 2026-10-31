@@ -1,0 +1,69 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 460847089dcb4b79b5b952e46d7391b4, type: 3}
+  m_Name: MapRoomAtlas
+  m_EditorClassIdentifier: Assembly-CSharp::MapRoomAtlas
+  rooms:
+  - sceneName: Test_Alpha
+    image: {fileID: 21300000, guid: 7e940b71463e4f141adcdb04e0522cc8, type: 3}
+    worldMin: {x: -48, y: -33}
+    worldSize: {x: 113, y: 126}
+    atlasMin: {x: 0, y: 0}
+    group: 1
+  - sceneName: Forest01
+    image: {fileID: 21300000, guid: 3e2a65569a734cf4ab5bc4de4bd28c0d, type: 3}
+    worldMin: {x: -53, y: -3}
+    worldSize: {x: 115, y: 66}
+    atlasMin: {x: 133, y: 0}
+    group: 2
+  - sceneName: Forest020
+    image: {fileID: 21300000, guid: a780451d03cacd74282e800473fdd5df, type: 3}
+    worldMin: {x: -48, y: -33}
+    worldSize: {x: 102, y: 126}
+    atlasMin: {x: 102, y: 60}
+    group: 2
+  - sceneName: Forest02
+    image: {fileID: 21300000, guid: 849c9029ee2fef74aac5c756aff2965c, type: 3}
+    worldMin: {x: -29, y: 15}
+    worldSize: {x: 50, y: 19}
+    atlasMin: {x: 242.3, y: 53.1}
+    group: 2
+  - sceneName: F_01
+    image: {fileID: 21300000, guid: d719e4994ecedf842ac812da7c9591ff, type: 3}
+    worldMin: {x: -29, y: -43}
+    worldSize: {x: 251, y: 99}
+    atlasMin: {x: 312.3, y: 0}
+    group: 3
+  - sceneName: F_02
+    image: {fileID: 21300000, guid: 2e732130eb234f647b9945f7517188ce, type: 3}
+    worldMin: {x: 79, y: 34}
+    worldSize: {x: 337, y: 149}
+    atlasMin: {x: 401.3, y: -144.5}
+    group: 3
+  - sceneName: Tutorial
+    image: {fileID: 21300000, guid: 741538eead9f926419a1e7a585360feb, type: 3}
+    worldMin: {x: -23, y: 5}
+    worldSize: {x: 54, y: 47}
+    atlasMin: {x: 263.8, y: 48.5}
+    group: 3
+  - sceneName: F_03
+    image: {fileID: 21300000, guid: d2e011fdb8a25874994602056d6c23d4, type: 3}
+    worldMin: {x: -6, y: -19}
+    worldSize: {x: 106, y: 34}
+    atlasMin: {x: 301.3, y: -119.5}
+    group: 3
+  - sceneName: F_04
+    image: {fileID: 21300000, guid: 14d6eba1c2c99b149a71b5d9de3590d7, type: 3}
+    worldMin: {x: 9, y: -7}
+    worldSize: {x: 171, y: 90}
+    atlasMin: {x: 557.89996, y: 9.799999}
+    group: 3

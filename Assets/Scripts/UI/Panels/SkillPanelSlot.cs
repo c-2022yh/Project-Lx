@@ -157,6 +157,7 @@ public class SkillPanelSlot : MonoBehaviour,
     {
         isHovered = true;
         RefreshBackground();
+        if (!IsEmpty) GameAudio.Play(GameSound.UIHover);
 
         if (host != null) host.OnSkillSlotHoverEnter(this);
     }

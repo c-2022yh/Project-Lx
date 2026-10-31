@@ -3143,6 +3143,34 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7e67f621f25ca774ab8a2280bb8f33e8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SecretBreakableWall
+  hitSound:
+    channel: 0
+    clip: {fileID: 0}
+    clips: []
+    volume: 1
+    minimumInterval: 0.05
+    pitchRange: {x: 1, y: 1}
+    maxSimultaneous: 4
+    limitScope: 0
+    spatialBlend: 0
+    minDistance: 1
+    maxDistance: 15
+    useFallback: 0
+    fallbackSound: 5
+  breakSound:
+    channel: 0
+    clip: {fileID: 0}
+    clips: []
+    volume: 1
+    minimumInterval: 0.05
+    pitchRange: {x: 1, y: 1}
+    maxSimultaneous: 4
+    limitScope: 0
+    spatialBlend: 0
+    minDistance: 1
+    maxDistance: 15
+    useFallback: 0
+    fallbackSound: 5
   tilemapSecretWall: {fileID: 0}
   requiredHitsToBreak: 1
   breakEffectPrefab: {fileID: 0}

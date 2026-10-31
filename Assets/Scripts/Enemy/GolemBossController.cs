@@ -26,6 +26,11 @@ public class GolemBossAttack
 [RequireComponent(typeof(CapsuleCollider2D))]
 public class GolemBossController : MonoBehaviour
 {
+    [Header("Audio")]
+    [SerializeField] private SoundCue splitSound = new SoundCue();
+    [SerializeField] private SoundCue summonPrepareSound = new SoundCue();
+    [SerializeField] private SoundCue summonSound = new SoundCue();
+
     private enum State { Waiting, Prepare, Active, Recovery, Summon, PhaseChange, Split }
     private enum Pattern { Slam, Crush, Rockfall }
 
@@ -111,6 +116,7 @@ public class GolemBossController : MonoBehaviour
     private State state;
     private Pattern pattern, lastPattern;
     private GolemBossAttack current;
+    private SoundHandle summonPrepareVoice;
     private bool engaged, armed, phaseTwo, hasLastPattern;
     private bool[] usedSummons;
     private float elapsed, nextActionTime, nextSearchTime, nextRockTime, spawnX;
@@ -172,6 +178,7 @@ public class GolemBossController : MonoBehaviour
 
     public void StopEncounter()
     {
+        summonPrepareVoice.Stop();
         ReleaseFragmentTurn();
         bool wasSplit = state == State.Split;
         bool wasEngaged = engaged;
@@ -345,6 +352,7 @@ public class GolemBossController : MonoBehaviour
         health.IsDamageSuppressed = true;
         visual.SetPresentationVisible(false);
         Enter(State.Split);
+        GameAudio.Play(splitSound, transform.position);
         return true;
     }
 
@@ -560,6 +568,7 @@ public class GolemBossController : MonoBehaviour
         }
         if (warnings.Count == 0) return false;
         Enter(State.Summon);
+        summonPrepareVoice = GameAudio.Play(summonPrepareSound, transform.position, transform, true);
         return true;
     }
 
@@ -576,6 +585,8 @@ public class GolemBossController : MonoBehaviour
         visual.SetPose(GolemBossPose.Summon, elapsed / Mathf.Max(0.1f, summonWarningTime), facing);
         foreach (var marker in warnings) if (marker != null) marker.SetProgress(elapsed / Mathf.Max(0.1f, summonWarningTime));
         if (elapsed < summonWarningTime) return;
+        summonPrepareVoice.Stop();
+        int spawned = 0;
         for (int i = 0; i < warnings.Count && LivingMinionCount < maxLivingMinions; i++)
         {
             if (warnings[i] == null || summonChoices[i] == null) continue;
@@ -585,7 +596,9 @@ public class GolemBossController : MonoBehaviour
             Vector2 ground = warnings[i].Center - Vector2.up * warnings[i].Size.y / 2f;
             Vector2 position = ground + Vector2.up * (MinionSize(prefab).y / 2f - offset + summonLift);
             minions.Add(Instantiate(prefab, position, prefab.transform.rotation));
+            spawned++;
         }
+        if (spawned > 0) GameAudio.Play(summonSound, transform.position);
         CancelWarnings();
         Enter(State.Waiting);
         nextActionTime = Time.time + afterSummonRest;

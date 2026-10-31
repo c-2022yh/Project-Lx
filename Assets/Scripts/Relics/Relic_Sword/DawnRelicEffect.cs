@@ -30,6 +30,10 @@ public class DawnRelicEffect : RelicEffect
     private AttackDamageSpec extraAttackDamageSpec;
 
     //유물 장착 시 런타임 생성
+    [Header("Audio")]
+    [SerializeField] private SoundCue extraAttackSound = new SoundCue();
+    [SerializeField] private SoundCue extraImpactSound = new SoundCue();
+
     public override IRelicRuntime CreateRuntime(Player p)
     {
         return new DawnRelicRuntime(
@@ -38,13 +42,14 @@ public class DawnRelicEffect : RelicEffect
             secondAfterimageDelay,
             secondOffset,
             secondColor,
-            destroyAfter);
+            destroyAfter, this);
 
     }
 
     //유물 런타임 클래스
     private sealed class DawnRelicRuntime : IRelicRuntime
     {
+        private readonly DawnRelicEffect audioSettings;
         private readonly Player player;
         private readonly AttackDamageSpec extraAttackDamageSpec;
 
@@ -65,9 +70,10 @@ public class DawnRelicEffect : RelicEffect
         float extraAttackDelay,
         Vector2 extraAttackOffset,
         Color extraAttackColor,
-        float destroyAfter)
+        float destroyAfter, DawnRelicEffect audioSettings)
         {
             this.player = player;
+            this.audioSettings = audioSettings;
             this.extraAttackDamageSpec = extraAttackDamageSpec;
             this.extraAttackDelay = extraAttackDelay;
             this.extraAttackOffset = extraAttackOffset;
@@ -193,6 +199,8 @@ public class DawnRelicEffect : RelicEffect
 
             //추가 공격에 피해 정보 전달
             damageInfo.suppressKnockback = true;
+            damageInfo.impactAudio = new AttackAudioContext(audioSettings.extraImpactSound, ImpactSoundMode.OncePerTarget, player.transform);
+            GameAudio.Play(audioSettings.extraAttackSound, spawnPosition, player.transform);
             hitbox.SetAttackInfo(damageInfo, dir);
 
             //activeTime이 지나면 공격 판정 종료

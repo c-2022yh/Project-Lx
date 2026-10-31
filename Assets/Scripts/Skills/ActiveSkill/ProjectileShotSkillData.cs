@@ -17,6 +17,10 @@ public class ProjectileShotSkillData : AttackSkillData
     public bool destroyOnEnemyHit = true;
     [Header("Projectile Audio")]
     public SoundCue flightLoop = new SoundCue();
+    public SoundCue terrainImpactSound = new SoundCue();
+    public SoundCue expireSound = new SoundCue();
+    [Tooltip("Optional solid terrain that consumes the projectile. Leave empty to preserve terrain pass-through.")]
+    public LayerMask terrainLayers;
 
 
     public override IEnumerator ProcessSkill(Player p)
@@ -44,7 +48,7 @@ public class ProjectileShotSkillData : AttackSkillData
 
         //투사체 생성 방향, 속도, 데미지 등 값을 넘겨줌
         projectile.Init(dir, projectileSpeed, maxDistance,
-            rotationSpeed, damageInfo, enemyLayer, destroyOnEnemyHit, flightLoop);
+            rotationSpeed, damageInfo, enemyLayer, destroyOnEnemyHit, flightLoop, terrainImpactSound, expireSound, terrainLayers);
         PlayReleaseSound(p, spawnPos);
 
         yield return null;

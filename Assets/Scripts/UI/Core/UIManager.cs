@@ -67,7 +67,8 @@ public class UIManager : MonoBehaviour
         isInventoryOpen || isSkillOpen || isPaused ||
         (controlGuidePanel != null && controlGuidePanel.gameObject.activeSelf) ||
         (gameOverPanel != null && gameOverPanel.gameObject.activeSelf) ||
-        AcquirePopup.IsOpen || RelicSelectionPanelUI.IsOpen || DialogueBox.IsOpen;
+        AcquirePopup.IsOpen || RelicSelectionPanelUI.IsOpen || DialogueBox.IsOpen ||
+        IntroCutscene.IsPlaying;
 
    
     //  Input System 연결
@@ -120,7 +121,7 @@ public class UIManager : MonoBehaviour
       
 
         // 획득 알림창·유물 선택창·대화창이 떠 있으면 키는 그 창 몫이다. 맵만 손을 떼면 내린다.
-        if (AcquirePopup.BlocksInput || RelicSelectionPanelUI.IsOpen || DialogueBox.BlocksInput)
+        if (AcquirePopup.BlocksInput || RelicSelectionPanelUI.IsOpen || DialogueBox.BlocksInput || IntroCutscene.IsPlaying)
         {
             if (Keyboard.current.tabKey.wasReleasedThisFrame) SetMapVisible(false);
             return;
@@ -195,6 +196,12 @@ public class UIManager : MonoBehaviour
         }
 
         // 조작법은 일시정지 위에 떠 있으므로 가장 먼저 본다.
+        if (ControlGuideView.IsOpen)
+        {
+            CloseControlGuide();
+            return;
+        }
+
         if (controlGuidePanel != null && controlGuidePanel.gameObject.activeSelf)
         {
             controlGuidePanel.SetVisible(false);
@@ -296,7 +303,9 @@ public class UIManager : MonoBehaviour
         else map.Enable();
     }
 
-    public void ToggleInventory()
+    public void ToggleInventory() => ToggleInventory(true);
+
+    private void ToggleInventory(bool playSound)
     {
         // 여는 것만 막는다. 이미 열려 있으면 언제든 닫을 수 있어야 한다.
         if (!isInventoryOpen && isPaused) return;
@@ -305,7 +314,8 @@ public class UIManager : MonoBehaviour
         SetMapVisible(false);
 
         // 스킬 창과는 한 번에 하나만 뜬다.
-        if (!isInventoryOpen && isSkillOpen) ToggleSkill();
+        bool switchingTab = !isInventoryOpen && isSkillOpen;
+        if (switchingTab) ToggleSkill(false);
 
         isInventoryOpen = !isInventoryOpen;
         Debug.Log($"[UI] Inventory: {(isInventoryOpen ? "Open" : "Close")}");
@@ -316,14 +326,18 @@ public class UIManager : MonoBehaviour
             inventoryPanel.SetVisible(isInventoryOpen);
 
         RefreshPlayerControl();
-        GameAudio.Play(isInventoryOpen ? GameSound.WindowOpen : GameSound.WindowClose);
+        if (playSound)
+            GameAudio.Play(switchingTab ? GameSound.UITabChange
+                : isInventoryOpen ? GameSound.WindowOpen : GameSound.WindowClose);
     }
 
     /// <summary>
     /// 스킬 창. 유물창과 같은 창의 두 탭이라 한 번에 하나만 뜬다.
     /// 여는 쪽은 ShowWindowTab을 거치고, 여기는 실제로 켜고 끄는 일만 한다.
     /// </summary>
-    public void ToggleSkill()
+    public void ToggleSkill() => ToggleSkill(true);
+
+    private void ToggleSkill(bool playSound)
     {
         // 여는 것만 막는다. 이미 열려 있으면 언제든 닫을 수 있어야 한다.
         if (!isSkillOpen && isPaused) return;
@@ -331,7 +345,8 @@ public class UIManager : MonoBehaviour
         SetMapVisible(false);
 
         // 인벤토리가 떠 있으면 먼저 닫는다.
-        if (!isSkillOpen && isInventoryOpen) ToggleInventory();
+        bool switchingTab = !isSkillOpen && isInventoryOpen;
+        if (switchingTab) ToggleInventory(false);
 
         isSkillOpen = !isSkillOpen;
         Debug.Log($"[UI] Skill: {(isSkillOpen ? "Open" : "Close")}");
@@ -339,7 +354,9 @@ public class UIManager : MonoBehaviour
         if (skillPanel != null) skillPanel.SetVisible(isSkillOpen);
 
         RefreshPlayerControl();
-        GameAudio.Play(isSkillOpen ? GameSound.WindowOpen : GameSound.WindowClose);
+        if (playSound)
+            GameAudio.Play(switchingTab ? GameSound.UITabChange
+                : isSkillOpen ? GameSound.WindowOpen : GameSound.WindowClose);
     }
 
     public void ToggleMap()
@@ -371,6 +388,9 @@ public class UIManager : MonoBehaviour
 
     public void TogglePause()
     {
+        // 시작 연출 중에는 Esc가 "건너뛰기"다. 일시정지창을 열지 않는다.
+        if (!isPaused && IntroCutscene.IsPlaying) return;
+
         SetMapVisible(false);
 
         isPaused = !isPaused;
@@ -396,7 +416,14 @@ public class UIManager : MonoBehaviour
     public void ShowControlGuide()
     {
         pausePanel.SetVisible(false);      // 일시정지 끄기
-        controlGuidePanel.SetVisible(true); // 조작법 켜기
+        ControlGuideView.Open(null);       // 조작법 켜기 (10.31: 타이틀 가이드와 같은 새 화면)
+    }
+
+    /// <summary>조작법을 닫고 일시정지로 돌아간다 (Esc·돌아가기 버튼).</summary>
+    public void CloseControlGuide()
+    {
+        ControlGuideView.CloseCurrent();
+        ShowPause();
     }
     //되돌아가기
     public void ShowPause()

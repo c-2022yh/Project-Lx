@@ -1,0 +1,26 @@
+[
+  {
+    "file": "Sound_PlayerAttack_1_High_Plus3.wav",
+    "semitones": 3,
+    "duration_seconds": 0.25,
+    "peak_dbfs": -3.63
+  },
+  {
+    "file": "Sound_PlayerAttack_1_Low_Minus3.wav",
+    "semitones": -3,
+    "duration_seconds": 0.25,
+    "peak_dbfs": -2.57
+  },
+  {
+    "file": "Sound_PlayerAttack_2_High_Plus3.wav",
+    "semitones": 3,
+    "duration_seconds": 0.25,
+    "peak_dbfs": -2.18
+  },
+  {
+    "file": "Sound_PlayerAttack_2_Low_Minus3.wav",
+    "semitones": -3,
+    "duration_seconds": 0.25,
+    "peak_dbfs": -1.83
+  }
+]

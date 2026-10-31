@@ -378,11 +378,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerMove
   moveSpeed: 10
+  maxFallSpeed: 30
   jumpForce: 20
   jumpCooldown: 0.2
   maxAirJumps: 0
+  apexSpeedThreshold: 2
+  apexGravityMultiplier: 0.3
   dropSpeed: 5
   dropMinimumDuration: 0.15
+  dropClearance: 0.02
   coyoteTime: 0.15
   bufferTime: 0.15
   dashSpeed: 70
@@ -393,6 +397,137 @@ MonoBehaviour:
   airControlMin: 0.8
   groundSmooth: 0.01
   airSmooth: 0.1
+  jumpSound:
+    channel: 0
+    clip: {fileID: 0}
+    clips: []
+    volume: 1
+    minimumInterval: 0.05
+    pitchRange: {x: 1, y: 1}
+    maxSimultaneous: 4
+    limitScope: 0
+    spatialBlend: 0
+    minDistance: 1
+    maxDistance: 15
+    useFallback: 0
+    fallbackSound: 5
+  dashSound:
+    channel: 0
+    clip: {fileID: 0}
+    clips: []
+    volume: 1
+    minimumInterval: 0.05
+    pitchRange: {x: 1, y: 1}
+    maxSimultaneous: 4
+    limitScope: 0
+    spatialBlend: 0
+    minDistance: 1
+    maxDistance: 15
+    useFallback: 0
+    fallbackSound: 5
+  defaultFootstepSound:
+    channel: 0
+    clip: {fileID: 0}
+    clips: []
+    volume: 1
+    minimumInterval: 0.05
+    pitchRange: {x: 1, y: 1}
+    maxSimultaneous: 4
+    limitScope: 0
+    spatialBlend: 0
+    minDistance: 1
+    maxDistance: 15
+    useFallback: 0
+    fallbackSound: 5
+  defaultLandingSound:
+    channel: 0
+    clip: {fileID: 0}
+    clips: []
+    volume: 1
+    minimumInterval: 0.05
+    pitchRange: {x: 1, y: 1}
+    maxSimultaneous: 4
+    limitScope: 0
+    spatialBlend: 0
+    minDistance: 1
+    maxDistance: 15
+    useFallback: 0
+    fallbackSound: 5
+  movementSurfaces:
+  - surfaceName: Grass
+    colliderObjectNames: []
+    overlayTilemapNames:
+    - Tilemap_Grass
+    - Grass
+    footstepSound:
+      channel: 0
+      clip: {fileID: 0}
+      clips: []
+      volume: 1
+      minimumInterval: 0.05
+      pitchRange: {x: 1, y: 1}
+      maxSimultaneous: 4
+      limitScope: 0
+      spatialBlend: 0
+      minDistance: 1
+      maxDistance: 15
+      useFallback: 0
+      fallbackSound: 5
+    landingSound:
+      channel: 0
+      clip: {fileID: 0}
+      clips: []
+      volume: 1
+      minimumInterval: 0.05
+      pitchRange: {x: 1, y: 1}
+      maxSimultaneous: 4
+      limitScope: 0
+      spatialBlend: 0
+      minDistance: 1
+      maxDistance: 15
+      useFallback: 0
+      fallbackSound: 5
+  - surfaceName: Stone
+    colliderObjectNames:
+    - Tilemap_Ground
+    - Ground
+    - TIleMap_Platform
+    - MovingPlatform
+    overlayTilemapNames: []
+    footstepSound:
+      channel: 0
+      clip: {fileID: 0}
+      clips: []
+      volume: 1
+      minimumInterval: 0.05
+      pitchRange: {x: 1, y: 1}
+      maxSimultaneous: 4
+      limitScope: 0
+      spatialBlend: 0
+      minDistance: 1
+      maxDistance: 15
+      useFallback: 0
+      fallbackSound: 5
+    landingSound:
+      channel: 0
+      clip: {fileID: 0}
+      clips: []
+      volume: 1
+      minimumInterval: 0.05
+      pitchRange: {x: 1, y: 1}
+      maxSimultaneous: 4
+      limitScope: 0
+      spatialBlend: 0
+      minDistance: 1
+      maxDistance: 15
+      useFallback: 0
+      fallbackSound: 5
+  footstepDistance: 2
+  minimumFootstepInterval: 0.12
+  minimumLandingAirTime: 0.08
+  surfaceProbeHeight: 0.12
+  surfaceProbeHalfWidth: 0.12
+  audioTeleportDistance: 4
 --- !u!114 &144273705479961808
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -433,7 +568,7 @@ MonoBehaviour:
   - attackName: "\uC9E7\uAC8C \uBCA0\uAE30"
     attackSound:
       channel: 0
-      clip: {fileID: 0}
+      clip: {fileID: 8300000, guid: 850159b78808bb44399377f2ade17a53, type: 3}
       clips:
       - {fileID: 0}
       volume: 1
@@ -460,7 +595,7 @@ MonoBehaviour:
       minDistance: 1
       maxDistance: 15
       useFallback: 0
-      fallbackSound: 5
+      fallbackSound: 0
     impactMode: 0
     startupTime: 0.05
     activeTime: 0.1
@@ -482,7 +617,7 @@ MonoBehaviour:
   - attackName: "\uB0B4\uB824 \uCE58\uAE30"
     attackSound:
       channel: 0
-      clip: {fileID: 0}
+      clip: {fileID: 8300000, guid: e490baa1f8d5a7046a1966b95fc52578, type: 3}
       clips:
       - {fileID: 0}
       volume: 1
@@ -511,7 +646,7 @@ MonoBehaviour:
       useFallback: 0
       fallbackSound: 5
     impactMode: 0
-    startupTime: 0.2
+    startupTime: 0.1
     activeTime: 0.3
     recoveryTime: 0.1
     recoveryMovementTime: 0.05
@@ -533,7 +668,7 @@ MonoBehaviour:
     attackName: "\uACF5\uC911 \uBCA0\uAE30"
     attackSound:
       channel: 0
-      clip: {fileID: 0}
+      clip: {fileID: 8300000, guid: fb88e3b885fd09b49bb03f0431d69903, type: 3}
       clips:
       - {fileID: 0}
       volume: 1
@@ -643,6 +778,48 @@ MonoBehaviour:
   awakeningFreezeTime: 0.8
   awakeningRequiredEnergy: 100
   awakeningEnergyDrainPerSecond: 5
+  readySound:
+    channel: 0
+    clip: {fileID: 0}
+    clips: []
+    volume: 1
+    minimumInterval: 0.05
+    pitchRange: {x: 1, y: 1}
+    maxSimultaneous: 4
+    limitScope: 0
+    spatialBlend: 0
+    minDistance: 1
+    maxDistance: 15
+    useFallback: 0
+    fallbackSound: 5
+  startSound:
+    channel: 0
+    clip: {fileID: 0}
+    clips: []
+    volume: 1
+    minimumInterval: 0.05
+    pitchRange: {x: 1, y: 1}
+    maxSimultaneous: 4
+    limitScope: 0
+    spatialBlend: 0
+    minDistance: 1
+    maxDistance: 15
+    useFallback: 0
+    fallbackSound: 5
+  endSound:
+    channel: 0
+    clip: {fileID: 0}
+    clips: []
+    volume: 1
+    minimumInterval: 0.05
+    pitchRange: {x: 1, y: 1}
+    maxSimultaneous: 4
+    limitScope: 0
+    spatialBlend: 0
+    minDistance: 1
+    maxDistance: 15
+    useFallback: 0
+    fallbackSound: 5
   applySpriteTint: 0
   normalColor: {r: 1, g: 1, b: 1, a: 1}
   awakenedColor: {r: 1, g: 1, b: 1, a: 1}

@@ -96,12 +96,16 @@ public class Player : MonoBehaviour
     }
     void FixedUpdate()
     {
+        Move.UpdateDropCollisions();
         //땅에 닿았는지 체크
         isGrounded = CheckGrounded();
+        Move.TickMovementAudio();
 
         Move.ExecuteMove();
         ProcessBufferedAttack();
         Move.ExecuteJump();
+        Move.ApplyApexGravity();
+        Move.ApplyFallSpeedLimit();
 
         //currentState?.DoFixedUpdate();
     }
@@ -176,6 +180,30 @@ public class Player : MonoBehaviour
     private Collider2D GetGroundCollider(ContactPoint2D contact)
     {
         return contact.collider.attachedRigidbody == rb ? contact.otherCollider : contact.collider;
+    }
+
+    // Read-only audio query; grounding and one-way platform decisions remain in CheckGrounded.
+    public bool TryGetGroundSupport(out Collider2D ground, out Vector2 point)
+    {
+        ground = null;
+        point = groundCheck != null ? (Vector2)groundCheck.position : rb.position;
+        if (!isGrounded || supportingGround.Count == 0) return false;
+        float closest = float.PositiveInfinity;
+        float minNormalY = Mathf.Cos(maxGroundAngle * Mathf.Deg2Rad);
+        foreach (ContactPoint2D contact in groundContacts)
+        {
+            Collider2D candidate = GetGroundCollider(contact);
+            if (contact.normal.y < minNormalY || !supportingGround.Contains(candidate)) continue;
+            float horizontalDistance = Mathf.Abs(contact.point.x - rb.position.x);
+            if (horizontalDistance >= closest) continue;
+            closest = horizontalDistance;
+            ground = candidate;
+            point = contact.point;
+        }
+        if (ground != null) return true;
+        ground = supportingGround[0];
+        point = ground.ClosestPoint(point);
+        return true;
     }
 
     public bool TryGetDropPlatforms(List<Collider2D> platforms)

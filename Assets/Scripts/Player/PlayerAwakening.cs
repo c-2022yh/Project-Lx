@@ -62,6 +62,19 @@ public class PlayerAwakening : MonoBehaviour
     //각성 중 초당 소모되는 기력
     [SerializeField, Min(0f)] private float awakeningEnergyDrainPerSecond = 5f;
 
+    [Header("Awakening Audio")]
+    [Tooltip("Plays once when energy becomes sufficient. Initial load and re-enable are silent.")]
+    [SerializeField] private SoundCue readySound = new SoundCue();
+    [Tooltip("Plays when an accepted awakening begins its intro, not on a failed input.")]
+    [SerializeField] private SoundCue startSound = new SoundCue();
+    [Tooltip("Plays when an active awakening ends while alive. Intro cancellation and death are silent.")]
+    [SerializeField] private SoundCue endSound = new SoundCue();
+
+    private PlayerEnergy audioEnergy;
+    private PlayerHealth audioHealth;
+    private readonly AwakeningReadyAudioState readyAudioState = new AwakeningReadyAudioState();
+    private SoundHandle readyVoice, startVoice, endVoice;
+
     [Header("Awakening Color")]
     [Tooltip("Legacy full-sprite tint. Leave off when using PlayerAwakeningVisual.")]
     [SerializeField] private bool applySpriteTint = false;
@@ -119,6 +132,37 @@ public class PlayerAwakening : MonoBehaviour
         && activePlayer.Energy != null
         && activePlayer.Energy.CurrentEnergy > 0f;
 
+    private void OnEnable()
+    {
+        audioEnergy = GetComponent<PlayerEnergy>();
+        audioHealth = GetComponent<PlayerHealth>();
+        readyAudioState.Reset();
+        if (audioEnergy != null) audioEnergy.OnEnergyChanged += HandleAudioEnergyChanged;
+    }
+
+    private void Start() => RefreshReadyAudio(false);
+
+    private void OnDisable()
+    {
+        if (audioEnergy != null) audioEnergy.OnEnergyChanged -= HandleAudioEnergyChanged;
+        readyVoice.Stop();
+        startVoice.Stop();
+        endVoice.Stop();
+        readyAudioState.Reset();
+    }
+
+    private void HandleAudioEnergyChanged() => RefreshReadyAudio(true);
+
+    private void RefreshReadyAudio(bool allowSound)
+    {
+        bool ready = audioEnergy != null && !isAwakened && !isAwakening && !awakeningBlocked
+            && (audioHealth == null || !audioHealth.IsDead)
+            && audioEnergy.MaxEnergy >= awakeningRequiredEnergy
+            && audioEnergy.HasEnergy(awakeningRequiredEnergy);
+        if (readyAudioState.Observe(ready, allowSound))
+            readyVoice = GameAudio.Play(readySound, transform.position, transform, true);
+    }
+
     //각성 진입을 시도
     public void TryAwaken(Player p)
     {
@@ -142,6 +186,10 @@ public class PlayerAwakening : MonoBehaviour
     {
         introStartedAt = Time.time;
         isAwakening = true;
+        RefreshReadyAudio(false);
+        readyVoice.Stop();
+        endVoice.Stop();
+        startVoice = GameAudio.Play(startSound, p.transform.position, transform, true);
 
         p.ActionState.EnterAwakening();
         p.SetPhysicsFreeze(true);
@@ -235,6 +283,7 @@ public class PlayerAwakening : MonoBehaviour
     //각성 상태를 종료하고 능력치를 복구
     private void ExitAwakened(Player p)
     {
+        startVoice.Stop();
         isAwakened = false;
         finisherInProgress = false;
 
@@ -263,6 +312,8 @@ public class PlayerAwakening : MonoBehaviour
         //각성이 끝나면 남은 기력도 비움
         p.Energy.ResetEnergy();
 
+        if (p.Health == null || !p.Health.IsDead)
+            endVoice = GameAudio.Play(endSound, p.transform.position, transform, true);
         OnAwakeningEnded?.Invoke();
     }
 
@@ -270,6 +321,7 @@ public class PlayerAwakening : MonoBehaviour
     public void SetAwakeningBlocked(bool blocked)
     {
         awakeningBlocked = blocked;
+        RefreshReadyAudio(false);
     }
 
     //기존 시간제 유물 코드와의 호환을 위한 함수
@@ -287,6 +339,7 @@ public class PlayerAwakening : MonoBehaviour
     //각성 중이거나 각성 연출 중인 상태를 강제로 종료
     public void EndAwakening()
     {
+        startVoice.Stop();
         if (!isAwakened && !isAwakening) return;
 
         if (awakeningEffect != null) awakeningEffect.Hide();
@@ -315,5 +368,22 @@ public class PlayerAwakening : MonoBehaviour
         }
 
         activePlayer = null;
+        RefreshReadyAudio(false);
+    }
+}
+
+// Readiness notifications are transitions, never a repeating full-gauge sound.
+internal sealed class AwakeningReadyAudioState
+{
+    private bool initialized, wasReady;
+
+    public void Reset() { initialized = wasReady = false; }
+
+    public bool Observe(bool ready, bool allowSound)
+    {
+        bool play = initialized && allowSound && ready && !wasReady;
+        initialized = true;
+        wasReady = ready;
+        return play;
     }
 }

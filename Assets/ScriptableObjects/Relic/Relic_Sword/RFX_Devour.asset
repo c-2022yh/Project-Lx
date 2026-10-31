@@ -12,5 +12,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cc7aefb0fdf6b9f48a42d9a85d69ed80, type: 3}
   m_Name: RFX_Devour
   m_EditorClassIdentifier: Assembly-CSharp::DevourRelicEffect
+  healSound:
+    channel: 0
+    clip: {fileID: 0}
+    clips: []
+    volume: 1
+    minimumInterval: 0.1
+    pitchRange: {x: 1, y: 1}
+    maxSimultaneous: 4
+    limitScope: 0
+    spatialBlend: 0
+    minDistance: 1
+    maxDistance: 15
+    useFallback: 0
+    fallbackSound: 5
   devourSkill: {fileID: 11400000, guid: be9906743b4499c4aad9d914a99a2fe1, type: 2}
   healPerHit: 0.5

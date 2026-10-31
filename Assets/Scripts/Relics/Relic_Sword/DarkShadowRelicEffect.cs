@@ -22,13 +22,16 @@ public class DarkShadowRelicEffect : RelicEffect
 
 
     //유물 장착 시 런타임 생성
+    [Header("Audio")]
+    [SerializeField] private SoundCue executeSound = new SoundCue();
+
     public override IRelicRuntime CreateRuntime(Player p)
     {
         return new DarkShadowRelicRuntime(
             p,
             executeHealthRatio,
             executeEffectPrefab,
-            executeEffectOffset
+            executeEffectOffset, this
         );
     }
 
@@ -36,6 +39,7 @@ public class DarkShadowRelicEffect : RelicEffect
     //암영 유물 런타임 클래스
     private sealed class DarkShadowRelicRuntime : IRelicRuntime
     {
+        private readonly DarkShadowRelicEffect audioSettings;
         private readonly Player player;
 
         private readonly float executeHealthRatio;
@@ -51,9 +55,10 @@ public class DarkShadowRelicEffect : RelicEffect
             Player player,
             float executeHealthRatio,
             GameObject executeEffectPrefab,
-            Vector3 executeEffectOffset)
+            Vector3 executeEffectOffset, DarkShadowRelicEffect audioSettings)
         {
             this.player = player;
+            this.audioSettings = audioSettings;
 
             this.executeHealthRatio = executeHealthRatio;
             this.executeEffectPrefab = executeEffectPrefab;
@@ -131,6 +136,7 @@ public class DarkShadowRelicEffect : RelicEffect
             SpawnExecuteEffect(enemyHealth.transform.position);
 
             enemyHealth.Execute(damageInfo);
+            if (enemyHealth.IsDead) GameAudio.Play(audioSettings.executeSound, enemyHealth.transform.position, player.transform);
 
             Debug.Log("[DarkShadow] 암영 처형 발동");
         }

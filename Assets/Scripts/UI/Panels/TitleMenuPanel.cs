@@ -16,6 +16,9 @@ public class TitleMenuPanel : MonoBehaviour
         // 저장된 설정을 읽어 반영. 타이틀이 게임의 첫 화면이므로 여기가 적절한 자리.
         GameSettings.LoadAndApply();
 
+        // 인트로·아무 키나 누르세요·여우불 메뉴 연출 (10.29 시안). 씬을 고치지 않고 여기서 붙인다.
+        if (GetComponent<TitleIntro>() == null) gameObject.AddComponent<TitleIntro>();
+
         SetVisible(true);
         saveSlotPanel?.SetVisible(false);
         settingsPanel?.SetVisible(false);
@@ -39,17 +42,9 @@ public class TitleMenuPanel : MonoBehaviour
     /// <summary>"가이드"</summary>
     public void OnGuideButton()
     {
-        if (controlGuidePanel == null)
-        {
-            Debug.LogWarning("[TitleMenuPanel] ControlGuidePanel이 연결되지 않았습니다.");
-            return;
-        }
-
-        // 조작법 패널은 인게임에서는 일시정지로, 여기서는 타이틀로 돌아가야 한다.
-        controlGuidePanel.OnClosed = () => SetVisible(true);
-
+        // 10.31: 조작법 화면은 코드로 그리는 ControlGuideView를 쓴다 (일시정지 "조작법"과 같은 화면).
         SetVisible(false);
-        controlGuidePanel.SetVisible(true);
+        ControlGuideView.Open(() => SetVisible(true));
     }
 
     /// <summary>"게임 종료"</summary>
