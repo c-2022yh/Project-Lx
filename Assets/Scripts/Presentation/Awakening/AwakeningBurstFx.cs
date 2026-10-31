@@ -215,7 +215,7 @@ public class AwakeningBurstFx : MonoBehaviour
         float flicker = 1f + 0.04f * Mathf.Sin(Time.unscaledTime * 40f);
         burst.transform.localScale = new Vector3(s, s * flicker, 1f);
         burst.transform.position = Feet() + (Vector3)offset;
-        Color c = tint;
+        Color c = AwakeningColors.Main(this);   // 보주마다 원래 색 (기본 파랑)
         c.a = Mathf.Clamp01(alpha) * maxAlpha;
         burst.color = c;
     }

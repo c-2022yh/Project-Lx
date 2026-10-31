@@ -135,7 +135,12 @@ public class BossRoom : MonoBehaviour
             doors[i].gameObject.SetActive(false);
         }
 
-        if (boss != null) bossStartPosition = boss.transform.position;
+        if (boss != null)
+        {
+            bossStartPosition = boss.transform.position;
+            GolemBossController controller = boss.GetComponent<GolemBossController>();
+            if (controller != null) ConfigureCombatArena(controller);
+        }
 
         if (FieldObjectState.IsDone(this))
         {
@@ -339,6 +344,7 @@ public class BossRoom : MonoBehaviour
         golem = boss.GetComponent<GolemBossController>();
         if (golem != null)
         {
+            ConfigureCombatArena(golem);
             golem.onPhaseTwo.RemoveListener(HandlePhaseTwo);
             golem.onPhaseTwo.AddListener(HandlePhaseTwo);
         }
@@ -524,6 +530,34 @@ public class BossRoom : MonoBehaviour
     // ───────────── 연출 도우미 ─────────────
 
     private Bounds RoomBounds() => GetComponent<Collider2D>().bounds;
+
+    private void ConfigureCombatArena(GolemBossController controller)
+    {
+        Bounds room = RoomBounds();
+        Transform leftDoor = null, rightDoor = null;
+        if (doors != null)
+            foreach (Transform door in doors)
+            {
+                if (door == null) continue;
+                if (leftDoor == null || door.position.x < leftDoor.position.x) leftDoor = door;
+                if (rightDoor == null || door.position.x > rightDoor.position.x) rightDoor = door;
+            }
+        float left = room.min.x, right = room.max.x;
+        if (leftDoor != null && rightDoor != leftDoor)
+        {
+            left = DoorInnerEdge(leftDoor, true);
+            right = DoorInnerEdge(rightDoor, false);
+        }
+        controller.ConfigureArena(left, right, room.min.y, room.max.y);
+    }
+
+    private static float DoorInnerEdge(Transform door, bool isLeft)
+    {
+        BoxCollider2D box = door.GetComponent<BoxCollider2D>();
+        if (box == null) return door.position.x;
+        Vector2 edge = box.offset + Vector2.right * box.size.x * (isLeft ? 0.5f : -0.5f);
+        return box.transform.TransformPoint(edge).x;
+    }
 
     private BossMoonBeam CreateBeam()
     {

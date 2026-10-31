@@ -417,7 +417,7 @@ MonoBehaviour:
     fallbackSound: 5
   deathSound:
     channel: 0
-    clip: {fileID: 0}
+    clip: {fileID: 8300000, guid: 332c4c6e6e1002f46b64d8e58e21c1d5, type: 3}
     clips:
     - {fileID: 0}
     volume: 1
@@ -475,7 +475,7 @@ MonoBehaviour:
   recoveryTime: 1.5
   prepareSound:
     channel: 0
-    clip: {fileID: 0}
+    clip: {fileID: 8300000, guid: d2aa94980e9bb0146b602709d43aa388, type: 3}
     clips: []
     volume: 1
     minimumInterval: 0.1

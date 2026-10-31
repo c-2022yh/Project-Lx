@@ -217,7 +217,9 @@ public class MapPanel : MonoBehaviour
         return true;
     }
 
-    private static bool ShowInRoomMap(MapMarkerKind kind) => kind == MapMarkerKind.Shrine;
+    // 11.01: 지도에는 내 위치·제단·한 번 쓰러뜨린 정예·보스만 찍는다.
+    private static bool ShowInRoomMap(MapMarkerKind kind) =>
+        kind == MapMarkerKind.Shrine || kind == MapMarkerKind.EliteEnemy || kind == MapMarkerKind.Boss;
 
     // ── 방 지도 안개 (10.30) ─────────────────
     // 들어간 방도 통째로 보이지 않고, 걸어서 밝힌 칸(MapExploration)만 보인다.
@@ -323,6 +325,15 @@ public class MapPanel : MonoBehaviour
 
         // 방 지도에서는 범례 글자를 통째로 뺀다.
         legend.gameObject.SetActive(!atlasMode);
+
+        // 11.01: 지도에 나오는 것(제단·정예·보스)만 범례에 남긴다
+        foreach (Transform entry in legend)
+        {
+            if (!entry.name.StartsWith("Legend_")) continue;
+            string kind = entry.name.Substring("Legend_".Length);
+            bool shown = System.Enum.TryParse(kind, out MapMarkerKind k) && ShowInRoomMap(k);
+            entry.gameObject.SetActive(shown);
+        }
     }
 
     /// <summary>방 그림을 담는 층. 마커·플레이어 점보다 뒤(첫 번째 자식)에 둔다.</summary>
@@ -412,9 +423,13 @@ public class MapPanel : MonoBehaviour
         List<MarkerInfo> markers = new List<MarkerInfo>();
         Collect(markers);
 
-        // 방 지도는 제단과 내 위치만 찍는다 (몬스터·상자·출구 등은 뺀다).
-        // 10.30: 아직 안 밝힌 곳의 제단도 숨긴다.
-        if (atlasMode)
+        // 11.01: 씬에 있는 것 중에는 제단만 남기고, 쓰러뜨린 정예·보스 자리를 더한다.
+        // (살아 있는 몬스터·상자·출구·부술 수 있는 벽은 찍지 않는다)
+        markers.RemoveAll(m => m.Kind != MapMarkerKind.Shrine);
+        foreach (var mark in MapDefeatedMarks.InScene(SceneManager.GetActiveScene().name))
+            markers.Add(new MarkerInfo { Kind = mark.kind, Label = "", Position = mark.position });
+
+        // 아직 안 밝힌 곳의 마커는 숨긴다 (방 그림이 있든 없든). 11.01: 방 그림 없는 맵에도 적용
         {
             string sceneId = SceneManager.GetActiveScene().name;
             markers.RemoveAll(m => !ShowInRoomMap(m.Kind) ||

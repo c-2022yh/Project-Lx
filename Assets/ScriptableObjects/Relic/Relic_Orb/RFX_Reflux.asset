@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::RefluxRelicEffect
   recoverySound:
     channel: 0
-    clip: {fileID: 0}
+    clip: {fileID: 8300000, guid: a5bae2bc4c98acf42a1f104c3b2d7d0c, type: 3}
     clips: []
     volume: 1
     minimumInterval: 0.1

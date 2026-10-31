@@ -101,9 +101,17 @@ public class Player : MonoBehaviour
         isGrounded = CheckGrounded();
         Move.TickMovementAudio();
 
-        Move.ExecuteMove();
-        ProcessBufferedAttack();
-        Move.ExecuteJump();
+        if (SceneFader.IsPlayerControlBlocked)
+        {
+            ClearBufferedActionInputs();
+            rb.linearVelocity = new Vector2(0f, rb.linearVelocity.y);
+        }
+        else
+        {
+            Move.ExecuteMove();
+            ProcessBufferedAttack();
+            Move.ExecuteJump();
+        }
         Move.ApplyApexGravity();
         Move.ApplyFallSpeedLimit();
 
@@ -248,7 +256,7 @@ public class Player : MonoBehaviour
 
     private bool CanBufferActionInput()
     {
-        return ActionState != null && !ActionState.isDead && !ActionState.isHitStunned
+        return !SceneFader.IsPlayerControlBlocked && ActionState != null && !ActionState.isDead && !ActionState.isHitStunned
             && !ActionState.isAwakening && (Health == null || !Health.IsDead);
     }
 
@@ -292,7 +300,7 @@ public class Player : MonoBehaviour
     //초토화는 PlayerSkill 내부에서 별도로 실행하므로 X/A/S/D/F 슬롯을 차지하지 않는다.
     public void OnAwaken(InputValue value)
     {
-        if (!value.isPressed || Awakening == null || ActionState == null) return;
+        if (SceneFader.IsPlayerControlBlocked || !value.isPressed || Awakening == null || ActionState == null) return;
 
         if (Awakening.IsAwakened)
         {
@@ -306,7 +314,11 @@ public class Player : MonoBehaviour
     //public void OnTransformSuper(InputValue value) { if (value.isPressed && ActionState.CanTransform()) currentState?.OnTransformSuper(); }
     //public void OnTransformAnimal(InputValue value) { if (value.isPressed && ActionState.CanTransform()) currentState?.OnTransformAnimal(); }
 
-    public void OnInteract() { currentInteractable?.Interact(this); }
+    public void OnInteract()
+    {
+        if (SceneFader.IsPlayerControlBlocked) return;
+        currentInteractable?.Interact(this);
+    }
 
 
     public void ChangeState(PlayerState newState)

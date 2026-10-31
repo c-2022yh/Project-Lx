@@ -22,6 +22,9 @@ using UnityEditor;
 ///
 /// 글·대사·이름은 Resources/StoryDialogues 에셋의 "시작 연출" 칸에서 바꾼다.
 /// 그림은 Resources/Story 폴더 (동굴 층 그림, 캐릭터 대기·무릎·걷기, 보주).
+///   일어나기: Intro_Kneel → Intro_Rise1 → Intro_Rise2 (320×480 같은 판, 발끝 아래 17px)
+///   손 뻗기: Intro_Reach1~3 (보주가 다가오면 손을 내밀고, 받을 때 높이 든다. 같은 판 규격)
+///   캐릭터는 게임 속 Player 그림처럼 세로를 0.75배로 줄여서 그린다 (ActorYScale).
 /// Z·Enter·클릭: 다음 / Esc: 연출 건너뛰기(바로 Tutorial로).
 /// </summary>
 public class IntroCutscene : MonoBehaviour
@@ -39,6 +42,12 @@ public class IntroCutscene : MonoBehaviour
     private const float BarHeight = 96f;   // 1920×1080 기준
     private const float FloorY = -300f;    // 화면 가운데 기준 바닥 높이 (시안 560/720)
     private const float ActorHeight = 270f;
+    private const float GroundGrassPx = 0f;    // Intro_Ground 그림에서 땅 윗면 위로 솟은 높이 (풀 없음 = 0)
+    private const float OrbScale = 0.6f;       // 보주 크기 배율 (모든 장면의 보주 크기에 곱한다)
+    private const float ActorYScale = 0.75f;   // 게임 속 Player 그림과 같은 비율 (세로 0.75배)
+    // 320×480 판 그림(무릎·일어나기·손 뻗기): 발끝이 판 아래에서 17px 위, 몸 가운데가 대기 그림보다 14px 왼쪽에 있다
+    private const float FrameFootPx = 17f;
+    private const float FrameBodyOffsetPx = 14f;
 
     public static bool IsPlaying { get; private set; }
 
@@ -51,6 +60,8 @@ public class IntroCutscene : MonoBehaviour
 
     private RectTransform actor;
     private Image kneelImg, idleImg, walkImg;
+    private Image rise1Img, rise2Img, reach1Img, reach2Img, reach3Img;
+    private Image[] poses;
     private Sprite[] walkFrames;
     private float walkStart;
 
@@ -184,8 +195,9 @@ public class IntroCutscene : MonoBehaviour
         if (skip) { Leave(); yield break; }
 
         // 일어나 보주 쪽으로 걷는다. 보주가 조금 밝아진다.
-        SetActor(kneel: false);
-        yield return Wait(0.35f);
+        // 무릎 → 반쯤 일어남 → 숙인 채 한 발 → 걷기
+        yield return PoseSequence(0.35f, rise1Img, rise2Img);
+        if (skip) { Leave(); yield break; }
         StartCoroutine(MoveOrb(1320f, -90f, 135f, 0.7f, 1.2f));
         StartCoroutine(GlowTo(0.35f, 1.2f));
         yield return Walk(450f, 915f, 2.6f);
@@ -194,6 +206,9 @@ public class IntroCutscene : MonoBehaviour
         // 3) 보주가 다가와 말을 건다
         StartCoroutine(GlowFollow(1200f, -60f, 0.55f, 1.1f));
         yield return MoveOrb(1200f, -60f, 165f, 1f, 1.1f);
+        // 다가온 보주에 손을 내민다 (말하는 동안 그대로)
+        yield return PoseSequence(0.2f, reach1Img);
+        ShowPose(reach2Img);
         skipHint.enabled = false;   // 여기부터는 대화창·획득 알림이 키를 받는다
 
         DialogueData talk = StoryDialogues.IntroOrb;
@@ -204,7 +219,9 @@ public class IntroCutscene : MonoBehaviour
             while (DialogueBox.IsBusy) yield return null;
         }
 
-        // 4) 획득
+        // 4) 획득: 손을 높이 들어 보주를 받는다
+        ShowPose(reach3Img);
+        yield return new WaitForSecondsRealtime(0.3f);
         AcquirePopup.Show(orbImg.sprite, StoryDialogues.IntroOrbName, StoryDialogues.IntroOrbDescription);
         float waitOpen = 0f;
         while (!AcquirePopup.IsOpen && waitOpen < 1f) { waitOpen += Time.unscaledDeltaTime; yield return null; }
@@ -212,6 +229,7 @@ public class IntroCutscene : MonoBehaviour
 
         burst.rectTransform.anchoredPosition = ScreenPos(960f, -90f);
         StartCoroutine(Burst());
+        ShowPose(idleImg);
         StartCoroutine(GlowFollow(840f, 0f, 0.4f, 1.0f));
         yield return MoveOrb(840f, 0f, 69f, 1f, 1.0f);
         yield return new WaitForSecondsRealtime(0.4f);
@@ -298,8 +316,7 @@ public class IntroCutscene : MonoBehaviour
     {
         walking = true;
         walkStart = Time.unscaledTime;
-        idleImg.enabled = false;
-        walkImg.enabled = true;
+        ShowPose(walkImg);
         for (float t = 0f; t < time && !skip; t += Time.unscaledDeltaTime)
         {
             PlaceActor(Mathf.Lerp(fromX, toX, t / time));
@@ -307,8 +324,7 @@ public class IntroCutscene : MonoBehaviour
         }
         PlaceActor(toX);
         walking = false;
-        walkImg.enabled = false;
-        idleImg.enabled = true;
+        ShowPose(idleImg);
     }
 
     private IEnumerator MoveOrb(float x, float y, float size, float alpha, float time)
@@ -319,7 +335,7 @@ public class IntroCutscene : MonoBehaviour
         {
             float u = Mathf.SmoothStep(0f, 1f, t / time);
             orb.anchoredPosition = Vector2.Lerp(fromPos, toPos, u);
-            float s = Mathf.Lerp(fromSize, size, u);
+            float s = Mathf.Lerp(fromSize, size * OrbScale, u);
             orb.sizeDelta = new Vector2(s, s);
             SetAlpha(orbImg, Mathf.Lerp(fromA, alpha, u));
             orbBobBase = s / 165f;
@@ -372,17 +388,29 @@ public class IntroCutscene : MonoBehaviour
 
     private void PlaceActor(float x) => actor.anchoredPosition = new Vector2(x - 960f, FloorY);
 
-    private void SetActor(bool kneel)
+    private void SetActor(bool kneel) => ShowPose(kneel ? kneelImg : idleImg);
+
+    /// <summary>캐릭터 그림 중 하나만 보이게</summary>
+    private void ShowPose(Image pose)
     {
-        kneelImg.enabled = kneel;
-        idleImg.enabled = !kneel;
-        walkImg.enabled = false;
+        foreach (Image p in poses)
+            if (p != null) p.enabled = p == pose;
+    }
+
+    private IEnumerator PoseSequence(float each, params Image[] frames)
+    {
+        foreach (Image f in frames)
+        {
+            if (skip) yield break;
+            ShowPose(f);
+            yield return Wait(each);
+        }
     }
 
     private void SetOrb(float x, float y, float size, float alpha)
     {
         orb.anchoredPosition = ScreenPos(x, y);
-        orb.sizeDelta = new Vector2(size, size);
+        orb.sizeDelta = new Vector2(size, size) * OrbScale;
         SetAlpha(orbImg, alpha);
         orbBobBase = size / 165f;
     }
@@ -432,6 +460,14 @@ public class IntroCutscene : MonoBehaviour
         Stretch(NewImage("Near", cave, Color.white, Load("Intro_Cave_near")).rectTransform, 0f);
         wall = NewImage("RightWall", cave, Color.white, Load("Intro_Cave_wall"));
         Stretch(wall.rectTransform, 0f);
+
+        // 바닥: 게임과 같은 땅 타일(파랑, 아래는 어두운 돌)을 한 줄로 깐 그림. 윗면이 캐릭터 발(FloorY)에 오게.
+        Image ground = NewImage("Ground", cave, Color.white, Load("Intro_Ground"));
+        RectTransform gr = ground.rectTransform;
+        gr.anchorMin = gr.anchorMax = new Vector2(0.5f, 0.5f);
+        gr.pivot = new Vector2(0.5f, 1f);
+        gr.sizeDelta = ground.sprite != null ? new Vector2(ground.sprite.rect.width, ground.sprite.rect.height) : new Vector2(1920f, 280f);
+        gr.anchoredPosition = new Vector2(0f, FloorY + GroundGrassPx);
         Stretch(NewImage("Vignette", cave, Color.white, Load("Intro_Cave_vignette")).rectTransform, 0f);
 
         // 보주
@@ -448,9 +484,16 @@ public class IntroCutscene : MonoBehaviour
         actor = NewRect("Actor", cave);
         actor.sizeDelta = new Vector2(300f, ActorHeight);
         actor.pivot = new Vector2(0.5f, 0f);
-        kneelImg = ActorPart("Kneel", "Intro_Kneel", -15f);
+        actor.localScale = new Vector3(1f, ActorYScale, 1f);
+        kneelImg = FramePart("Kneel", "Intro_Kneel");
+        rise1Img = FramePart("Rise1", "Intro_Rise1");
+        rise2Img = FramePart("Rise2", "Intro_Rise2");
         idleImg = ActorPart("Idle", "Intro_Idle", 0f);
         walkImg = ActorPart("Walk", "Intro_Walk1", WalkOffsetPx * ActorHeight / 368f);
+        reach1Img = FramePart("Reach1", "Intro_Reach1");
+        reach2Img = FramePart("Reach2", "Intro_Reach2");
+        reach3Img = FramePart("Reach3", "Intro_Reach3");
+        poses = new[] { kneelImg, rise1Img, rise2Img, idleImg, walkImg, reach1Img, reach2Img, reach3Img };
         walkFrames = new Sprite[WalkKeys.Length];
         for (int i = 0; i < walkFrames.Length; i++) walkFrames[i] = Load("Intro_Walk" + (i + 1));
         SetActor(kneel: true);
@@ -494,6 +537,21 @@ public class IntroCutscene : MonoBehaviour
         // 서 있는 그림(대기) 높이 368px이 ActorHeight가 되는 배율
         float scale = ActorHeight / 368f;
         r.sizeDelta = s != null ? new Vector2(s.rect.width, s.rect.height) * scale : new Vector2(100f, ActorHeight);
+        return img;
+    }
+
+    /// <summary>320×480 판 그림 한 장. 대기 그림과 같은 배율로 줄이고 발끝·몸 가운데를 맞춘다.</summary>
+    private Image FramePart(string name, string sprite)
+    {
+        Sprite s = Load(sprite);
+        Image img = NewImage(name, actor, Color.white, s);
+        RectTransform r = img.rectTransform;
+        r.anchorMin = r.anchorMax = new Vector2(0.5f, 0f);
+        r.pivot = new Vector2(0.5f, 0f);
+        float scale = ActorHeight / 368f;
+        Vector2 size = s != null ? new Vector2(s.rect.width, s.rect.height) : new Vector2(320f, 480f);
+        r.sizeDelta = size * scale;
+        r.anchoredPosition = new Vector2(FrameBodyOffsetPx * scale, -FrameFootPx * scale);
         return img;
     }
 

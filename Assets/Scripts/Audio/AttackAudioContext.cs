@@ -7,17 +7,19 @@ public sealed class AttackAudioContext
     private readonly SoundCue cue;
     private readonly ImpactSoundMode mode;
     private readonly Transform owner;
+    private readonly bool suppressOnKill;
     private readonly HashSet<int> targets;
     private bool played;
     private bool clipSelected;
     private SoundCue selectedCue;
     private AudioClip selectedClip;
 
-    public AttackAudioContext(SoundCue cue, ImpactSoundMode mode, Transform owner)
+    public AttackAudioContext(SoundCue cue, ImpactSoundMode mode, Transform owner, bool suppressOnKill = false)
     {
         this.cue = cue;
         this.mode = mode;
         this.owner = owner;
+        this.suppressOnKill = suppressOnKill;
         if (mode == ImpactSoundMode.OncePerTarget) targets = new HashSet<int>();
     }
 
@@ -30,7 +32,7 @@ public sealed class AttackAudioContext
             selectedClip = selectedCue?.PickClip();
             clipSelected = true;
         }
-        return new AttackAudioContext(cue, linkedMode, owner)
+        return new AttackAudioContext(cue, linkedMode, owner, suppressOnKill)
         {
             clipSelected = true,
             selectedCue = this.selectedCue,
@@ -38,10 +40,10 @@ public sealed class AttackAudioContext
         };
     }
 
-    // Call only after real damage is accepted, including a lethal hit.
-    public void OnDamageApplied(Transform target)
+    // Call after damage is accepted and HP is updated. Skipped kills do not consume hit policy.
+    public void OnDamageApplied(Transform target, bool isLethal = false)
     {
-        if (target == null) return;
+        if (target == null || (suppressOnKill && isLethal)) return;
         if (mode == ImpactSoundMode.OncePerAction && played) return;
         int id = target.GetHashCode();
         if (mode == ImpactSoundMode.OncePerTarget && targets.Contains(id)) return;

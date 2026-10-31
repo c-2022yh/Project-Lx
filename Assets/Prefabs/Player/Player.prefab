@@ -339,7 +339,8 @@ MonoBehaviour:
     channel: 0
     clip: {fileID: 0}
     clips:
-    - {fileID: 0}
+    - {fileID: 8300000, guid: 3e9af4cdcda3f60418a7f9e0ac1ec663, type: 3}
+    - {fileID: 8300000, guid: 9cc35a55c00f4cb4b8bb328c271461b9, type: 3}
     volume: 1
     minimumInterval: 0.05
     pitchRange: {x: 1, y: 1}
@@ -352,7 +353,7 @@ MonoBehaviour:
     fallbackSound: 5
   deathSound:
     channel: 0
-    clip: {fileID: 0}
+    clip: {fileID: 8300000, guid: 4528c9bd40618f54eabf154491fec6e0, type: 3}
     clips:
     - {fileID: 0}
     volume: 1
@@ -391,7 +392,7 @@ MonoBehaviour:
   bufferTime: 0.15
   dashSpeed: 70
   dashDuration: 0.1
-  dashCooldown: 0.5
+  dashCooldown: 1.2
   lastDashTime: 0
   isDashUnlocked: 0
   airControlMin: 0.8
@@ -399,9 +400,9 @@ MonoBehaviour:
   airSmooth: 0.1
   jumpSound:
     channel: 0
-    clip: {fileID: 0}
+    clip: {fileID: 8300000, guid: 74a48f1c63a1ef04e83af8f17b293bbf, type: 3}
     clips: []
-    volume: 1
+    volume: 0.7
     minimumInterval: 0.05
     pitchRange: {x: 1, y: 1}
     maxSimultaneous: 4
@@ -413,7 +414,7 @@ MonoBehaviour:
     fallbackSound: 5
   dashSound:
     channel: 0
-    clip: {fileID: 0}
+    clip: {fileID: 8300000, guid: d94e081b8b336ed4eb622f9a187ace0d, type: 3}
     clips: []
     volume: 1
     minimumInterval: 0.05
@@ -428,8 +429,12 @@ MonoBehaviour:
   defaultFootstepSound:
     channel: 0
     clip: {fileID: 0}
-    clips: []
-    volume: 1
+    clips:
+    - {fileID: 8300000, guid: d6cbe198de9af294d804c4af63a03ffc, type: 3}
+    - {fileID: 8300000, guid: 7f0cb0e1f24c0b04a884be6ac9d1412a, type: 3}
+    - {fileID: 8300000, guid: 873a9f63384bcf343abc97b803c2e3f0, type: 3}
+    - {fileID: 8300000, guid: 0e2808792ce87cf4ba6755ca7a1c09c6, type: 3}
+    volume: 0.6
     minimumInterval: 0.05
     pitchRange: {x: 1, y: 1}
     maxSimultaneous: 4
@@ -441,9 +446,9 @@ MonoBehaviour:
     fallbackSound: 5
   defaultLandingSound:
     channel: 0
-    clip: {fileID: 0}
+    clip: {fileID: 8300000, guid: 61a1ad44ad2a95741bb922809f1a83e1, type: 3}
     clips: []
-    volume: 1
+    volume: 0.07
     minimumInterval: 0.05
     pitchRange: {x: 1, y: 1}
     maxSimultaneous: 4
@@ -462,8 +467,12 @@ MonoBehaviour:
     footstepSound:
       channel: 0
       clip: {fileID: 0}
-      clips: []
-      volume: 1
+      clips:
+      - {fileID: 8300000, guid: d6cbe198de9af294d804c4af63a03ffc, type: 3}
+      - {fileID: 8300000, guid: 7f0cb0e1f24c0b04a884be6ac9d1412a, type: 3}
+      - {fileID: 8300000, guid: 873a9f63384bcf343abc97b803c2e3f0, type: 3}
+      - {fileID: 8300000, guid: 0e2808792ce87cf4ba6755ca7a1c09c6, type: 3}
+      volume: 0.6
       minimumInterval: 0.05
       pitchRange: {x: 1, y: 1}
       maxSimultaneous: 4
@@ -475,9 +484,9 @@ MonoBehaviour:
       fallbackSound: 5
     landingSound:
       channel: 0
-      clip: {fileID: 0}
+      clip: {fileID: 8300000, guid: 61a1ad44ad2a95741bb922809f1a83e1, type: 3}
       clips: []
-      volume: 1
+      volume: 0.7
       minimumInterval: 0.05
       pitchRange: {x: 1, y: 1}
       maxSimultaneous: 4
@@ -497,8 +506,12 @@ MonoBehaviour:
     footstepSound:
       channel: 0
       clip: {fileID: 0}
-      clips: []
-      volume: 1
+      clips:
+      - {fileID: 8300000, guid: d6cbe198de9af294d804c4af63a03ffc, type: 3}
+      - {fileID: 8300000, guid: 7f0cb0e1f24c0b04a884be6ac9d1412a, type: 3}
+      - {fileID: 8300000, guid: 873a9f63384bcf343abc97b803c2e3f0, type: 3}
+      - {fileID: 8300000, guid: 0e2808792ce87cf4ba6755ca7a1c09c6, type: 3}
+      volume: 0.6
       minimumInterval: 0.05
       pitchRange: {x: 1, y: 1}
       maxSimultaneous: 4
@@ -510,9 +523,9 @@ MonoBehaviour:
       fallbackSound: 5
     landingSound:
       channel: 0
-      clip: {fileID: 0}
+      clip: {fileID: 8300000, guid: 61a1ad44ad2a95741bb922809f1a83e1, type: 3}
       clips: []
-      volume: 1
+      volume: 0.7
       minimumInterval: 0.05
       pitchRange: {x: 1, y: 1}
       maxSimultaneous: 4
@@ -522,8 +535,8 @@ MonoBehaviour:
       maxDistance: 15
       useFallback: 0
       fallbackSound: 5
-  footstepDistance: 2
-  minimumFootstepInterval: 0.12
+  footstepDistance: 3.5
+  minimumFootstepInterval: 0.3
   minimumLandingAirTime: 0.08
   surfaceProbeHeight: 0.12
   surfaceProbeHalfWidth: 0.12
@@ -587,8 +600,11 @@ MonoBehaviour:
       channel: 0
       clip: {fileID: 0}
       clips:
-      - {fileID: 8300000, guid: 726d2054f77006d4995c692f10936c6c, type: 3}
-      - {fileID: 8300000, guid: 0c4475c4fab49dc48901fe42c78a32ca, type: 3}
+      - {fileID: 8300000, guid: 4c4a9c6854d7c43449eb69e03189f7ac, type: 3}
+      - {fileID: 8300000, guid: 64f518349f5641d468307cf694f4f37e, type: 3}
+      - {fileID: 8300000, guid: 0ba96c2f0e4b9c2448d552acebe037b5, type: 3}
+      - {fileID: 8300000, guid: 7adf4a8a07b4a2f4d862c3272eb2b813, type: 3}
+      - {fileID: 8300000, guid: 430af4ecde1fa5e4c959e5267c8391bc, type: 3}
       volume: 1
       minimumInterval: 0.05
       pitchRange: {x: 1, y: 1}
@@ -662,8 +678,11 @@ MonoBehaviour:
       channel: 0
       clip: {fileID: 0}
       clips:
-      - {fileID: 8300000, guid: 0c4475c4fab49dc48901fe42c78a32ca, type: 3}
-      - {fileID: 8300000, guid: 726d2054f77006d4995c692f10936c6c, type: 3}
+      - {fileID: 8300000, guid: 4c4a9c6854d7c43449eb69e03189f7ac, type: 3}
+      - {fileID: 8300000, guid: 64f518349f5641d468307cf694f4f37e, type: 3}
+      - {fileID: 8300000, guid: 0ba96c2f0e4b9c2448d552acebe037b5, type: 3}
+      - {fileID: 8300000, guid: 7adf4a8a07b4a2f4d862c3272eb2b813, type: 3}
+      - {fileID: 8300000, guid: 430af4ecde1fa5e4c959e5267c8391bc, type: 3}
       volume: 1
       minimumInterval: 0.05
       pitchRange: {x: 1, y: 1}
@@ -739,8 +758,11 @@ MonoBehaviour:
       channel: 0
       clip: {fileID: 0}
       clips:
-      - {fileID: 8300000, guid: 0c4475c4fab49dc48901fe42c78a32ca, type: 3}
-      - {fileID: 8300000, guid: 726d2054f77006d4995c692f10936c6c, type: 3}
+      - {fileID: 8300000, guid: 4c4a9c6854d7c43449eb69e03189f7ac, type: 3}
+      - {fileID: 8300000, guid: 64f518349f5641d468307cf694f4f37e, type: 3}
+      - {fileID: 8300000, guid: 0ba96c2f0e4b9c2448d552acebe037b5, type: 3}
+      - {fileID: 8300000, guid: 7adf4a8a07b4a2f4d862c3272eb2b813, type: 3}
+      - {fileID: 8300000, guid: 430af4ecde1fa5e4c959e5267c8391bc, type: 3}
       volume: 1
       minimumInterval: 0.05
       pitchRange: {x: 1, y: 1}
@@ -860,7 +882,7 @@ MonoBehaviour:
   awakeningEnergyDrainPerSecond: 5
   readySound:
     channel: 0
-    clip: {fileID: 0}
+    clip: {fileID: 8300000, guid: c69cf44f832e5e04d92607dde47992dc, type: 3}
     clips: []
     volume: 1
     minimumInterval: 0.05
@@ -874,7 +896,7 @@ MonoBehaviour:
     fallbackSound: 5
   startSound:
     channel: 0
-    clip: {fileID: 0}
+    clip: {fileID: 8300000, guid: 42b8dd3ca17823846a55a2b9f9bff163, type: 3}
     clips: []
     volume: 1
     minimumInterval: 0.05

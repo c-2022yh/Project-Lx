@@ -16,7 +16,7 @@ MonoBehaviour:
     attackName: "\uD669\uD63C 3\uD0C0"
     attackSound:
       channel: 0
-      clip: {fileID: 0}
+      clip: {fileID: 8300000, guid: 3b0cdb9179ea94c4980eec6e25d3d3a5, type: 3}
       clips:
       - {fileID: 0}
       volume: 1
@@ -31,7 +31,7 @@ MonoBehaviour:
       fallbackSound: 5
     impactSound:
       channel: 0
-      clip: {fileID: 8300000, guid: fb88e3b885fd09b49bb03f0431d69903, type: 3}
+      clip: {fileID: 8300000, guid: a9f25ebf4ac835f4c84cf28fb3db2454, type: 3}
       clips: []
       volume: 0.8
       minimumInterval: 0.02
@@ -43,7 +43,7 @@ MonoBehaviour:
       maxDistance: 15
       useFallback: 0
       fallbackSound: 0
-    impactMode: 2
+    impactMode: 1
     startupTime: 0.1
     activeTime: 0.2
     recoveryTime: 0.2

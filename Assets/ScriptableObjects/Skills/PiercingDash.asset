@@ -35,7 +35,7 @@ MonoBehaviour:
       fallbackSound: 5
     releaseSound:
       channel: 0
-      clip: {fileID: 8300000, guid: f577a36d71b391143bdaadd8d36b1d1a, type: 3}
+      clip: {fileID: 8300000, guid: c79836683402b414ea9abd9f4c756d8a, type: 3}
       clips:
       - {fileID: 0}
       volume: 1
@@ -50,7 +50,7 @@ MonoBehaviour:
       fallbackSound: 5
     impactSound:
       channel: 0
-      clip: {fileID: 8300000, guid: c79836683402b414ea9abd9f4c756d8a, type: 3}
+      clip: {fileID: 8300000, guid: c180824238d0999428440992185e8172, type: 3}
       clips:
       - {fileID: 0}
       volume: 1
