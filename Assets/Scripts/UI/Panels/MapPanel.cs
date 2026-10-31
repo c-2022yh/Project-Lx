@@ -325,6 +325,15 @@ public class MapPanel : MonoBehaviour
 
         // 방 지도에서는 범례 글자를 통째로 뺀다.
         legend.gameObject.SetActive(!atlasMode);
+
+        // 11.01: 지도에 나오는 것(제단·정예·보스)만 범례에 남긴다
+        foreach (Transform entry in legend)
+        {
+            if (!entry.name.StartsWith("Legend_")) continue;
+            string kind = entry.name.Substring("Legend_".Length);
+            bool shown = System.Enum.TryParse(kind, out MapMarkerKind k) && ShowInRoomMap(k);
+            entry.gameObject.SetActive(shown);
+        }
     }
 
     /// <summary>방 그림을 담는 층. 마커·플레이어 점보다 뒤(첫 번째 자식)에 둔다.</summary>
@@ -420,9 +429,7 @@ public class MapPanel : MonoBehaviour
         foreach (var mark in MapDefeatedMarks.InScene(SceneManager.GetActiveScene().name))
             markers.Add(new MarkerInfo { Kind = mark.kind, Label = "", Position = mark.position });
 
-        // 방 지도는 제단과 내 위치만 찍는다 (몬스터·상자·출구 등은 뺀다).
-        // 10.30: 아직 안 밝힌 곳의 제단도 숨긴다.
-        if (atlasMode)
+        // 아직 안 밝힌 곳의 마커는 숨긴다 (방 그림이 있든 없든). 11.01: 방 그림 없는 맵에도 적용
         {
             string sceneId = SceneManager.GetActiveScene().name;
             markers.RemoveAll(m => !ShowInRoomMap(m.Kind) ||
