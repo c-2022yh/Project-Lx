@@ -67,3 +67,9 @@ MonoBehaviour:
     worldSize: {x: 171, y: 90}
     atlasMin: {x: 557.89996, y: 9.799999}
     group: 3
+  - sceneName: F_07
+    image: {fileID: 21300000, guid: fbb2356a030fce741b75193c07013911, type: 3}
+    worldMin: {x: 246, y: 99}
+    worldSize: {x: 118, y: 42}
+    atlasMin: {x: 587.36, y: -78.51}
+    group: 3
