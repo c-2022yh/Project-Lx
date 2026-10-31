@@ -41,7 +41,7 @@ using UnityEngine.Tilemaps;
 /// 카메라 영역(CameraConfiner)은 맵 크기에 맞춰 늘리되, 출구 포탈 쪽(x 140~)은 뺀다.
 /// 배경: 숲 배경(Background_Forest)은 끄고 동굴 배경(Background_Cave, CavePanoramaBackground)을 쓴다.
 /// 안개: Tutorial_Fog (CaveFog). 화면 전체 옅은 안개 + 바닥 쪽 낮은 안개, 출구로 갈수록 옅어짐.
-/// 근경: 지금은 뺀다 (RemoveForeground). 다시 넣으려면 Build에서 PlaceForeground를 부른다.
+/// 근경: 근경 배치판(claude.ai 아티팩트)에서 놓은 자리 그대로 (Assets/Sprites/Backgrounds/Tutorial/TutorialForeground.json).
 ///       Foreground_Cave 아래에 먹 실루엣(바위·소나무·풀·돌탑)을 놓는다 (ForegroundParallax, GroundCover 레이어).
 /// 그림: Assets/Sprites/Backgrounds/Tutorial/
 /// </summary>
@@ -101,7 +101,7 @@ public static class TutorialMapBuilder
         FitCamera(scene);
         AddLightRamp(scene);
         SetupBackground(scene);
-        RemoveForeground(scene);   // 근경은 일단 뺀다 (다시 넣을 때 PlaceForeground로 바꾸면 됨)
+        PlaceForeground(scene);   // 근경 배치판에서 저장한 배치 (TutorialForeground.json)
 
         Undo.CollapseUndoOperations(group);
         EditorSceneManager.MarkSceneDirty(scene);
@@ -223,7 +223,9 @@ public static class TutorialMapBuilder
             {
                 if (!IsSolid(x, y)) continue;
 
-                TileBase[] set = BlockTouchesAir(x, y) ? blue : charcoal;
+                // 전부 Blue. 안쪽이 어두워지는 건 GroundDepthShading이 부드럽게 처리한다
+                // (전에는 안쪽 덩어리를 Charcoal로 바꿨는데, 2칸 단위로 색이 뚝 끊겨 보였다)
+                TileBase[] set = blue;
                 int idx = ((y & 1) == 0 ? 0 : 2) + ((x & 1) == 0 ? 0 : 1);   // 위왼·위오·아래왼·아래오
                 gPos.Add(ToCell(ground, x, y));
                 gTiles.Add(set[idx]);
@@ -254,7 +256,26 @@ public static class TutorialMapBuilder
         platform.SetTiles(pPos.ToArray(), pTiles.ToArray());
 
         foreach (Tilemap tm in grid.GetComponentsInChildren<Tilemap>(true)) tm.CompressBounds();
+
+        ApplyDepthShading(ground);
         return true;
+    }
+
+    // 땅 깊이 그늘: 윗면에서 안쪽으로 서서히 까맣게. 벽·천장도 안쪽으로 갈수록 어두워진다.
+    // Grid 프리팹 기본값(1칸 만에 까매짐)은 너무 뚝 끊겨서, 이 씬에서만 바꾼다 (프리팹은 그대로).
+    private static void ApplyDepthShading(Tilemap ground)
+    {
+        GroundDepthShading depth = ground != null ? ground.GetComponent<GroundDepthShading>() : null;
+        if (depth == null) return;
+        Undo.RecordObject(depth, "튜토리얼 맵 다시 그리기");
+        depth.surfaceWidth = 0.25f;  // 윗면 밝은 띠 (얇게: 가장자리 가까이부터 어두워짐)
+        depth.fadeDistance = 2.5f;   // 이 칸 수에 걸쳐 어두워짐
+        depth.maxDarkness = 0.98f;
+        depth.falloffPower = 0.8f;   // 1보다 작으면 처음부터 빨리 어두워짐
+        EditorUtility.SetDirty(depth);
+        // 값만 바꾸면 그늘이 바로 다시 계산되지 않아서, 껐다 켜서 다시 그리게 한다
+        depth.enabled = false;
+        depth.enabled = true;
     }
 
     // 월드 칸 (x, y) = [x, x+1] × [y, y+1] 을 그 타일맵의 칸 번호로
@@ -447,24 +468,18 @@ public static class TutorialMapBuilder
 
         // 안개 (화면 전체 옅은 안개 + 바닥 쪽 낮은 안개)
         Transform fog = FindOrCreateRoot(scene, "Tutorial_Fog");
-        if (fog.GetComponent<CaveFog>() == null) Undo.AddComponent<CaveFog>(fog.gameObject);
+        CaveFog fogComp = fog.GetComponent<CaveFog>();
+        if (fogComp == null) fogComp = Undo.AddComponent<CaveFog>(fog.gameObject);
+        // 화면 아래 그늘은 끈다 (땅이 깊이 그늘로 어두워지니까 화면에 붙은 그늘은 어색함)
+        SerializedObject fso = new SerializedObject(fogComp);
+        fso.FindProperty("bottomShadeAlpha").floatValue = 0f;
+        fso.ApplyModifiedProperties();
     }
 
     // ── 배경·근경 ──────────────────────────
 
     private const string ArtDir = "Assets/Sprites/Backgrounds/Tutorial/";
 
-    // 근경: (그림, x, 그 자리 바닥 높이, 그림 높이). 상자·제단·슬라임은 가리지 않게 비켜 놓았고,
-    // 구덩이(오목한 곳)에는 놓지 않는다.
-    private static readonly (string sprite, float x, float floor, float height)[] Foregrounds =
-    {
-        ("FG_Cave_RockGrass", 15f, 1f, 3.4f),
-        ("FG_Cave_Cairn", 33f, 5f, 2.2f),
-        ("FG_Cave_Rock", 44f, 5f, 2.4f),
-        ("FG_Cave_Pine", 72.5f, 5f, 4.6f),   // 제단 오른쪽, 더블 점프 벽 앞
-        ("FG_Cave_Cairn", 119.5f, 5f, 2f),
-        ("FG_Cave_RockTall", 139f, 5f, 4.4f),
-    };
 
     private static void SetupBackground(Scene scene)
     {
@@ -497,34 +512,71 @@ public static class TutorialMapBuilder
         if (root != null) Undo.DestroyObjectImmediate(root.gameObject);
     }
 
+    private const string ForegroundJson = ArtDir + "TutorialForeground.json";
+
+    // 근경 배치판(claude.ai 아티팩트)에서 저장한 배치. x = 가운데, y = 그림 아래쪽, h = 높이 (전부 월드 칸)
+    [System.Serializable] public class FgItem { public string sprite; public float x, y, h; public bool flip; public string layer; }
+    [System.Serializable] public class FgLayout { public FgItem[] items; }
+
+    // 근경만 다시 놓기 (맵은 그대로, 땅 그늘 값도 같이 맞춤). 배치판에서 바꾼 뒤 이것만 눌러도 된다.
+    [MenuItem("Tools/Map/튜토리얼 근경만 다시 놓기")]
+    private static void RebuildForegroundOnly()
+    {
+        if (!OpenTutorialScene()) return;
+        Scene scene = SceneManager.GetActiveScene();
+        Undo.IncrementCurrentGroup();
+        int group = Undo.GetCurrentGroup();
+        PlaceForeground(scene);
+        ApplyDepthShading(FindTilemap(FindGrid(scene), "Tilemap_Ground"));
+        Undo.CollapseUndoOperations(group);
+        EditorSceneManager.MarkSceneDirty(scene);
+    }
+
+    // 앞: 캐릭터 앞 (GroundCover). 뒤: 땅 타일 바로 뒤 (Ground 레이어 아래쪽). 둘 다 배치판에 놓은 자리에 그대로 고정
     private static void PlaceForeground(Scene scene)
     {
-        Transform root = FindOrCreateRoot(scene, "Foreground_Cave");
-        for (int i = root.childCount - 1; i >= 0; i--) Undo.DestroyObjectImmediate(root.GetChild(i).gameObject);
-
-        Material unlit = Resources.Load<Material>("Presentation/M_VfxSprite");
-        foreach ((string spriteName, float x, float floor, float h) in Foregrounds)
+        RemoveForeground(scene);
+        TextAsset json = AssetDatabase.LoadAssetAtPath<TextAsset>(ForegroundJson);
+        if (json == null)
         {
-            Sprite s = LoadSprite(spriteName);
-            if (s == null) continue;
+            Debug.LogWarning("[TutorialMapBuilder] 근경 배치 파일이 없습니다: " + ForegroundJson);
+            return;
+        }
+        FgLayout layout = JsonUtility.FromJson<FgLayout>(json.text);
+        if (layout == null || layout.items == null || layout.items.Length == 0)
+        {
+            Debug.LogWarning("[TutorialMapBuilder] 근경 배치 파일에 근경이 없습니다.");
+            return;
+        }
+        int placed = 0;
 
-            GameObject go = new GameObject(spriteName);
+        Transform root = FindOrCreateRoot(scene, "Foreground_Cave");
+        Material unlit = Resources.Load<Material>("Presentation/M_VfxSprite");
+        foreach (FgItem it in layout.items)
+        {
+            Sprite s = LoadSprite(it.sprite);
+            if (s == null || it.h <= 0f) continue;
+            bool back = it.layer == "back";
+
+            GameObject go = new GameObject(it.sprite);
             Undo.RegisterCreatedObjectUndo(go, "튜토리얼 맵 다시 그리기");
             go.transform.SetParent(root, false);
 
             SpriteRenderer sr = go.AddComponent<SpriteRenderer>();
             sr.sprite = s;
+            sr.flipX = it.flip;
             if (unlit != null) sr.sharedMaterial = unlit;
-            sr.sortingLayerName = "GroundCover";
-            sr.sortingOrder = 10;
+            sr.sortingLayerName = back ? "Ground" : "GroundCover";
+            sr.sortingOrder = back ? -5 : 10;
 
-            // 그림 아래쪽이 바닥보다 1 아래에 오게 (화면 아래에서 솟아 보이게)
-            float scale = h / s.bounds.size.y;
+            float scale = it.h / s.bounds.size.y;
             go.transform.localScale = new Vector3(scale, scale, 1f);
-            go.transform.position = new Vector3(x, floor - 1f - s.bounds.min.y * scale, 0f);
+            go.transform.position = new Vector3(it.x - s.bounds.center.x * scale, it.y - s.bounds.min.y * scale, 0f);
 
-            go.AddComponent<ForegroundParallax>();
+            // 패럴랙스는 안 붙인다: 붙이면 카메라 위치에 따라 배치판에서 놓은 자리와 어긋나 보인다
+            placed++;
         }
+        Debug.Log($"[TutorialMapBuilder] 근경 {placed}개를 놓았습니다 (Foreground_Cave). 씬을 저장하세요.");
     }
 
     private static Sprite LoadSprite(string name)
