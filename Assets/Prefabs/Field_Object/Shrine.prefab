@@ -201,7 +201,7 @@ MonoBehaviour:
   glowMaterial: {fileID: 2100000, guid: cd38f3e1c9b74d3788a835d2ee07d267, type: 2}
   center: {x: 0.01, y: 0.095}
   size: {x: 0.44, y: 0.34}
-  lightColor: {r: 1.8, g: 1.15, b: 0.35, a: 1}
+  lightColor: {r: 0.4, g: 0.95, b: 1.9, a: 1}
   brightness: 0.85
   breatheAmount: 0.12
   breathePeriod: 3.6
