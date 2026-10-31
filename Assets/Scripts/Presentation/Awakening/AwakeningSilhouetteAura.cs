@@ -56,7 +56,9 @@ public class AwakeningSilhouetteAura : MonoBehaviour
     private MeshRenderer quad;
     private Mesh mesh;
     private Material material;
-    private MaterialPropertyBlock props;
+    private Sprite cachedSprite;
+    private Vector2 cachedMin, cachedSize;
+    private Vector4 cachedUv;
     private float weight, clock;
     private bool oldAuraHidden;
 
@@ -109,10 +111,10 @@ public class AwakeningSilhouetteAura : MonoBehaviour
             return;
         }
         material = new Material(shader) { hideFlags = HideFlags.DontSave };
-        props = new MaterialPropertyBlock();
         CreateQuad();
         if (hideOldAura) HideOldAura();
         TuneOldVisual();
+        if (hideOldAura && !oldAuraHidden) Debug.LogWarning("[각성 아우라] 기존 줄기 아우라를 끄지 못했습니다.");
         Debug.Log("[각성 아우라] 플레이어에 붙었습니다." + (oldAuraHidden ? " 기존 줄기 아우라는 껐습니다." : ""));
     }
 
@@ -209,18 +211,14 @@ public class AwakeningSilhouetteAura : MonoBehaviour
         Sprite sp = src.sprite;
         Texture2D tex = sp.texture;
         if (tex == null) { quad.enabled = false; return; }
-        float ppu = sp.pixelsPerUnit;
-        Rect rect = sp.rect;
-        Rect texRect;
-        try { texRect = sp.textureRect; }
-        catch { texRect = rect; }
-        Vector4 uvRect = new Vector4(texRect.xMin / tex.width, texRect.yMin / tex.height,
-                                     texRect.xMax / tex.width, texRect.yMax / tex.height);
+        // 그림의 실제 메시(캐릭터 윤곽에 딱 맞는 범위)와 그 UV로 자리를 잡는다
+        if (sp != cachedSprite) CacheSpriteBounds(sp);
+        Vector4 uvRect = cachedUv;
 
         Transform st = src.transform;
         Vector3 ls = st.lossyScale;
-        Vector2 localMin = -sp.pivot / ppu;
-        Vector2 localSize = rect.size / ppu;
+        Vector2 localMin = cachedMin;
+        Vector2 localSize = cachedSize;
         Vector3 localCenter = new Vector3(localMin.x + localSize.x * 0.5f, localMin.y + localSize.y * 0.5f, 0f);
         if (src.flipX) localCenter.x = -localCenter.x;
         if (src.flipY) localCenter.y = -localCenter.y;
@@ -230,9 +228,9 @@ public class AwakeningSilhouetteAura : MonoBehaviour
         bool flip = src.flipX ^ (ls.x < 0f);
 
         float riseNow = riseHeight * rise;
-        float mx = farRadius * 2f + 0.25f;
-        float mb = farRadius + 0.1f;
-        float mt = riseNow + farRadius * 2f + 0.2f;
+        float mx = farRadius * 2f + 0.1f;
+        float mb = farRadius + 0.05f;
+        float mt = riseNow + farRadius * 2f + 0.1f;
         Vector2 size = new Vector2(w + mx * 2f, h + mb + mt);
         Vector2 quadMin = new Vector2(center.x - w * 0.5f - mx, center.y - h * 0.5f - mb);
 
@@ -242,23 +240,40 @@ public class AwakeningSilhouetteAura : MonoBehaviour
         quad.sortingLayerID = src.sortingLayerID;
         quad.sortingOrder = src.sortingOrder - 1;
 
-        props.SetTexture(MainTexId, tex);
-        props.SetColor(AuraColorId, ResolveColor());
-        props.SetFloat(IntensityId, intensity);
-        props.SetFloat(OpacityId, opacity * weight * src.color.a);
-        props.SetFloat(NearRadiusId, nearRadius);
-        props.SetFloat(FarRadiusId, farRadius);
-        props.SetFloat(RiseId, riseNow);
-        props.SetFloat(SparkleId, sparkle);
-        props.SetFloat(WhiteId, whiteCore);
-        props.SetVector(UvRectId, uvRect);
-        props.SetVector(SpriteRectId, new Vector4(mx, mb, w, h));
-        props.SetVector(QuadSizeId, new Vector4(size.x, size.y, 0f, 0f));
-        props.SetFloat(FlipId, flip ? 1f : 0f);
-        props.SetFloat(TimeId, clock);
-        props.SetFloat(FlashId, flash);
-        quad.SetPropertyBlock(props);
+        material.SetTexture(MainTexId, tex);
+        material.SetColor(AuraColorId, ResolveColor());
+        material.SetFloat(IntensityId, intensity);
+        material.SetFloat(OpacityId, opacity * weight * src.color.a);
+        material.SetFloat(NearRadiusId, nearRadius);
+        material.SetFloat(FarRadiusId, farRadius);
+        material.SetFloat(RiseId, riseNow);
+        material.SetFloat(SparkleId, sparkle);
+        material.SetFloat(WhiteId, whiteCore);
+        material.SetVector(UvRectId, uvRect);
+        material.SetVector(SpriteRectId, new Vector4(mx, mb, w, h));
+        material.SetVector(QuadSizeId, new Vector4(size.x, size.y, 0f, 0f));
+        material.SetFloat(FlipId, flip ? 1f : 0f);
+        material.SetFloat(TimeId, clock);
+        material.SetFloat(FlashId, flash);
         quad.enabled = true;
+    }
+
+    // 그림 메시의 범위(로컬)와 UV 범위. 꽉 맞춘 메시여도 둘이 같은 곳을 가리킨다.
+    private void CacheSpriteBounds(Sprite sp)
+    {
+        cachedSprite = sp;
+        Vector2[] v = sp.vertices;
+        Vector2[] uv = sp.uv;
+        Vector2 vMin = new Vector2(float.MaxValue, float.MaxValue), vMax = -vMin;
+        Vector2 uMin = vMin, uMax = -vMin;
+        for (int i = 0; i < v.Length; i++)
+        {
+            vMin = Vector2.Min(vMin, v[i]); vMax = Vector2.Max(vMax, v[i]);
+            uMin = Vector2.Min(uMin, uv[i]); uMax = Vector2.Max(uMax, uv[i]);
+        }
+        cachedMin = vMin;
+        cachedSize = Vector2.Max(vMax - vMin, new Vector2(0.01f, 0.01f));
+        cachedUv = new Vector4(uMin.x, uMin.y, uMax.x, uMax.y);
     }
 
     // 기존 각성 연출 색(보주 유물 색 포함)을 밝기 1로 맞춰 쓴다
