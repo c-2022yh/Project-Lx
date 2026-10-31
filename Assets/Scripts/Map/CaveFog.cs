@@ -5,6 +5,8 @@
 ///
 ///   뒤 안개  배경과 땅 사이 (BackGround 레이어, 배경 바로 앞). 화면 전체를 덮는 옅은 안개
 ///   앞 안개  캐릭터 앞 (GroundCover 레이어). 화면 아래쪽에만 깔리는 낮은 안개
+///   그늘    화면 위·아래 끝을 어둡게 (Ground 레이어 맨 위). 땅·천장·배경만 어두워지고
+///           캐릭터·몹은 그대로다. 아래가 어두워져서 검은 근경 실루엣과 자연스럽게 이어진다.
 ///
 /// 안개 그림은 코드로 만든다 (가로로 끊김 없이 이어지는 구름 무늬). 카메라를 따라다니며
 /// 카메라보다 조금 느리게 + 저절로 천천히 흘러서 깊이감이 난다.
@@ -29,6 +31,14 @@ public class CaveFog : MonoBehaviour
     [Tooltip("화면 높이에 대한 낮은 안개 높이")]
     [SerializeField, Range(0.1f, 1f)] private float frontHeight = 0.38f;
 
+    [Header("그늘 (화면 위아래 끝을 어둡게, 캐릭터는 안 어두워짐)")]
+    [SerializeField] private Color shadeColor = new Color(0.02f, 0.03f, 0.06f, 1f);
+    [SerializeField, Range(0f, 1f)] private float bottomShadeAlpha = 0.85f;
+    [Tooltip("화면 높이에 대한 아래 그늘 높이")]
+    [SerializeField, Range(0f, 1f)] private float bottomShadeHeight = 0.3f;
+    [SerializeField, Range(0f, 1f)] private float topShadeAlpha = 0.75f;
+    [SerializeField, Range(0f, 1f)] private float topShadeHeight = 0.35f;
+
     [Header("출구 쪽으로 갈수록 옅게 (월드 x)")]
     [SerializeField] private float thickX = 20f;
     [SerializeField] private float thinX = 130f;
@@ -36,6 +46,7 @@ public class CaveFog : MonoBehaviour
 
     private Camera cam;
     private Layer back, front;
+    private SpriteRenderer shadeBottom, shadeTop;
 
     private class Layer
     {
@@ -48,6 +59,12 @@ public class CaveFog : MonoBehaviour
         Sprite fog = MakeFogSprite();
         back = MakeLayer("Fog_Back", fog, "BackGround", 50);
         front = MakeLayer("Fog_Front", fog, "GroundCover", 5);
+
+        // 그늘: Ground 레이어 맨 위 (타일보다 위, 플레이어·몹보다 아래)
+        Sprite ramp = MakeRampSprite();
+        shadeBottom = MakeRenderer("Shade_Bottom", ramp, "Ground", 100);
+        shadeTop = MakeRenderer("Shade_Top", ramp, "Ground", 100);
+        shadeTop.flipY = true;
     }
 
     private Layer MakeLayer(string name, Sprite sprite, string sortingLayer, int order)
@@ -95,6 +112,51 @@ public class CaveFog : MonoBehaviour
         front.scroll += frontDrift * dt;
         float h = viewH * frontHeight;
         Place(front, c, viewW, h, -viewH * 0.5f + h * 0.45f, frontFollow, frontAlpha * density);
+
+        // 그늘
+        PlaceShade(shadeBottom, c, viewW, viewH * bottomShadeHeight, -1f, viewH, bottomShadeAlpha);
+        PlaceShade(shadeTop, c, viewW, viewH * topShadeHeight, 1f, viewH, topShadeAlpha);
+    }
+
+    // side -1 = 화면 아래 끝, 1 = 위 끝. 끝에서 가장 진하고 안쪽으로 사라진다.
+    private void PlaceShade(SpriteRenderer sr, Vector3 cam, float viewW, float height, float side, float viewH, float alpha)
+    {
+        if (sr == null) return;
+        sr.enabled = alpha > 0.001f && height > 0.01f;
+        if (!sr.enabled) return;
+        Vector2 size = sr.sprite.bounds.size;
+        sr.transform.localScale = new Vector3((viewW + 2f) / size.x, (height + 0.5f) / size.y, 1f);
+        float y = cam.y + side * (viewH * 0.5f - height * 0.5f + 0.25f);
+        sr.transform.position = new Vector3(cam.x, y, 0f);
+        Color col = shadeColor;
+        col.a = alpha;
+        sr.color = col;
+    }
+
+    // 아래가 진하고 위로 사라지는 세로 그라데이션 (가로 1 × 세로 1)
+    private static Sprite MakeRampSprite()
+    {
+        const int H = 128;
+        Texture2D tex = new Texture2D(4, H, TextureFormat.RGBA32, false)
+        {
+            name = "CaveShade",
+            wrapMode = TextureWrapMode.Clamp,
+            filterMode = FilterMode.Bilinear,
+            hideFlags = HideFlags.DontSave
+        };
+        Color32[] px = new Color32[4 * H];
+        for (int y = 0; y < H; y++)
+        {
+            float t = 1f - (y + 0.5f) / H;      // 아래 1 → 위 0
+            byte a = (byte)Mathf.RoundToInt(Mathf.Pow(t, 1.6f) * 255f);
+            for (int x = 0; x < 4; x++) px[y * 4 + x] = new Color32(255, 255, 255, a);
+        }
+        tex.SetPixels32(px);
+        tex.Apply(false, true);
+        Sprite s = Sprite.Create(tex, new Rect(0, 0, 4, H), new Vector2(0.5f, 0.5f), H, 0, SpriteMeshType.FullRect);
+        s.name = "CaveShade";
+        s.hideFlags = HideFlags.DontSave;
+        return s;
     }
 
     // 같은 그림 두 장을 이어 붙여 흘려보낸다. 한 장 폭이 화면보다 넓어서 끊긴 곳이 안 보인다.
