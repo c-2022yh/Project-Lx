@@ -6,8 +6,9 @@ using UnityEngine.SceneManagement;
 /// <summary>
 /// 각성 중 공격하면 베기 궤적 뒤에 푸른 잔상이 함께 나온다.
 ///
-///   잔상 1  원래 베기와 같은 순간, 조금 더 크게 뒤쪽에서 푸르게 빛남
-///   잔상 2  조금 늦게(0.06초) 더 크게 퍼지며 사라짐 (칼바람이 한 번 더 지나가는 느낌)
+///   잔상 1   원래 베기와 같은 순간, 조금 더 크게 뒤쪽에서 푸르게 빛남 (원래 베기 모양 그대로)
+///   여우불   베기 뒤로 푸른 불꽃 궤적 그림이 휘몰아치며 퍼졌다 사라짐
+///            (그림: Resources/Presentation/Awakening/AwakeningFx_SlashFlame, 오른쪽으로 베는 방향 기준)
 ///
 /// 원래 베기 프리팹을 "그림만" 복사해서 쓴다 (판정·스크립트·충돌은 빼므로 데미지는 그대로).
 /// PlayerAttack.AttackEffectCreated만 듣는다. 플레이어 프리팹·PlayerAttack은 고치지 않고, 씬이 열릴 때 스스로 붙는다.
@@ -18,9 +19,14 @@ public class AwakeningSlashFx : MonoBehaviour
     [SerializeField] private Color echoColor = new Color(0.35f, 0.65f, 1f, 0.8f);
     [Tooltip("잔상 1 크기 (원래 베기 = 1)")]
     [SerializeField] private float echoScale = 1.15f;
-    [Tooltip("잔상 2 크기")]
-    [SerializeField] private float trailScale = 1.35f;
-    [SerializeField] private float trailDelay = 0.06f;
+    [Header("여우불 궤적 그림")]
+    [Tooltip("원래 베기 그림 폭에 대한 여우불 폭")]
+    [SerializeField] private float flameWidth = 0.95f;
+    [SerializeField, Range(0f, 1f)] private float flameAlpha = 0.9f;
+    [Tooltip("여우불이 원래 베기보다 늦게 나오는 시간 (초)")]
+    [SerializeField] private float flameDelay = 0.02f;
+    [Tooltip("여우불 위치 보정 (오른쪽을 볼 때 기준, 월드 칸)")]
+    [SerializeField] private Vector2 flameOffset = new Vector2(-0.2f, 0f);
     [Tooltip("잔상이 사라지는 시간 (초). 원래 베기 시간보다 짧으면 원래 시간을 따른다")]
     [SerializeField] private float minDuration = 0.25f;
 
@@ -28,6 +34,8 @@ public class AwakeningSlashFx : MonoBehaviour
     private PlayerAwakening awakening;
     private PlayerAttack attack;
     private GameObject inactiveHolder;
+    private Sprite flameSprite;
+    private const string FlamePath = "Presentation/Awakening/AwakeningFx_SlashFlame";
 
     // ── 붙이기 ─────────────────────────────
 
@@ -54,6 +62,7 @@ public class AwakeningSlashFx : MonoBehaviour
         attack = GetComponent<PlayerAttack>();
         if (awakening == null || attack == null) { enabled = false; return; }
         attack.AttackEffectCreated += OnAttackEffect;
+        flameSprite = Resources.Load<Sprite>(FlamePath);
     }
 
     private void OnDestroy()
@@ -67,15 +76,35 @@ public class AwakeningSlashFx : MonoBehaviour
         if (!awakening.IsAwakened || pattern == null || pattern.attackEffectPrefab == null) return;
         float life = Mathf.Max(minDuration, pattern.effectDuration);
         Spawn(pattern, pos, rot, dir, echoScale, echoColor, life, pattern.followPlayer);
-        StartCoroutine(SpawnLater(pattern, pos, rot, dir, life));
+        if (flameSprite != null) StartCoroutine(SpawnFlame(pattern, pos, rot, dir, life));
     }
 
-    private IEnumerator SpawnLater(AttackPattern pattern, Vector3 pos, Quaternion rot, float dir, float life)
+    // 여우불 궤적: 원래 베기 그림 크기에 맞춰 그 뒤에 놓는다
+    private IEnumerator SpawnFlame(AttackPattern pattern, Vector3 pos, Quaternion rot, float dir, float life)
     {
-        yield return new WaitForSeconds(trailDelay);
-        Color c = echoColor;
-        c.a *= 0.6f;
-        Spawn(pattern, pos, rot, dir, trailScale, c, life * 1.2f, false);
+        if (flameDelay > 0f) yield return new WaitForSeconds(flameDelay);
+
+        SpriteRenderer src = pattern.attackEffectPrefab.GetComponentInChildren<SpriteRenderer>(true);
+        float baseW = src != null && src.sprite != null ? src.sprite.bounds.size.x : 4f;
+        float w = baseW * Mathf.Abs(pattern.effectScale.x) * flameWidth;
+        float s = w / flameSprite.bounds.size.x;
+
+        GameObject go = new GameObject("AwakeningSlashFlame");
+        SpriteRenderer sr = go.AddComponent<SpriteRenderer>();
+        sr.sprite = flameSprite;
+        sr.sharedMaterial = BossFxArt.Unlit;
+        sr.flipX = dir < 0f;
+        if (src != null)
+        {
+            sr.sortingLayerID = src.sortingLayerID;
+            sr.sortingOrder = src.sortingOrder - 2;   // 원래 베기와 잔상 1 뒤
+        }
+        go.transform.rotation = rot;
+        go.transform.position = pos + rot * new Vector3(flameOffset.x * Mathf.Sign(dir == 0f ? 1f : dir), flameOffset.y, 0f);
+        go.transform.localScale = new Vector3(s, s, 1f);
+
+        AwakeningSlashEcho echo = go.AddComponent<AwakeningSlashEcho>();
+        echo.Init(new List<SpriteRenderer> { sr }, new Color(1f, 1f, 1f, flameAlpha), life * 1.3f, 0.85f, 1.1f);
     }
 
     // 베기 프리팹을 그림만 남겨 복사한다 (꺼진 상태에서 복사해서 스크립트가 한 번도 돌지 않게)
@@ -112,7 +141,7 @@ public class AwakeningSlashFx : MonoBehaviour
         }
 
         AwakeningSlashEcho echo = copy.AddComponent<AwakeningSlashEcho>();
-        echo.Init(renderers, color, life);
+        echo.Init(renderers, color, life, 1f, 1.12f);
     }
 
     private static void StripToVisuals(GameObject root)
@@ -134,13 +163,17 @@ public class AwakeningSlashEcho : MonoBehaviour
     private Color color;
     private float life, t;
     private Vector3 startScale;
+    private float fromScale, toScale;
 
-    public void Init(List<SpriteRenderer> rs, Color c, float duration)
+    // fromScale → toScale 로 커지며 사라진다 (처음 크기 대비)
+    public void Init(List<SpriteRenderer> rs, Color c, float duration, float from, float to)
     {
         renderers = rs;
         color = c;
         life = Mathf.Max(0.05f, duration);
         startScale = transform.localScale;
+        fromScale = from;
+        toScale = to;
         Apply(0f);
     }
 
@@ -159,6 +192,7 @@ public class AwakeningSlashEcho : MonoBehaviour
             if (r == null) continue;
             r.color = new Color(color.r, color.g, color.b, a);
         }
-        transform.localScale = startScale * (1f + 0.12f * k);
+        float e = 1f - (1f - k) * (1f - k) * (1f - k);   // 처음에 빠르게 퍼지고 천천히 멈춤
+        transform.localScale = startScale * Mathf.Lerp(fromScale, toScale, e);
     }
 }
