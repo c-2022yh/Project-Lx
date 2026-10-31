@@ -1,0 +1,972 @@
+﻿using System.Collections.Generic;
+using TMPro;
+using UnityEngine;
+using UnityEngine.EventSystems;
+using UnityEngine.UI;
+#if ENABLE_INPUT_SYSTEM
+using UnityEngine.InputSystem;
+#endif
+
+/// <summary>
+/// 유물 인벤토리. 왼쪽은 카테고리별 장착칸, 오른쪽은 보관함.
+///
+/// 장착 상태의 진짜 주인은 씬의 PlayerRelicManager다. 이 패널은 그걸 보여주고
+/// EquipRelic/UnequipRelic을 호출할 뿐, 자체 목록을 따로 들고 있지 않다.
+/// (기존 InventoryPanel이 자기만의 리스트를 갖고 있어서 게임과 따로 놀던 문제를 피한 것.)
+///
+/// 보유 목록도 같은 PlayerRelicManager에서 읽는다. 장착 가능 여부(CanEquipRelic)를
+/// 판단하는 것도 그 목록이라, 다른 데서 읽으면 "보관함엔 있는데 장착은 거절당하는"
+/// 상태가 생길 수 있다. 해제한 유물은 보관함으로 내려온다.
+///
+/// 조작:
+///   마우스 올리기  툴팁
+///   좌클릭         선택 (아래 설명창에 표시)
+///   우클릭         보관함이면 자동 장착, 장착칸이면 해제
+///   드래그         원하는 칸으로 옮기기 / 보관함으로 빼면 해제
+///   화살표 + Z     키보드로 같은 동작 (Z로 집고, 옮기고, Z로 놓기. X는 취소)
+/// </summary>
+public class RelicInventoryPanel : MonoBehaviour, IRelicSlotHost
+{
+    [Header("장착 슬롯")]
+    [SerializeField] private Transform swordSlotContainer;
+    [SerializeField] private Transform orbSlotContainer;
+    [SerializeField] private Transform bodySlotContainer;
+    [SerializeField] private TextMeshProUGUI bodyCostText;
+
+    [Header("보관함")]
+    [SerializeField] private Transform storageContainer;
+
+    [Header("공용")]
+    [SerializeField] private GameObject slotPrefab;
+
+    [Tooltip("장착칸에 쓰는 원형 칸. 비어 있으면 slotPrefab을 그대로 쓴다.")]
+    [SerializeField] private GameObject circleSlotPrefab;
+
+    [Header("보관함 필터")]
+    [SerializeField] private Button filterAllButton;
+    [SerializeField] private Button filterSwordButton;
+    [SerializeField] private Button filterOrbButton;
+    [SerializeField] private Button filterBodyButton;
+    [SerializeField] private Button sortButton;
+
+    [Header("설명창")]
+    [SerializeField] private Image descIcon;
+    [SerializeField] private TextMeshProUGUI descName;
+    [SerializeField] private TextMeshProUGUI descMeta;
+    [SerializeField] private TextMeshProUGUI descText;
+    [SerializeField] private Button equipButton;
+    [SerializeField] private TextMeshProUGUI equipButtonLabel;
+    [SerializeField] private TextMeshProUGUI hintText;
+
+    [Header("툴팁 / 드래그")]
+    [SerializeField] private RelicTooltip tooltip;
+    [SerializeField] private RelicDragLayer dragLayer;
+
+    [Header("조작")]
+    [Tooltip("화살표 키로 칸을 옮겨 다니는 기능을 켤지.")]
+    [SerializeField] private bool keyboardNavigation = true;
+
+    /// <summary>보관함 격자의 열 수. 빌더의 GridLayoutGroup.constraintCount와 맞춰야 한다.</summary>
+    private const int StorageColumns = 6;
+
+    // 장착칸은 원형이고 크기가 다르다. 빌더의 값과 맞춰야 한다.
+    // 빌더(RelicInventoryUIBuilder)가 만드는 칸 크기와 반드시 같아야 한다.
+    // 칸보다 원이 크면 HorizontalLayoutGroup이 가운데 정렬을 못 하고
+    // 오른쪽으로 밀어내서, 위에 붙인 이름표와 어긋나 보인다.
+    // 10.16 시안 크기. RelicInventoryUIBuilder의 같은 이름 상수와 맞춰야 한다.
+    private const float SwordSlotSize = 280f;
+    private const float OrbSlotSize = 180f;
+    private const float BodySlotSize = 96f;
+
+    /// <summary>보관함을 묶어 보여주는 계열 순서. 왼쪽 장착칸 순서와 같게 맞춘다.</summary>
+    private static readonly RelicCategory[] StorageCategoryOrder =
+    {
+        RelicCategory.Sword,
+        RelicCategory.Orb,
+        RelicCategory.Body
+    };
+
+    private const int RowSword = 0;
+    private const int RowOrb = 1;
+    private const int RowBody = 2;
+    private const int RowStorageStart = 3;
+
+    private readonly List<RelicSlotView> spawnedSlots = new();
+
+    private PlayerRelicManager relicManager;
+    private RelicData selected;
+
+    /// <summary>보관함에서 보여줄 계열. 비어 있으면 전체.</summary>
+    private RelicCategory? storageFilter;
+
+    /// <summary>보관함 정렬. false면 먹은 순서, true면 이름순.</summary>
+    private bool sortByName;
+
+    // 키보드 포커스. 칸은 Refresh마다 새로 만들어지므로 좌표로 기억했다가 다시 찾는다.
+    private int focusRow = RowStorageStart;
+    private int focusColumn;
+    private bool hasFocus;
+
+    // 키보드로 집어 든 유물 (Z로 집고 Z로 놓는 동안 들고 있는 것).
+    private RelicData carried;
+
+    // ── 열고 닫기 ──────────────────────────
+
+    public void SetVisible(bool visible)
+    {
+        gameObject.SetActive(visible);
+
+        if (!visible)
+        {
+            Unsubscribe();
+            return;
+        }
+
+        relicManager = FindAnyObjectByType<PlayerRelicManager>();
+
+        if (relicManager == null)
+        {
+            Debug.LogWarning("[RelicInventoryPanel] 씬에서 PlayerRelicManager를 찾지 못했습니다. 플레이어가 없는 씬인가요?");
+        }
+        else
+        {
+            // 이미 열린 패널에 SetVisible(true)를 또 부르면 OnDisable이 돌지 않아
+            // 구독이 쌓인다. 먼저 떼고 붙인다 (없는 핸들러를 떼는 건 무해하다).
+            relicManager.OnRelicsChanged -= Refresh;
+            relicManager.OnRelicsChanged += Refresh;
+        }
+
+        selected = null;
+        carried = null;
+        hasFocus = false;
+
+        Refresh();
+
+        if (!ShrineAccess.CanEditLoadout) SetHint(ShrineAccess.ViewOnlyMessage);
+    }
+
+    private void OnDisable()
+    {
+        Unsubscribe();
+        CancelCarry(false);
+        EndDrag();
+
+        if (tooltip != null) tooltip.Hide();
+    }
+
+    private void Unsubscribe()
+    {
+        if (relicManager == null) return;
+
+        relicManager.OnRelicsChanged -= Refresh;
+    }
+
+    // ── 다시 그리기 ────────────────────────
+
+    public void Refresh()
+    {
+        if (slotPrefab == null)
+        {
+            Debug.LogWarning("[RelicInventoryPanel] slotPrefab이 연결되지 않았습니다.");
+            return;
+        }
+
+        ClearSlots();
+
+        IReadOnlyList<RelicData> equipped = relicManager != null
+            ? relicManager.EquippedRelics
+            : new List<RelicData>();
+
+        UpdateFilterButtons();
+
+        BuildEquipRow(swordSlotContainer, equipped, RelicCategory.Sword, RowSword);
+        BuildEquipRow(orbSlotContainer, equipped, RelicCategory.Orb, RowOrb);
+        BuildBodyRow(equipped);
+        BuildStorage(equipped);
+
+        UpdateCostText(equipped);
+        UpdateDescription(equipped);
+
+        RestoreFocus();
+        RefreshCarriedVisual();
+    }
+
+    private void ClearSlots()
+    {
+        // 다시 열 때 칸이 중복 생성되지 않도록 먼저 비운다.
+        foreach (RelicSlotView slot in spawnedSlots)
+            if (slot != null) Destroy(slot.gameObject);
+
+        spawnedSlots.Clear();
+    }
+
+    /// <summary>검 / 보주: 칸이 하나. 비어 있으면 빈 칸을 그린다.</summary>
+    private void BuildEquipRow(Transform container, IReadOnlyList<RelicData> equipped,
+                               RelicCategory category, int row)
+    {
+        if (container == null) return;
+
+        int limit = RelicEquipRules.SlotLimitOf(category);
+        List<RelicData> ofCategory = FilterByCategory(equipped, category);
+
+        for (int i = 0; i < limit; i++)
+            SpawnSlot(container, i < ofCategory.Count ? ofCategory[i] : null,
+                      RelicSlotArea.Equip, category, row, i, EquipPrefab(),
+                      category == RelicCategory.Sword ? SwordSlotSize : OrbSlotSize);
+    }
+
+    /// <summary>
+    /// 신체: 개수 제한이 없고 코스트로만 막힌다.
+    /// 장착한 것들 + 남은 코스트만큼의 빈 칸을 그려서 여유가 눈에 보이게 한다.
+    /// </summary>
+    private void BuildBodyRow(IReadOnlyList<RelicData> equipped)
+    {
+        if (bodySlotContainer == null) return;
+
+        List<RelicData> body = FilterByCategory(equipped, RelicCategory.Body);
+        int column = 0;
+
+        foreach (RelicData relic in body)
+        {
+            SpawnSlot(bodySlotContainer, relic, RelicSlotArea.Equip, RelicCategory.Body,
+                      RowBody, column, EquipPrefab(), BodySlotSize);
+            column++;
+        }
+
+        // 남은 코스트만큼 빈 칸을 그리되, 개수 제한(5개)도 같이 본다.
+        // 코스트 1짜리만 모으면 코스트는 남는데 개수가 먼저 찬다.
+        int remaining = Mathf.Max(0, RelicEquipRules.RemainingBodyCost(equipped));
+
+        if (relicManager != null)
+            remaining = Mathf.Min(remaining, relicManager.MaxBodyCount - relicManager.CurrentBodyCount);
+
+        remaining = Mathf.Max(0, remaining);
+
+        // 코스트 1짜리가 최소 단위라 남은 코스트 = 더 낄 수 있는 최대 개수.
+        for (int i = 0; i < remaining; i++)
+        {
+            SpawnSlot(bodySlotContainer, null, RelicSlotArea.Equip, RelicCategory.Body,
+                      RowBody, column, EquipPrefab(), BodySlotSize);
+            column++;
+        }
+    }
+
+    /// <summary>
+    /// 보관함: 가지고 있지만 장착하지 않은 유물.
+    /// 장착칸과 같은 순서(검 → 보주 → 신체)로 묶어서 보여준다.
+    /// 같은 계열 안에서는 먹은 순서를 그대로 둔다.
+    /// </summary>
+    private void BuildStorage(IReadOnlyList<RelicData> equipped)
+    {
+        if (storageContainer == null) return;
+
+        List<RelicData> stored = new List<RelicData>();
+
+        // 보유 목록은 PlayerRelicManager가 들고 있는 것을 그대로 쓴다.
+        //
+        // 진행도(RunState)에도 보유 칸이 있지만, 게임에서 유물을 먹는 경로인
+        // PlayerRelicManager.AcquireRelic이 거기엔 쓰지 않는다. 그쪽을 읽으면
+        // 인스펙터에 보유 유물이 5개로 떠도 보관함은 빈 채로 남는다.
+        //
+        // RelicDatabase를 거치지 않는 것도 일부러다. 그 에셋은 메뉴로 손수
+        // 갱신하는 것이라, 새 유물을 만들고 리빌드를 깜빡하면 조회가 null을 주고
+        // 그 유물이 아무 말 없이 목록에서 빠진다.
+        if (relicManager != null)
+        {
+            foreach (RelicData relic in relicManager.OwnedRelics)
+            {
+                if (relic == null) continue;
+                if (Contains(equipped, relic)) continue;
+
+                stored.Add(relic);
+            }
+        }
+
+        // 계열 순서대로 한 번씩 훑는다. List.Sort는 같은 값끼리 순서를 보장하지 않아서
+        // 먹은 순서가 뒤집히므로 쓰지 않는다.
+        int index = 0;
+
+        foreach (RelicCategory category in StorageCategoryOrder)
+        {
+            // 필터가 걸려 있으면 그 계열만 그린다.
+            if (storageFilter.HasValue && storageFilter.Value != category) continue;
+
+            List<RelicData> ofCategory = new List<RelicData>();
+
+            foreach (RelicData relic in stored)
+                if (relic.Category == category) ofCategory.Add(relic);
+
+            // 이름순은 찾을 때, 획득순은 방금 먹은 걸 볼 때 편하다.
+            if (sortByName)
+            {
+                ofCategory.Sort((left, right) =>
+                    string.Compare(left.RelicName, right.RelicName, System.StringComparison.Ordinal));
+            }
+
+            foreach (RelicData relic in ofCategory)
+            {
+                SpawnSlot(storageContainer, relic, RelicSlotArea.Storage, relic.Category,
+                          RowStorageStart + index / StorageColumns, index % StorageColumns);
+                index++;
+            }
+        }
+    }
+
+    // ── 보관함 필터 ─────────────────────────
+    // 버튼 onClick에 직접 걸리는 함수들이라 public이어야 한다.
+
+    public void OnFilterAll() => SetFilter(null);
+
+    public void OnFilterSword() => SetFilter(RelicCategory.Sword);
+
+    public void OnFilterOrb() => SetFilter(RelicCategory.Orb);
+
+    public void OnFilterBody() => SetFilter(RelicCategory.Body);
+
+    public void OnToggleSort()
+    {
+        sortByName = !sortByName;
+        GameAudio.Play(GameSound.UITabChange);
+
+        SetHint(sortByName ? "이름순으로 정렬" : "획득순으로 정렬");
+        Refresh();
+    }
+
+    private void SetFilter(RelicCategory? category)
+    {
+        // 같은 버튼을 다시 누르면 전체로 돌아온다.
+        RelicCategory? previousFilter = storageFilter;
+        storageFilter = storageFilter == category ? null : category;
+        if (previousFilter != storageFilter) GameAudio.Play(GameSound.UITabChange);
+
+        SetHint(storageFilter.HasValue
+            ? $"{RelicLabels.NameOf(storageFilter.Value)}만 보는 중"
+            : "전체 보는 중");
+
+        Refresh();
+    }
+
+    /// <summary>지금 켜진 필터 버튼을 밝게 해서 상태가 보이게 한다.</summary>
+    private void UpdateFilterButtons()
+    {
+        Tint(filterAllButton, !storageFilter.HasValue);
+        Tint(filterSwordButton, storageFilter == RelicCategory.Sword);
+        Tint(filterOrbButton, storageFilter == RelicCategory.Orb);
+        Tint(filterBodyButton, storageFilter == RelicCategory.Body);
+        Tint(sortButton, sortByName);
+    }
+
+    private static void Tint(Button button, bool active)
+    {
+        if (button == null) return;
+
+        Image image = button.targetGraphic as Image;
+        if (image == null) image = button.GetComponent<Image>();
+        if (image == null) return;
+
+        image.color = active
+            ? new Color(0.38f, 0.38f, 0.46f, 1f)
+            : new Color(0.22f, 0.22f, 0.25f, 1f);
+    }
+
+    /// <summary>장착칸에 쓸 프리팹. 원형이 없으면 사각 칸으로 떨어진다.</summary>
+    private GameObject EquipPrefab() => circleSlotPrefab != null ? circleSlotPrefab : slotPrefab;
+
+    /// <summary>보관함용 사각 칸.</summary>
+    private void SpawnSlot(Transform parent, RelicData relic, RelicSlotArea area,
+                           RelicCategory category, int row, int column)
+    {
+        SpawnSlot(parent, relic, area, category, row, column, slotPrefab, 0f);
+    }
+
+    /// <summary>
+    /// 칸 하나를 만든다. 장착칸은 원형 프리팹을 쓰고 계열마다 크기가 달라서
+    /// 프리팹과 크기를 밖에서 정해 넘긴다. size가 0이면 프리팹 크기를 그대로 쓴다.
+    /// </summary>
+    private void SpawnSlot(Transform parent, RelicData relic, RelicSlotArea area,
+                           RelicCategory category, int row, int column,
+                           GameObject prefab, float size)
+    {
+        if (prefab == null) prefab = slotPrefab;
+
+        // UI는 worldPositionStays를 false로 넣어야 한다.
+        // true(기본값)면 월드 스케일을 보존하려고 localScale을 멋대로 바꾼다.
+        GameObject go = Instantiate(prefab, parent, false);
+        go.SetActive(true);
+
+        if (size > 0f)
+        {
+            RectTransform rect = go.GetComponent<RectTransform>();
+            if (rect != null) rect.sizeDelta = new Vector2(size, size);
+        }
+
+        RelicSlotView view = go.GetComponent<RelicSlotView>();
+
+        if (view == null)
+        {
+            Debug.LogWarning("[RelicInventoryPanel] slotPrefab에 RelicSlotView가 없습니다.");
+            return;
+        }
+
+        view.Bind(this, relic, area, category, row, column);
+        view.SetSelected(relic != null && relic == selected);
+
+        spawnedSlots.Add(view);
+    }
+
+    // ── 마우스: 툴팁 / 클릭 ────────────────
+
+    public void OnSlotHoverEnter(RelicSlotView slot)
+    {
+        if (slot == null || slot.IsEmpty) return;
+        if (tooltip != null) tooltip.Show(slot.Relic);
+    }
+
+    public void OnSlotHoverExit(RelicSlotView slot)
+    {
+        if (tooltip != null) tooltip.Hide();
+    }
+
+    public void OnSlotLeftClick(RelicSlotView slot)
+    {
+        if (slot == null) return;
+
+        SetFocus(slot);
+
+        if (slot.IsEmpty) return;
+
+        Select(slot.Relic);
+    }
+
+    public void OnSlotRightClick(RelicSlotView slot)
+    {
+        if (slot == null || slot.IsEmpty) return;
+
+        SetFocus(slot);
+        Select(slot.Relic);
+
+        if (slot.Area == RelicSlotArea.Equip) TryUnequip(slot.Relic);
+        else TryEquip(slot.Relic);
+    }
+
+    // ── 마우스: 드래그 ─────────────────────
+
+    public void OnSlotBeginDrag(RelicSlotView slot, PointerEventData eventData)
+    {
+        if (slot == null || slot.IsEmpty || dragLayer == null) return;
+        if (!CheckShrine()) return;
+
+        // 키보드로 들고 있던 게 있으면 마우스 쪽을 우선한다.
+        CancelCarry(false);
+
+        if (tooltip != null) tooltip.Hide();
+
+        Select(slot.Relic);
+        dragLayer.Begin(slot, slot.Relic, eventData.position);
+        slot.SetDraggingFrom(true);
+    }
+
+    public void OnSlotDrag(RelicSlotView slot, PointerEventData eventData)
+    {
+        if (dragLayer == null) return;
+
+        dragLayer.Move(eventData.position);
+    }
+
+    public void OnSlotEndDrag(RelicSlotView slot, PointerEventData eventData)
+    {
+        // OnDrop이 먼저 불리고 여기가 나중이다.
+        // 아무 데도 놓지 않았을 때를 위한 뒷정리.
+        EndDrag();
+    }
+
+    public void OnSlotDrop(RelicSlotView target, PointerEventData eventData)
+    {
+        if (target == null) return;
+
+        if (target.Area == RelicSlotArea.Storage) DropToStorage();
+        else DropToCategory(target.Category);
+    }
+
+    public void OnZoneDrop(RelicDropZone zone, PointerEventData eventData)
+    {
+        if (zone == null) return;
+
+        if (zone.IsStorage) DropToStorage();
+        else DropToCategory(zone.Category);
+    }
+
+    /// <summary>드래그 중인(또는 키보드로 든) 유물을 장착 줄에 놓았을 때.</summary>
+    private void DropToCategory(RelicCategory category)
+    {
+        RelicData relic = TakeHeldRelic();
+        if (relic == null) return;
+
+        if (relic.Category != category)
+        {
+            Reject($"{RelicLabels.NameOf(relic.Category)}은 {RelicLabels.NameOf(category)} 칸에 넣을 수 없습니다");
+            return;
+        }
+
+        TryEquip(relic);
+    }
+
+    /// <summary>보관함 쪽에 놓았을 때. 장착 중이던 유물이면 해제된다.</summary>
+    private void DropToStorage()
+    {
+        RelicData relic = TakeHeldRelic();
+        if (relic == null) return;
+
+        if (!IsEquipped(relic))
+        {
+            SetHint($"{relic.RelicName} 은(는) 이미 보관함에 있습니다");
+            return;
+        }
+
+        TryUnequip(relic);
+    }
+
+    /// <summary>
+    /// 지금 들고 있는 유물을 꺼내고 드래그/집기 상태를 끝낸다.
+    /// 장착 처리가 Refresh를 부르면서 칸들을 지워버리기 때문에,
+    /// 무엇을 할지 정하기 전에 먼저 상태를 정리해야 고스트 아이콘이 남지 않는다.
+    /// </summary>
+    private RelicData TakeHeldRelic()
+    {
+        RelicData relic = null;
+
+        if (dragLayer != null && dragLayer.IsDragging) relic = dragLayer.DraggedRelic;
+        else if (carried != null) relic = carried;
+
+        EndDrag();
+        CancelCarry(false);
+
+        return relic;
+    }
+
+    private void EndDrag()
+    {
+        if (dragLayer != null) dragLayer.End();
+
+        // 드롭이 먼저 처리되면 SourceSlot이 이미 비워져 있다.
+        // 개별 칸을 되돌리는 대신 전체를 다시 칠해서 흐린 칸이 남지 않게 한다.
+        RefreshCarriedVisual();
+    }
+
+    // ── 장착 / 해제 ────────────────────────
+
+    /// <summary>설명창의 장착/해제 버튼.</summary>
+    public void OnEquipButton()
+    {
+        if (selected == null) return;
+
+        if (IsEquipped(selected)) TryUnequip(selected);
+        else TryEquip(selected);
+    }
+
+    private void TryEquip(RelicData relic)
+    {
+        if (relic == null || IsEquipped(relic)) return;
+        if (!CheckShrine()) return;
+
+        if (relicManager == null)
+        {
+            Reject("PlayerRelicManager가 없어 장착할 수 없습니다");
+            return;
+        }
+
+        // 장착 규칙은 PlayerRelicManager가 하나로 들고 있다.
+        // UI가 따로 판정하면 신체 개수 제한처럼 한쪽에만 있는 규칙이 생겨서,
+        // 창에서는 된다고 하는데 게임이 거절하는 일이 벌어진다.
+        if (!relicManager.CanEquipRelic(relic, out string reason))
+        {
+            Reject(reason);
+            return;
+        }
+
+        // 검/보주는 칸이 하나뿐이라 교체가 된다.
+        // 기존 것을 벗기는 것까지 EquipRelic이 스스로 처리하므로
+        // 여기서 미리 UnequipRelic을 부르면 안 된다 (그러면 교체 실패 시 복구도 못 한다).
+        // 안내 문구를 위해 무엇이 밀려날지 이름만 미리 챙겨둔다.
+        RelicData replaced = relic.Category == RelicCategory.Body
+            ? null
+            : relicManager.GetEquippedRelic(relic.Category);
+
+        if (!relicManager.EquipRelic(relic))
+        {
+            // 여기까지 왔다면 CanEquipRelic은 통과했는데 효과 적용에서 실패한 것이다.
+            // 구체적인 이유는 PlayerRelicManager가 콘솔에 남긴다.
+            Reject($"{relic.RelicName} 장착 실패 - 콘솔의 [PlayerRelicManager] 로그를 확인해주세요");
+            return;
+        }
+
+        GameAudio.Play(relic.Category switch
+        {
+            RelicCategory.Sword => GameSound.UIEquipSword,
+            RelicCategory.Orb => GameSound.UIEquipOrb,
+            RelicCategory.Body => GameSound.UIEquipBody,
+            _ => GameSound.UIEquip
+        });
+        SetHint(replaced != null
+            ? $"{replaced.RelicName} → {relic.RelicName} 교체됨"
+            : $"{relic.RelicName} 장착됨");
+
+        // 보주를 처음 장착하면 보주가 말을 건다 (유물창을 닫은 다음).
+        if (relic.Category == RelicCategory.Orb) StoryDialogues.PlayOrbEquip(relic);
+    }
+
+    private void TryUnequip(RelicData relic)
+    {
+        if (relic == null) return;
+        if (!CheckShrine()) return;
+
+        if (relicManager == null)
+        {
+            Reject("PlayerRelicManager가 없어 해제할 수 없습니다");
+            return;
+        }
+
+        if (!IsEquipped(relic))
+        {
+            SetHint($"{relic.RelicName} 은(는) 장착 중이 아닙니다");
+            return;
+        }
+
+        if (!relicManager.UnequipRelic(relic))
+        {
+            Reject("지금은 해제할 수 없습니다");
+            return;
+        }
+        GameAudio.Play(GameSound.UIUnequip);
+        SetHint($"{relic.RelicName} 해제됨");
+    }
+
+    private void Select(RelicData relic)
+    {
+        selected = relic;
+
+        foreach (RelicSlotView s in spawnedSlots)
+            if (s != null) s.SetSelected(s.Relic != null && s.Relic == selected);
+
+        UpdateDescription(CurrentEquipped());
+    }
+
+    // ── 키보드 ─────────────────────────────
+
+    private void Update()
+    {
+        if (!keyboardNavigation) return;
+        if (dragLayer != null && dragLayer.IsDragging) return;
+
+        ReadNavigationInput();
+    }
+
+    private void ReadNavigationInput()
+    {
+#if ENABLE_INPUT_SYSTEM
+        Keyboard kb = Keyboard.current;
+        if (kb == null) return;
+
+        if (kb.leftArrowKey.wasPressedThisFrame) MoveFocus(0, -1);
+        if (kb.rightArrowKey.wasPressedThisFrame) MoveFocus(0, 1);
+        if (kb.upArrowKey.wasPressedThisFrame) MoveFocus(-1, 0);
+        if (kb.downArrowKey.wasPressedThisFrame) MoveFocus(1, 0);
+
+        if (kb.zKey.wasPressedThisFrame) ConfirmKey();
+        if (kb.xKey.wasPressedThisFrame) CancelCarry(true);
+#else
+        if (Input.GetKeyDown(KeyCode.LeftArrow)) MoveFocus(0, -1);
+        if (Input.GetKeyDown(KeyCode.RightArrow)) MoveFocus(0, 1);
+        if (Input.GetKeyDown(KeyCode.UpArrow)) MoveFocus(-1, 0);
+        if (Input.GetKeyDown(KeyCode.DownArrow)) MoveFocus(1, 0);
+
+        if (Input.GetKeyDown(KeyCode.Z)) ConfirmKey();
+        if (Input.GetKeyDown(KeyCode.X)) CancelCarry(true);
+#endif
+    }
+
+    /// <summary>Z: 들고 있는 게 없으면 집고, 있으면 지금 칸에 놓는다.</summary>
+    private void ConfirmKey()
+    {
+        RelicSlotView slot = FocusedSlot();
+
+        if (slot == null)
+        {
+            // 아직 한 번도 움직이지 않았으면 첫 칸을 잡아준다.
+            RestoreFocus();
+            return;
+        }
+
+        if (carried == null)
+        {
+            if (slot.IsEmpty) return;
+            if (!CheckShrine()) return;
+
+            carried = slot.Relic;
+            Select(carried);
+            RefreshCarriedVisual();
+            SetHint($"{carried.RelicName} 을(를) 들었습니다. 화살표로 옮기고 Z로 놓기 (X 취소)");
+            return;
+        }
+
+        if (slot.Area == RelicSlotArea.Storage) DropToStorage();
+        else DropToCategory(slot.Category);
+    }
+
+    /// <summary>X: 집은 것을 내려놓는다.</summary>
+    private void CancelCarry(bool announce)
+    {
+        if (carried == null) return;
+
+        string name = carried.RelicName;
+        carried = null;
+
+        RefreshCarriedVisual();
+
+        if (announce) SetHint($"{name} 내려놓음");
+    }
+
+    /// <summary>들고 있는 유물이 있던 칸을 흐리게 표시한다.</summary>
+    private void RefreshCarriedVisual()
+    {
+        foreach (RelicSlotView s in spawnedSlots)
+            if (s != null) s.SetDraggingFrom(carried != null && s.Relic == carried);
+    }
+
+    private void MoveFocus(int rowDelta, int columnDelta)
+    {
+        if (spawnedSlots.Count == 0) return;
+
+        if (!hasFocus)
+        {
+            RestoreFocus();
+            return;
+        }
+
+        if (rowDelta != 0)
+        {
+            int row = FindRow(focusRow, rowDelta);
+            if (row < 0) return;
+
+            focusRow = row;
+            focusColumn = ClampColumn(row, focusColumn);
+        }
+        else
+        {
+            List<RelicSlotView> row = SlotsInRow(focusRow);
+            if (row.Count == 0) return;
+
+            int index = Mathf.Clamp(focusColumn + columnDelta, 0, row.Count - 1);
+            focusColumn = row[index].Column;
+        }
+
+        ApplyFocus();
+    }
+
+    /// <summary>direction 방향으로 칸이 있는 가장 가까운 줄을 찾는다. 없으면 -1.</summary>
+    private int FindRow(int from, int direction)
+    {
+        int lowest = int.MaxValue;
+        int highest = int.MinValue;
+
+        foreach (RelicSlotView s in spawnedSlots)
+        {
+            if (s == null) continue;
+            if (s.Row < lowest) lowest = s.Row;
+            if (s.Row > highest) highest = s.Row;
+        }
+
+        if (lowest > highest) return -1;
+
+        for (int row = from + direction; row >= lowest && row <= highest; row += direction)
+            if (SlotsInRow(row).Count > 0) return row;
+
+        return -1;
+    }
+
+    private int ClampColumn(int row, int column)
+    {
+        List<RelicSlotView> slots = SlotsInRow(row);
+        if (slots.Count == 0) return 0;
+
+        int best = slots[0].Column;
+        int bestDistance = Mathf.Abs(best - column);
+
+        foreach (RelicSlotView s in slots)
+        {
+            int distance = Mathf.Abs(s.Column - column);
+            if (distance >= bestDistance) continue;
+
+            best = s.Column;
+            bestDistance = distance;
+        }
+
+        return best;
+    }
+
+    private List<RelicSlotView> SlotsInRow(int row)
+    {
+        List<RelicSlotView> result = new List<RelicSlotView>();
+
+        foreach (RelicSlotView s in spawnedSlots)
+            if (s != null && s.Row == row) result.Add(s);
+
+        result.Sort((a, b) => a.Column.CompareTo(b.Column));
+        return result;
+    }
+
+    private RelicSlotView FocusedSlot()
+    {
+        if (!hasFocus) return null;
+
+        foreach (RelicSlotView s in spawnedSlots)
+            if (s != null && s.Row == focusRow && s.Column == focusColumn) return s;
+
+        return null;
+    }
+
+    private void SetFocus(RelicSlotView slot)
+    {
+        if (slot == null) return;
+
+        focusRow = slot.Row;
+        focusColumn = slot.Column;
+        hasFocus = true;
+
+        ApplyFocus();
+    }
+
+    /// <summary>Refresh로 칸이 새로 만들어진 뒤 포커스를 같은 자리에 되돌린다.</summary>
+    private void RestoreFocus()
+    {
+        if (spawnedSlots.Count == 0)
+        {
+            hasFocus = false;
+            return;
+        }
+
+        if (SlotsInRow(focusRow).Count == 0)
+        {
+            int row = FindRow(focusRow, 1);
+            if (row < 0) row = FindRow(focusRow, -1);
+            if (row < 0) { hasFocus = false; return; }
+
+            focusRow = row;
+        }
+
+        focusColumn = ClampColumn(focusRow, focusColumn);
+        hasFocus = true;
+
+        ApplyFocus();
+    }
+
+    private void ApplyFocus()
+    {
+        RelicSlotView focused = null;
+
+        foreach (RelicSlotView s in spawnedSlots)
+        {
+            if (s == null) continue;
+
+            bool isFocused = hasFocus && s.Row == focusRow && s.Column == focusColumn;
+            s.SetFocused(isFocused);
+
+            if (isFocused) focused = s;
+        }
+
+        // 키보드로 옮겨 다닐 때도 툴팁이 따라오게 한다.
+        if (tooltip == null) return;
+
+        if (focused != null && !focused.IsEmpty) tooltip.Show(focused.Relic);
+        else tooltip.Hide();
+    }
+
+    // ── 표시 갱신 ──────────────────────────
+
+    private void UpdateCostText(IReadOnlyList<RelicData> equipped)
+    {
+        if (bodyCostText == null) return;
+
+        int used = RelicEquipRules.UsedBodyCost(equipped);
+        bodyCostText.text = RelicLabels.CostGauge(used, RelicEquipRules.BodyCostBudget);
+    }
+
+    private void UpdateDescription(IReadOnlyList<RelicData> equipped)
+    {
+        bool has = selected != null;
+
+        if (descIcon != null)
+        {
+            descIcon.sprite = has ? selected.Icon : null;
+            descIcon.enabled = has && selected.Icon != null;
+        }
+
+        if (descName != null)
+            descName.text = has ? selected.RelicName : "유물을 선택하세요";
+
+        if (descMeta != null)
+        {
+            descMeta.text = has ? RelicLabels.MetaLine(selected) : "";
+        }
+
+        if (descText != null)
+            descText.text = has ? selected.Description : "";
+
+        if (equipButton != null)
+            equipButton.interactable = has && relicManager != null;
+
+        if (equipButtonLabel != null)
+            equipButtonLabel.text = has && Contains(equipped, selected) ? "해제" : "장착";
+    }
+
+    /// <summary>제단 밖이면 안내하고 false. 바꾸는 동작마다 맨 앞에서 부른다.</summary>
+    private bool CheckShrine()
+    {
+        if (ShrineAccess.CanEditLoadout) return true;
+
+        Reject(ShrineAccess.LockedHint);
+        return false;
+    }
+
+    private void Reject(string message)
+    {
+        SetHint(message);
+        GameAudio.Play(GameSound.UIReject);
+    }
+
+    private void SetHint(string message)
+    {
+        if (hintText != null) hintText.text = message;
+        Debug.Log("[RelicInventoryPanel] " + message);
+    }
+
+    // ── 보조 ───────────────────────────────
+
+    private IReadOnlyList<RelicData> CurrentEquipped()
+    {
+        return relicManager != null ? relicManager.EquippedRelics : new List<RelicData>();
+    }
+
+    private bool IsEquipped(RelicData relic)
+    {
+        return Contains(CurrentEquipped(), relic);
+    }
+
+    private static List<RelicData> FilterByCategory(IReadOnlyList<RelicData> source, RelicCategory category)
+    {
+        List<RelicData> result = new List<RelicData>();
+
+        for (int i = 0; i < source.Count; i++)
+            if (source[i] != null && source[i].Category == category) result.Add(source[i]);
+
+        return result;
+    }
+
+    private static bool Contains(IReadOnlyList<RelicData> list, RelicData relic)
+    {
+        for (int i = 0; i < list.Count; i++)
+            if (list[i] == relic) return true;
+
+        return false;
+    }
+}

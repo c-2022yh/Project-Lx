@@ -1,0 +1,1028 @@
+﻿#if UNITY_EDITOR && LUDENS_UI_TOOLS
+using UnityEditor;
+using UnityEditor.Events;
+using UnityEngine;
+using UnityEngine.UI;
+using TMPro;
+using K = UIBuildKit;
+
+/// <summary>
+/// 유물 인벤토리 화면을 만든다.
+/// Unity 상단 메뉴 Tools/UI > Build Relic Inventory.
+///
+/// 씬의 Popup_Canvas 아래에 만들고, UIManager의 참조까지 자동으로 연결한다.
+/// 여러 번 실행해도 안전하다 (기존 것을 지우고 새로 만든다).
+/// </summary>
+public static class RelicInventoryUIBuilder
+{
+    private const string SlotPrefabPath = "Assets/Prefabs/UI/Popup_Canvas/RelicSlotView.prefab";
+    private const string PopupCanvasPath = "Assets/Prefabs/UI/Combat_System/Popup_Canvas.prefab";
+
+    /// <summary>BuildInto()가 마지막으로 남긴 UIManager 연결 결과 메시지.</summary>
+    public static string LastUIManagerNote { get; private set; } = "";
+
+    // 10.16 시안: 보관함은 6열로 오른쪽 영역을 꽉 채운다 (6×98 + 5×9 = 633).
+    private const float SlotSize = 98f;
+    private const float SlotGap = 9f;
+
+    /// <summary>보관함 뒤에 깔아둘 빈 칸 틀 개수 (6열 × 6줄).</summary>
+    private const int StorageBackdropCells = 36;
+
+    /// <summary>보관함 격자 열 수. RelicInventoryPanel.StorageColumns와 같아야 한다.</summary>
+    private const int StorageColumns = 6;
+
+    private const float TooltipWidth = 400f;
+
+    private const string CircleSlotPrefabPath = "Assets/Prefabs/UI/Popup_Canvas/RelicSlotCircle.prefab";
+    private const string FilterIconFolder = "Assets/Sprites/UI/RelicFilter";
+
+    // 창을 좌우로 나눈다. 왼쪽은 장착, 오른쪽은 보관함.
+    private const float WindowWidth = 1520f;
+    private const float WindowHeight = 840f;
+
+    private const float LeftWidth = 700f;
+    private const float LeftCenterX = 40f + LeftWidth / 2f;
+    private const float RightX = 824f;
+    private const float RightWidth = 656f;
+
+    // 장착칸은 원형이고, 중요한 것일수록 크다.
+    // 검과 보주는 일직선으로 쌓지 않고 좌우로 엇갈리게 놓는다 (B안).
+    // 일러스트가 들어올 자리라 가운데를 비워두는 배치다.
+    /// <summary>
+    /// 검과 보주를 가운데에서 좌우로 밀어내는 양. 두 칸이 대각선으로 엇갈리게 한다.
+    /// 세로로는 이미 맞닿아 있어서, 둘이 얼마나 붙어 보이는지는 이 값이 정한다.
+    /// (72면 원 사이 틈 58, 52면 26)
+    /// </summary>
+    private const float DiagonalOffset = 52f;
+
+    // 10.16 시안 크기. RelicInventoryPanel의 같은 이름 상수와 맞춰야 한다.
+    private const float SwordSlotSize = 280f;
+    private const float OrbSlotSize = 180f;
+    private const float BodySlotSize = 96f;
+    private const float BodySlotGap = 15f;
+
+    // 시안 배치(창 왼쪽 위 기준 중심점). 검은 크게 왼쪽 위, 보주는 오른쪽 아래로 엇갈린다.
+    private const float SwordCenterX = LeftCenterX - 68f;
+    private const float SwordCenterY = -326f;
+    private const float OrbCenterX = LeftCenterX + 154f;
+    private const float OrbCenterY = -479f;
+    private const float BodyCenterY = -692f;
+
+    /// <summary>
+    /// 원형 테두리 그림(Slot_*_Frame / Slot_*_Empty)은 둘레에 마름모 장식이 튀어나와 있어서
+    /// 원 자체보다 캔버스가 크다. 원이 칸 크기에 딱 맞도록 그림을 이만큼 크게 놓는다.
+    /// (원 지름 ÷ 그림 크기를 재서 구한 값)
+    /// </summary>
+    private const float RingImageScaleX = 1.049f;
+    private const float RingImageScaleY = 1.062f;
+
+    [MenuItem("Tools/UI/Build Relic Inventory")]
+    public static void Build()
+    {
+        if (!K.EnsureKoreanFont()) return;
+
+        GameObject popupCanvas = GameObject.Find("Popup_Canvas");
+
+        if (popupCanvas == null)
+        {
+            EditorUtility.DisplayDialog("Popup_Canvas 없음",
+                "Hierarchy에 Popup_Canvas가 없습니다.\n씬에 UI_Root를 먼저 올려주세요.", "확인");
+            return;
+        }
+
+        Transform existing = popupCanvas.transform.Find("RelicInventoryPanel");
+
+        if (existing != null)
+        {
+            bool replace = EditorUtility.DisplayDialog("이미 있음",
+                "RelicInventoryPanel이 이미 있습니다.\n지우고 새로 만들까요?", "새로 만들기", "취소");
+
+            if (!replace) return;
+
+            // Popup_Canvas 프리팹에 Apply한 뒤라면 인스턴스 안의 오브젝트라 지울 수 없다.
+            // 그냥 진행하면 DestroyImmediate가 실패하고 패널이 두 개가 된다.
+            if (PrefabUtility.IsPartOfPrefabInstance(existing.gameObject) &&
+                !PrefabUtility.IsAddedGameObjectOverride(existing.gameObject))
+            {
+                EditorUtility.DisplayDialog("프리팹 안에 있음",
+                    "기존 RelicInventoryPanel이 Popup_Canvas 프리팹의 일부입니다.\n" +
+                    "Prefab Mode에서 먼저 지운 뒤 다시 실행해주세요.", "확인");
+                return;
+            }
+
+            Object.DestroyImmediate(existing.gameObject);
+        }
+
+        RelicInventoryPanel built = BuildInto(popupCanvas.transform, true);
+        Selection.activeGameObject = built.gameObject;
+
+        EditorUtility.DisplayDialog("완료!",
+            "RelicInventoryPanel 생성 완료\n\n" + Summary(LastUIManagerNote) +
+            "\n씬에 만들었으므로 Popup_Canvas 프리팹에 Apply 해야 다른 씬에도 반영됩니다.\n" +
+            "(Tools/UI > Build Relic Inventory In Prefab 을 쓰면 Apply가 필요 없습니다)",
+            "확인");
+    }
+
+    /// <summary>
+    /// 씬을 열지 않고 Popup_Canvas 프리팹 자체에 만든다.
+    ///
+    /// 위의 메뉴는 GameObject.Find로 "열려 있는 씬"을 고치기 때문에,
+    /// 프리팹에 Apply 하는 것을 잊으면 그 씬에서만 패널이 생긴다.
+    /// 이쪽은 프리팹 에셋을 직접 고치므로 이 프리팹을 쓰는 모든 씬에 한 번에 반영된다.
+    /// </summary>
+    [MenuItem("Tools/UI/Build Relic Inventory In Prefab")]
+    public static void BuildInPrefab()
+    {
+        if (!K.EnsureKoreanFont()) return;
+
+        if (!EditorUtility.DisplayDialog("유물 인벤토리 (프리팹에 직접)",
+                "아래 두 프리팹을 직접 고칩니다. 씬은 건드리지 않습니다.\n\n" +
+                "1. " + PopupCanvasPath + "\n   RelicInventoryPanel을 새로 만들고 참조 연결\n\n" +
+                "2. " + InventoryPrefabFixer.UIRootPath + "\n   UIManager.relicInventoryPanel 연결\n\n" +
+                "진행할까요?",
+                "진행", "취소"))
+        {
+            return;
+        }
+
+        GameObject popupRoot = PrefabUtility.LoadPrefabContents(PopupCanvasPath);
+
+        if (popupRoot == null)
+        {
+            EditorUtility.DisplayDialog("실패", "프리팹을 열지 못했습니다:\n" + PopupCanvasPath, "확인");
+            return;
+        }
+
+        try
+        {
+            Transform existing = popupRoot.transform.Find("RelicInventoryPanel");
+            if (existing != null) Object.DestroyImmediate(existing.gameObject);
+
+            // 프리팹 편집 중에는 씬의 UIManager를 잘못 건드리게 되므로 false.
+            BuildInto(popupRoot.transform, false);
+
+            PrefabUtility.SaveAsPrefabAsset(popupRoot, PopupCanvasPath);
+        }
+        finally
+        {
+            PrefabUtility.UnloadPrefabContents(popupRoot);
+        }
+
+        AssetDatabase.SaveAssets();
+        AssetDatabase.Refresh();
+
+        string note = InventoryPrefabFixer.LinkPanelInUIRoot(
+            "relicInventoryPanel", typeof(RelicInventoryPanel));
+
+        EditorUtility.DisplayDialog("완료!",
+            "RelicInventoryPanel 생성 완료 (프리팹)\n\n" + Summary(note) +
+            "\n이 프리팹을 쓰는 모든 씬에 자동으로 반영됩니다. 씬 파일은 바뀌지 않았습니다.",
+            "확인");
+    }
+
+    private static string Summary(string uiNote)
+    {
+        return "- 배치는 와이어프레임 B안 (왼쪽 원형 장착칸 / 오른쪽 보관함)\n" +
+               "- 검 1칸 / 보주 1칸 / 신체는 코스트 5, 개수 5\n" +
+               "- 보관함은 가지고 있지만 장착하지 않은 유물\n" +
+               "- 보관함 위 필터로 계열별 보기 / 정렬 버튼으로 이름순·획득순 전환\n" +
+               "- 조작: 올리면 툴팁 / 좌클릭 선택 / 우클릭 장착·해제\n" +
+               "        드래그로 칸 옮기기, 보관함으로 빼면 해제\n" +
+               "        화살표로 이동, Z로 집고 놓기, X로 취소\n" +
+               "- " + uiNote + "\n\n" +
+               "Tools/Relics > Rebuild Relic Database 를 아직 안 하셨다면 먼저 해주세요.\n";
+    }
+
+    /// <summary>패널을 실제로 만드는 본체. 씬에서도 프리팹 에셋에서도 호출할 수 있다.</summary>
+    /// <summary>
+    /// 패널을 실제로 만드는 본체. 씬에서도 프리팹 에셋에서도 호출할 수 있다.
+    ///
+    /// 배치는 팀 와이어프레임 B안을 따른다.
+    ///   왼쪽  검(큰 원) / 보주(원) / 신체(작은 원 가로줄)
+    ///   오른쪽 필터 줄 + 보관함 격자
+    ///   아래  설명창 (B안 그림에는 없지만 유지하기로 함)
+    /// 배경 일러스트는 쓰지 않는다.
+    /// </summary>
+    public static RelicInventoryPanel BuildInto(Transform popupCanvas, bool relinkUIManager)
+    {
+        // ── 루트 ───────────────────────────
+        GameObject panel = K.Obj("RelicInventoryPanel", popupCanvas);
+        K.Stretch(panel, 0, 0, 0, 0);
+
+        GameObject dim = K.Img("Dim", panel.transform, new Color(0f, 0f, 0f, 0.78f), true);
+        K.Stretch(dim, 0, 0, 0, 0);
+
+        GameObject window = K.Img("Window", panel.transform, new Color(0.07f, 0.07f, 0.09f, 1f), true);
+        K.Place(window, K.Anchor.Center, 0, 0, WindowWidth, WindowHeight);
+        Transform w = window.transform;
+
+        // 창 테두리. 배경이 게임 화면과 비슷한 어두운 색이라
+        // 테두리가 없으면 창이 어디서 시작하는지 안 보인다. (10.19 창살 테두리)
+        LatticeFrame.Attach(window.GetComponent<RectTransform>(), WindowHeight);
+
+        // 제목 대신 탭 줄. 스킬창과 같은 자리에 같은 모양으로 그려야
+        // Q/E로 오갈 때 위쪽이 튀지 않는다.
+        K.TabBar(w, UITabBar.RelicTab);
+
+        GameObject closeHint = K.Text("WindowHint", w, "Q / E  전환      Esc  닫기", 20,
+            FontStyles.Normal, TextAlignmentOptions.MidlineRight, K.MutedText);
+        K.Place(closeHint, K.Anchor.TopRight, -112, -34, 360, 34);
+
+        // ── 왼쪽: 장착 ──────────────────────
+        // 제목 글자는 두지 않는다. 계열 이름표가 칸마다 붙어 있어서 중복이고,
+        // 그 자리를 비워야 검과 보주를 위로 당겨 붙일 수 있다.
+        // 10.16 시안: 왼쪽 위 구분선과 계열 이름표는 없다. 칸 그림(칼·여우)이 계열을 알려준다.
+
+        // 검: 가장 크게, 왼쪽 위로
+        Transform swordSlots = EquipSpot(w, "검", SwordCenterX, SwordCenterY + SwordSlotSize / 2f,
+                                         SwordSlotSize, RelicDropTargetKind.SwordRow);
+
+        // 보주: 검의 오른쪽 아래로 엇갈리게.
+        //
+        // 두 칸은 세로로 겹치지만 가로로는 안 겹친다.
+        // 검은 가운데에서 왼쪽으로 72, 보주는 오른쪽으로 72 밀려 있어서
+        // 검 오른쪽 끝(-7)과 보주 왼쪽 끝(+19) 사이가 비어 있다.
+        // 그래서 두 원을 대각선으로 바짝 붙일 수 있다.
+        // 보주 이름표도 검 원 옆 빈자리로 올라간다.
+        Transform orbSlots = EquipSpot(w, "보주", OrbCenterX, OrbCenterY + OrbSlotSize / 2f,
+                                       OrbSlotSize, RelicDropTargetKind.OrbRow);
+
+        // 신체: 아래쪽 가로줄. 개수가 늘 바뀌므로 가로 레이아웃에 맡긴다.
+        GameObject bodyRow = K.Obj("Slots_신체", w);
+        K.Place(bodyRow, K.Anchor.TopLeft, LeftCenterX - LeftWidth / 2f, BodyCenterY + BodySlotSize / 2f,
+                LeftWidth, BodySlotSize);
+
+        HorizontalLayoutGroup bodyLayout = bodyRow.AddComponent<HorizontalLayoutGroup>();
+        bodyLayout.spacing = BodySlotGap;
+        bodyLayout.childAlignment = TextAnchor.MiddleCenter;
+        bodyLayout.childControlWidth = false;
+        bodyLayout.childControlHeight = false;
+        bodyLayout.childForceExpandWidth = false;
+        bodyLayout.childForceExpandHeight = false;
+
+        AddDropZone(bodyRow, RelicDropTargetKind.BodyRow);
+
+        // 신체 코스트: ◆◆◇◇◇ (채운 칸 = 쓴 코스트). 글자는 RelicInventoryPanel이 채운다.
+        GameObject costText = K.Text("BodyCostText", w, "◇◇◇◇◇", 24,
+            FontStyles.Normal, TextAlignmentOptions.Center);
+        costText.GetComponent<TextMeshProUGUI>().characterSpacing = 18f;
+        K.Place(costText, K.Anchor.TopLeft, LeftCenterX - 150, BodyCenterY - BodySlotSize / 2f - 14f, 300, 30);
+
+        // ── 가운데 세로 구분선 ───────────────
+        GameObject vDivider = K.Img("Divider_Vertical", w, K.Divider);
+        K.Place(vDivider, K.Anchor.TopLeft, RightX - 42, -96, 2, 704);
+
+        // ── 오른쪽: 보관함 ──────────────────
+        GameObject storageHeader = K.Text("Header_Storage", w, "보관함", 28, FontStyles.Bold);
+        K.Place(storageHeader, K.Anchor.TopLeft, RightX, -100, 220, 40);
+
+        RelicFilterBar filterBar = BuildFilterBar(w);
+
+        GameObject storageLine = K.Img("Divider_Storage", w, K.Divider);
+        K.Place(storageLine, K.Anchor.TopLeft, RightX, -142, RightWidth, 2);
+
+        GameObject storage = K.Obj("StorageContainer", w);
+        K.Place(storage, K.Anchor.TopLeft, RightX, -160, RightWidth, 640);
+
+        GridLayoutGroup grid = storage.AddComponent<GridLayoutGroup>();
+        grid.cellSize = new Vector2(SlotSize, SlotSize);
+        grid.spacing = new Vector2(SlotGap, SlotGap);
+        grid.startCorner = GridLayoutGroup.Corner.UpperLeft;
+        grid.startAxis = GridLayoutGroup.Axis.Horizontal;
+        grid.childAlignment = TextAnchor.UpperLeft;
+        grid.constraint = GridLayoutGroup.Constraint.FixedColumnCount;
+        grid.constraintCount = StorageColumns;
+
+        // 장착된 유물을 여기로 끌어다 놓으면 해제된다.
+        AddDropZone(storage, RelicDropTargetKind.Storage);
+
+        // 시안처럼 비어 있어도 칸 틀이 보이게 뒤에 빈 칸을 깔아 둔다.
+        K.FrameBackdrop(w, "StorageBackdrop", grid, StorageBackdropCells);
+
+        // ── 아래: 설명창 ────────────────────
+        // 설명칸은 두지 않는다. 유물 위에 마우스를 올리면 RelicTooltip이
+        // 이름·계열·코스트·설명을 띄우고, 장착은 우클릭과 드래그로 한다.
+        // 아래를 비워야 왼쪽에 일러스트가 들어갈 자리가 난다.
+
+
+        // ── 툴팁 / 드래그 고스트 ────────────
+        RelicTooltip tooltip = BuildTooltip(panel.transform);
+        RelicDragLayer dragLayer = BuildDragLayer(panel.transform);
+
+        // ── 컴포넌트 + 참조 연결 ────────────
+        RelicInventoryPanel comp = panel.AddComponent<RelicInventoryPanel>();
+        GameObject slotPrefab = BuildSlotPrefab(false, SlotSize, SlotPrefabPath);
+        GameObject circleSlotPrefab = BuildSlotPrefab(true, OrbSlotSize, CircleSlotPrefabPath);
+
+        SerializedObject so = new SerializedObject(comp);
+        K.SetRef(so, "swordSlotContainer", swordSlots);
+        K.SetRef(so, "orbSlotContainer", orbSlots);
+        K.SetRef(so, "bodySlotContainer", bodyRow.transform);
+        K.SetRef(so, "bodyCostText", costText.GetComponent<TextMeshProUGUI>());
+        K.SetRef(so, "storageContainer", storage.transform);
+        K.SetRef(so, "slotPrefab", slotPrefab);
+        K.SetRef(so, "circleSlotPrefab", circleSlotPrefab);
+        K.SetRef(so, "tooltip", tooltip);
+        K.SetRef(so, "dragLayer", dragLayer);
+        K.SetRef(so, "filterAllButton", filterBar.All);
+        K.SetRef(so, "filterSwordButton", filterBar.Sword);
+        K.SetRef(so, "filterOrbButton", filterBar.Orb);
+        K.SetRef(so, "filterBodyButton", filterBar.Body);
+        K.SetRef(so, "sortButton", filterBar.Sort);
+        so.ApplyModifiedPropertiesWithoutUndo();
+
+
+        UnityEventTools.AddPersistentListener(filterBar.All.onClick, comp.OnFilterAll);
+        UnityEventTools.AddPersistentListener(filterBar.Sword.onClick, comp.OnFilterSword);
+        UnityEventTools.AddPersistentListener(filterBar.Orb.onClick, comp.OnFilterOrb);
+        UnityEventTools.AddPersistentListener(filterBar.Body.onClick, comp.OnFilterBody);
+        UnityEventTools.AddPersistentListener(filterBar.Sort.onClick, comp.OnToggleSort);
+
+        LastUIManagerNote = relinkUIManager
+            ? RelinkUIManager(comp)
+            : "프리팹 편집 중이라 씬 UIManager 재연결은 건너뜀";
+
+        panel.SetActive(false);
+        EditorUtility.SetDirty(panel);
+
+        return comp;
+    }
+
+    /// <summary>
+    /// 마우스를 올렸을 때 뜨는 상세 툴팁. 커서를 따라다닌다.
+    /// 가로 폭은 고정하고 세로만 내용에 맞춰 늘어나게 한다
+    /// (가로까지 자동이면 설명이 긴 유물에서 화면을 가로지른다).
+    /// </summary>
+    private static RelicTooltip BuildTooltip(Transform panel)
+    {
+        GameObject root = K.Obj("RelicTooltip", panel);
+        K.Stretch(root, 0, 0, 0, 0);
+
+        RelicTooltip comp = root.AddComponent<RelicTooltip>();
+
+        GameObject tip = K.Img("Tip", root.transform, new Color(0.04f, 0.04f, 0.06f, 0.94f));
+        RectTransform tipRect = tip.GetComponent<RectTransform>();
+
+        // 위치는 RelicTooltip이 캔버스 좌표로 직접 넣는다.
+        // 그래서 앵커는 가운데 한 점, 피벗은 좌상단(커서 오른쪽 아래로 펼쳐짐).
+        tipRect.anchorMin = new Vector2(0.5f, 0.5f);
+        tipRect.anchorMax = new Vector2(0.5f, 0.5f);
+        tipRect.pivot = new Vector2(0f, 1f);
+        tipRect.sizeDelta = new Vector2(TooltipWidth, 160f);
+
+        VerticalLayoutGroup vertical = tip.AddComponent<VerticalLayoutGroup>();
+        vertical.padding = new RectOffset(18, 18, 16, 16);
+        vertical.spacing = 8;
+        vertical.childControlWidth = true;
+        vertical.childControlHeight = true;
+        vertical.childForceExpandWidth = true;
+        vertical.childForceExpandHeight = false;
+
+        ContentSizeFitter fitter = tip.AddComponent<ContentSizeFitter>();
+        fitter.horizontalFit = ContentSizeFitter.FitMode.Unconstrained;
+        fitter.verticalFit = ContentSizeFitter.FitMode.PreferredSize;
+
+        // 머리: 아이콘 + (이름 / 계열)
+        GameObject header = K.Obj("Header", tip.transform);
+
+        HorizontalLayoutGroup horizontal = header.AddComponent<HorizontalLayoutGroup>();
+        horizontal.spacing = 12;
+        horizontal.childAlignment = TextAnchor.MiddleLeft;
+        horizontal.childControlWidth = true;
+        horizontal.childControlHeight = true;
+        horizontal.childForceExpandWidth = false;
+        horizontal.childForceExpandHeight = false;
+        K.FixedHeight(header, 64f);
+
+        GameObject icon = K.Img("Icon", header.transform, Color.white);
+        LayoutElement iconSize = icon.AddComponent<LayoutElement>();
+        iconSize.preferredWidth = 64f;
+        iconSize.preferredHeight = 64f;
+        icon.GetComponent<UnityEngine.UI.Image>().enabled = false;
+
+        GameObject names = K.Obj("Names", header.transform);
+
+        VerticalLayoutGroup nameColumn = names.AddComponent<VerticalLayoutGroup>();
+        nameColumn.spacing = 2;
+        nameColumn.childControlWidth = true;
+        nameColumn.childControlHeight = true;
+        nameColumn.childForceExpandWidth = true;
+        nameColumn.childForceExpandHeight = false;
+
+        LayoutElement nameWidth = names.AddComponent<LayoutElement>();
+        nameWidth.flexibleWidth = 1f;
+
+        GameObject titleText = K.Text("Title", names.transform, "", 26, FontStyles.Bold);
+        K.FixedHeight(titleText, 34f);
+
+        GameObject subtitleText = K.Text("Subtitle", names.transform, "", 18,
+            FontStyles.Normal, TextAlignmentOptions.MidlineLeft, K.MutedText);
+        K.FixedHeight(subtitleText, 24f);
+
+        GameObject line = K.Img("Divider", tip.transform, K.Divider);
+        K.FixedHeight(line, 1f);
+
+        GameObject bodyText = K.Text("Body", tip.transform, "", 19,
+            FontStyles.Normal, TextAlignmentOptions.TopLeft, K.MutedText);
+
+        SerializedObject so = new SerializedObject(comp);
+        K.SetRef(so, "panel", tipRect);
+        K.SetRef(so, "titleText", titleText.GetComponent<TextMeshProUGUI>());
+        K.SetRef(so, "subtitleText", subtitleText.GetComponent<TextMeshProUGUI>());
+        K.SetRef(so, "iconImage", icon.GetComponent<UnityEngine.UI.Image>());
+        K.SetRef(so, "bodyText", bodyText.GetComponent<TextMeshProUGUI>());
+        so.ApplyModifiedPropertiesWithoutUndo();
+
+        tip.SetActive(false);
+        return comp;
+    }
+
+    /// <summary>
+    /// 드래그하는 동안 커서를 따라다니는 아이콘 한 장.
+    /// 레이캐스트를 받으면 드롭 대상을 가로채므로 raycastTarget은 꺼둔다.
+    /// </summary>
+    private static RelicDragLayer BuildDragLayer(Transform panel)
+    {
+        GameObject root = K.Obj("RelicDragLayer", panel);
+        K.Stretch(root, 0, 0, 0, 0);
+
+        RelicDragLayer comp = root.AddComponent<RelicDragLayer>();
+
+        GameObject ghost = K.Img("Ghost", root.transform, new Color(1f, 1f, 1f, 0.85f));
+        RectTransform ghostRect = ghost.GetComponent<RectTransform>();
+
+        ghostRect.anchorMin = new Vector2(0.5f, 0.5f);
+        ghostRect.anchorMax = new Vector2(0.5f, 0.5f);
+        ghostRect.pivot = new Vector2(0.5f, 0.5f);
+        ghostRect.sizeDelta = new Vector2(SlotSize - 12f, SlotSize - 12f);
+
+        SerializedObject so = new SerializedObject(comp);
+        K.SetRef(so, "ghost", ghostRect);
+        K.SetRef(so, "ghostImage", ghost.GetComponent<UnityEngine.UI.Image>());
+        so.ApplyModifiedPropertiesWithoutUndo();
+
+        ghost.SetActive(false);
+        return comp;
+    }
+
+    /// <summary>
+    /// 칸 하나짜리 장착 자리(검 / 보주). 라벨을 위에 얹고 가운데에 칸을 놓는다.
+    /// 칸이 하나뿐이라 가로 레이아웃으로 가운데 정렬만 해두면 된다.
+    /// </summary>
+    private static Transform EquipSpot(Transform window, string label, float centerX, float y,
+                                       float size, RelicDropTargetKind kind)
+    {
+        // 10.16 시안에서는 이름표를 두지 않는다. label은 오브젝트 이름에만 쓴다.
+        GameObject container = K.Obj("Slots_" + label, window);
+        K.Place(container, K.Anchor.TopLeft, centerX - size / 2f, y, size, size);
+
+        HorizontalLayoutGroup layout = container.AddComponent<HorizontalLayoutGroup>();
+        layout.spacing = 0f;
+        layout.childAlignment = TextAnchor.MiddleCenter;
+        layout.childControlWidth = false;
+        layout.childControlHeight = false;
+        layout.childForceExpandWidth = false;
+        layout.childForceExpandHeight = false;
+
+        AddDropZone(container, kind);
+
+        return container.transform;
+    }
+
+    /// <summary>
+    /// 컨테이너를 드롭 받는 판으로 만든다.
+    /// 레이캐스트를 받으려면 Graphic이 있어야 해서 투명 Image를 같이 붙인다
+    /// (알파 0이어도 uGUI는 사각형 안이면 레이캐스트를 받는다).
+    /// </summary>
+    private static void AddDropZone(GameObject go, RelicDropTargetKind kind)
+    {
+        UnityEngine.UI.Image hit = go.GetComponent<UnityEngine.UI.Image>();
+        if (hit == null) hit = go.AddComponent<UnityEngine.UI.Image>();
+
+        hit.color = new Color(1f, 1f, 1f, 0f);
+        hit.raycastTarget = true;
+
+        RelicDropZone zone = go.AddComponent<RelicDropZone>();
+
+        SerializedObject so = new SerializedObject(zone);
+        SerializedProperty prop = so.FindProperty("kind");
+
+        if (prop != null)
+        {
+            prop.enumValueIndex = (int)kind;
+            so.ApplyModifiedPropertiesWithoutUndo();
+        }
+    }
+
+    /// <summary>
+    /// 유물 한 칸 프리팹. 실행할 때마다 새로 만든다.
+    /// 칸의 구조가 바뀌었는데 예전 프리팹이 그대로 남아 조용히 어긋나는 걸 막기 위해서다.
+    ///
+    /// circular가 켜지면 장착칸용 원형 칸이 된다.
+    /// </summary>
+    private static GameObject BuildSlotPrefab(bool circular, float size, string path)
+    {
+        Sprite round = circular ? RoundSprite() : null;
+
+        // 네모 칸은 10.16 시안의 판·테두리 그림을 쓴다.
+        Sprite squareFill = circular ? null : K.Redesign("Frame_Square_Fill");
+        Sprite squareBorder = circular ? null : K.Redesign("Frame_Square_Border");
+        Sprite shape = circular ? round : squareFill;
+
+        GameObject slot = new GameObject(circular ? "RelicSlotCircle" : "RelicSlotView",
+                                         typeof(RectTransform));
+        slot.GetComponent<RectTransform>().sizeDelta = new Vector2(size, size);
+
+        // 루트 Image는 보이지 않지만 마우스 이벤트는 받는다.
+        // (알파가 0이어도 uGUI는 사각형 안이면 레이캐스트를 받는다.)
+        // 칸 색은 아래 Background가 칠한다. 테두리들이 Background보다 먼저 그려져야
+        // 칸 바깥으로 삐져나온 부분만 띠처럼 보이기 때문에 루트에서 색을 뺐다.
+        // Button을 쓰면 좌클릭만 들어오고 hover 색까지 덧칠해버려서 쓰지 않는다.
+        UnityEngine.UI.Image hit = slot.AddComponent<UnityEngine.UI.Image>();
+        hit.color = new Color(1f, 1f, 1f, 0f);
+        hit.raycastTarget = true;
+
+        // 그리는 순서는 자식 순서를 따른다. 큰 사각형부터 깔고 작은 것으로 덮어서
+        // 가장자리에 3px씩 띠가 남게 만든다.
+        //   FocusOutline(-9) → SelectionOutline(-6) → CategoryOutline(-3) → Background(0)
+        GameObject focus = Shape("FocusOutline", slot.transform, new Color(1f, 1f, 1f, 0.75f), shape);
+        K.Stretch(focus, -9, -9, -9, -9);
+        focus.GetComponent<UnityEngine.UI.Image>().enabled = false;
+
+        GameObject outline = Shape("SelectionOutline", slot.transform,
+            new Color(1f, 0.85f, 0.35f, 0.55f), shape);
+        K.Stretch(outline, -6, -6, -6, -6);
+        outline.GetComponent<UnityEngine.UI.Image>().enabled = false;
+
+        // 계열 테두리. 색은 RelicSlotView.Bind가 유물 카테고리에 맞춰 덮어쓴다.
+        // 원형 칸: 예전처럼 뒤에 깔린 띠 (10.16 시안 테두리 그림이 있으면 RelicSlotView가 끈다)
+        // 네모 칸: 시안 테두리 그림을 아이콘 위에 덮는다 (아래에서 순서를 옮긴다)
+        GameObject category = Shape("CategoryOutline", slot.transform, Color.white, round);
+        if (circular) K.Stretch(category, -3, -3, -3, -3);
+        else
+        {
+            category.GetComponent<UnityEngine.UI.Image>().sprite = squareBorder;
+            K.Stretch(category, 0, 0, 0, 0);
+        }
+
+        GameObject bg = Shape("Background", slot.transform, new Color(0.20f, 0.20f, 0.24f, 1f), shape);
+        K.Stretch(bg, 0, 0, 0, 0);
+
+        // 원형 장착칸의 빈 칸 그림(칼·여우)과 테두리 링. 어느 그림을 쓸지는 RelicSlotView가 계열 보고 고른다.
+        GameObject emptyArt = null;
+        if (circular)
+        {
+            emptyArt = K.Img("EmptyArt", slot.transform, Color.white);
+            RingRect(emptyArt);
+            emptyArt.GetComponent<UnityEngine.UI.Image>().enabled = false;
+        }
+
+        // 아이콘 여백은 비율로 잡는다.
+        // 픽셀로 잡으면 같은 프리팹을 신체 칸(72)으로 줄였을 때
+        // 여백만 그대로 남아서 그림이 지나치게 작아진다.
+        //
+        // 원형 칸은 음수다. 유물 아이콘이 자기 테두리(모서리 마름모까지 그려진
+        // 둥근 사각형 프레임)를 달고 오기 때문에, 그대로 넣으면 칸 테두리와
+        // 두 겹으로 보인다. 칸보다 크게 넣고 원으로 잘라내면 그 프레임이
+        // 잘려나가고 칸의 원 하나만 남는다.
+        //
+        // 네모 칸도 아이콘이 자기 프레임을 달고 오므로 여백을 두지 않는다.
+        // 아이콘 그림 둘레에 투명한 가장자리가 2~3% 있어서, 그만큼 살짝 크게 넣어야
+        // 아이콘 프레임이 칸의 계열 테두리에 딱 붙는다.
+        float margin = circular ? -(IconZoom - 1f) / 2f : SquareIconMargin;
+
+        GameObject icon = circular
+            ? CircleMaskedIcon(slot.transform)
+            : K.Img("Icon", slot.transform, Color.white);
+
+        FillRelative(icon, margin);
+        icon.GetComponent<UnityEngine.UI.Image>().enabled = false;
+
+        GameObject ring = null;
+        if (circular)
+        {
+            ring = K.Img("RingFrame", slot.transform, Color.white);
+            RingRect(ring);
+        }
+        else
+        {
+            // 네모 칸 테두리는 아이콘 위에 그려야 아이콘 가장자리를 깔끔하게 덮는다.
+            category.transform.SetSiblingIndex(icon.transform.GetSiblingIndex());
+        }
+
+        // 아이콘이 아직 없는 유물을 위한 글자 자리.
+        // 칸 크기가 제각각이라 글자도 자동으로 맞춘다.
+        GameObject fallback = K.Text("IconFallback", slot.transform, "", 32f,
+            FontStyles.Bold, TextAlignmentOptions.Center);
+        FillRelative(fallback, 0.16f);
+
+        TextMeshProUGUI fallbackText = fallback.GetComponent<TextMeshProUGUI>();
+        fallbackText.enableAutoSizing = true;
+        fallbackText.fontSizeMin = 12f;
+        fallbackText.fontSizeMax = 64f;
+        fallbackText.enabled = false;
+
+        // 신체 유물 코스트를 ◆ 개수로 (RelicSlotView가 채운다)
+        GameObject cost = K.Text("Cost", slot.transform, "", 15,
+            FontStyles.Normal, TextAlignmentOptions.BottomRight);
+        K.Place(cost, K.Anchor.BottomRight, -6, 4, 80, 22);
+
+        RelicSlotView view = slot.AddComponent<RelicSlotView>();
+
+        SerializedObject so = new SerializedObject(view);
+        K.SetRef(so, "background", bg.GetComponent<UnityEngine.UI.Image>());
+        K.SetRef(so, "categoryOutline", category.GetComponent<UnityEngine.UI.Image>());
+        K.SetRef(so, "icon", icon.GetComponent<UnityEngine.UI.Image>());
+        K.SetRef(so, "iconFallbackText", fallback.GetComponent<TextMeshProUGUI>());
+        K.SetRef(so, "costText", cost.GetComponent<TextMeshProUGUI>());
+        K.SetRef(so, "selectionOutline", outline.GetComponent<UnityEngine.UI.Image>());
+        K.SetRef(so, "focusOutline", focus.GetComponent<UnityEngine.UI.Image>());
+
+        if (circular)
+        {
+            K.SetRef(so, "emptyArtImage", emptyArt.GetComponent<UnityEngine.UI.Image>());
+            K.SetRef(so, "ringFrameImage", ring.GetComponent<UnityEngine.UI.Image>());
+            K.SetRef(so, "swordEmptySprite", K.Redesign("Slot_Sword_Empty"));
+            K.SetRef(so, "orbEmptySprite", K.Redesign("Slot_Orb_Empty"));
+            K.SetRef(so, "swordFrameSprite", K.Redesign("Slot_Sword_Frame"));
+            K.SetRef(so, "orbFrameSprite", K.Redesign("Slot_Orb_Frame"));
+        }
+
+        so.ApplyModifiedPropertiesWithoutUndo();
+
+        if (!AssetDatabase.IsValidFolder("Assets/Prefabs/UI"))
+            AssetDatabase.CreateFolder("Assets/Prefabs", "UI");
+
+        GameObject saved = PrefabUtility.SaveAsPrefabAsset(slot, path);
+        Object.DestroyImmediate(slot);
+
+        Debug.Log("[RelicInventoryUIBuilder] 칸 프리팹 생성됨: " + path);
+        return saved;
+    }
+
+    /// <summary>
+    /// 원으로 잘리는 아이콘 하나. 자른 자리가 매끈하도록 전용 셰이더를 쓴다.
+    ///
+    /// 유니티 기본 Mask는 스텐실이라 경계가 계단처럼 깨진다. 칸이 130px밖에
+    /// 안 되는데 그러면 눈에 띈다.
+    /// </summary>
+    private static GameObject CircleMaskedIcon(Transform parent)
+    {
+        GameObject go = K.Obj("Icon", parent);
+
+        CircleMaskedImage image = go.AddComponent<CircleMaskedImage>();
+        image.color = Color.white;
+        image.raycastTarget = false;
+        image.material = CircleMaskMaterial();
+
+        return go;
+    }
+
+    /// <summary>원 잘라내기 머티리얼. 없으면 만든다.</summary>
+    private static Material CircleMaskMaterial()
+    {
+        Material material = AssetDatabase.LoadAssetAtPath<Material>(CircleMaskMaterialPath);
+        if (material != null) return material;
+
+        Shader shader = Shader.Find(CircleMaskShaderName);
+
+        if (shader == null)
+        {
+            Debug.LogWarning("[RelicInventoryUIBuilder] " + CircleMaskShaderName +
+                             " 셰이더를 찾지 못했습니다. 아이콘이 네모로 보입니다.");
+            return null;
+        }
+
+        if (!AssetDatabase.IsValidFolder("Assets/Materials"))
+            AssetDatabase.CreateFolder("Assets", "Materials");
+        if (!AssetDatabase.IsValidFolder("Assets/Materials/UI"))
+            AssetDatabase.CreateFolder("Assets/Materials", "UI");
+
+        material = new Material(shader);
+
+        // 아이콘 네모가 칸의 IconZoom배라, 칸에 꼭 맞는 원의 반지름은 0.5 / IconZoom이다.
+        material.SetFloat("_Radius", 0.5f / IconZoom);
+        material.SetFloat("_Softness", 0.004f);
+
+        AssetDatabase.CreateAsset(material, CircleMaskMaterialPath);
+        AssetDatabase.SaveAssets();
+
+        return material;
+    }
+
+    /// <summary>
+    /// 부모 사각형을 비율로 채운다. margin은 각 변에서 몇 퍼센트를 비울지.
+    /// 앵커로 잡아야 칸 크기가 바뀌어도 같은 비율을 유지한다.
+    /// </summary>
+    /// <summary>원형 테두리 그림을 칸 위에 놓는다. 원이 칸에 맞도록 마름모 장식만큼 크게.</summary>
+    private static void RingRect(GameObject go)
+    {
+        RectTransform rect = go.GetComponent<RectTransform>();
+        rect.anchorMin = new Vector2(0.5f - RingImageScaleX / 2f, 0.5f - RingImageScaleY / 2f);
+        rect.anchorMax = new Vector2(0.5f + RingImageScaleX / 2f, 0.5f + RingImageScaleY / 2f);
+        rect.offsetMin = Vector2.zero;
+        rect.offsetMax = Vector2.zero;
+        go.GetComponent<UnityEngine.UI.Image>().raycastTarget = false;
+    }
+
+    private static void FillRelative(GameObject go, float margin)
+    {
+        RectTransform rect = go.GetComponent<RectTransform>();
+
+        rect.anchorMin = new Vector2(margin, margin);
+        rect.anchorMax = new Vector2(1f - margin, 1f - margin);
+        rect.offsetMin = Vector2.zero;
+        rect.offsetMax = Vector2.zero;
+    }
+
+    /// <summary>사각형이나 원형 판 하나. round가 null이면 그냥 사각형이다.</summary>
+    private static GameObject Shape(string name, Transform parent, Color color, Sprite round)
+    {
+        GameObject go = K.Img(name, parent, color);
+
+        if (round != null)
+        {
+            UnityEngine.UI.Image image = go.GetComponent<UnityEngine.UI.Image>();
+            image.sprite = round;
+            image.type = UnityEngine.UI.Image.Type.Simple;
+        }
+
+        return go;
+    }
+
+    /// <summary>보관함 위에 붙는 필터 줄의 버튼들.</summary>
+    private struct RelicFilterBar
+    {
+        public UnityEngine.UI.Button All;
+        public UnityEngine.UI.Button Sword;
+        public UnityEngine.UI.Button Orb;
+        public UnityEngine.UI.Button Body;
+        public UnityEngine.UI.Button Sort;
+    }
+
+    /// <summary>
+    /// 보관함 위 필터 줄. 전체는 글자, 나머지는 아이콘이다.
+    /// 아트가 아직 없어서 아이콘은 코드로 그려서 PNG로 구워 쓴다.
+    /// </summary>
+    private static RelicFilterBar BuildFilterBar(Transform window)
+    {
+        GameObject bar = K.Obj("FilterBar", window);
+        K.Place(bar, K.Anchor.TopRight, -40, -96, 420, 44);
+
+        HorizontalLayoutGroup layout = bar.AddComponent<HorizontalLayoutGroup>();
+        layout.spacing = 10f;
+        layout.childAlignment = TextAnchor.MiddleRight;
+        layout.childControlWidth = false;
+        layout.childControlHeight = false;
+        layout.childForceExpandWidth = false;
+        layout.childForceExpandHeight = false;
+
+        RelicFilterBar result = new RelicFilterBar
+        {
+            All = FilterButton(bar.transform, "Filter_All", "전체", null, 92f),
+            Sword = FilterButton(bar.transform, "Filter_Sword", "", FilterIcon("sword"), 44f),
+            Orb = FilterButton(bar.transform, "Filter_Orb", "", FilterIcon("orb"), 44f),
+            Body = FilterButton(bar.transform, "Filter_Body", "", FilterIcon("body"), 44f),
+            Sort = FilterButton(bar.transform, "Filter_Sort", "", FilterIcon("sort"), 44f)
+        };
+
+        return result;
+    }
+
+    private static UnityEngine.UI.Button FilterButton(Transform parent, string name,
+                                                      string label, Sprite icon, float width)
+    {
+        GameObject go = K.Img(name, parent, K.ButtonBg, true);
+
+        RectTransform rect = go.GetComponent<RectTransform>();
+        rect.sizeDelta = new Vector2(width, 40f);
+
+        LayoutElement size = go.AddComponent<LayoutElement>();
+        size.preferredWidth = width;
+        size.preferredHeight = 40f;
+
+        UnityEngine.UI.Button button = go.AddComponent<UnityEngine.UI.Button>();
+        button.targetGraphic = go.GetComponent<UnityEngine.UI.Image>();
+
+        if (icon != null)
+        {
+            GameObject iconGO = K.Img("Icon", go.transform, K.AccentText);
+            K.Stretch(iconGO, 9, 9, 9, 9);
+            iconGO.GetComponent<UnityEngine.UI.Image>().sprite = icon;
+        }
+        else
+        {
+            GameObject text = K.Text("Label", go.transform, label, 20,
+                FontStyles.Normal, TextAlignmentOptions.Center);
+            K.Stretch(text, 0, 0, 0, 0);
+        }
+
+        return button;
+    }
+
+    /// <summary>
+    /// 필터 아이콘을 코드로 그려 PNG로 굽는다. 이미 있으면 그대로 쓴다.
+    /// 아트가 나오면 같은 경로의 파일만 갈아 끼우면 된다.
+    /// </summary>
+    private static Sprite FilterIcon(string key)
+    {
+        string path = FilterIconFolder + "/Filter_" + key + ".png";
+
+        Sprite existing = AssetDatabase.LoadAssetAtPath<Sprite>(path);
+        if (existing != null) return existing;
+
+        const int Size = 64;
+        Texture2D texture = new Texture2D(Size, Size, TextureFormat.RGBA32, false);
+
+        Color[] pixels = new Color[Size * Size];
+        for (int i = 0; i < pixels.Length; i++) pixels[i] = new Color(0f, 0f, 0f, 0f);
+
+        for (int y = 0; y < Size; y++)
+        {
+            for (int x = 0; x < Size; x++)
+            {
+                if (!IconPixel(key, x, y, Size)) continue;
+
+                pixels[y * Size + x] = Color.white;
+            }
+        }
+
+        texture.SetPixels(pixels);
+        texture.Apply();
+
+        if (!AssetDatabase.IsValidFolder("Assets/Sprites")) AssetDatabase.CreateFolder("Assets", "Sprites");
+        if (!AssetDatabase.IsValidFolder("Assets/Sprites/UI")) AssetDatabase.CreateFolder("Assets/Sprites", "UI");
+        if (!AssetDatabase.IsValidFolder(FilterIconFolder))
+            AssetDatabase.CreateFolder("Assets/Sprites/UI", "RelicFilter");
+
+        System.IO.File.WriteAllBytes(path, texture.EncodeToPNG());
+        Object.DestroyImmediate(texture);
+
+        AssetDatabase.ImportAsset(path, ImportAssetOptions.ForceUpdate);
+
+        TextureImporter importer = AssetImporter.GetAtPath(path) as TextureImporter;
+
+        if (importer != null)
+        {
+            importer.textureType = TextureImporterType.Sprite;
+            importer.alphaIsTransparency = true;
+            importer.mipmapEnabled = false;
+            importer.SaveAndReimport();
+        }
+
+        return AssetDatabase.LoadAssetAtPath<Sprite>(path);
+    }
+
+    /// <summary>아이콘 한 점을 칠할지. 단순한 도형이라 수식 몇 줄로 끝난다.</summary>
+    private static bool IconPixel(string key, int x, int y, int size)
+    {
+        float half = size / 2f;
+        float dx = x - half + 0.5f;
+        float dy = y - half + 0.5f;
+
+        switch (key)
+        {
+            // 보주: 속이 빈 동그라미
+            case "orb":
+            {
+                float distance = Mathf.Sqrt(dx * dx + dy * dy);
+                return distance <= half - 6f && distance >= half - 13f;
+            }
+
+            // 검: 세로로 긴 마름모 (칼날)
+            case "sword":
+            {
+                float shape = Mathf.Abs(dx) / (half - 14f) + Mathf.Abs(dy) / (half - 4f);
+                float inner = Mathf.Abs(dx) / (half - 21f) + Mathf.Abs(dy) / (half - 11f);
+                return shape <= 1f && inner >= 1f;
+            }
+
+            // 신체: 모서리를 깎은 사각형 테두리
+            case "body":
+            {
+                float shape = Mathf.Max(Mathf.Abs(dx), Mathf.Abs(dy));
+                bool outside = shape <= half - 7f && Mathf.Abs(dx) + Mathf.Abs(dy) <= size - 24f;
+                bool hole = shape <= half - 14f && Mathf.Abs(dx) + Mathf.Abs(dy) <= size - 38f;
+                return outside && !hole;
+            }
+
+            // 정렬: 아래를 가리키는 화살표
+            default:
+            {
+                bool stem = Mathf.Abs(dx) <= 4f && dy >= -half + 10f && dy <= half - 20f;
+                bool head = dy >= -half + 8f && dy <= -half + 22f &&
+                            Mathf.Abs(dx) <= (dy + half - 8f) * 0.9f &&
+                            Mathf.Abs(dx) >= (dy + half - 8f) * 0.9f - 9f;
+                return stem || head;
+            }
+        }
+    }
+
+    /// <summary>UIManager가 I키로 이 패널을 열도록 연결한다.</summary>
+    private static string RelinkUIManager(RelicInventoryPanel panel)
+    {
+        UIManager uiManager = Object.FindAnyObjectByType<UIManager>();
+
+        if (uiManager == null)
+            return "UIManager를 못 찾아 자동 연결하지 못했습니다 (직접 연결 필요)";
+
+        SerializedObject so = new SerializedObject(uiManager);
+        SerializedProperty prop = so.FindProperty("relicInventoryPanel");
+
+        if (prop == null)
+            return "UIManager에 relicInventoryPanel 필드가 없습니다 (스크립트 컴파일 후 다시 실행해주세요)";
+
+        prop.objectReferenceValue = panel;
+        so.ApplyModifiedPropertiesWithoutUndo();
+        EditorUtility.SetDirty(uiManager);
+
+        return "UIManager에 자동 연결됨 (I키로 열림)";
+    }
+
+    // ── 원형 칸에 쓰는 동그라미 ─────────────
+
+    private const string RoundSpritePath = "Assets/Sprites/UI/RelicFilter/Circle.png";
+
+    /// <summary>원형 칸에서 아이콘을 칸보다 몇 배로 키울지. 자기 프레임이 잘려나갈 만큼.</summary>
+    private const float IconZoom = 1.45f;
+
+    /// <summary>네모 칸 아이콘 여백(비율). 음수면 칸보다 살짝 크게 넣는다.</summary>
+    private const float SquareIconMargin = -0.025f;
+
+    private const string CircleMaskShaderName = "UI/CircleMask";
+    private const string CircleMaskMaterialPath = "Assets/Materials/UI/RelicIconCircle.mat";
+
+    /// <summary>
+    /// 테두리가 매끈한 흰 동그라미를 만들어 둔다.
+    ///
+    /// 전에는 유니티 기본 Knob 스프라이트를 썼는데, 원본이 작아서
+    /// 장착칸 크기(130)로 키우면 가장자리가 계단처럼 깨졌다.
+    /// 256으로 크게 그려두면 줄여서 쓰게 되므로 깨끗하게 나온다.
+    ///
+    /// 가장자리는 한 점마다 4x4로 잘게 나눠 샘플링해서 부드럽게 만든다.
+    /// 색은 Image가 입히므로 흰색으로만 그린다.
+    /// </summary>
+    private static Sprite RoundSprite()
+    {
+        Sprite existing = AssetDatabase.LoadAssetAtPath<Sprite>(RoundSpritePath);
+        if (existing != null) return existing;
+
+        const int Size = 256;
+        const int Samples = 4;
+
+        // 가장자리가 텍스처 끝에 닿으면 줄일 때 잘려 보인다. 2픽셀 남긴다.
+        float radius = Size / 2f - 2f;
+        float center = Size / 2f;
+
+        Texture2D texture = new Texture2D(Size, Size, TextureFormat.RGBA32, false);
+        Color[] pixels = new Color[Size * Size];
+
+        for (int y = 0; y < Size; y++)
+        {
+            for (int x = 0; x < Size; x++)
+            {
+                int inside = 0;
+
+                for (int sy = 0; sy < Samples; sy++)
+                {
+                    for (int sx = 0; sx < Samples; sx++)
+                    {
+                        float px = x + (sx + 0.5f) / Samples - center;
+                        float py = y + (sy + 0.5f) / Samples - center;
+
+                        if (px * px + py * py <= radius * radius) inside++;
+                    }
+                }
+
+                float alpha = inside / (float)(Samples * Samples);
+                pixels[y * Size + x] = new Color(1f, 1f, 1f, alpha);
+            }
+        }
+
+        texture.SetPixels(pixels);
+        texture.Apply();
+
+        if (!AssetDatabase.IsValidFolder("Assets/Sprites")) AssetDatabase.CreateFolder("Assets", "Sprites");
+        if (!AssetDatabase.IsValidFolder("Assets/Sprites/UI")) AssetDatabase.CreateFolder("Assets/Sprites", "UI");
+
+        System.IO.File.WriteAllBytes(RoundSpritePath, texture.EncodeToPNG());
+        Object.DestroyImmediate(texture);
+
+        AssetDatabase.ImportAsset(RoundSpritePath, ImportAssetOptions.ForceUpdate);
+
+        TextureImporter importer = AssetImporter.GetAtPath(RoundSpritePath) as TextureImporter;
+
+        if (importer != null)
+        {
+            importer.textureType = TextureImporterType.Sprite;
+            importer.alphaIsTransparency = true;
+            importer.mipmapEnabled = false;
+            importer.filterMode = FilterMode.Bilinear;
+            importer.wrapMode = TextureWrapMode.Clamp;
+            importer.SaveAndReimport();
+        }
+
+        return AssetDatabase.LoadAssetAtPath<Sprite>(RoundSpritePath);
+    }
+}
+#endif

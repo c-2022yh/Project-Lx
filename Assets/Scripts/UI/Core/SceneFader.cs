@@ -35,6 +35,9 @@ public class SceneFader : MonoBehaviour
     /// <summary>어두워지는 중이거나 씬을 넘기는 중인지.</summary>
     public static bool IsTransitioning => instance != null && instance.loading;
 
+    /// <summary>Block gameplay controls through fade-out, loading, and the complete arrival fade.</summary>
+    public static bool IsPlayerControlBlocked => instance != null && (instance.loading || instance.fadingIn);
+
     /// <summary>화면이 아직 덮여 있는지(조금이라도). 지역 이름은 다 밝아진 뒤에 띄운다.</summary>
     public static bool IsCovering => instance != null && instance.group != null && instance.group.alpha > 0.01f;
 
@@ -65,6 +68,7 @@ public class SceneFader : MonoBehaviour
 
     private CanvasGroup group;
     private bool loading;
+    private bool fadingIn;
 
     private void Awake()
     {
@@ -97,7 +101,14 @@ public class SceneFader : MonoBehaviour
     private void BeginFadeIn()
     {
         StopAllCoroutines();
-        StartCoroutine(Fade(1f, 0f, FadeInSeconds));
+        fadingIn = true;
+        StartCoroutine(FadeInRoutine());
+    }
+
+    private IEnumerator FadeInRoutine()
+    {
+        yield return Fade(1f, 0f, FadeInSeconds);
+        fadingIn = false;
     }
 
     private IEnumerator FadeOutThenLoad(string sceneName)

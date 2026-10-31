@@ -353,7 +353,7 @@ MonoBehaviour:
     fallbackSound: 5
   deathSound:
     channel: 0
-    clip: {fileID: 0}
+    clip: {fileID: 8300000, guid: 4528c9bd40618f54eabf154491fec6e0, type: 3}
     clips:
     - {fileID: 0}
     volume: 1
@@ -400,7 +400,7 @@ MonoBehaviour:
   airSmooth: 0.1
   jumpSound:
     channel: 0
-    clip: {fileID: 0}
+    clip: {fileID: 8300000, guid: 74a48f1c63a1ef04e83af8f17b293bbf, type: 3}
     clips: []
     volume: 1
     minimumInterval: 0.05
@@ -414,7 +414,7 @@ MonoBehaviour:
     fallbackSound: 5
   dashSound:
     channel: 0
-    clip: {fileID: 0}
+    clip: {fileID: 8300000, guid: d94e081b8b336ed4eb622f9a187ace0d, type: 3}
     clips: []
     volume: 1
     minimumInterval: 0.05
