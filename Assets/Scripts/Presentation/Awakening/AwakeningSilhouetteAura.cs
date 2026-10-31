@@ -21,18 +21,18 @@ public class AwakeningSilhouetteAura : MonoBehaviour
 {
     [Header("모양 (월드 칸, 캐릭터 키 약 2.7)")]
     [Tooltip("몸에 바짝 붙은 빛의 두께")]
-    [SerializeField, Min(0.01f)] private float nearRadius = 0.05f;
+    [SerializeField, Min(0.01f)] private float nearRadius = 0.06f;
     [Tooltip("넓게 퍼지는 빛의 두께")]
     [SerializeField, Min(0.01f)] private float farRadius = 0.15f;
     [Tooltip("위로 피어오르는 자락 높이")]
     [SerializeField, Min(0f)] private float riseHeight = 0.5f;
 
     [Header("밝기")]
-    [SerializeField, Min(0f)] private float intensity = 1f;   // 1을 넘기면 블룸 때문에 하얗게 날아감
-    [SerializeField, Range(0f, 1f)] private float opacity = 0.7f;
+    [SerializeField, Min(0f)] private float intensity = 1.35f;   // 1을 넘기면 블룸 때문에 하얗게 날아감
+    [SerializeField, Range(0f, 1f)] private float opacity = 0.9f;
     [SerializeField, Range(0f, 1f)] private float sparkle = 0.6f;
     [Tooltip("몸 테두리 흰빛 정도 (0 = 흰빛 없음)")]
-    [SerializeField, Range(0f, 1f)] private float whiteCore = 0.25f;
+    [SerializeField, Range(0f, 1f)] private float whiteCore = 0.4f;
     [Tooltip("흐르는 빠르기")]
     [SerializeField, Min(0f)] private float flowSpeed = 1f;
 
