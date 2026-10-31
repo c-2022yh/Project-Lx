@@ -65,7 +65,7 @@ public class AwakeningSlashFx : MonoBehaviour
         if (flameMat != null) Destroy(flameMat);
     }
 
-    private void OnAttackEffect(AttackPattern pattern, Vector3 pos, Quaternion rot, float dir)
+    private void OnAttackEffect(AttackPattern pattern, Vector3 pos, Quaternion rot, float dir, AttackAudioContext audio)
     {
         if (!awakening.IsAwakened || pattern == null || pattern.attackEffectPrefab == null) return;
         float life = Mathf.Max(minDuration, pattern.effectDuration);
