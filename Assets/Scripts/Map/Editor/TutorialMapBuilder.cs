@@ -477,7 +477,8 @@ public static class TutorialMapBuilder
         SerializedObject so = new SerializedObject(bg);
         so.FindProperty("insideSprite").objectReferenceValue = LoadSprite("BG_Cave_Inside");
         so.FindProperty("exitSprite").objectReferenceValue = LoadSprite("BG_Cave_Exit");
-        so.FindProperty("endCameraX").floatValue = CameraRight - 9f;
+        so.FindProperty("viewLeftX").floatValue = MinX;
+        so.FindProperty("viewRightX").floatValue = CameraRight;
         so.ApplyModifiedProperties();
     }
 

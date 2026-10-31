@@ -20,7 +20,7 @@ public class CavePanoramaBackground : MonoBehaviour
     [SerializeField] private Sprite exitSprite;
 
     [Header("크기·위치")]
-    [Tooltip("배경 높이 (월드 단위). 화면 높이(10)보다 조금 크게")]
+    [Tooltip("배경 기본 높이 (월드 단위). 화면이 더 크면(카메라 크기 7이면 높이 14) 화면에 맞춰 자동으로 키운다")]
     [SerializeField] private float height = 11f;
     [Tooltip("출구 그림이 앞 그림과 겹치는 비율 (그림 왼쪽 흐린 부분 폭)")]
     [SerializeField, Range(0f, 0.5f)] private float exitOverlap = 0.15f;
@@ -29,9 +29,9 @@ public class CavePanoramaBackground : MonoBehaviour
     [Tooltip("배경을 카메라보다 위아래로 옮김")]
     [SerializeField] private float yOffset = 0f;
 
-    [Header("카메라 x 범위 (시작 → 끝)")]
-    [SerializeField] private float startCameraX = 8.9f;
-    [SerializeField] private float endCameraX = 131f;
+    [Header("카메라가 보여주는 맵 범위 (월드 x, CameraConfiner와 같게)")]
+    [SerializeField] private float viewLeftX = 0f;
+    [SerializeField] private float viewRightX = 140f;
 
     [Header("그리기 순서")]
     [SerializeField] private string sortingLayer = "BackGround";
@@ -90,10 +90,18 @@ public class CavePanoramaBackground : MonoBehaviour
             if (cam == null) return;
         }
 
-        float halfW = cam.orthographic ? cam.orthographicSize * cam.aspect : 9f;
-        float from = halfW + 0.2f;                                   // 시작: 그림 왼쪽 끝이 화면 왼쪽
-        float to = Mathf.Max(from, Mathf.Min(exitCenter, stripWidth - halfW - 0.2f));   // 끝: 출구 구멍이 가운데 (그림 밖은 안 보이게)
-        float k = Mathf.InverseLerp(startCameraX, endCameraX, cam.transform.position.x);
+        // 화면 크기에 맞춰 그림을 키운다 (위아래가 잘려 보이지 않게)
+        float viewH = cam.orthographic ? cam.orthographicSize * 2f : 14f;
+        float halfW = viewH * 0.5f * cam.aspect;
+        float s = Mathf.Max(1f, (viewH + 1f) / height);
+        strip.localScale = new Vector3(s, s, 1f);
+        float width = stripWidth * s;
+        float focus = exitCenter * s;
+
+        float from = halfW + 0.2f;                                         // 시작: 그림 왼쪽 끝이 화면 왼쪽
+        float to = Mathf.Max(from, Mathf.Min(focus, width - halfW - 0.2f)); // 끝: 출구 구멍이 가운데 (그림 밖은 안 보이게)
+        // 카메라가 실제로 움직일 수 있는 범위 (맵 범위에서 화면 반 폭씩 안쪽)
+        float k = Mathf.InverseLerp(viewLeftX + halfW, viewRightX - halfW, cam.transform.position.x);
         float local = Mathf.Lerp(from, to, k);
 
         Vector3 p = cam.transform.position;
