@@ -7,6 +7,7 @@ using UnityEngine.SceneManagement;
 /// <summary>
 /// 튜토리얼 맵에 근경 프리팹(수풀·덩굴·담쟁이)을 종류별로 하나 이상 놓는다.
 /// 메뉴: Tools/Map/튜토리얼 맵에 수풀·덩굴 추가  →  확인 후 씬 저장(Ctrl+S)
+///       Tools/Map/튜토리얼 맵에 동굴 근경 추가 (종유석·바위) → Foreground_CaveRocks 아래. 수풀·덩굴과 따로 다시 놓을 수 있다.
 ///
 /// - Foreground_Plants 아래에 놓는다. 다시 누르면 그 아래를 비우고 새로 놓는다 (Ctrl+Z로 되돌리기 가능).
 ///   직접 옮긴 위치를 지키고 싶으면 다시 누르지 말 것.
@@ -19,6 +20,8 @@ using UnityEngine.SceneManagement;
 public static class TutorialPlantsPlacer
 {
     private const string MenuPath = "Tools/Map/튜토리얼 맵에 수풀·덩굴 추가";
+    private const string CaveMenuPath = "Tools/Map/튜토리얼 맵에 동굴 근경 추가 (종유석·바위)";
+    private const string CaveRootName = "Foreground_CaveRocks";
     private const string ScenePath = "Assets/Scenes/InProgress/Tutorial.unity";
     private const string Folder = "Assets/Prefabs/Foreground/";
     private const string RootName = "Foreground_Plants";
@@ -85,10 +88,45 @@ public static class TutorialPlantsPlacer
         ("FG_Front_Bush_Tall", 122f),
     };
 
+    // 동굴 근경 (동굴 에셋 7종). 종유석은 천장에, 바위는 바닥에. 수풀·덩굴 자리와 겹치지 않게 비켜 놓았다.
+    private static readonly (string prefab, float x)[] CaveHanging =
+    {
+        ("FG_Back_Cave_Stalactite_DarkWide",      6f),
+        ("FG_Back_Cave_Stalactite_DarkLong",     16f),
+        ("FG_Back_Cave_Stalactite_Crystal",      26f),
+        ("FG_Back_Cave_Stalactite_DarkLarge",    36f),
+        ("FG_Back_Cave_Stalactite_CrystalWide",  41f),
+        ("FG_Back_Cave_Stalactite_DarkLong",     74f),
+        ("FG_Back_Cave_Stalactite_Crystal",      87f),
+        ("FG_Back_Cave_Stalactite_DarkLarge",    95f),
+        ("FG_Back_Cave_Stalactite_CrystalWide", 103f),
+        ("FG_Back_Cave_Stalactite_DarkWide",    111f),
+        // 캐릭터 앞
+        ("FG_Front_Cave_Stalactite_CrystalWide", 21f),
+        ("FG_Front_Cave_Stalactite_DarkWide",    91f),
+    };
+
+    private static readonly (string prefab, float x)[] CaveGround =
+    {
+        ("FG_Back_Cave_Rock_Dark",     15f),
+        ("FG_Back_Cave_Rock_Crystal",  76f),
+        ("FG_Back_Cave_Rock_Dark",     98f),
+        ("FG_Back_Cave_Rock_Crystal", 112f),
+        ("FG_Front_Cave_Rock_Dark",    37f),
+    };
+
     private const float MaxHangRatio = 0.4f;   // 천장~바닥 틈의 이만큼까지만 내려온다
 
     [MenuItem(MenuPath)]
-    private static void Place()
+    private static void Place() => PlaceAll(RootName, Hanging, Ground, "수풀·덩굴");
+
+    [MenuItem(CaveMenuPath)]
+    private static void PlaceCave() => PlaceAll(CaveRootName, CaveHanging, CaveGround, "동굴 근경");
+
+    [MenuItem(CaveMenuPath, true)]
+    private static bool CanPlaceCave() => !EditorApplication.isPlaying;
+
+    private static void PlaceAll(string rootName, (string prefab, float x)[] hanging, (string prefab, float x)[] ground, string label)
     {
         Scene scene = SceneManager.GetActiveScene();
         if (scene.path != ScenePath)
@@ -103,10 +141,10 @@ public static class TutorialPlantsPlacer
 
         GameObject root = null;
         foreach (GameObject go in scene.GetRootGameObjects())
-            if (go.name == RootName) { root = go; break; }
+            if (go.name == rootName) { root = go; break; }
         if (root == null)
         {
-            root = new GameObject(RootName);
+            root = new GameObject(rootName);
             Undo.RegisterCreatedObjectUndo(root, "튜토리얼 수풀·덩굴 추가");
         }
         for (int i = root.transform.childCount - 1; i >= 0; i--)
@@ -115,9 +153,9 @@ public static class TutorialPlantsPlacer
         int placed = 0;
         HashSet<string> kinds = new HashSet<string>();
 
-        for (int i = 0; i < Hanging.Length; i++)
+        for (int i = 0; i < hanging.Length; i++)
         {
-            var h = Hanging[i];
+            var h = hanging[i];
             if (!TryHeight(Ceilings, h.x, out float ceil) || !TryHeight(Floors, h.x, out float floor)) continue;
             GameObject go = Spawn(root.transform, h.prefab, new Vector3(h.x, ceil, 0f), "Hang_" + i + "_" + h.prefab);
             if (go == null) continue;
@@ -131,9 +169,9 @@ public static class TutorialPlantsPlacer
             placed++;
         }
 
-        for (int i = 0; i < Ground.Length; i++)
+        for (int i = 0; i < ground.Length; i++)
         {
-            var g = Ground[i];
+            var g = ground[i];
             if (!TryHeight(Floors, g.x, out float floor)) continue;
             GameObject go = Spawn(root.transform, g.prefab, new Vector3(g.x, floor - 0.1f, 0f), "Ground_" + i + "_" + g.prefab);
             if (go == null) continue;
@@ -145,7 +183,7 @@ public static class TutorialPlantsPlacer
 
         Undo.CollapseUndoOperations(group);
         EditorSceneManager.MarkSceneDirty(scene);
-        Debug.Log($"[TutorialPlantsPlacer] 수풀·덩굴 {placed}개 ({kinds.Count}종)를 {RootName} 아래에 놓았어요. 확인 후 Ctrl+S로 저장하세요.");
+        Debug.Log($"[TutorialPlantsPlacer] {label} {placed}개 ({kinds.Count}종)를 {rootName} 아래에 놓았어요. 확인 후 Ctrl+S로 저장하세요.");
     }
 
     [MenuItem(MenuPath, true)]
