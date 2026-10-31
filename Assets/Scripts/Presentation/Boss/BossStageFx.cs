@@ -79,6 +79,42 @@ public static class BossStageFx
         }
     }
 
+    /// <summary>2페이즈에 골렘이 둘로 갈라지는 순간: 몸 가운데로 세로 빛줄기가 쫙 갈라지고, 빛살과 파편이 양옆으로 터진다.</summary>
+    public static void SplitBurst(Vector3 center, float groundY, float height)
+    {
+        Load();
+        Color crackBlue = new Color(0.6f, 0.85f, 1f, 1f);
+        // 세로로 갈라지는 빛 (가운데가 진하고 위아래가 흐린 선을 세로로 세움)
+        BossFxSprite line = BossFxSprite.Create("BossSplitLine", BossFxArt.FadeLine, center, BossFx.Layer, 45);
+        line.transform.rotation = Quaternion.Euler(0f, 0f, 90f);
+        float k = Mathf.Max(3f, height) / BossFxArt.FadeLine.bounds.size.x;
+        line.scaleFrom = new Vector3(k * 0.3f, 8f, 1f);
+        line.scaleTo = new Vector3(k * 1.15f, 40f, 1f);
+        line.color = crackBlue;
+        line.life = 0.7f;
+        line.alphaFrom = 1f;
+        line.alphaTo = 0f;
+        line.unscaled = true;
+
+        // 갈라진 틈에서 퍼지는 빛살
+        BossFxSprite rays = BossFxSprite.Create("BossSplitRays", BossFxArt.Rays, center, BossFx.Layer, 44);
+        rays.color = new Color(crackBlue.r, crackBlue.g, crackBlue.b, 0.8f);
+        rays.scaleFrom = new Vector3(2f, 2f, 1f);
+        rays.scaleTo = new Vector3(11f, 11f, 1f);
+        rays.spin = 25f;
+        rays.life = 0.9f;
+        rays.unscaled = true;
+
+        // 양옆으로 터지는 파편 + 바닥 균열
+        if (rocks.Length > 0)
+        {
+            Debris(center + Vector3.left * 0.5f, 8, 7f, 7f, true);
+            Debris(center + Vector3.right * 0.5f, 8, 7f, 7f, true);
+        }
+        Crack(center, groundY, 10f, 2.5f, true);
+        CameraShake.Shake(CameraShake.Heavy);
+    }
+
     /// <summary>바닥(groundY)에 폭 width의 푸른 균열이 퍼졌다가 life초 동안 사라진다.</summary>
     public static void Crack(Vector3 center, float groundY, float width, float life = 3f, bool unscaled = false)
     {

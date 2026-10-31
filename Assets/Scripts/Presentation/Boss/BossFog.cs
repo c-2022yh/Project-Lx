@@ -208,6 +208,43 @@ public class BossFog : MonoBehaviour
         }
     }
 
+    /// <summary>보스가 맞은 자리에서 작은 돌가루가 맞은 반대쪽으로 퍼진다 (side: 맞은 쪽 방향).</summary>
+    public static void HitDust(Vector3 at, float side)
+    {
+        for (int i = 0; i < 2; i++)
+        {
+            BossFxSprite fx = Puff(i, at, Random.Range(1.2f, 1.8f), "Effects", 18);
+            fx.color = new Color(0.75f, 0.77f, 0.82f, 1f);
+            fx.velocity = new Vector2(side * Random.Range(1f, 2.5f), Random.Range(0.2f, 1.2f));
+            fx.drag = 3f;
+            fx.life = Random.Range(0.45f, 0.7f);
+            fx.alphaFrom = 0.55f;
+            fx.alphaTo = 0f;
+            fx.scaleTo = fx.scaleFrom * 1.6f;
+        }
+    }
+
+    /// <summary>보스 공격이 땅에 닿은 자리: 폭 width를 따라 먼지구름이 낮게 퍼진다.</summary>
+    public static void LandingDust(Vector3 ground, float width)
+    {
+        int n = Mathf.Clamp(Mathf.RoundToInt(width / 1.5f), 2, 8);
+        for (int i = 0; i < n; i++)
+        {
+            float u = n == 1 ? 0.5f : (float)i / (n - 1);
+            float side = u < 0.5f ? -1f : 1f;
+            BossFxSprite fx = Puff(i, ground + new Vector3((u - 0.5f) * width, Random.Range(0f, 0.3f), 0f),
+                Random.Range(2f, 3f), "GroundCover", 7);
+            fx.color = new Color(0.7f, 0.72f, 0.78f, 1f);
+            fx.velocity = new Vector2(side * Random.Range(1.5f, 3.5f), Random.Range(0.2f, 0.8f));
+            fx.drag = 3f;
+            fx.life = Random.Range(0.7f, 1.1f);
+            fx.alphaFrom = 0.65f;
+            fx.alphaTo = 0f;
+            fx.scaleFrom = new Vector3(fx.scaleFrom.x, fx.scaleFrom.y * 0.5f, 1f);
+            fx.scaleTo = fx.scaleFrom * 1.6f;
+        }
+    }
+
     private static BossFxSprite Puff(int i, Vector3 pos, float width, string sortingLayer, int order)
     {
         Sprite s = Pick(i + Random.Range(0, 4));

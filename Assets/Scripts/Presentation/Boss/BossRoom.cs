@@ -232,11 +232,19 @@ public class BossRoom : MonoBehaviour
         // 조각이 모두 쓰러질 때(IsDefeated)까지 기다린다. (조각 HP바 두 줄은 BossHealthBarUI가 맡음)
         hasFragmentCenter = false;
         float nextTune = 0f;
+        bool splitShown = false;
         while (boss != null && !boss.IsDead && (golem == null || !golem.IsDefeated))
         {
             if (Time.unscaledTime >= nextTune) { nextTune = Time.unscaledTime + 0.3f; TuneBossLook(); }   // 갈라진 조각도
             if (golem != null && golem.HasSplit && TryFragmentCenter(out Vector3 c))
             {
+                if (!splitShown)
+                {
+                    splitShown = true;   // 둘로 갈라지는 순간
+                    BossStageFx.SplitBurst(c, RoomBounds().min.y, 6f);
+                    BossScreenFx.Flash(new Color(0.7f, 0.85f, 1f, 0.5f), 0.5f);
+                    TuneBossLook();
+                }
                 lastFragmentCenter = c;
                 hasFragmentCenter = true;
             }
@@ -366,6 +374,7 @@ public class BossRoom : MonoBehaviour
         int ground = SortingLayer.NameToID("Ground");
         foreach (GameObject t in targets)
         {
+            if (t.GetComponent<BossHitFx>() == null && t.GetComponent<EnemyHealth>() != null) t.AddComponent<BossHitFx>();   // 피격 번쩍임·돌가루
             if (!showHealthBar && GolemBarField != null)
                 foreach (GolemBossVisual v in t.GetComponentsInChildren<GolemBossVisual>(true)) GolemBarField.SetValue(v, false);
             if (!bossBehindPlayer) continue;

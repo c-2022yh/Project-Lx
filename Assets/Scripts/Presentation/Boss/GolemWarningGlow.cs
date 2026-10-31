@@ -18,6 +18,8 @@ public class GolemWarningGlow : MonoBehaviour
     private readonly List<SpriteRenderer> others = new List<SpriteRenderer>();
     private Light2D glow;
     private float width;
+    private GolemBossArea area;
+    private bool landed;
 
     private static Sprite gradient;
     private static float nextScan;
@@ -56,7 +58,7 @@ public class GolemWarningGlow : MonoBehaviour
 
     private void Start()
     {
-        GolemBossArea area = GetComponent<GolemBossArea>();
+        area = GetComponent<GolemBossArea>();
         width = area != null ? area.Size.x : 2f;
         float height = area != null ? area.Size.y : 1f;
 
@@ -102,6 +104,17 @@ public class GolemWarningGlow : MonoBehaviour
 
     private void Update()
     {
+        // 공격이 땅에 닿는 순간 (경고 → 실제 공격): 돌 파편·먼지·작은 균열·흔들림
+        if (!landed && area != null && area.IsCommitted)
+        {
+            landed = true;
+            Vector3 ground = new Vector3(area.Center.x, area.Center.y - area.Size.y * 0.5f, 0f);
+            float w = Mathf.Max(1.5f, area.Size.x);
+            BossStageFx.Debris(ground + Vector3.up * 0.2f, Mathf.Clamp(Mathf.RoundToInt(w * 1.5f), 4, 12), w * 0.8f + 1f, 6f);
+            BossFog.LandingDust(ground, w);
+            BossStageFx.Crack(ground, ground.y, w * 1.1f, 1.2f);
+            CameraShake.Shake(CameraShake.Light);
+        }
         if (fill == null) return;
         Color c = fill.color;
         float a = c.a;   // 경고가 진행될수록 GolemBossArea가 0.18 → 0.55로 올림, 공격 순간 0.65
