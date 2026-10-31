@@ -13,11 +13,15 @@ public sealed class ShadowSwapRuntime : MonoBehaviour
 
     private readonly Dictionary<ShadowSwapSkillData, Anchor> anchors = new();
     private PlayerHealth health;
+    private PlayerSkill skills;
+    private readonly List<ShadowSwapSkillData> removedSkills = new();
 
     private void OnEnable()
     {
         health = GetComponent<PlayerHealth>();
         if (health != null) health.OnDied += ClearAnchors;
+        skills = GetComponent<PlayerSkill>();
+        if (skills != null) skills.OnSkillsChanged += ClearUnequippedAnchors;
     }
 
     public GameObject GetShadow(ShadowSwapSkillData skill)
@@ -43,6 +47,24 @@ public sealed class ShadowSwapRuntime : MonoBehaviour
         return shadow;
     }
 
+    private void ClearUnequippedAnchors()
+    {
+        if (skills == null) return;
+
+        removedSkills.Clear();
+        foreach (var entry in anchors)
+        {
+            if (!skills.IsSkillEquipped(entry.Key)) removedSkills.Add(entry.Key);
+        }
+
+        foreach (var skill in removedSkills)
+        {
+            GameObject shadow = TakeShadow(skill);
+            if (shadow != null) Destroy(shadow);
+        }
+        removedSkills.Clear();
+    }
+
     private void ClearAnchors()
     {
         foreach (var anchor in anchors.Values)
@@ -53,6 +75,7 @@ public sealed class ShadowSwapRuntime : MonoBehaviour
     private void OnDisable()
     {
         if (health != null) health.OnDied -= ClearAnchors;
+        if (skills != null) skills.OnSkillsChanged -= ClearUnequippedAnchors;
         ClearAnchors();
     }
 }

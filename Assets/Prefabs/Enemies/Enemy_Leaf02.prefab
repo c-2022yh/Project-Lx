@@ -203,8 +203,8 @@ MonoBehaviour:
     criticalMultiplier: 1.5
     damageAmplification: 0
   defense:
-    physicalDefense: 0
-    magicalDefense: 0
+    physicalDefense: 2
+    magicalDefense: 1
     durability: 0
 --- !u!114 &1404998612177364811
 MonoBehaviour:

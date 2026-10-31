@@ -46,9 +46,8 @@ public class DamagePopup : MonoBehaviour
             return;
         }
 
-        //소수점 둘째 자리까지 표시
-        //1은 1, 1.25는 1.25로 표시
-        damageText.text = damage.ToString("0.##");
+        // Round the displayed number only; midpoint values round up for positive damage.
+        damageText.text = System.Math.Round(damage, System.MidpointRounding.AwayFromZero).ToString("0");
         damageText.color = damageType == DamageType.Magical
             ? magicalDamageColor
             : physicalDamageColor;
