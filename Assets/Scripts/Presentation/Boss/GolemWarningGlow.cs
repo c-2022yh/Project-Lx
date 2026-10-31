@@ -136,14 +136,14 @@ public class GolemWarningGlow : MonoBehaviour
         if (bottom != null && bottom.enabled)
         {
             Color b = Color.Lerp(c, Color.white, 0.35f);
-            b.a = Mathf.Clamp01(a * 1.8f) * pulse;
+            b.a = Mathf.Clamp01(a * 2.1f) * pulse;
             bottom.color = b;
         }
 
         if (glow != null)
         {
             glow.color = new Color(Mathf.Max(c.r, 0.3f), c.g * 0.8f + 0.1f, c.b * 0.8f + 0.08f, 1f);
-            glow.intensity = Mathf.Clamp01((a - 0.1f) / 0.5f) * 1.6f * pulse;
+            glow.intensity = Mathf.Clamp01((a - 0.1f) / 0.5f) * 1.9f * pulse;
         }
     }
 
@@ -165,7 +165,7 @@ public class GolemWarningGlow : MonoBehaviour
             float v = (y + 0.5f) / H;                       // 0 = 바닥
             float up = Mathf.Pow(1f - v, 1.6f);             // 바닥이 진함
             float base_ = 0.25f + 0.75f * up;
-            float floorLine = Mathf.Exp(-v * 22f) * 0.6f;   // 바닥에 붙은 밝은 띠
+            float floorLine = Mathf.Exp(-v * 22f) * 0.75f;   // 바닥에 붙은 밝은 띠
             for (int x = 0; x < W; x++)
             {
                 float u = (x + 0.5f) / W;
