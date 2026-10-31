@@ -1,0 +1,455 @@
+fileFormatVersion: 2
+guid: d1a49bf0391a291429be5d9c26238b2a
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: 3085011990217867149
+    second: Pinecone_Death_03_0
+  - first:
+      213: -9186922655883369991
+    second: Pinecone_Death_03_1
+  - first:
+      213: -7664443653293025999
+    second: Pinecone_Death_03_2
+  - first:
+      213: -8137409352519280867
+    second: Pinecone_Death_03_3
+  - first:
+      213: 3016027597477838112
+    second: Pinecone_Death_03_4
+  - first:
+      213: 4754471701516647389
+    second: Pinecone_Death_03_5
+  - first:
+      213: -3175770654023184878
+    second: Pinecone_Death_03_6
+  - first:
+      213: 4382450070492777369
+    second: Pinecone_Death_03_7
+  - first:
+      213: 2059865208726757140
+    second: Pinecone_Death_03_8
+  - first:
+      213: 1920861204518514424
+    second: Pinecone_Death_03_9
+  - first:
+      213: 6768789040793654859
+    second: Pinecone_Death_03_10
+  - first:
+      213: 6958799454558080303
+    second: Pinecone_Death_03_11
+  - first:
+      213: 6187235632632529482
+    second: Pinecone_Death_03_12
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 1
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: Pinecone_Death_03_0
+      rect:
+        serializedVersion: 2
+        x: 108
+        y: 227
+        width: 7
+        height: 7
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d8fb1cc5f0a20da20800000000000000
+      internalID: 3085011990217867149
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Pinecone_Death_03_1
+      rect:
+        serializedVersion: 2
+        x: 300
+        y: 186
+        width: 93
+        height: 44
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9f16515d48e718080800000000000000
+      internalID: -9186922655883369991
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Pinecone_Death_03_2
+      rect:
+        serializedVersion: 2
+        x: 454
+        y: 60
+        width: 171
+        height: 240
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 135d874fa1d62a590800000000000000
+      internalID: -7664443653293025999
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Pinecone_Death_03_3
+      rect:
+        serializedVersion: 2
+        x: 285
+        y: 205
+        width: 20
+        height: 18
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d179527ce4d121f80800000000000000
+      internalID: -8137409352519280867
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Pinecone_Death_03_4
+      rect:
+        serializedVersion: 2
+        x: 26
+        y: 152
+        width: 6
+        height: 6
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 02df07cce151bd920800000000000000
+      internalID: 3016027597477838112
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Pinecone_Death_03_5
+      rect:
+        serializedVersion: 2
+        x: 31
+        y: 150
+        width: 8
+        height: 10
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ddbfb8f72d64bf140800000000000000
+      internalID: 4754471701516647389
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Pinecone_Death_03_6
+      rect:
+        serializedVersion: 2
+        x: 58
+        y: 140
+        width: 52
+        height: 46
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 21e86d68a656de3d0800000000000000
+      internalID: -3175770654023184878
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Pinecone_Death_03_7
+      rect:
+        serializedVersion: 2
+        x: 127
+        y: 25
+        width: 181
+        height: 135
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 99b8b91be1791dc30800000000000000
+      internalID: 4382450070492777369
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Pinecone_Death_03_8
+      rect:
+        serializedVersion: 2
+        x: 80
+        y: 55
+        width: 23
+        height: 25
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 41f18536e7c169c10800000000000000
+      internalID: 2059865208726757140
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Pinecone_Death_03_9
+      rect:
+        serializedVersion: 2
+        x: 309
+        y: 27
+        width: 132
+        height: 93
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8fea72e961548aa10800000000000000
+      internalID: 1920861204518514424
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Pinecone_Death_03_10
+      rect:
+        serializedVersion: 2
+        x: 442
+        y: 78
+        width: 34
+        height: 31
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b46101025c19fed50800000000000000
+      internalID: 6768789040793654859
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Pinecone_Death_03_11
+      rect:
+        serializedVersion: 2
+        x: 463
+        y: 33
+        width: 97
+        height: 61
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f2dcd101c3f929060800000000000000
+      internalID: 6958799454558080303
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Pinecone_Death_03_12
+      rect:
+        serializedVersion: 2
+        x: 103
+        y: 50
+        width: 23
+        height: 23
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a4283b8c60a7dd550800000000000000
+      internalID: 6187235632632529482
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
+    nameFileIdTable:
+      Pinecone_Death_03_0: 3085011990217867149
+      Pinecone_Death_03_1: -9186922655883369991
+      Pinecone_Death_03_10: 6768789040793654859
+      Pinecone_Death_03_11: 6958799454558080303
+      Pinecone_Death_03_12: 6187235632632529482
+      Pinecone_Death_03_2: -7664443653293025999
+      Pinecone_Death_03_3: -8137409352519280867
+      Pinecone_Death_03_4: 3016027597477838112
+      Pinecone_Death_03_5: 4754471701516647389
+      Pinecone_Death_03_6: -3175770654023184878
+      Pinecone_Death_03_7: 4382450070492777369
+      Pinecone_Death_03_8: 2059865208726757140
+      Pinecone_Death_03_9: 1920861204518514424
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

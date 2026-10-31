@@ -59,6 +59,7 @@ public class ShadowSwapSkillData : UtilitySkillData
         Vector3 shadowPos = currentShadow.transform.position;
 
         p.transform.position = shadowPos;
+        p.Move?.ResetMovementAudio();
 
         var visual = currentShadow.GetComponent<ShadowAfterimageVisual>();
         if (visual != null) visual.Consume();

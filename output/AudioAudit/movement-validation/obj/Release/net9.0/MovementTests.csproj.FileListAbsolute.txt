@@ -1,0 +1,15 @@
+C:\Users\Ayumi\Desktop\Argo\Project-Lx\output\AudioAudit\movement-validation\bin\Release\net9.0\MovementTests.exe
+C:\Users\Ayumi\Desktop\Argo\Project-Lx\output\AudioAudit\movement-validation\bin\Release\net9.0\MovementTests.deps.json
+C:\Users\Ayumi\Desktop\Argo\Project-Lx\output\AudioAudit\movement-validation\bin\Release\net9.0\MovementTests.runtimeconfig.json
+C:\Users\Ayumi\Desktop\Argo\Project-Lx\output\AudioAudit\movement-validation\bin\Release\net9.0\MovementTests.dll
+C:\Users\Ayumi\Desktop\Argo\Project-Lx\output\AudioAudit\movement-validation\bin\Release\net9.0\MovementTests.pdb
+C:\Users\Ayumi\Desktop\Argo\Project-Lx\output\AudioAudit\movement-validation\obj\Release\net9.0\MovementTests.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\Ayumi\Desktop\Argo\Project-Lx\output\AudioAudit\movement-validation\obj\Release\net9.0\MovementTests.AssemblyInfoInputs.cache
+C:\Users\Ayumi\Desktop\Argo\Project-Lx\output\AudioAudit\movement-validation\obj\Release\net9.0\MovementTests.AssemblyInfo.cs
+C:\Users\Ayumi\Desktop\Argo\Project-Lx\output\AudioAudit\movement-validation\obj\Release\net9.0\MovementTests.csproj.CoreCompileInputs.cache
+C:\Users\Ayumi\Desktop\Argo\Project-Lx\output\AudioAudit\movement-validation\obj\Release\net9.0\MovementTests.sourcelink.json
+C:\Users\Ayumi\Desktop\Argo\Project-Lx\output\AudioAudit\movement-validation\obj\Release\net9.0\MovementTests.dll
+C:\Users\Ayumi\Desktop\Argo\Project-Lx\output\AudioAudit\movement-validation\obj\Release\net9.0\refint\MovementTests.dll
+C:\Users\Ayumi\Desktop\Argo\Project-Lx\output\AudioAudit\movement-validation\obj\Release\net9.0\MovementTests.pdb
+C:\Users\Ayumi\Desktop\Argo\Project-Lx\output\AudioAudit\movement-validation\obj\Release\net9.0\MovementTests.genruntimeconfig.cache
+C:\Users\Ayumi\Desktop\Argo\Project-Lx\output\AudioAudit\movement-validation\obj\Release\net9.0\ref\MovementTests.dll
