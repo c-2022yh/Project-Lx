@@ -169,7 +169,8 @@ public class HealthBarSkin : MonoBehaviour
     {
         if (frame == null || parentRect == null) return;
         Vector2 target = framePosition;
-        if (HasOrb() && FindOrb() && OrbCenter(out Vector2 c, out float r))
+        // 보주가 없어도 보주 자리 옆에 둔다 (보주를 얻어도 체력바가 움직이지 않게)
+        if (FindOrb() && OrbCenter(out Vector2 c, out float r))
         {
             // 프레임 세로 가운데 = 보주 가운데, 왼쪽 끝은 보주 뒤로
             target = new Vector2(c.x + r * orbOverlap, c.y + frameSize.y * 0.5f) + orbOffset;
