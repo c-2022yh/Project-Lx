@@ -17,7 +17,8 @@ using UnityEngine.Tilemaps;
 ///   5. 더블 점프 벽 한 번 점프로는 못 넘는 높이 (+6칸)
 ///   6. 점프맵      구덩이 위 발판 4개, 마지막은 더블 점프. 떨어지면 왼쪽 사다리 발판으로 다시 올라온다
 ///   7. 전투        안 움직이는 슬라임 3마리 (공격 안내)
-///   8. 출구        포탈 (원래 설정대로 F_01로 감)
+///   8. 출구        포탈 (원래 설정대로 F_01로 감). 카메라 영역 밖에 있어서 화면에는 안 보이고,
+///                  오른쪽으로 걸어 나가면 넘어간다 (원래 튜토리얼 맵과 같은 방식)
 ///
 /// 타일 규칙 (기존 맵과 같게)
 ///   땅   Tilemap_Ground 에 Ground_Rock 2×2 그림 (짝수 x = 왼쪽, 짝수 y = 위쪽).
@@ -34,7 +35,7 @@ using UnityEngine.Tilemaps;
 /// 상자·제단·포탈·시작 위치는 이름으로 찾아서 자리만 옮긴다 (없으면 프리팹으로 새로 놓는다).
 /// 보주 줍기(OrbPickup)는 인트로 연출에서 보주를 주므로 지운다.
 /// 슬라임과 안내 영역은 Field_Object/Tutorial_Enemies, Tutorial_Triggers 아래에 새로 만든다.
-/// 카메라 영역(CameraConfiner)은 맵 크기에 맞춰 늘린다.
+/// 카메라 영역(CameraConfiner)은 맵 크기에 맞춰 늘리되, 출구 포탈 쪽(x 140~)은 뺀다.
 /// </summary>
 public static class TutorialMapBuilder
 {
@@ -55,6 +56,7 @@ public static class TutorialMapBuilder
     private const int MinX = 0, MaxX = 149, MinY = -5, MaxY = 24;
     private const int W = MaxX - MinX + 1, H = MaxY - MinY + 1;
     private const int CeilingBottom = 21;
+    private const int CameraRight = 140;   // 카메라가 보여주는 오른쪽 끝. 출구 포탈(x 145)은 이 밖
 
     private static bool[,] solid;
 
@@ -398,9 +400,9 @@ public static class TutorialMapBuilder
 
         Undo.RecordObject(confiner, "튜토리얼 맵 다시 그리기");
         Undo.RecordObject(box, "튜토리얼 맵 다시 그리기");
-        confiner.position = new Vector3((MinX + MaxX + 1) * 0.5f, (MinY + MaxY + 1) * 0.5f, 0f);
+        confiner.position = new Vector3((MinX + CameraRight) * 0.5f, (MinY + MaxY + 1) * 0.5f, 0f);
         box.offset = Vector2.zero;
-        box.size = new Vector2(W, H);
+        box.size = new Vector2(CameraRight - MinX, H);
     }
 
     // ── 찾기 ───────────────────────────────
