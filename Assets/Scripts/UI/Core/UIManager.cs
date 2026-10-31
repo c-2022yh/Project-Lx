@@ -149,11 +149,20 @@ public class UIManager : MonoBehaviour
 
         // 제단 앞에서 상호작용(↑)을 누르면 유물창을 연다.
         // 제단 활성화(리스폰·회복)는 Player.OnInteract가 따로 처리하므로 여기서는 창만 연다.
-        if (!IsAnyPopupOpen && InteractPressedThisFrame() && ShrineAccess.NearbyShrine != null)
+        // 처음 밝히는 제단이면 석등에 파란 불이 붙는 걸 먼저 보여주고 창을 연다 (ShrineFire).
+        if (!IsAnyPopupOpen && InteractPressedThisFrame())
         {
-            ShowWindowTab(UITabBar.RelicTab);
+            Shrine shrine = ShrineAccess.NearbyShrine;
+            if (shrine != null && !ShrineFire.IgniteThen(shrine, OpenShrineWindow))
+                OpenShrineWindow();
         }
 
+    }
+
+    // 제단 유물창. 불이 붙는 동안 다른 창이 떴으면 열지 않는다.
+    private void OpenShrineWindow()
+    {
+        if (!IsAnyPopupOpen) ShowWindowTab(UITabBar.RelicTab);
     }
 
     //  스탯 조작
