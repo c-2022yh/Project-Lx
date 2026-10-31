@@ -12,6 +12,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 72fc969d510e7f240a67e85578c89901, type: 3}
   m_Name: RFX_DarkShadow
   m_EditorClassIdentifier: Assembly-CSharp::DarkShadowRelicEffect
+  executeSound:
+    channel: 0
+    clip: {fileID: 0}
+    clips: []
+    volume: 1
+    minimumInterval: 0.1
+    pitchRange: {x: 1, y: 1}
+    maxSimultaneous: 4
+    limitScope: 0
+    spatialBlend: 0
+    minDistance: 1
+    maxDistance: 15
+    useFallback: 0
+    fallbackSound: 5
   executeHealthRatio: 0.2
   executeEffectPrefab: {fileID: 7634161072270355694, guid: 66e9202c68f7c5d44b18c046e1abb0ee, type: 3}
   executeEffectOffset: {x: 0, y: 0.3, z: 0}

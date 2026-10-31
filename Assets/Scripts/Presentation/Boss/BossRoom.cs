@@ -53,6 +53,11 @@ public class BossRoom : MonoBehaviour
     [Tooltip("대화 전에 \"격파\" 카드를 띄운다.")]
     [SerializeField] private bool showDefeatCard = true;
 
+    [Header("Audio")]
+    [SerializeField] private SoundCue introSound = new SoundCue();
+    [SerializeField] private SoundCue doorCloseSound = new SoundCue();
+    [SerializeField] private SoundCue doorOpenSound = new SoundCue();
+    [SerializeField] private SoundCue clearSound = new SoundCue();
     [Header("Presentation (달빛)")]
     [Tooltip("등장 때 방이 어두워지고 돌가루·달빛, 2페이즈 충격파·붉은 빛, 격파 빛살·보주 등장을 켠다.")]
     [SerializeField] private bool moonPresentation = true;
@@ -155,6 +160,7 @@ public class BossRoom : MonoBehaviour
         float card = shownCardOnce ? Mathf.Min(cardSeconds, 1.4f) : cardSeconds;
         shownCardOnce = true;
         BossTitleCard.Show(bossTitle, bossName, card);
+        GameAudio.Play(introSound, boss.transform.position);
 
         // 위에서 달빛이 내려와 보스 자리를 비춘다
         if (moonPresentation)
@@ -231,6 +237,7 @@ public class BossRoom : MonoBehaviour
         UnwatchPlayer();
         UnhookBoss();
         FieldObjectState.MarkDone(this);
+        GameAudio.Play(clearSound, transform.position);
 
         // 보스가 사라지기 전에 자리를 기억해 둔다
         // 갈라졌으면 마지막 조각이 쓰러진 자리에서 격파 연출을 한다
@@ -414,6 +421,10 @@ public class BossRoom : MonoBehaviour
     private IEnumerator MoveDoors(bool close)
     {
         if (doorClosedPositions.Length == 0) yield break;
+        bool hasDoor = false;
+        foreach (Transform door in doors) if (door != null) { hasDoor = true; break; }
+        if (!hasDoor) yield break;
+        if (!close) GameAudio.Play(doorOpenSound, transform.position);
 
         Vector3 up = Vector3.up * doorDropHeight;
         for (int i = 0; i < doorClosedPositions.Length; i++)
@@ -448,7 +459,11 @@ public class BossRoom : MonoBehaviour
             if (!close) doors[i].gameObject.SetActive(false);
         }
 
-        if (close) CameraShake.Shake(CameraShake.Medium);
+        if (close)
+        {
+            CameraShake.Shake(CameraShake.Medium);
+            GameAudio.Play(doorCloseSound, transform.position);
+        }
     }
 
     // ───────────── 카메라 ─────────────

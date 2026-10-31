@@ -20,17 +20,21 @@ public class RegenerationRelicEffect : RelicEffect
     private float healAmount = 0.1f;
 
     // 플레이어별 회복 유물 Runtime 생성
+    [Header("Audio")]
+    [SerializeField] private SoundCue healSound = new SoundCue();
+
     public override IRelicRuntime CreateRuntime(Player player)
     {
         return new RegenerationRelicRuntime(
             player,
             healInterval,
-            healAmount
+            healAmount, this
         );
     }
 
     private sealed class RegenerationRelicRuntime : IRelicRuntime
     {
+        private readonly RegenerationRelicEffect audioSettings;
         private readonly Player player;
         private readonly float healInterval;
         private readonly float healAmount;
@@ -43,9 +47,10 @@ public class RegenerationRelicEffect : RelicEffect
         public RegenerationRelicRuntime(
             Player player,
             float healInterval,
-            float healAmount)
+            float healAmount, RegenerationRelicEffect audioSettings)
         {
             this.player = player;
+            this.audioSettings = audioSettings;
             this.healInterval = healInterval;
             this.healAmount = healAmount;
         }
@@ -89,7 +94,9 @@ public class RegenerationRelicEffect : RelicEffect
 
                 if (!isEquipped || playerHealth == null) yield break;
 
+                float before = playerHealth.CurrentHealth;
                 playerHealth.Heal(healAmount);
+                if (playerHealth.CurrentHealth > before) GameAudio.Play(audioSettings.healSound, player.transform.position, player.transform);
             }
         }
     }

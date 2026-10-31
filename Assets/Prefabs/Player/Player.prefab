@@ -393,6 +393,137 @@ MonoBehaviour:
   airControlMin: 0.8
   groundSmooth: 0.01
   airSmooth: 0.1
+  jumpSound:
+    channel: 0
+    clip: {fileID: 0}
+    clips: []
+    volume: 1
+    minimumInterval: 0.05
+    pitchRange: {x: 1, y: 1}
+    maxSimultaneous: 4
+    limitScope: 0
+    spatialBlend: 0
+    minDistance: 1
+    maxDistance: 15
+    useFallback: 0
+    fallbackSound: 5
+  dashSound:
+    channel: 0
+    clip: {fileID: 0}
+    clips: []
+    volume: 1
+    minimumInterval: 0.05
+    pitchRange: {x: 1, y: 1}
+    maxSimultaneous: 4
+    limitScope: 0
+    spatialBlend: 0
+    minDistance: 1
+    maxDistance: 15
+    useFallback: 0
+    fallbackSound: 5
+  defaultFootstepSound:
+    channel: 0
+    clip: {fileID: 0}
+    clips: []
+    volume: 1
+    minimumInterval: 0.05
+    pitchRange: {x: 1, y: 1}
+    maxSimultaneous: 4
+    limitScope: 0
+    spatialBlend: 0
+    minDistance: 1
+    maxDistance: 15
+    useFallback: 0
+    fallbackSound: 5
+  defaultLandingSound:
+    channel: 0
+    clip: {fileID: 0}
+    clips: []
+    volume: 1
+    minimumInterval: 0.05
+    pitchRange: {x: 1, y: 1}
+    maxSimultaneous: 4
+    limitScope: 0
+    spatialBlend: 0
+    minDistance: 1
+    maxDistance: 15
+    useFallback: 0
+    fallbackSound: 5
+  movementSurfaces:
+  - surfaceName: Grass
+    colliderObjectNames: []
+    overlayTilemapNames:
+    - Tilemap_Grass
+    - Grass
+    footstepSound:
+      channel: 0
+      clip: {fileID: 0}
+      clips: []
+      volume: 1
+      minimumInterval: 0.05
+      pitchRange: {x: 1, y: 1}
+      maxSimultaneous: 4
+      limitScope: 0
+      spatialBlend: 0
+      minDistance: 1
+      maxDistance: 15
+      useFallback: 0
+      fallbackSound: 5
+    landingSound:
+      channel: 0
+      clip: {fileID: 0}
+      clips: []
+      volume: 1
+      minimumInterval: 0.05
+      pitchRange: {x: 1, y: 1}
+      maxSimultaneous: 4
+      limitScope: 0
+      spatialBlend: 0
+      minDistance: 1
+      maxDistance: 15
+      useFallback: 0
+      fallbackSound: 5
+  - surfaceName: Stone
+    colliderObjectNames:
+    - Tilemap_Ground
+    - Ground
+    - TIleMap_Platform
+    - MovingPlatform
+    overlayTilemapNames: []
+    footstepSound:
+      channel: 0
+      clip: {fileID: 0}
+      clips: []
+      volume: 1
+      minimumInterval: 0.05
+      pitchRange: {x: 1, y: 1}
+      maxSimultaneous: 4
+      limitScope: 0
+      spatialBlend: 0
+      minDistance: 1
+      maxDistance: 15
+      useFallback: 0
+      fallbackSound: 5
+    landingSound:
+      channel: 0
+      clip: {fileID: 0}
+      clips: []
+      volume: 1
+      minimumInterval: 0.05
+      pitchRange: {x: 1, y: 1}
+      maxSimultaneous: 4
+      limitScope: 0
+      spatialBlend: 0
+      minDistance: 1
+      maxDistance: 15
+      useFallback: 0
+      fallbackSound: 5
+  footstepDistance: 2
+  minimumFootstepInterval: 0.12
+  minimumLandingAirTime: 0.08
+  surfaceProbeHeight: 0.12
+  surfaceProbeHalfWidth: 0.12
+  audioTeleportDistance: 4
 --- !u!114 &144273705479961808
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -433,7 +564,7 @@ MonoBehaviour:
   - attackName: "\uC9E7\uAC8C \uBCA0\uAE30"
     attackSound:
       channel: 0
-      clip: {fileID: 0}
+      clip: {fileID: 8300000, guid: fb88e3b885fd09b49bb03f0431d69903, type: 3}
       clips:
       - {fileID: 0}
       volume: 1
@@ -460,7 +591,7 @@ MonoBehaviour:
       minDistance: 1
       maxDistance: 15
       useFallback: 0
-      fallbackSound: 5
+      fallbackSound: 0
     impactMode: 0
     startupTime: 0.05
     activeTime: 0.1
@@ -482,7 +613,7 @@ MonoBehaviour:
   - attackName: "\uB0B4\uB824 \uCE58\uAE30"
     attackSound:
       channel: 0
-      clip: {fileID: 0}
+      clip: {fileID: 8300000, guid: f916106c58f0bfa418aa3fb04809a6bb, type: 3}
       clips:
       - {fileID: 0}
       volume: 1
@@ -533,7 +664,7 @@ MonoBehaviour:
     attackName: "\uACF5\uC911 \uBCA0\uAE30"
     attackSound:
       channel: 0
-      clip: {fileID: 0}
+      clip: {fileID: 8300000, guid: fb88e3b885fd09b49bb03f0431d69903, type: 3}
       clips:
       - {fileID: 0}
       volume: 1
@@ -643,6 +774,48 @@ MonoBehaviour:
   awakeningFreezeTime: 0.8
   awakeningRequiredEnergy: 100
   awakeningEnergyDrainPerSecond: 5
+  readySound:
+    channel: 0
+    clip: {fileID: 0}
+    clips: []
+    volume: 1
+    minimumInterval: 0.05
+    pitchRange: {x: 1, y: 1}
+    maxSimultaneous: 4
+    limitScope: 0
+    spatialBlend: 0
+    minDistance: 1
+    maxDistance: 15
+    useFallback: 0
+    fallbackSound: 5
+  startSound:
+    channel: 0
+    clip: {fileID: 0}
+    clips: []
+    volume: 1
+    minimumInterval: 0.05
+    pitchRange: {x: 1, y: 1}
+    maxSimultaneous: 4
+    limitScope: 0
+    spatialBlend: 0
+    minDistance: 1
+    maxDistance: 15
+    useFallback: 0
+    fallbackSound: 5
+  endSound:
+    channel: 0
+    clip: {fileID: 0}
+    clips: []
+    volume: 1
+    minimumInterval: 0.05
+    pitchRange: {x: 1, y: 1}
+    maxSimultaneous: 4
+    limitScope: 0
+    spatialBlend: 0
+    minDistance: 1
+    maxDistance: 15
+    useFallback: 0
+    fallbackSound: 5
   applySpriteTint: 0
   normalColor: {r: 1, g: 1, b: 1, a: 1}
   awakenedColor: {r: 1, g: 1, b: 1, a: 1}

@@ -19,6 +19,12 @@ public sealed class GameAudio : MonoBehaviour
     private Coroutine musicRoutine;
     private bool started;
     private float nextButtonScan;
+    private int uiFeedbackFrame = -1;
+    private int pendingClickFrame = -1;
+    private GameSound pendingClickSound;
+    private SoundCue pendingCustomClick;
+    private bool pendingClickIsCustom;
+    private Vector3 pendingClickPosition;
 
     // Reset static references when entering Play Mode with domain reload disabled.
     [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
@@ -77,6 +83,27 @@ public sealed class GameAudio : MonoBehaviour
         }
     }
 
+    // Resolve generic clicks after button actions, regardless of listener order.
+    private void LateUpdate()
+    {
+        if (pendingClickFrame < 0) return;
+        bool play = pendingClickIsCustom || uiFeedbackFrame != pendingClickFrame;
+        pendingClickFrame = -1;
+        if (!play) return;
+        if (pendingClickIsCustom) Play(pendingCustomClick, pendingClickPosition);
+        else Play(pendingClickSound);
+    }
+
+    internal static void QueueButtonClick(GameSound sound, bool custom, SoundCue cue, Vector3 position)
+    {
+        if (instance == null) return;
+        instance.pendingClickFrame = Time.frameCount;
+        instance.pendingClickSound = sound;
+        instance.pendingClickIsCustom = custom;
+        instance.pendingCustomClick = cue;
+        instance.pendingClickPosition = position;
+    }
+
     // Release only this service's scene callback.
     private void OnDestroy()
     {
@@ -115,8 +142,9 @@ public sealed class GameAudio : MonoBehaviour
     private void BindButtons()
     {
         if (!catalog.autoBindButtons) return;
-        foreach (Button button in FindObjectsByType<Button>(FindObjectsInactive.Include))
-            if (button.GetComponent<GameAudioButton>() == null) button.gameObject.AddComponent<GameAudioButton>();
+        foreach (Selectable control in FindObjectsByType<Selectable>(FindObjectsInactive.Include))
+            if (!(control is Scrollbar) && control.GetComponent<GameAudioButton>() == null)
+                control.gameObject.AddComponent<GameAudioButton>();
     }
 
     // Every source is 2D and routed through its category mixer group.
@@ -141,6 +169,9 @@ public sealed class GameAudio : MonoBehaviour
     public static SoundHandle Play(GameSound sound)
     {
         if (instance == null || instance.catalog == null) return default;
+        if ((sound >= GameSound.UIEquip && sound <= GameSound.UITabChange)
+            || (sound >= GameSound.UIEquipSword && sound <= GameSound.UIEquipBody))
+            instance.uiFeedbackFrame = Time.frameCount;
         return Play(instance.catalog.Find(sound), Vector3.zero);
     }
 

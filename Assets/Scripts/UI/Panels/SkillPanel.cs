@@ -225,7 +225,7 @@ public class SkillPanel : MonoBehaviour, ISkillSlotHost
 
         if (slot.IsLocked)
         {
-            SetHint("X 스킬은 검 유물로만 바뀝니다");
+            Reject("X 스킬은 검 유물로만 바뀝니다");
             return;
         }
 
@@ -233,14 +233,13 @@ public class SkillPanel : MonoBehaviour, ISkillSlotHost
 
         if (playerSkill == null)
         {
-            SetHint("PlayerSkill을 찾지 못했습니다");
+            Reject("PlayerSkill을 찾지 못했습니다");
             return;
         }
 
         if (slot.Area == SkillSlotArea.Equip)
         {
-            if (playerSkill.UnequipSkill(slot.SlotIndex)) SetHint($"{NameOf(slot.Skill)} 해제됨");
-            else SetHint("지금은 해제할 수 없습니다");
+            Unequip(slot, slot.Skill);
 
             return;
         }
@@ -249,7 +248,7 @@ public class SkillPanel : MonoBehaviour, ISkillSlotHost
 
         if (empty < 0)
         {
-            SetHint("빈 칸이 없습니다. 먼저 하나를 해제해주세요");
+            Reject("빈 칸이 없습니다. 먼저 하나를 해제해주세요");
             return;
         }
 
@@ -297,13 +296,13 @@ public class SkillPanel : MonoBehaviour, ISkillSlotHost
 
         if (playerSkill == null)
         {
-            SetHint("PlayerSkill을 찾지 못했습니다");
+            Reject("PlayerSkill을 찾지 못했습니다");
             return;
         }
 
         if (target.IsLocked)
         {
-            SetHint("X 스킬은 검 유물로만 바뀝니다");
+            Reject("X 스킬은 검 유물로만 바뀝니다");
             return;
         }
 
@@ -334,7 +333,7 @@ public class SkillPanel : MonoBehaviour, ISkillSlotHost
 
         if (playerSkill == null)
         {
-            SetHint("PlayerSkill을 찾지 못했습니다");
+            Reject("PlayerSkill을 찾지 못했습니다");
             return;
         }
 
@@ -357,8 +356,13 @@ public class SkillPanel : MonoBehaviour, ISkillSlotHost
     {
         if (source.Area != SkillSlotArea.Equip) return;
 
-        if (playerSkill.UnequipSkill(source.SlotIndex)) SetHint($"{NameOf(skill)} 해제됨");
-        else SetHint("지금은 해제할 수 없습니다");
+        if (!CheckShrine()) return;
+        if (playerSkill.UnequipSkill(source.SlotIndex))
+        {
+            SetHint($"{NameOf(skill)} 해제됨");
+            GameAudio.Play(GameSound.UIUnequip);
+        }
+        else Reject("지금은 해제할 수 없습니다");
     }
 
     /// <summary>
@@ -371,16 +375,18 @@ public class SkillPanel : MonoBehaviour, ISkillSlotHost
         SkillData current = EquippedAt(slotIndex);
 
         if (current == skill) return;
+        if (!CheckShrine()) return;
         if (current != null) playerSkill.UnequipSkill(slotIndex);
 
         if (playerSkill.EquipSkill(slotIndex, skill))
         {
             SetHint($"{NameOf(skill)} → {SlotKeyLabels[slotIndex]} 칸에 장착");
+            GameAudio.Play(GameSound.UIEquip);
             return;
         }
 
         playerSkill.CanEquipSkill(slotIndex, skill, out string reason);
-        SetHint(reason ?? "장착하지 못했습니다");
+        Reject(reason ?? "장착하지 못했습니다");
 
         // 비워만 놓고 끝나면 칸을 잃는다. 원래 있던 것을 되돌린다.
         if (current != null) playerSkill.EquipSkill(slotIndex, current);
@@ -393,9 +399,11 @@ public class SkillPanel : MonoBehaviour, ISkillSlotHost
     private void SwapSlots(int a, int b)
     {
         if (a == b) return;
+        if (!CheckShrine()) return;
 
         SkillData first = EquippedAt(a);
         SkillData second = EquippedAt(b);
+        if (first == second) return;
 
         if (first != null) playerSkill.UnequipSkill(a);
         if (second != null) playerSkill.UnequipSkill(b);
@@ -403,7 +411,13 @@ public class SkillPanel : MonoBehaviour, ISkillSlotHost
         if (second != null) playerSkill.EquipSkill(a, second);
         if (first != null) playerSkill.EquipSkill(b, first);
 
+        if (EquippedAt(a) != second || EquippedAt(b) != first)
+        {
+            Reject("지금은 교체할 수 없습니다");
+            return;
+        }
         SetHint($"{SlotKeyLabels[a]} ↔ {SlotKeyLabels[b]}");
+        GameAudio.Play(GameSound.UIEquip);
     }
 
     private SkillData EquippedAt(int index)
@@ -453,8 +467,14 @@ public class SkillPanel : MonoBehaviour, ISkillSlotHost
     {
         if (ShrineAccess.CanEditLoadout) return true;
 
-        SetHint(ShrineAccess.LockedHint);
+        Reject(ShrineAccess.LockedHint);
         return false;
+    }
+
+    private void Reject(string message)
+    {
+        SetHint(message);
+        GameAudio.Play(GameSound.UIReject);
     }
 
     private void SetHint(string message)

@@ -13,6 +13,12 @@ public class SecretBreakableWall : MonoBehaviour
     [SerializeField] private int requiredHitsToBreak = 1;
     [SerializeField] private GameObject breakEffectPrefab;
 
+    [Header("Audio")]
+    [Tooltip("Plays on an accepted hit only when the object/tile survives.")]
+    [SerializeField] private SoundCue hitSound = new SoundCue();
+    [Tooltip("Plays once on destruction, without cutting off when the object is removed.")]
+    [SerializeField] private SoundCue breakSound = new SoundCue();
+
     [Header("Debris")]
     [SerializeField] private bool spawnDebris = true;
     [SerializeField] private Color debrisColor = new Color(0.66f, 0.7f, 0.78f);
@@ -82,6 +88,7 @@ public class SecretBreakableWall : MonoBehaviour
         {
             BreakSecretWallTile(cellPosition);
         }
+        else GameAudio.Play(hitSound, tilemapSecretWall.GetCellCenterWorld(cellPosition));
     }
 
     private void BreakSecretWallTile(Vector3Int cellPosition)
@@ -91,6 +98,7 @@ public class SecretBreakableWall : MonoBehaviour
         // 해당 칸의 타일만 제거한다. Tilemap_SecretWall 전체를 삭제하지 않는다.
         tilemapSecretWall.SetTile(cellPosition, null);
         tilemapSecretWall.RefreshTile(cellPosition);
+        GameAudio.Play(breakSound, breakPosition);
         FieldObjectState.MarkTileBroken(gameObject.scene.name, cellPosition);
 
         if (spawnDebris) SpawnTileDebris(cellPosition, breakPosition);

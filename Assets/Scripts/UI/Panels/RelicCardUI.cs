@@ -59,6 +59,7 @@ public class RelicCardUI : MonoBehaviour, IPointerEnterHandler
     [SerializeField] private Button selectButton;
 
     private RelicData currentRelic;
+    private UnityEngine.Events.UnityAction selectAction;
 
 
     //카드에 유물 정보 표시
@@ -105,12 +106,10 @@ public class RelicCardUI : MonoBehaviour, IPointerEnterHandler
         //카드 클릭 이벤트
         if (selectButton != null)
         {
-            selectButton.onClick.RemoveAllListeners();
+            if (selectAction != null) selectButton.onClick.RemoveListener(selectAction);
 
-            selectButton.onClick.AddListener(() =>
-            {
-                onSelected?.Invoke(currentRelic);
-            });
+            selectAction = () => onSelected?.Invoke(currentRelic);
+            selectButton.onClick.AddListener(selectAction);
         }
     }
 }

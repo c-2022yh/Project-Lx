@@ -151,6 +151,34 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5b553ab9decb24f46a7a34d2cd59c3dc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::BreakableBrick
+  hitSound:
+    channel: 0
+    clip: {fileID: 0}
+    clips: []
+    volume: 1
+    minimumInterval: 0.05
+    pitchRange: {x: 1, y: 1}
+    maxSimultaneous: 4
+    limitScope: 0
+    spatialBlend: 0
+    minDistance: 1
+    maxDistance: 15
+    useFallback: 0
+    fallbackSound: 5
+  breakSound:
+    channel: 0
+    clip: {fileID: 0}
+    clips: []
+    volume: 1
+    minimumInterval: 0.05
+    pitchRange: {x: 1, y: 1}
+    maxSimultaneous: 4
+    limitScope: 0
+    spatialBlend: 0
+    minDistance: 1
+    maxDistance: 15
+    useFallback: 0
+    fallbackSound: 5
   requiredHitsToBreak: 3
   breakEffectPrefab: {fileID: 0}
   spawnDebris: 1
