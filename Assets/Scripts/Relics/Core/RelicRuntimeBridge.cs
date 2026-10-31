@@ -109,12 +109,17 @@ public class RelicRuntimeBridge : MonoBehaviour
     {
         if (manager == null) return;
 
-        IReadOnlyList<string> savedIds = RunState.Current.EquippedRelicIds;
-
-        // 첫 씬이라 기록이 없으면, 지금 장착된 것(startingRelics 등)을 진행도의 시작점으로 삼는다.
-        if (savedIds.Count == 0) return;
-
         isRestoring = true;
+
+        // 11.01: 장착하지 않고 갖고만 있는 유물도 되살린다 (먹으면 바로 장착되지 않고 보유만 되는 경우가 있어서,
+        // 예전엔 씬 이동·세이브 불러오기 때 이런 유물이 사라졌다)
+        foreach (RelicData owned in RelicDatabase.Resolve(RunState.Current.OwnedRelicIds))
+            if (owned != null && !manager.HasRelic(owned)) manager.AcquireRelic(owned);
+
+        IReadOnlyList<string> savedIds = RunState.Current.EquippedRelicIds;
+        // 첫 씬이라 기록이 없으면, 지금 장착된 것(startingRelics 등)을 진행도의 시작점으로 삼는다.
+        if (savedIds.Count == 0) { isRestoring = false; return; }
+
 
         List<RelicData> target = RelicDatabase.Resolve(savedIds);
 
@@ -178,6 +183,10 @@ public class RelicRuntimeBridge : MonoBehaviour
 
             ids.Add(relic.RelicId);
         }
+
+        // 장착 안 한 보유 유물도 진행도에 적는다 (세이브에 들어가게)
+        foreach (RelicData owned in manager.OwnedRelics)
+            if (owned != null && !string.IsNullOrEmpty(owned.RelicId)) RunState.Current.AddOwnedRelic(owned.RelicId);
 
         // SetEquipped가 장착한 유물을 자동으로 '보유'에도 넣는다.
         // 이 게임은 유물을 먹으면 곧바로 장착되므로, 한 번이라도 장착했던 것이 곧 보유한 것이다.
