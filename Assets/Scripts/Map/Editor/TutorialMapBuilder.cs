@@ -9,6 +9,9 @@ using UnityEngine.Tilemaps;
 /// 튜토리얼 맵(Tutorial.unity)을 코드로 다시 그린다.
 /// 메뉴: Tools/Map/튜토리얼 맵 다시 그리기  →  확인 후 씬 저장(Ctrl+S)
 ///
+/// 인트로에서 이어지는 동굴. 시작은 천장이 낮고 어둡고, 오른쪽으로 갈수록 천장이 높아지고 밝아지다가
+/// 전투 구역(x 126~)에서 동굴 밖으로 나간다 (천장 없음). 밝기는 CaveLightRamp가 카메라 위치로 바꾼다.
+///
 /// 흐름 (왼쪽 → 오른쪽)
 ///   1. 시작        이동·점프 안내 (TutorialDirector가 시작할 때 자동으로 띄움)
 ///   2. 점프 연습   계단 두 번 + 작은 구덩이 두 개
@@ -55,7 +58,6 @@ public static class TutorialMapBuilder
     // 맵 범위 (타일, 양끝 포함)
     private const int MinX = 0, MaxX = 149, MinY = -5, MaxY = 24;
     private const int W = MaxX - MinX + 1, H = MaxY - MinY + 1;
-    private const int CeilingBottom = 21;
     // 카메라가 보여주는 범위. 원래 튜토리얼처럼 바닥 아래·천장 위는 거의 안 보이게 붙인다.
     private const int CameraRight = 140;   // 출구 포탈(x 145)은 이 밖이라 화면에 안 나온다
     private const int CameraBottom = 0;    // 가장 낮은 바닥(시작, 높이 1) 아래로 1칸만
@@ -92,6 +94,7 @@ public static class TutorialMapBuilder
         if (!PaintTiles(scene)) return;
         PlaceObjects(scene);
         FitCamera(scene);
+        AddLightRamp(scene);
 
         Undo.CollapseUndoOperations(group);
         EditorSceneManager.MarkSceneDirty(scene);
@@ -115,7 +118,19 @@ public static class TutorialMapBuilder
         solid = new bool[W, H];
         Fill(0, 1, MinY, MaxY);              // 왼쪽 벽
         Fill(148, 149, MinY, MaxY);          // 오른쪽 벽
-        Fill(0, 149, CeilingBottom, MaxY);   // 천장
+
+        // 천장: 동굴 안은 낮고, 출구 쪽으로 갈수록 높아진다. 아래쪽 y는 홀수 (2×2 그림 맞춤)
+        // 점프 최고 높이 + 키(2.7)보다 높게 잡아서 점프하다 머리를 박지 않게 했다.
+        Ceiling(0, 21, 9);       // 1 시작 (좁은 동굴)
+        Ceiling(22, 35, 11);     // 2 계단
+        Ceiling(36, 53, 13);     //   구덩이
+        Ceiling(54, 77, 17);     // 3·4 상자·제단 방
+        Ceiling(78, 81, 19);     // 5 더블 점프 벽 위
+        Ceiling(82, 121, 21);    // 6 점프맵 (큰 동굴)
+        Ceiling(122, 125, 23);   //   동굴 입구
+                                 // 126~ 천장 없음 (밖)
+        Fill(12, 13, 7, 8);      // 종유석 (시작 방, 점프해도 안 닿는 높이)
+        Fill(64, 65, 13, 16);    // 종유석 (제단 방 왼쪽)
 
         Floor(2, 21, 0);      // 1 시작
         Floor(22, 29, 2);     // 2 계단 +2
@@ -131,6 +146,7 @@ public static class TutorialMapBuilder
     }
 
     private static void Floor(int x0, int x1, int top) => Fill(x0, x1, MinY, top);
+    private static void Ceiling(int x0, int x1, int bottom) => Fill(x0, x1, bottom, MaxY);
 
     private static void Fill(int x0, int x1, int y0, int y1)
     {
@@ -206,7 +222,7 @@ public static class TutorialMapBuilder
                 gTiles.Add(set[idx]);
 
                 // 윗면 풀 (끊기지 않게 전부 깔고, 모양만 섞는다)
-                if (y < CeilingBottom && !IsSolid(x, y + 1))
+                if (y < MaxY && !IsSolid(x, y + 1))
                 {
                     wPos.Add(ToCell(grass, x, y));
                     wTiles.Add(grassTops[Hash(x) % grassTops.Length]);
@@ -407,6 +423,20 @@ public static class TutorialMapBuilder
         confiner.position = new Vector3((MinX + CameraRight) * 0.5f, (CameraBottom + CameraTop) * 0.5f, 0f);
         box.offset = Vector2.zero;
         box.size = new Vector2(CameraRight - MinX, CameraTop - CameraBottom);
+    }
+
+    // 동굴 안은 어둡고 출구로 갈수록 밝게
+    private static void AddLightRamp(Scene scene)
+    {
+        Transform t = FindInScene(scene, "Tutorial_Light");
+        if (t == null)
+        {
+            GameObject go = new GameObject("Tutorial_Light");
+            Undo.RegisterCreatedObjectUndo(go, "튜토리얼 맵 다시 그리기");
+            SceneManager.MoveGameObjectToScene(go, scene);
+            t = go.transform;
+        }
+        if (t.GetComponent<CaveLightRamp>() == null) Undo.AddComponent<CaveLightRamp>(t.gameObject);
     }
 
     // ── 찾기 ───────────────────────────────
