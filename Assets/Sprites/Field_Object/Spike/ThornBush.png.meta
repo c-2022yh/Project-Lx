@@ -1,0 +1,845 @@
+fileFormatVersion: 2
+guid: fc0b500528082444cb49afd07ed94c34
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: 8255777720451063683
+    second: ThornBush_0
+  - first:
+      213: 6704037252435318126
+    second: ThornBush_1
+  - first:
+      213: 2143862308078490683
+    second: ThornBush_2
+  - first:
+      213: 6265888372266113781
+    second: ThornBush_3
+  - first:
+      213: -1585877012644242862
+    second: ThornBush_4
+  - first:
+      213: 3746631064554854718
+    second: ThornBush_5
+  - first:
+      213: -2359166329468971382
+    second: ThornBush_6
+  - first:
+      213: -775379242816521093
+    second: ThornBush_7
+  - first:
+      213: 6634617041317714427
+    second: ThornBush_8
+  - first:
+      213: 6315369344530272089
+    second: ThornBush_9
+  - first:
+      213: -2137785579186835367
+    second: ThornBush_10
+  - first:
+      213: 7791401758488123719
+    second: ThornBush_11
+  - first:
+      213: -1458163394988315979
+    second: ThornBush_12
+  - first:
+      213: 1149793375977547726
+    second: ThornBush_13
+  - first:
+      213: -8752651394676220486
+    second: ThornBush_14
+  - first:
+      213: 7801910521882229319
+    second: ThornBush_15
+  - first:
+      213: -880389420313851763
+    second: ThornBush_16
+  - first:
+      213: 7658453073357226697
+    second: ThornBush_17
+  - first:
+      213: 5781836689931302141
+    second: ThornBush_18
+  - first:
+      213: -7304941688007984228
+    second: ThornBush_19
+  - first:
+      213: 6160084660384350390
+    second: ThornBush_20
+  - first:
+      213: 1676821253600502341
+    second: ThornBush_21
+  - first:
+      213: -1246368437935196542
+    second: ThornBush_22
+  - first:
+      213: 4237857355065315585
+    second: ThornBush_23
+  - first:
+      213: 4874992082078349637
+    second: ThornBush_24
+  - first:
+      213: -8059833966343341041
+    second: ThornBush_25
+  - first:
+      213: -5796938931164885785
+    second: ThornBush_26
+  - first:
+      213: 2762519269122482659
+    second: ThornBush_27
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 1
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 1
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 360
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: ThornBush_0
+      rect:
+        serializedVersion: 2
+        x: 337
+        y: 658
+        width: 45
+        height: 48
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 38fd114881a629270800000000000000
+      internalID: 8255777720451063683
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ThornBush_1
+      rect:
+        serializedVersion: 2
+        x: 379
+        y: 676
+        width: 13
+        height: 18
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e6594609c56890d50800000000000000
+      internalID: 6704037252435318126
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ThornBush_2
+      rect:
+        serializedVersion: 2
+        x: 391
+        y: 664
+        width: 21
+        height: 29
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b341e58196780cd10800000000000000
+      internalID: 2143862308078490683
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ThornBush_3
+      rect:
+        serializedVersion: 2
+        x: 437
+        y: 690
+        width: 21
+        height: 25
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5fa1c27c648e4f650800000000000000
+      internalID: 6265888372266113781
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ThornBush_4
+      rect:
+        serializedVersion: 2
+        x: 455
+        y: 704
+        width: 11
+        height: 11
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 25ad1e36245ddf9e0800000000000000
+      internalID: -1585877012644242862
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ThornBush_5
+      rect:
+        serializedVersion: 2
+        x: 511
+        y: 684
+        width: 48
+        height: 35
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e395c3b4a15bef330800000000000000
+      internalID: 3746631064554854718
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ThornBush_6
+      rect:
+        serializedVersion: 2
+        x: 559
+        y: 686
+        width: 16
+        height: 15
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a8690f509be824fd0800000000000000
+      internalID: -2359166329468971382
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ThornBush_7
+      rect:
+        serializedVersion: 2
+        x: 574
+        y: 656
+        width: 135
+        height: 47
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b7cb5b1dfac4d35f0800000000000000
+      internalID: -775379242816521093
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ThornBush_8
+      rect:
+        serializedVersion: 2
+        x: 984
+        y: 658
+        width: 104
+        height: 41
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: bf9de702c05e21c50800000000000000
+      internalID: 6634617041317714427
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ThornBush_9
+      rect:
+        serializedVersion: 2
+        x: 1518
+        y: 578
+        width: 29
+        height: 143
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 95f4e1665f2b4a750800000000000000
+      internalID: 6315369344530272089
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ThornBush_10
+      rect:
+        serializedVersion: 2
+        x: 54
+        y: 15
+        width: 2051
+        height: 642
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 950bd9a975f0552e0800000000000000
+      internalID: -2137785579186835367
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ThornBush_11
+      rect:
+        serializedVersion: 2
+        x: 541
+        y: 654
+        width: 20
+        height: 19
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 749d9056e9e902c60800000000000000
+      internalID: 7791401758488123719
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ThornBush_12
+      rect:
+        serializedVersion: 2
+        x: 556
+        y: 656
+        width: 21
+        height: 27
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5ba6e313e1093cbe0800000000000000
+      internalID: -1458163394988315979
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ThornBush_13
+      rect:
+        serializedVersion: 2
+        x: 714
+        y: 635
+        width: 45
+        height: 38
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ec72d3ccbf2e4ff00800000000000000
+      internalID: 1149793375977547726
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ThornBush_14
+      rect:
+        serializedVersion: 2
+        x: 804
+        y: 642
+        width: 7
+        height: 33
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: abd1f791ee5588680800000000000000
+      internalID: -8752651394676220486
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ThornBush_15
+      rect:
+        serializedVersion: 2
+        x: 910
+        y: 658
+        width: 48
+        height: 15
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 74a3c2a8844f54c60800000000000000
+      internalID: 7801910521882229319
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ThornBush_16
+      rect:
+        serializedVersion: 2
+        x: 1129
+        y: 627
+        width: 17
+        height: 30
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d884e2a9c7a38c3f0800000000000000
+      internalID: -880389420313851763
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ThornBush_17
+      rect:
+        serializedVersion: 2
+        x: 1185
+        y: 660
+        width: 98
+        height: 13
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9c2c4767e7a484a60800000000000000
+      internalID: 7658453073357226697
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ThornBush_18
+      rect:
+        serializedVersion: 2
+        x: 1282
+        y: 656
+        width: 11
+        height: 11
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: df4fca406d53d3050800000000000000
+      internalID: 5781836689931302141
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ThornBush_19
+      rect:
+        serializedVersion: 2
+        x: 1281
+        y: 636
+        width: 10
+        height: 13
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c9b775dec32af9a90800000000000000
+      internalID: -7304941688007984228
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ThornBush_20
+      rect:
+        serializedVersion: 2
+        x: 1145
+        y: 626
+        width: 9
+        height: 9
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6b0ca807c540d7550800000000000000
+      internalID: 6160084660384350390
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ThornBush_21
+      rect:
+        serializedVersion: 2
+        x: 259
+        y: 602
+        width: 17
+        height: 22
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 542eea4cb04454710800000000000000
+      internalID: 1676821253600502341
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ThornBush_22
+      rect:
+        serializedVersion: 2
+        x: 271
+        y: 598
+        width: 9
+        height: 15
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2863d9d528204bee0800000000000000
+      internalID: -1246368437935196542
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ThornBush_23
+      rect:
+        serializedVersion: 2
+        x: 279
+        y: 596
+        width: 9
+        height: 14
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 101d171bfc4efca30800000000000000
+      internalID: 4237857355065315585
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ThornBush_24
+      rect:
+        serializedVersion: 2
+        x: 744
+        y: 576
+        width: 27
+        height: 31
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5493f17487377a340800000000000000
+      internalID: 4874992082078349637
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ThornBush_25
+      rect:
+        serializedVersion: 2
+        x: 1271
+        y: 594
+        width: 20
+        height: 13
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f0c3a7fd5b7b52090800000000000000
+      internalID: -8059833966343341041
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ThornBush_26
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 245
+        width: 63
+        height: 51
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7ecc84f61c22d8fa0800000000000000
+      internalID: -5796938931164885785
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ThornBush_27
+      rect:
+        serializedVersion: 2
+        x: 34
+        y: 275
+        width: 25
+        height: 23
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3e1a73983a0765620800000000000000
+      internalID: 2762519269122482659
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 5e97eb03825dee720800000000000000
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
+    nameFileIdTable:
+      ThornBush_0: 8255777720451063683
+      ThornBush_1: 6704037252435318126
+      ThornBush_10: -2137785579186835367
+      ThornBush_11: 7791401758488123719
+      ThornBush_12: -1458163394988315979
+      ThornBush_13: 1149793375977547726
+      ThornBush_14: -8752651394676220486
+      ThornBush_15: 7801910521882229319
+      ThornBush_16: -880389420313851763
+      ThornBush_17: 7658453073357226697
+      ThornBush_18: 5781836689931302141
+      ThornBush_19: -7304941688007984228
+      ThornBush_2: 2143862308078490683
+      ThornBush_20: 6160084660384350390
+      ThornBush_21: 1676821253600502341
+      ThornBush_22: -1246368437935196542
+      ThornBush_23: 4237857355065315585
+      ThornBush_24: 4874992082078349637
+      ThornBush_25: -8059833966343341041
+      ThornBush_26: -5796938931164885785
+      ThornBush_27: 2762519269122482659
+      ThornBush_3: 6265888372266113781
+      ThornBush_4: -1585877012644242862
+      ThornBush_5: 3746631064554854718
+      ThornBush_6: -2359166329468971382
+      ThornBush_7: -775379242816521093
+      ThornBush_8: 6634617041317714427
+      ThornBush_9: 6315369344530272089
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
