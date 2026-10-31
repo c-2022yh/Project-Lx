@@ -4,10 +4,11 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 
 /// <summary>
-/// 제단에 처음 불을 밝힐 때 석등 안에 파란 불이 붙는 연출. (디자인 시안 17 - A 등불 점화)
+/// 제단에 처음 불을 밝힐 때 석등 안에 파란 불이 붙는 연출. (디자인 시안 17 - C 바닥 문양 → 빛기둥)
 ///
-///   불씨가 반짝 → 불꽃이 솟았다가 자리 잡고 일렁임 → 빛 물결이 퍼지고 바닥이 밝아짐 → 불티가 올라감.
-///   석등은 회색에서 원래 색으로 천천히 돌아온다.
+///   발밑에 둥근 문양이 돌며 켜짐 → 빛이 기둥을 타고 석등까지 올라감 → 닿는 순간 불꽃이 솟았다가 자리 잡고 일렁임
+///   → 빛 물결이 퍼지고 바닥이 밝아짐 → 불티가 올라감. 석등은 회색에서 원래 색으로 천천히 돌아온다.
+///   문양·빛기둥도 선 없이 흐린 빛으로만 그린다.
 ///
 /// 불은 선 없이 흐린 빛 여러 겹으로만 그린다 (뒤쪽 큰 빛 · 겉 빛 · 몸통 · 끝 불꽃 둘 · 하얀 심지).
 /// 그림은 코드로 만든다. 나중에 진짜 그림이 오면 Art 안의 그림만 바꾸면 된다.
@@ -27,10 +28,10 @@ public class ShrineFire : MonoBehaviour
     [SerializeField] private float flameHeight = 0.19f;
 
     [Header("시간 (초)")]
-    [Tooltip("불씨가 반짝인 뒤 불이 솟기까지")]
-    [SerializeField] private float sparkTime = 0.3f;
+    [Tooltip("바닥 문양이 켜진 뒤 빛기둥이 석등에 닿아 불이 솟기까지")]
+    [SerializeField] private float sparkTime = 1f;
     [Tooltip("불이 솟은 뒤 유물창이 열리기까지")]
-    [SerializeField] private float holdAfterLit = 0.6f;
+    [SerializeField] private float holdAfterLit = 0.5f;
 
     [Header("색")]
     [SerializeField] private Color flameColor = new Color(0.62f, 0.82f, 1f, 0.95f);
@@ -49,6 +50,13 @@ public class ShrineFire : MonoBehaviour
     private static readonly float[] GlowX = { 0f, 0.4f, 1f };
     private static readonly float[] GlowS = { 0.3f, 1.25f, 1f };
     private static readonly float[] GlowA = { 0f, 1f, 0.85f };
+    // 바닥 문양: 커지며 돌다가 사라짐
+    private static readonly float[] SigilX = { 0f, 0.33f, 1f };
+    private static readonly float[] SigilS = { 0.2f, 1f, 1.1f };
+    private static readonly float[] SigilA = { 0f, 1f, 0f };
+    private static readonly float[] SigilR = { 0f, 60f, 160f };
+    private static readonly Color SigilColor = new Color(0.6f, 0.8f, 1f, 0.85f);
+    private static readonly Color ColumnColor = new Color(0.78f, 0.9f, 1f, 0.9f);
 
     private enum State { Off, Igniting, Lit, Fading }
 
@@ -58,8 +66,9 @@ public class ShrineFire : MonoBehaviour
     private Color activeColor = Color.white;
     private bool ready;
 
-    private SpriteRenderer halo, ground, haze, body, tipL, tipR, core;
-    private Vector3 basePos;     // 제단 그림 안에서 불꽃 아래쪽 (로컬)
+    private SpriteRenderer halo, ground, haze, body, tipL, tipR, core, sigil, column;
+    private Transform sigilRoot;  // 납작하게 눌러 바닥에 눕힌 판 (안에서 문양이 돈다)
+    private Vector3 basePos;    // 제단 그림 안에서 불꽃 아래쪽 (로컬)
     private Vector3 groundPos;   // 제단 발밑 (로컬)
     private float h;             // 불꽃 높이 (로컬)
     private float shrineW;
@@ -146,6 +155,14 @@ public class ShrineFire : MonoBehaviour
         tipL = Layer("Fire_TipL", Art.Flame, o + 3);
         tipR = Layer("Fire_TipR", Art.Flame, o + 3);
         core = Layer("Fire_Core", BossFxArt.SoftDot, o + 4);
+        column = Layer("Fire_Column", Art.Column, o + 1);
+
+        sigilRoot = new GameObject("Fire_SigilRoot").transform;
+        sigilRoot.SetParent(shrineSr.transform, false);
+        sigilRoot.localPosition = groundPos;
+        sigilRoot.localScale = new Vector3(1f, 0.32f, 1f);
+        sigil = Layer("Fire_Sigil", Art.Sigil, o + 1);
+        sigil.transform.SetParent(sigilRoot, false);
 
         ready = true;
         if (shrine.IsActive) LightNow();   // 이어하기로 이미 켜진 제단
@@ -187,14 +204,15 @@ public class ShrineFire : MonoBehaviour
         string layer = SortingLayer.IDToName(shrineSr.sortingLayerID);
         int o = shrineSr.sortingOrder + 5;
 
-        // 작은 불씨가 반짝
+        // 빛기둥이 석등에 닿는 순간 반짝
         BossFxSprite spark = BossFxSprite.Create("Fire_Spark", BossFxArt.SoftDot, tr.TransformPoint(basePos + new Vector3(0f, h * 0.15f, 0f)), layer, o);
+        spark.delay = Mathf.Max(0f, sparkTime - 0.15f);
         spark.color = new Color(0.9f, 0.97f, 1f, 1f);
-        spark.scaleFrom = Vector3.one * (h * unit * 0.05f);
-        spark.scaleTo = Vector3.one * (h * unit * 0.35f);
+        spark.scaleFrom = Vector3.one * (h * unit * 0.1f);
+        spark.scaleTo = Vector3.one * (h * unit * 0.45f);
         spark.alphaFrom = 1f;
-        spark.alphaTo = 0.3f;
-        spark.life = sparkTime + 0.3f;
+        spark.alphaTo = 0f;
+        spark.life = 0.45f;
         spark.unscaled = true;
 
         // 불이 솟는 순간 퍼지는 빛 물결 (선 없이 흐린 띠)
@@ -244,7 +262,7 @@ public class ShrineFire : MonoBehaviour
         {
             t += dt;
             // 석등 색: 불씨 뒤로 회색 → 원래 색
-            shrineSr.color = Color.Lerp(inactiveColor, activeColor, Mathf.Clamp01((t - sparkTime * 0.6f) / 0.8f));
+            shrineSr.color = Color.Lerp(inactiveColor, activeColor, Mathf.Clamp01((t - sparkTime + 0.3f) / 0.8f));
 
             if (!pendingDone && t >= sparkTime + holdAfterLit)
             {
@@ -315,6 +333,32 @@ public class ShrineFire : MonoBehaviour
         Set(tipL, basePos + new Vector3(-h * 0.07f - h * 0.04f * l, h * (0.72f + 0.08f * l) * sy, 0f), new Vector2(h * 0.16f, h * 0.36f) * Mathf.Lerp(1f, 0.75f, l) * sy, TipColorL, Mathf.Lerp(0.8f, 0.35f, l) * ga);
         Set(tipR, basePos + new Vector3(h * 0.1f + h * 0.04f * r, h * (0.52f - 0.04f * r) * sy, 0f), new Vector2(h * 0.13f, h * 0.3f) * Mathf.Lerp(0.8f, 1f, r) * sy, TipColorR, Mathf.Lerp(0.45f, 0.85f, r) * ga);
         Set(core, basePos + new Vector3(0f, h * 0.3f * sy, 0f), new Vector2(h * 0.32f, h * 0.48f * sy) * Mathf.Lerp(1f, 1.08f, pulse), Color.white, Mathf.Lerp(0.85f, 1f, pulse) * ga);
+
+        // 바닥 문양 → 빛기둥 (불붙이는 동안만)
+        if (!igniting)
+        {
+            sigil.enabled = false;
+            column.enabled = false;
+            return;
+        }
+
+        float sk = t / (sparkTime * 1.2f);
+        float sa = Keys(sk, SigilX, SigilA);
+        sigil.enabled = sa > 0.003f;
+        if (sigil.enabled)
+        {
+            sigil.transform.localScale = Vector3.one * (shrineW * 1.65f * Keys(sk, SigilX, SigilS) / sigil.sprite.bounds.size.x);
+            sigil.transform.localRotation = Quaternion.Euler(0f, 0f, Keys(sk, SigilX, SigilR));
+            Color sc = SigilColor;
+            sc.a *= sa;
+            sigil.color = sc;
+        }
+
+        float rise = Mathf.Clamp01((t - sparkTime * 0.45f) / (sparkTime * 0.55f));
+        rise *= rise;   // 처음엔 천천히, 위로 갈수록 빠르게
+        float columnFade = 1f - Mathf.Clamp01((t - sparkTime - 0.05f) / 0.4f);
+        float columnH = (basePos.y + h * 0.1f - groundPos.y) * rise;
+        Set(column, groundPos, new Vector2(shrineW * 0.2f, columnH), ColumnColor, columnFade);
     }
 
     // 불꽃 끝에서 흐린 불티가 올라가다 사라짐
@@ -364,6 +408,8 @@ public class ShrineFire : MonoBehaviour
         if (tipL != null) tipL.enabled = false;
         if (tipR != null) tipR.enabled = false;
         if (core != null) core.enabled = false;
+        if (sigil != null) sigil.enabled = false;
+        if (column != null) column.enabled = false;
     }
 
     // 키 사이를 부드럽게 잇는 값
@@ -384,7 +430,40 @@ public class ShrineFire : MonoBehaviour
 
     private static class Art
     {
-        private static Sprite flame, softRing;
+        private static Sprite flame, softRing, sigil, column;
+
+        /// <summary>바닥 문양. 흐린 고리 둘 + 끊긴 듯 일렁이는 고리 + 빛 점 8개. 가로 1.</summary>
+        public static Sprite Sigil => sigil != null ? sigil : sigil = Make("ShrineFire_Sigil", 256, 256, new Vector2(0.5f, 0.5f), 256f, (u, v) =>
+        {
+            float d = Mathf.Sqrt(u * u + v * v);
+            float ang = Mathf.Atan2(v, u);
+            float a = Band(d, 0.86f, 0.05f)
+                    + 0.7f * Band(d, 0.58f, 0.04f)
+                    + 0.55f * Band(d, 0.72f, 0.025f) * (0.5f + 0.5f * Mathf.Cos(ang * 16f));
+            for (int i = 0; i < 8; i++)
+            {
+                float pa = i * Mathf.PI * 0.25f;
+                float dx = u - Mathf.Cos(pa) * 0.72f, dy = v - Mathf.Sin(pa) * 0.72f;
+                float k = Mathf.Sqrt(dx * dx + dy * dy) / 0.055f;
+                a += Mathf.Exp(-k * k);
+            }
+            a += 0.25f * Mathf.Pow(Mathf.Clamp01(1f - d / 0.5f), 2f);
+            return Mathf.Clamp01(a) * Mathf.Clamp01((1f - d) * 10f);
+        });
+
+        /// <summary>아래에서 위로 올라가는 빛기둥. 위가 밝고 양옆이 흐리다. 피벗 아래, 가로 0.25 × 세로 1.</summary>
+        public static Sprite Column => column != null ? column : column = Make("ShrineFire_Column", 32, 128, new Vector2(0.5f, 0f), 128f, (u, v) =>
+        {
+            float y = (v + 1f) * 0.5f;
+            float across = Mathf.Pow(Mathf.Clamp01(1f - Mathf.Abs(u)), 1.6f);
+            return across * (0.15f + 0.85f * Mathf.Pow(y, 0.8f)) * Mathf.Clamp01((1f - y) * 12f);
+        });
+
+        private static float Band(float d, float center, float width)
+        {
+            float k = (d - center) / width;
+            return Mathf.Exp(-k * k);
+        }
 
         private delegate float Pixel(float u, float v);   // u, v: -1 ~ 1 (v는 아래 -1 → 위 1)
 
