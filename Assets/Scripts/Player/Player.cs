@@ -96,6 +96,7 @@ public class Player : MonoBehaviour
     }
     void FixedUpdate()
     {
+        Move.UpdateDropCollisions();
         //땅에 닿았는지 체크
         isGrounded = CheckGrounded();
         Move.TickMovementAudio();
@@ -103,6 +104,8 @@ public class Player : MonoBehaviour
         Move.ExecuteMove();
         ProcessBufferedAttack();
         Move.ExecuteJump();
+        Move.ApplyApexGravity();
+        Move.ApplyFallSpeedLimit();
 
         //currentState?.DoFixedUpdate();
     }

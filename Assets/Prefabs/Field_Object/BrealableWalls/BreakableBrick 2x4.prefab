@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 4498363900662600447}
   - component: {fileID: -7436604582824392157}
   m_Layer: 6
-  m_Name: BreakableBrick
+  m_Name: BreakableBrick 2x4
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -83,8 +83,8 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_MaskInteraction: 0
-  m_Sprite: {fileID: 7482667652216324306, guid: 311925a002f4447b3a28927169b83ea6, type: 3}
-  m_Color: {r: 1, g: 0.35026366, b: 0, a: 1}
+  m_Sprite: {fileID: 21300000, guid: c874b1ee1c93ed24182797008083bf5f, type: 3}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -131,13 +131,13 @@ BoxCollider2D:
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
-    oldSize: {x: 1, y: 1}
+    oldSize: {x: 2, y: 4}
     newSize: {x: 1, y: 1}
     adaptiveTilingThreshold: 0.5
     drawMode: 0
     adaptiveTiling: 0
   m_AutoTiling: 0
-  m_Size: {x: 1, y: 1}
+  m_Size: {x: 2, y: 4}
   m_EdgeRadius: 0
 --- !u!114 &-7436604582824392157
 MonoBehaviour:
@@ -151,6 +151,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5b553ab9decb24f46a7a34d2cd59c3dc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::BreakableBrick
+  requiredHitsToBreak: 3
+  breakEffectPrefab: {fileID: 0}
   hitSound:
     channel: 0
     clip: {fileID: 0}
@@ -179,7 +181,5 @@ MonoBehaviour:
     maxDistance: 15
     useFallback: 0
     fallbackSound: 5
-  requiredHitsToBreak: 3
-  breakEffectPrefab: {fileID: 0}
   spawnDebris: 1
   debrisColor: {r: 0.7, g: 0.74, b: 0.82, a: 1}
