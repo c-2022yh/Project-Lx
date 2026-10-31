@@ -1,13 +1,14 @@
 ﻿using UnityEngine;
 
 /// <summary>
-/// 보스 피격 반응: 맞을 때마다 몸이 하얗게 번쩍이고, 맞은 쪽에서 작은 돌가루·파편이 튄다.
+/// 보스 피격 반응: 맞은 쪽에서 작은 돌가루·파편이 튄다. 몸체 번쩍임은 기본으로 끈다.
 /// EnemyHealth 체력이 줄어든 걸 보고 알아챈다 (적 코드는 고치지 않음). BossRoom이 보스와 갈라진 조각에 붙인다.
 /// 번쩍임 셰이더: Resources/Presentation/Boss/SpriteSolidFlash
 /// </summary>
 [DefaultExecutionOrder(1000)]   // 골렘 그림이 바뀐 다음에 따라 그린다
 public class BossHitFx : MonoBehaviour
 {
+    [SerializeField] private bool flashOnHit = false;
     private const float FlashTime = 0.09f;
     private static Material flashMat;
 
@@ -23,12 +24,12 @@ public class BossHitFx : MonoBehaviour
         if (health == null) { enabled = false; return; }
         lastHp = health.CurrentHp;
 
-        if (flashMat == null)
+        if (flashOnHit && flashMat == null)
         {
             Shader sh = Resources.Load<Shader>("Presentation/Boss/SpriteSolidFlash");
             if (sh != null && sh.isSupported) flashMat = new Material(sh) { hideFlags = HideFlags.DontSave };
         }
-        if (body != null && flashMat != null)
+        if (flashOnHit && body != null && flashMat != null)
         {
             GameObject go = new GameObject("HitFlash");
             go.transform.SetParent(transform, false);
@@ -46,6 +47,7 @@ public class BossHitFx : MonoBehaviour
         if (hp < lastHp - 0.01f && !health.IsDead) OnHit();
         lastHp = hp;
 
+        if (!flashOnHit) { if (flash != null) flash.enabled = false; return; }
         if (flash == null) return;
         if (flashT >= 0f)
         {

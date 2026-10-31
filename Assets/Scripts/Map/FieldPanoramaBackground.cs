@@ -16,7 +16,7 @@ using UnityEditor;
 /// 맵 범위는 카메라 가둠(CinemachineConfiner2D)의 영역에서 읽는다. 빛을 안 받는 머티리얼이라 조명에 어두워지지 않는다.
 ///
 /// [시험 중] 씬 파일은 고치지 않는다. 씬이 열릴 때 아래 표의 씬이면 기존 Background_Forest를 끄고 이 배경을 만든다.
-///   에디터: Tools/Test/새 필드 배경 (F_01 밝은 숲, F_02 청록 숲) 으로 켜고 끈다 (기본 꺼짐, 내 컴퓨터에만 적용).
+///   에디터: Tools/Test/새 필드 배경 (F_01 밝은 숲, F_02·F_07 청록 숲) 으로 켜고 끈다 (기본 꺼짐, 내 컴퓨터에만 적용).
 ///   빌드에서는 동작하지 않는다.
 /// </summary>
 [DefaultExecutionOrder(900)]   // 카메라가 움직인 다음에 자리를 정한다
@@ -27,6 +27,7 @@ public class FieldPanoramaBackground : MonoBehaviour
     {
         { "F_01", "Presentation/Backgrounds/BG_F01_SunlitForest" },
         { "F_02", "Presentation/Backgrounds/BG_F02_TealForest" },
+        { "F_07", "Presentation/Backgrounds/BG_F02_TealForest" },   // F_02와 같은 청록 숲
     };
 
     [SerializeField] private Sprite sprite;

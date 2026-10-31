@@ -302,7 +302,7 @@ MonoBehaviour:
     fallbackSound: 5
   deathSound:
     channel: 0
-    clip: {fileID: 0}
+    clip: {fileID: 8300000, guid: 0fe0a6339f2f24b4e8dd332725752535, type: 3}
     clips:
     - {fileID: 0}
     volume: 1

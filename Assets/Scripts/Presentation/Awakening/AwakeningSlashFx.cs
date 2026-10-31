@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.Rendering.Universal;
 
 /// <summary>
 /// 각성 중 공격하면 베기 궤적 뒤에 푸른 잔상이 함께 나온다.
@@ -117,10 +118,10 @@ public class AwakeningSlashFx : MonoBehaviour
 
     private static void StripToVisuals(GameObject root)
     {
-        // 스크립트 먼저 (서로 필요로 하는 경우가 있어서 두 번), 그다음 물리
-        for (int pass = 0; pass < 3; pass++)
-            foreach (MonoBehaviour m in root.GetComponentsInChildren<MonoBehaviour>(true))
-                if (m != null) DestroyImmediate(m);
+        // Light2D is also a MonoBehaviour. Remove its dependants before the lights.
+        foreach (MonoBehaviour behaviour in root.GetComponentsInChildren<MonoBehaviour>(true))
+            if (behaviour != null && !(behaviour is Light2D)) DestroyImmediate(behaviour);
+        foreach (Light2D light in root.GetComponentsInChildren<Light2D>(true)) DestroyImmediate(light);
         foreach (Collider2D c in root.GetComponentsInChildren<Collider2D>(true)) DestroyImmediate(c);
         foreach (Rigidbody2D rb in root.GetComponentsInChildren<Rigidbody2D>(true)) DestroyImmediate(rb);
         foreach (AudioSource s in root.GetComponentsInChildren<AudioSource>(true)) DestroyImmediate(s);

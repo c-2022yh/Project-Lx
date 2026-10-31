@@ -155,7 +155,7 @@ MonoBehaviour:
   respawnPoint: {fileID: 6806519720308926755}
   activationSound:
     channel: 0
-    clip: {fileID: 0}
+    clip: {fileID: 8300000, guid: 0f0deffbb86ea3e458d899096edcda88, type: 3}
     clips: []
     volume: 1
     minimumInterval: 0.1

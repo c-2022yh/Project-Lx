@@ -21,6 +21,14 @@ public class GolemBossVisual : MonoBehaviour
     [SerializeField] private Sprite[] phaseChangeSprites;
     [SerializeField, Min(0.01f)] private float idleFrameTime = 0.2f;
     [SerializeField] private bool spritesFaceRight = true;
+    [Header("Separate arm art (optional)")]
+    [SerializeField] private Sprite leftArmSprite;
+    [SerializeField] private Sprite rightArmSprite;
+    [SerializeField] private Vector2 leftArmPosition = new Vector2(-1.6f, -0.1f);
+    [SerializeField] private Vector2 rightArmPosition = new Vector2(1.6f, -0.1f);
+    [SerializeField, Min(0.01f)] private float armScale = 1f;
+    [SerializeField, Min(0f)] private float armPrepareLift = 0.65f;
+    [SerializeField, Min(0f)] private float armStrikeDrop = 0.25f;
     [Header("Health bar")]
     [SerializeField] private bool showHealthBar = true;
     [SerializeField] private Vector2 healthBarOffset = new Vector2(0f, 2.6f);
@@ -75,11 +83,21 @@ public class GolemBossVisual : MonoBehaviour
         }
         body = GetComponent<SpriteRenderer>();
         health = GetComponent<EnemyHealth>();
-        leftArm = MakeRectangle("Placeholder Left Arm", transform, new Color(0.38f, 0.42f, 0.46f), 1);
-        rightArm = MakeRectangle("Placeholder Right Arm", transform, leftArm.color, 1);
+        leftArm = MakeArm("Golem Left Arm", leftArmSprite);
+        rightArm = MakeArm("Golem Right Arm", rightArmSprite);
         core = MakeRectangle("Placeholder Core", transform, new Color(1f, 0.65f, 0.15f), 2);
         barBack = MakeRectangle("Boss HP Background", transform, new Color(0.08f, 0.08f, 0.1f), 10);
         barFill = MakeRectangle("Boss HP", transform, new Color(0.85f, 0.12f, 0.08f), 11);
+    }
+
+    private SpriteRenderer MakeArm(string partName, Sprite sprite)
+    {
+        Transform existing = transform.Find(partName);
+        SpriteRenderer renderer = existing != null ? existing.GetComponent<SpriteRenderer>() : null;
+        if (renderer == null) renderer = MakeRectangle(partName, transform, Color.white, 1);
+        renderer.sprite = sprite != null ? sprite : Square;
+        renderer.color = sprite != null ? Color.white : new Color(0.38f, 0.42f, 0.46f);
+        return renderer;
     }
 
     private void OnEnable() => SetPose(GolemBossPose.Idle);
@@ -119,6 +137,8 @@ public class GolemBossVisual : MonoBehaviour
             if (pose == GolemBossPose.Idle) selected = idleSprites;
             else if (pose == GolemBossPose.Summon) selected = summonSprites;
             else if (pose == GolemBossPose.PhaseChange) selected = phaseChangeSprites;
+            // Static body art also remains visible during attacks without dedicated frames.
+            if (selected == null || selected.Length == 0) selected = idleSprites;
         }
         bool hasArt = selected != null && selected.Length > 0;
         if (hasArt)
@@ -129,7 +149,7 @@ public class GolemBossVisual : MonoBehaviour
             body.sprite = selected[index] != null ? selected[index] : Square;
             body.drawMode = SpriteDrawMode.Simple;
             body.color = Color.white;
-            body.flipX = spritesFaceRight ? facing < 0 : facing > 0;
+            body.flipX = leftArmSprite == null && rightArmSprite == null && (spritesFaceRight ? facing < 0 : facing > 0);
         }
         else
         {
@@ -150,6 +170,18 @@ public class GolemBossVisual : MonoBehaviour
         leftArm.transform.localScale = rightArm.transform.localScale = new Vector3(1.1f, 1.3f, 1f);
         core.transform.localPosition = new Vector3(0f, 0.3f);
         core.transform.localScale = Vector3.one * (channel ? 0.75f + Mathf.Sin(Time.time * 12f) * 0.1f : 0.55f);
+        if (hasArt && (leftArmSprite != null || rightArmSprite != null))
+        {
+            leftArm.enabled = leftArmSprite != null && body.enabled;
+            rightArm.enabled = rightArmSprite != null && body.enabled;
+            float armLift = pose == GolemBossPose.Prepare ? Mathf.Lerp(0f, armPrepareLift, progress) : 0f;
+            if (pose == GolemBossPose.Strike) armLift = -armStrikeDrop;
+            if (pose == GolemBossPose.Recovery) armLift = Mathf.Lerp(-armStrikeDrop, 0f, progress);
+            if (channel) armLift = armPrepareLift;
+            leftArm.transform.localPosition = leftArmPosition + Vector2.up * (singleArm && facing > 0 ? 0f : armLift);
+            rightArm.transform.localPosition = rightArmPosition + Vector2.up * (singleArm && facing < 0 ? 0f : armLift);
+            leftArm.transform.localScale = rightArm.transform.localScale = Vector3.one * armScale;
+        }
         barBack.enabled = barFill.enabled = showHealthBar;
         float ratio = health.MaxHp > 0f ? Mathf.Clamp01(health.CurrentHp / health.MaxHp) : 0f;
         barBack.transform.localPosition = healthBarOffset;
