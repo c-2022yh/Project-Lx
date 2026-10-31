@@ -125,7 +125,7 @@ Shader "ProjectLx/Awakening Silhouette Aura"
 
                 // 넓게 일렁이는 빛
                 float2 warp = float2(FlowNoise(q * 1.7 + float2(0.0, -t * 1.1)) - 0.5,
-                                     FlowNoise(q * 1.3 + float2(5.2, -t * 0.8)) - 0.5) * 0.3;
+                                     FlowNoise(q * 1.3 + float2(5.2, -t * 0.8)) - 0.5) * 0.1;
                 float farGlow = Soft(q + warp, _FarRadius);
 
                 // 위로 피어오르는 자락: 아래쪽 실루엣을 끌어올려 번지게 한다
@@ -133,7 +133,7 @@ Shader "ProjectLx/Awakening Silhouette Aura"
                 [unroll] for (int k = 1; k <= 4; k++)
                 {
                     float h = k / 4.0;
-                    float sway = (Noise(float2(q.y * 1.3 - t * 0.9, k * 3.1)) - 0.5) * 0.6 * h;
+                    float sway = (Noise(float2(q.y * 1.3 - t * 0.9, k * 3.1)) - 0.5) * 0.2 * h;
                     wisp += Soft(q - float2(sway, h * _Rise), _FarRadius * (0.6 + h)) * (1.0 - h * 0.7);
                 }
                 wisp *= 0.5;

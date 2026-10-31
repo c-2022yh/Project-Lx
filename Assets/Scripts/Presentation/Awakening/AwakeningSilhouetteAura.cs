@@ -21,11 +21,11 @@ public class AwakeningSilhouetteAura : MonoBehaviour
 {
     [Header("모양 (월드 칸, 캐릭터 키 약 2.7)")]
     [Tooltip("몸에 바짝 붙은 빛의 두께")]
-    [SerializeField, Min(0.01f)] private float nearRadius = 0.06f;
+    [SerializeField, Min(0.01f)] private float nearRadius = 0.05f;
     [Tooltip("넓게 퍼지는 빛의 두께")]
-    [SerializeField, Min(0.01f)] private float farRadius = 0.35f;
+    [SerializeField, Min(0.01f)] private float farRadius = 0.15f;
     [Tooltip("위로 피어오르는 자락 높이")]
-    [SerializeField, Min(0f)] private float riseHeight = 1.1f;
+    [SerializeField, Min(0f)] private float riseHeight = 0.5f;
 
     [Header("밝기")]
     [SerializeField, Min(0f)] private float intensity = 1f;   // 1을 넘기면 블룸 때문에 하얗게 날아감
@@ -208,9 +208,9 @@ public class AwakeningSilhouetteAura : MonoBehaviour
         bool flip = src.flipX ^ (ls.x < 0f);
 
         float riseNow = riseHeight * rise;
-        float mx = farRadius + 0.55f;
+        float mx = farRadius * 2f + 0.25f;
         float mb = farRadius + 0.1f;
-        float mt = riseNow + farRadius * 2f + 0.4f;
+        float mt = riseNow + farRadius * 2f + 0.2f;
         Vector2 size = new Vector2(w + mx * 2f, h + mb + mt);
         Vector2 quadMin = new Vector2(center.x - w * 0.5f - mx, center.y - h * 0.5f - mb);
 

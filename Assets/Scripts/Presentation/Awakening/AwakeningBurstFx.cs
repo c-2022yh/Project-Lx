@@ -19,7 +19,7 @@ using UnityEngine.SceneManagement;
 public class AwakeningBurstFx : MonoBehaviour
 {
     [Tooltip("가장 크게 터졌을 때 불꽃 그림의 가로 폭 (월드 칸). 캐릭터 키가 약 2.7")]
-    [SerializeField] private float width = 3.4f;
+    [SerializeField] private float width = 2.2f;
     [Tooltip("발밑 기준 위치 보정")]
     [SerializeField] private Vector2 offset = new Vector2(0f, -0.05f);
     [SerializeField, Range(0f, 1f)] private float maxAlpha = 0.95f;
