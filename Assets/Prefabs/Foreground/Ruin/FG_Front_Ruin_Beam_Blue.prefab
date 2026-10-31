@@ -9,7 +9,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2792968774280652931}
-  - component: {fileID: 337375745954577079}
   m_Layer: 16
   m_Name: FG_Front_Ruin_Beam_Blue
   m_TagString: Untagged
@@ -33,22 +32,6 @@ Transform:
   - {fileID: 1319761668994570170}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &337375745954577079
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5533393244196777507}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9ab083e4093640d19a69776c53f120ea, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  targetCamera: {fileID: 0}
-  speed: 1.15
-  moveY: 0
-  ySpeed: 1.1
 --- !u!1 &5204953904181309176
 GameObject:
   m_ObjectHideFlags: 0

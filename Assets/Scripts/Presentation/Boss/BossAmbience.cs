@@ -33,7 +33,7 @@ public class BossAmbience : MonoBehaviour
     {
         area = room;
         area.Expand(new Vector3(8f, 0f, 0f));
-        float top = room.max.y + 9f;               // 화면 위 바깥에서 시작
+        float top = room.max.y + 13f;              // 화면 위 바깥에서 시작 (11.01: 4칸 더 위로)
         float height = top - room.min.y + 1f;
 
         // 빛줄기: 폭·기울기·밝기가 제각각

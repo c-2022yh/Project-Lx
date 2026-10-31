@@ -9,7 +9,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2376420414313656244}
-  - component: {fileID: 1264349068635937774}
   m_Layer: 16
   m_Name: FG_Front_Ruin_Block_Dark
   m_TagString: Untagged
@@ -33,22 +32,6 @@ Transform:
   - {fileID: 1538465313805533577}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1264349068635937774
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 977784976991334472}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9ab083e4093640d19a69776c53f120ea, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  targetCamera: {fileID: 0}
-  speed: 1.15
-  moveY: 0
-  ySpeed: 1.1
 --- !u!1 &7757825120007880315
 GameObject:
   m_ObjectHideFlags: 0
