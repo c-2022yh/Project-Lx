@@ -1,18 +1,19 @@
 Shader "ProjectLx/UI Awakening Edge Flame"
 {
     // 각성 중 화면 가장자리에서 일렁이는 푸른 불꽃.
-    // 가장자리를 따라 길이가 제각각인 불꽃 혀가 안쪽으로 날름거리며 위로 흐른다 (일자 띠가 아님).
+    // 가장자리를 따라 길이가 제각각인 파란 불꽃이 물결치듯 일렁이며 위로 흐른다 (일자 띠가 아님, 흰빛 없음).
     // 화면 전체를 덮는 UI Image에 쓴다. AwakeningEdgeFlame.cs가 기존 가장자리 이미지의 머티리얼을 이걸로 바꾼다.
     Properties
     {
         [PerRendererData] _MainTex ("Sprite Texture", 2D) = "white" {}
         _Color ("Tint", Color) = (1, 1, 1, 1)
-        _FlameColor ("Flame Color", Color) = (0.3, 0.62, 1, 1)
-        _Thickness ("Thickness (screen height)", Range(0.02, 0.4)) = 0.13
-        _Intensity ("Brightness", Range(0, 3)) = 1.3
+        _FlameColor ("Flame Color", Color) = (0.2, 0.5, 1, 1)
+        _Thickness ("Thickness (screen height)", Range(0.02, 0.4)) = 0.09
+        _Wave ("Wave", Range(0, 0.2)) = 0.06
+        _Intensity ("Brightness", Range(0, 2)) = 1
         _Opacity ("Opacity", Range(0, 1)) = 0.85
         _Speed ("Flow Speed", Range(0, 4)) = 1
-        _White ("White Core", Range(0, 1)) = 0.45
+        _White ("Spark Lightness", Range(0, 1)) = 0.5
 
         _StencilComp ("Stencil Comparison", Float) = 8
         _Stencil ("Stencil ID", Float) = 0
@@ -36,7 +37,7 @@ Shader "ProjectLx/UI Awakening Edge Flame"
         Lighting Off
         ZWrite Off
         ZTest [unity_GUIZTestMode]
-        Blend SrcAlpha One
+        Blend SrcAlpha OneMinusSrcAlpha
         ColorMask [_ColorMask]
 
         Pass
@@ -52,7 +53,7 @@ Shader "ProjectLx/UI Awakening Edge Flame"
 
             fixed4 _Color;
             fixed4 _FlameColor;
-            float _Thickness, _Intensity, _Opacity, _Speed, _White;
+            float _Thickness, _Wave, _Intensity, _Opacity, _Speed, _White;
 
             v2f vert(appdata v)
             {
@@ -92,35 +93,33 @@ Shader "ProjectLx/UI Awakening Edge Flame"
                 float2 p = float2(i.uv.x * aspect, i.uv.y);
                 float t = _Time.y * _Speed;
 
+                // 일렁임: 화면 좌표를 천천히 크게 휘게 해서 불꽃 경계가 물결치듯 움직인다
+                float2 w = float2(Fbm(p * 1.6 + float2(t * 0.35, -t * 0.5)),
+                                  Fbm(p * 1.6 + float2(-t * 0.4, t * 0.3) + 9.2)) - 0.5;
+                float2 q = p + w * _Wave;
+
                 // 가장 가까운 가장자리까지 거리 (화면 높이 = 1)
-                float d = min(min(p.x, aspect - p.x), min(p.y, 1.0 - p.y));
+                float d = min(min(q.x, aspect - q.x), min(q.y, 1.0 - q.y));
 
-                // 불꽃은 위로 흐르고, 아래쪽 가장자리일수록 두껍다
-                float2 flow = float2(p.x * 3.0, p.y * 2.2 - t * 0.9);
-                float n = Fbm(flow);
-                float nFine = Fbm(float2(p.x * 9.0 + 3.1, p.y * 6.0 - t * 1.7));
-                float reach = _Thickness * lerp(1.3, 0.75, i.uv.y) * (0.3 + 1.1 * n);
-
-                // 혀 모양: 가장자리에서 멀어질수록 잘게 끊어진다
+                // 불꽃 길이는 자리마다 다르고 위로 흐른다. 아래쪽 가장자리가 조금 더 두껍다
+                float n = Fbm(float2(q.x * 2.5, q.y * 2.0 - t * 0.6) + w * 2.0);
+                float reach = _Thickness * lerp(1.15, 0.85, i.uv.y) * (0.55 + 0.8 * n);
                 float u = saturate(d / max(reach, 0.001));
-                float body = 1.0 - smoothstep(0.0, 1.0, u);
-                float tongues = smoothstep(0.35, 0.75, nFine + (1.0 - u) * 0.55);
-                float flame = body * tongues;
-                flame = max(flame, (1.0 - smoothstep(0.0, _Thickness * 0.25, d)) * 0.6);   // 맨 가장자리는 늘 은은하게
+                float body = pow(1.0 - u, 1.6);
+                float tongues = smoothstep(0.3, 0.7, Fbm(float2(q.x * 6.0, q.y * 4.5 - t * 1.1)) + (1.0 - u) * 0.6);
+                float flame = body * lerp(0.55, 1.0, tongues);
 
-                // 가장자리 가까이 흰 심지
-                float core = (1.0 - smoothstep(0.0, reach * 0.4, d)) * tongues;
-
-                // 떠오르는 불티
-                float2 sp = float2(p.x * 26.0, p.y * 26.0 - t * 4.0);
+                // 떠오르는 작은 불티 (연한 파랑)
+                float2 sp = float2(p.x * 26.0, p.y * 26.0 - t * 3.0);
                 float2 cell = floor(sp);
                 float2 f = frac(sp) - 0.5;
                 float rnd = Hash(cell);
-                float spark = step(0.965, rnd) * exp2(-60.0 * dot(f, f))
-                    * (1.0 - smoothstep(0.0, _Thickness * 2.0, d));
+                float spark = step(0.97, rnd) * exp2(-60.0 * dot(f, f))
+                    * (1.0 - smoothstep(0.0, _Thickness * 1.8, d)) * 0.6;
 
-                float3 col = lerp(_FlameColor.rgb, float3(1, 1, 1), saturate(core * _White)) * _Intensity;
-                col += spark * 1.5;
+                // 흰빛 없이 파란색만. 불꽃 혀가 짙은 곳만 조금 더 밝게
+                float3 col = _FlameColor.rgb * _Intensity * (0.85 + 0.25 * tongues);
+                col = lerp(col, float3(0.6, 0.82, 1.0), saturate(spark * 1.5) * _White);
                 float alpha = saturate(flame + spark) * _Opacity * i.color.a;
                 return fixed4(col * i.color.rgb, alpha);
             }
