@@ -313,6 +313,48 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0dcf4b188d5a46e686973c518dd825b1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::GolemBossController
+  splitSound:
+    channel: 0
+    clip: {fileID: 0}
+    clips: []
+    volume: 1
+    minimumInterval: 0.1
+    pitchRange: {x: 1, y: 1}
+    maxSimultaneous: 4
+    limitScope: 0
+    spatialBlend: 0
+    minDistance: 1
+    maxDistance: 15
+    useFallback: 0
+    fallbackSound: 5
+  summonPrepareSound:
+    channel: 0
+    clip: {fileID: 0}
+    clips: []
+    volume: 1
+    minimumInterval: 0.1
+    pitchRange: {x: 1, y: 1}
+    maxSimultaneous: 4
+    limitScope: 0
+    spatialBlend: 0
+    minDistance: 1
+    maxDistance: 15
+    useFallback: 0
+    fallbackSound: 5
+  summonSound:
+    channel: 0
+    clip: {fileID: 0}
+    clips: []
+    volume: 1
+    minimumInterval: 0.1
+    pitchRange: {x: 1, y: 1}
+    maxSimultaneous: 4
+    limitScope: 0
+    spatialBlend: 0
+    minDistance: 1
+    maxDistance: 15
+    useFallback: 0
+    fallbackSound: 5
   autoBegin: 1
   activationRange: 18
   firstAttackDelay: 1

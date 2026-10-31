@@ -91,6 +91,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a54e9d856e4f491988b96e37f5e9c476, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::HiddenAreaCover
+  revealSound:
+    channel: 0
+    clip: {fileID: 0}
+    clips: []
+    volume: 1
+    minimumInterval: 0.1
+    pitchRange: {x: 1, y: 1}
+    maxSimultaneous: 4
+    limitScope: 0
+    spatialBlend: 0
+    minDistance: 1
+    maxDistance: 15
+    useFallback: 0
+    fallbackSound: 5
   coverRenderers:
   - {fileID: 5509460717528943988}
   hiddenAlpha: 1

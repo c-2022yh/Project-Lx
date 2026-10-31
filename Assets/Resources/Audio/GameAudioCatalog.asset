@@ -279,21 +279,6 @@ MonoBehaviour:
     fallbackSound: 13
     sound: 13
   - channel: 1
-    clip: {fileID: 8300000, guid: d651122a79cc1444d8f52fd7a3f1aaef, type: 3}
-    clips:
-    - {fileID: 0}
-    volume: 1
-    minimumInterval: 0.05
-    pitchRange: {x: 1, y: 1}
-    maxSimultaneous: 4
-    limitScope: 0
-    spatialBlend: 0
-    minDistance: 1
-    maxDistance: 15
-    useFallback: 0
-    fallbackSound: 13
-    sound: 13
-  - channel: 1
     clip: {fileID: 8300000, guid: 4d33d4d8c30c25d47a86e66e794a425d, type: 3}
     clips:
     - {fileID: 0}

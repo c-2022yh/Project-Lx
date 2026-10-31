@@ -50,6 +50,12 @@ public class BossRoom : MonoBehaviour
     [Tooltip("대화 전에 \"격파\" 카드를 띄운다.")]
     [SerializeField] private bool showDefeatCard = true;
 
+    [Header("Audio")]
+    [SerializeField] private SoundCue introSound = new SoundCue();
+    [SerializeField] private SoundCue doorCloseSound = new SoundCue();
+    [SerializeField] private SoundCue doorOpenSound = new SoundCue();
+    [SerializeField] private SoundCue clearSound = new SoundCue();
+
     private const float DefeatCardSeconds = 1.8f;
 
     private enum State { Idle, Intro, Fighting, Cleared }
@@ -131,6 +137,7 @@ public class BossRoom : MonoBehaviour
         float card = shownCardOnce ? Mathf.Min(cardSeconds, 1.4f) : cardSeconds;
         shownCardOnce = true;
         BossTitleCard.Show(bossTitle, bossName, card);
+        GameAudio.Play(introSound, boss.transform.position);
 
         yield return new WaitForSecondsRealtime(card * 0.5f);
 
@@ -154,6 +161,7 @@ public class BossRoom : MonoBehaviour
         state = State.Cleared;
         UnwatchPlayer();
         FieldObjectState.MarkDone(this);
+        GameAudio.Play(clearSound, transform.position);
 
         // 마지막 일격: 멈춤 → 슬로모션
         HitStop.Stop(clearHitStop);
@@ -239,6 +247,10 @@ public class BossRoom : MonoBehaviour
     private IEnumerator MoveDoors(bool close)
     {
         if (doorClosedPositions.Length == 0) yield break;
+        bool hasDoor = false;
+        foreach (Transform door in doors) if (door != null) { hasDoor = true; break; }
+        if (!hasDoor) yield break;
+        if (!close) GameAudio.Play(doorOpenSound, transform.position);
 
         Vector3 up = Vector3.up * doorDropHeight;
         for (int i = 0; i < doorClosedPositions.Length; i++)
@@ -273,7 +285,11 @@ public class BossRoom : MonoBehaviour
             if (!close) doors[i].gameObject.SetActive(false);
         }
 
-        if (close) CameraShake.Shake(CameraShake.Medium);
+        if (close)
+        {
+            CameraShake.Shake(CameraShake.Medium);
+            GameAudio.Play(doorCloseSound, transform.position);
+        }
     }
 
     // ───────────── 카메라 ─────────────

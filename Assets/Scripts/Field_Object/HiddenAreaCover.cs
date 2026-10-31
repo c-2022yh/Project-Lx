@@ -20,6 +20,12 @@ public class HiddenAreaCover : MonoBehaviour
     [Min(0f)]
     [SerializeField] private float hideDuration = 0.5f;
 
+    [Header("Audio")]
+    [SerializeField] private SoundCue revealSound = new SoundCue();
+
+    [SerializeField] private bool playRevealOncePerInstance = true;
+    private bool hasPlayedReveal, wasRevealed;
+
     private readonly HashSet<Collider2D> playerContacts = new HashSet<Collider2D>();
     private float currentAlpha;
 
@@ -45,6 +51,7 @@ public class HiddenAreaCover : MonoBehaviour
 
     private void OnDisable()
     {
+        wasRevealed = false;
         playerContacts.Clear();
         currentAlpha = hiddenAlpha;
         ApplyAlpha();
@@ -80,6 +87,12 @@ public class HiddenAreaCover : MonoBehaviour
         playerContacts.RemoveWhere(IsInvalidContact);
 
         bool revealed = playerContacts.Count > 0;
+        if (revealed && !wasRevealed && (!playRevealOncePerInstance || !hasPlayedReveal))
+        {
+            hasPlayedReveal = true;
+            GameAudio.Play(revealSound, transform.position);
+        }
+        wasRevealed = revealed;
         float targetAlpha = revealed ? revealedAlpha : hiddenAlpha;
         float duration = revealed ? revealDuration : hideDuration;
         float alphaRange = Mathf.Abs(hiddenAlpha - revealedAlpha);

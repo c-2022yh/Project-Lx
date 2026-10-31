@@ -11,17 +11,21 @@ public class RefluxRelicEffect : RelicEffect
     private float recoveryEnergy = 30f;
 
 
+    [Header("Audio")]
+    [SerializeField] private SoundCue recoverySound = new SoundCue();
+
     public override IRelicRuntime CreateRuntime(Player player)
     {
         return new RefluxRuntime(
             player,
-            recoveryEnergy
+            recoveryEnergy, this
         );
     }
 
 
     private sealed class RefluxRuntime : IRelicRuntime
     {
+        private readonly RefluxRelicEffect audioSettings;
         private readonly Player player;
         private readonly float recoveryEnergy;
 
@@ -33,9 +37,10 @@ public class RefluxRelicEffect : RelicEffect
 
         public RefluxRuntime(
             Player player,
-            float recoveryEnergy)
+            float recoveryEnergy, RefluxRelicEffect audioSettings)
         {
             this.player = player;
+            this.audioSettings = audioSettings;
             this.recoveryEnergy = recoveryEnergy;
         }
 
@@ -86,7 +91,9 @@ public class RefluxRelicEffect : RelicEffect
             if (!isEquipped) return;
             if (playerEnergy == null) return;
 
+            float before = playerEnergy.CurrentEnergy;
             playerEnergy.GainEnergy(recoveryEnergy);
+            if (playerEnergy.CurrentEnergy > before && (player.Health == null || !player.Health.IsDead)) GameAudio.Play(audioSettings.recoverySound, player.transform.position, player.transform);
 
         }
     }

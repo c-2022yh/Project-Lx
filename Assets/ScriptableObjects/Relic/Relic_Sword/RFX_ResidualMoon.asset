@@ -12,4 +12,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4b6c0874d6787f04ea8b395ff465dedc, type: 3}
   m_Name: RFX_ResidualMoon
   m_EditorClassIdentifier: Assembly-CSharp::ResidualMoonRelicEffect
+  cooldownResetSound:
+    channel: 0
+    clip: {fileID: 0}
+    clips: []
+    volume: 1
+    minimumInterval: 0.1
+    pitchRange: {x: 1, y: 1}
+    maxSimultaneous: 4
+    limitScope: 0
+    spatialBlend: 0
+    minDistance: 1
+    maxDistance: 15
+    useFallback: 0
+    fallbackSound: 5
   dashSkill: {fileID: 11400000, guid: 3a5ab567ab6580e4f9037a70163c7265, type: 2}

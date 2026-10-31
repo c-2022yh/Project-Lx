@@ -17,13 +17,17 @@ public class DevourRelicEffect : RelicEffect
     private float healPerHit = 0.5f;
 
     //플레이어별 유물 효과 Runtime 생성
+    [Header("Audio")]
+    [SerializeField] private SoundCue healSound = new SoundCue();
+
     public override IRelicRuntime CreateRuntime(Player p)
     {
-        return new DevourRelicRuntime(p, devourSkill, healPerHit);
+        return new DevourRelicRuntime(p, devourSkill, healPerHit, this);
     }
 
     private sealed class DevourRelicRuntime : IRelicRuntime
     {
+        private readonly DevourRelicEffect audioSettings;
         private readonly Player player;
         private readonly SkillData devourSkill;
         private readonly float healPerHit;
@@ -35,9 +39,10 @@ public class DevourRelicEffect : RelicEffect
         private bool isEquipped;
 
         //포식 효과에 필요한 플레이어·스킬·회복량 보관
-        public DevourRelicRuntime(Player player, SkillData devourSkill, float healPerHit)
+        public DevourRelicRuntime(Player player, SkillData devourSkill, float healPerHit, DevourRelicEffect audioSettings)
         {
             this.player = player;
+            this.audioSettings = audioSettings;
             this.devourSkill = devourSkill;
             this.healPerHit = healPerHit;
         }
@@ -95,7 +100,9 @@ public class DevourRelicEffect : RelicEffect
 
             if (playerHealth.CurrentHealth >= playerHealth.MaxHealth) return;
 
+            float before = playerHealth.CurrentHealth;
             playerHealth.Heal(healPerHit);
+            if (playerHealth.CurrentHealth > before) GameAudio.Play(audioSettings.healSound, player.transform.position, player.transform);
 
         }
     }

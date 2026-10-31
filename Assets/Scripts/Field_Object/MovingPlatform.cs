@@ -27,6 +27,13 @@ public class MovingPlatform : MonoBehaviour
     [Range(0f, 1f)]
     [SerializeField] private float minRiderNormalY = 0.7f;
 
+    [Header("Audio")]
+    [SerializeField] private SoundCue movementLoop = new SoundCue();
+    [SerializeField] private SoundCue turnSound = new SoundCue();
+
+    private SoundHandle movementVoice;
+    private int lastAudioDirection;
+
     private Rigidbody2D rb;
     private Vector2 startPosition;
 
@@ -47,6 +54,15 @@ public class MovingPlatform : MonoBehaviour
         Vector2 current = rb.position;
         Vector2 target = startPosition + Vector2.up * (distance * GetProgress(Time.fixedTime));
         Vector2 delta = target - current;
+        int direction = Mathf.Abs(delta.y) > 0.0001f ? (delta.y > 0f ? 1 : -1) : 0;
+        if (direction == 0) movementVoice.Stop();
+        else
+        {
+            if (lastAudioDirection != 0 && lastAudioDirection != direction)
+                GameAudio.Play(turnSound, transform.position, transform);
+            lastAudioDirection = direction;
+            if (!movementVoice.IsPlaying) movementVoice = GameAudio.PlayLoop(movementLoop, transform);
+        }
 
         //내려갈 때만 탑승자를 같이 옮김 (올라갈 때는 물리 충돌이 밀어 올림)
         if (delta.y < 0f)
@@ -66,6 +82,17 @@ public class MovingPlatform : MonoBehaviour
     }
 
     //0 = 시작 위치, 1 = 끝 위치. 양 끝에서 waitTime만큼 멈추고 부드럽게 출발/정지
+    private void Update()
+    {
+        if (Time.timeScale <= 0f) movementVoice.Stop();
+    }
+
+    private void OnDisable()
+    {
+        movementVoice.Stop();
+        lastAudioDirection = 0;
+    }
+
     private float GetProgress(float time)
     {
         float cycle = (travelTime + waitTime) * 2f;
