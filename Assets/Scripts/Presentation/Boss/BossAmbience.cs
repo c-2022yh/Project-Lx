@@ -37,10 +37,11 @@ public class BossAmbience : MonoBehaviour
         float height = top - room.min.y + 1f;
 
         // 빛줄기: 폭·기울기·밝기가 제각각
-        int count = Mathf.Clamp(Mathf.RoundToInt(area.size.x / 7f), 3, 7);
+        // 빛줄기는 보스방 위(천장이 뚫린 하늘 쪽)에만
+        int count = Mathf.Clamp(Mathf.RoundToInt(room.size.x / 6f), 3, 6);
         for (int i = 0; i < count; i++)
         {
-            float x = Mathf.Lerp(area.min.x + 3f, area.max.x - 3f, (i + Random.Range(0.2f, 0.8f)) / count);
+            float x = Mathf.Lerp(room.min.x + 4.5f, room.max.x - 4.5f, (i + Random.Range(0.2f, 0.8f)) / count);
             GameObject s = new GameObject("LightShaft");
             s.transform.SetParent(transform, false);
             s.transform.position = new Vector3(x, top, 0f);

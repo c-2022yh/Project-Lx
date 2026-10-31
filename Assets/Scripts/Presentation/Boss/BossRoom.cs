@@ -107,6 +107,7 @@ public class BossRoom : MonoBehaviour
     private Transform playerT;
     private SpriteRenderer leakLeft, leakRight;
     private float nextRumble, leakStrength;
+    private Material leakMat;
     private bool hasFragmentCenter;
 
     public bool IsCleared => state == State.Cleared;
@@ -197,18 +198,28 @@ public class BossRoom : MonoBehaviour
             GameObject go = new GameObject(side < 0 ? "DoorLight_Left" : "DoorLight_Right");
             go.transform.SetParent(transform, true);
             leak = go.AddComponent<SpriteRenderer>();
-            leak.sprite = BossFxArt.UpFade;   // 아래가 진하고 위로 옅어짐
-            leak.sharedMaterial = BossFxArt.Unlit;
+            Shader wavy = Resources.Load<Shader>("Presentation/Boss/WavyLightColumn");
+            if (wavy != null && wavy.isSupported)
+            {
+                leak.sprite = GolemBossVisual.Square;   // 흰 네모 + 일렁이는 빛기둥 셰이더
+                leakMat ??= new Material(wavy) { hideFlags = HideFlags.DontSave };
+                leak.sharedMaterial = leakMat;
+            }
+            else
+            {
+                leak.sprite = BossFxArt.UpFade;   // 셰이더가 없으면 단순한 빛
+                leak.sharedMaterial = BossFxArt.Unlit;
+            }
             leak.sortingLayerName = "Default";
             leak.sortingOrder = 46;
             Vector2 size = leak.sprite.bounds.size;
-            float h = Mathf.Max(4f, room.size.y);
-            go.transform.localScale = new Vector3(2.4f / size.x, h / size.y, 1f);
+            float h = Mathf.Max(4f, room.size.y) + 2f;
+            go.transform.localScale = new Vector3(3.6f / size.x, h / size.y, 1f);
             go.transform.position = new Vector3(side < 0 ? room.min.x - 1f : room.max.x + 1f, room.min.y + h * 0.5f, 0f);
         }
         leak.enabled = true;
         float pulse = 0.8f + 0.2f * Mathf.Sin(Time.unscaledTime * 2.2f);
-        leak.color = new Color(0.65f, 0.82f, 1f, 0.45f * strength * pulse);
+        leak.color = new Color(0.55f, 0.78f, 1f, 0.75f * strength * pulse);
     }
 
     private void OnDisable()

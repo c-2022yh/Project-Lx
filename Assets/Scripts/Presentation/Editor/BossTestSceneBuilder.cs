@@ -212,7 +212,9 @@ public static class BossTestSceneBuilder
         {
             bool floor = y < top && y >= top - FloorDepth && x >= left - 4 && x <= right + 3;
             bool wall = y >= top && y < top + WallHeight && ((x >= left - 2 && x <= left - 1) || (x >= right && x <= right + 1));
-            return floor || wall;
+            int ceil = top + Mathf.RoundToInt(CeilingBottom);
+            bool ceiling = y >= ceil && y < ceil + CeilingThick && x >= left - 2 && x <= right + 1 && IsCeiling(x);
+            return floor || wall || ceiling;
         }
         Vector3Int Cell(Tilemap tm, int x, int y) => tm.WorldToCell(new Vector3(x + 0.5f, y + 0.5f, 0f));
 
@@ -223,7 +225,8 @@ public static class BossTestSceneBuilder
             {
                 if (!Solid(x, y)) continue;
                 // 2×2 그림: 바닥 맨 윗줄이 그림의 위쪽이 되게
-                int rowFromTop = top - 1 - y;
+                int ceilBase = top + Mathf.RoundToInt(CeilingBottom);
+                int rowFromTop = y >= ceilBase ? (ceilBase + CeilingThick - 1 - y) : (top - 1 - y);   // 천장은 천장 윗줄 기준
                 int idx = ((rowFromTop & 1) == 0 ? 0 : 2) + ((x & 1) == 0 ? 0 : 1);
                 gPos.Add(Cell(ground, x, y));
                 gTiles.Add(rock[idx]);
@@ -262,29 +265,46 @@ public static class BossTestSceneBuilder
         return true;
     }
 
-    // 근경 덩굴: 화면 위쪽에서 늘어진다 (땅 뒤 여러 개 + 캐릭터 앞 몇 개, 보스방 가운데는 앞 덩굴을 피함)
-    private static readonly (string prefab, float x, float topY, float scale)[] Vines =
+    // 근경 덩굴: 천장 밑에 매달린다 (땅 뒤 여러 개 + 캐릭터 앞 몇 개). 넓은 덩굴(Cluster)도 섞는다.
+    // 보스방 가운데 위는 천장 없이 하늘이 뚫려 있어서 (빛줄기가 내려옴) 덩굴도 두지 않는다.
+    private const float CeilingBottom = 11f;   // 천장 아랫면 높이 (바닥 위 칸)
+    private const int CeilingThick = 4;
+    private const float SkyGap = 7f;           // 골렘 자리 좌우 이만큼은 천장 없음
+
+    private static readonly (string prefab, float x, float scale)[] Vines =
     {
-        ("FG_Back_Ivy_Teal_1",  -35f, 11.5f, 1.0f),
-        ("FG_Back_Ivy_Light_2", -27f, 12.0f, 1.1f),
-        ("FG_Back_Ivy_Dark_3",  -19f, 11.0f, 0.9f),
-        ("FG_Back_Ivy_Teal_5",   -9f, 12.0f, 1.0f),
-        ("FG_Back_Ivy_Light_4",   2f, 11.5f, 1.1f),
-        ("FG_Back_Ivy_Dark_1",   11f, 11.0f, 0.9f),
-        ("FG_Back_Ivy_Teal_6",   19f, 12.0f, 1.2f),
-        ("FG_Back_Ivy_Light_6",  27f, 11.5f, 1.0f),
-        ("FG_Back_Ivy_Teal_4",   33f, 12.0f, 1.1f),
-        ("FG_Front_Ivy_Dark_2", -38f, 11.0f, 1.2f),
-        ("FG_Front_Ivy_Plain_1",-15f, 10.5f, 1.0f),
-        ("FG_Front_Ivy_Dark_5",  38f, 11.0f, 1.2f),
+        ("FG_Back_Ivy_Teal_1",         -36f, 1.0f),
+        ("FG_Back_Ivy_Light_2",        -31f, 1.1f),
+        ("FG_Back_Ivy_GlowCluster",    -25f, 1.0f),
+        ("FG_Back_Ivy_Dark_3",         -19f, 0.9f),
+        ("FG_Back_Ivy_Teal_5",         -12f, 1.0f),
+        ("FG_Back_Ivy_OrbCluster",      -5f, 1.0f),
+        ("FG_Back_Ivy_Light_4",          2f, 1.1f),
+        ("FG_Back_Ivy_Cluster",          8f, 1.1f),
+        ("FG_Back_Ivy_Dark_1",          13f, 0.9f),
+        ("FG_Back_Ivy_Teal_6",          31f, 1.1f),
+        ("FG_Back_Ivy_GlowCluster",     35f, 0.9f),
+        ("FG_Back_Ivy_Light_6",         38f, 1.0f),
+        ("FG_Front_Ivy_Dark_2",        -38f, 1.2f),
+        ("FG_Front_Ivy_Plain_1",       -15f, 1.0f),
+        ("FG_Front_Ivy_Cluster",        -1f, 0.9f),
+        ("FG_Front_Ivy_Dark_5",         39f, 1.2f),
     };
+
+    // 덩굴 위쪽이 천장인지: 덩굴 좌우 4칸 안이고 하늘 구멍 밖
+    private static bool IsCeiling(int x)
+    {
+        if (x + 1 > GolemX - SkyGap && x < GolemX + SkyGap) return false;
+        foreach (var v in Vines) if (x + 1 > v.x - 4f && x < v.x + 4f) return true;
+        return false;
+    }
 
     private static void PlaceVines()
     {
         GameObject root = new GameObject("Foreground_Vines");
         foreach (var v in Vines)
         {
-            GameObject go = InstantiatePrefab("Assets/Prefabs/Foreground/" + v.prefab + ".prefab", new Vector3(v.x, GroundTop + v.topY, 0f));
+            GameObject go = InstantiatePrefab("Assets/Prefabs/Foreground/" + v.prefab + ".prefab", new Vector3(v.x, GroundTop + CeilingBottom, 0f));
             if (go == null) continue;
             go.transform.SetParent(root.transform, true);
             float flip = Mathf.Abs(Mathf.RoundToInt(v.x)) % 2 == 0 ? 1f : -1f;
