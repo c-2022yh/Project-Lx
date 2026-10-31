@@ -273,7 +273,7 @@ public static class TutorialMapBuilder
     }
 
     // ── 오브젝트 ───────────────────────────
-    // 높이 = 서 있는 높이 + 기존 Tutorial 씬에서 쓰던 띄움값
+    // 높이 = 서 있는 높이 + 원래 Tutorial 씬에서 쓰던 띄움값 (상자 +0.5, 제단 +2.11, 포탈 +1.5)
 
     private static void PlaceObjects(Scene scene)
     {
@@ -289,9 +289,9 @@ public static class TutorialMapBuilder
         // 1 시작. 시작 위치는 캐릭터 몸 가운데 기준이라 바닥(1)보다 2.5 위에 둔다 (낮으면 땅에 끼어서 시작함)
         Place(scene, "Spawn_From_START", SpawnPrefab, new Vector3(5f, 3.5f, 0f), field);
         Remove(scene, "OrbPickup");   // 보주는 인트로 연출에서 받는다
-        Place(scene, "RelicChest_FeatherCloud", ChestPrefab, new Vector3(60f, 9.5f, 0f), field);  // 3 발판 위
-        Place(scene, "Shrine", ShrinePrefab, new Vector3(70f, 8.11f, 0f), field);           // 4
-        Place(scene, "AutoScenePortal", PortalPrefab, new Vector3(145f, 7.5f, 0f), field);  // 8
+        Place(scene, "RelicChest_FeatherCloud", ChestPrefab, new Vector3(60f, 8.5f, 0f), field);  // 3 발판 위 (높이 8)
+        Place(scene, "Shrine", ShrinePrefab, new Vector3(70f, 7.11f, 0f), field);           // 4 (바닥 높이 5)
+        Place(scene, "AutoScenePortal", PortalPrefab, new Vector3(145f, 6.5f, 0f), field);  // 8
 
         // 7 안 움직이는 슬라임
         Transform enemies = CleanGroup(field, "Tutorial_Enemies");
