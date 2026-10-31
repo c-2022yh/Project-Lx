@@ -29,7 +29,8 @@ using UnityEngine.Tilemaps;
 /// 높이 기준: 점프 약 4칸, 더블 점프 약 8칸 (PlayerMove jumpForce 20, 중력 5).
 ///
 /// 다시 실행하면 Grid 안 타일을 전부 지우고 새로 그린다.
-/// 상자·제단·포탈·시작 위치·보주는 이름으로 찾아서 자리만 옮긴다 (없으면 프리팹으로 새로 놓는다).
+/// 상자·제단·포탈·시작 위치는 이름으로 찾아서 자리만 옮긴다 (없으면 프리팹으로 새로 놓는다).
+/// 보주 줍기(OrbPickup)는 인트로 연출에서 보주를 주므로 지운다.
 /// 슬라임과 안내 영역은 Field_Object/Tutorial_Enemies, Tutorial_Triggers 아래에 새로 만든다.
 /// 카메라 영역(CameraConfiner)은 맵 크기에 맞춰 늘린다.
 /// </summary>
@@ -42,7 +43,6 @@ public static class TutorialMapBuilder
     private const string PlatformDir = "Assets/Tiles/Platform_Rock/Blue/";
 
     private const string SpawnPrefab = "Assets/Prefabs/Field_Object/Portal/SpawnPoint.prefab";
-    private const string OrbPrefab = "Assets/Prefabs/Field_Object/OrbPickup.prefab";
     private const string ChestPrefab = "Assets/Prefabs/Field_Object/Chest/RelicChest_FeatherCloud.prefab";
     private const string ShrinePrefab = "Assets/Prefabs/Field_Object/Shrine.prefab";
     private const string PortalPrefab = "Assets/Prefabs/Field_Object/Portal/AutoScenePortal.prefab";
@@ -281,7 +281,7 @@ public static class TutorialMapBuilder
         }
 
         Place(scene, "Spawn_From_START", SpawnPrefab, new Vector3(5f, 1.5f, 0f), field);    // 1 시작
-        Place(scene, "OrbPickup", OrbPrefab, new Vector3(12f, 2f, 0f), field);
+        Remove(scene, "OrbPickup");   // 보주는 인트로 연출에서 받는다
         Place(scene, "RelicChest_FeatherCloud", ChestPrefab, new Vector3(60f, 9.5f, 0f), field);  // 3 발판 위
         Place(scene, "Shrine", ShrinePrefab, new Vector3(70f, 8.11f, 0f), field);           // 4
         Place(scene, "AutoScenePortal", PortalPrefab, new Vector3(145f, 7.5f, 0f), field);  // 8
@@ -315,6 +315,12 @@ public static class TutorialMapBuilder
 
         Undo.RecordObject(t, "튜토리얼 맵 다시 그리기");
         t.position = pos;
+    }
+
+    private static void Remove(Scene scene, string name)
+    {
+        Transform t = FindInScene(scene, name);
+        if (t != null) Undo.DestroyObjectImmediate(t.gameObject);
     }
 
     private static GameObject Spawn(Scene scene, string prefabPath, Vector3 pos, Transform parent)
