@@ -78,7 +78,9 @@ public static class BossFxArt
     public static Sprite Diamond => diamond != null ? diamond : diamond = Make("BossFx_Diamond", 64, 64, new Vector2(0.5f, 0.5f), (u, v) =>
         Mathf.Clamp01((0.92f - (Mathf.Abs(u) + Mathf.Abs(v))) * 24f));
 
-    public static Sprite Ink => ink != null ? ink : ink = Make("BossFx_Ink", 256, 32, new Vector2(0.5f, 0.5f), (u, v) =>
+    // 붓 자국 그림(Resources/Presentation/Boss/BossCard_Brush)이 있으면 그걸 쓴다
+    public static Sprite Ink => ink != null ? ink : ink = Resources.Load<Sprite>("Presentation/Boss/BossCard_Brush") ?? MakeInk();
+    private static Sprite MakeInk() => Make("BossFx_Ink", 256, 32, new Vector2(0.5f, 0.5f), (u, v) =>
     {
         // 왼쪽이 굵고 오른쪽으로 가늘어지는 붓줄, 가장자리는 살짝 거칠게
         float x01 = (u + 1f) * 0.5f;

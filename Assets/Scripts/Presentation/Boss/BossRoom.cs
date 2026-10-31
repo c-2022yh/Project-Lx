@@ -161,6 +161,7 @@ public class BossRoom : MonoBehaviour
             BossScreenFx.Darken(0.55f, 0.5f);
             BossScreenFx.Letterbox(true, 0.6f);
             BossFx.CeilingDust(RoomBounds(), 2.2f);
+            BossStageFx.RockFall(RoomBounds(), 14, 2f);   // 천장에서 작은 돌이 우수수
         }
         if (fog)
         {
@@ -246,6 +247,8 @@ public class BossRoom : MonoBehaviour
         if (!moonPresentation || state != State.Fighting || boss == null) return;
 
         BossFx.PhaseTwoBurst(BossCenter(), BossGroundY());
+        BossStageFx.Crack(BossCenter(), BossGroundY(), 14f, 3.5f);   // 바닥이 갈라짐
+        BossStageFx.Debris(new Vector3(BossCenter().x, BossGroundY() + 0.3f, 0f), 10, 6f, 8f);
         BossScreenFx.Flash(new Color(1f, 0.75f, 0.5f, 0.55f), 0.9f);
         BossScreenFx.Tint(true, 1.2f);
         if (beam != null) beam.SetMood(BossMoonBeam.Mood.Warm, 1f);
@@ -277,6 +280,7 @@ public class BossRoom : MonoBehaviour
         // 보스가 사라지기 전에 자리를 기억해 둔다
         // 갈라졌으면 마지막 조각이 쓰러진 자리에서 격파 연출을 한다
         Vector3 center = hasFragmentCenter ? lastFragmentCenter : BossCenter();
+        float groundY = hasFragmentCenter ? RoomBounds().min.y : BossGroundY();
 
         // 마지막 일격: 멈춤 → 슬로모션
         HitStop.Stop(clearHitStop);
@@ -296,6 +300,8 @@ public class BossRoom : MonoBehaviour
         if (moonPresentation)
         {
             BossFx.DefeatBurst(center);
+            BossStageFx.Crack(center, groundY, 18f, 4f, true);
+            BossStageFx.Debris(new Vector3(center.x, groundY + 0.3f, 0f), 14, 7f, 9f, true);
             if (fogLayer != null) { fogLayer.SetTint(BossFog.FogColor); fogLayer.Clear(3f); fogLayer = null; }   // 안개가 걷힌다
             BossScreenFx.Tint(false, 1.4f);
             if (beam != null) beam.SetMood(BossMoonBeam.Mood.Bright, 1.6f);
@@ -502,7 +508,11 @@ public class BossRoom : MonoBehaviour
             GameAudio.Play(doorCloseSound, transform.position);
             if (fog || stonePillarDoors)
                 foreach (Transform door in doors)
-                    if (door != null) BossFog.DoorDust(DoorBottom(door), 3f);   // 돌가루
+                    if (door != null)
+                    {
+                        BossFog.DoorDust(DoorBottom(door), 3f);   // 돌가루
+                        BossStageFx.Debris(DoorBottom(door) + Vector3.up * 0.3f, 5, 3f, 5f);   // 돌 파편
+                    }
         }
     }
 
