@@ -485,7 +485,7 @@ public static class TutorialMapBuilder
         // (그림이 너무 크게 확대되지 않게 하면서 화면 위아래가 비지 않게).
         so.FindProperty("insideSprite").objectReferenceValue = null;
         so.FindProperty("exitSprite").objectReferenceValue = LoadSprite("BG_Cave_Panorama");
-        so.FindProperty("exitFocus").floatValue = 0.77f;
+        so.FindProperty("exitFocus").floatValue = 0.79f;
         so.FindProperty("viewLeftX").floatValue = MinX;
         so.FindProperty("viewRightX").floatValue = CameraRight;
         so.ApplyModifiedProperties();
