@@ -20,6 +20,7 @@ public class Shrine : MonoBehaviour, IInteractable
     [SerializeField] private SpriteRenderer spriteRenderer;
     [SerializeField] private Color inactiveColor = Color.gray;
     [SerializeField] private Color activeColor = Color.white;
+    [SerializeField] private ShrineVisual shrineVisual;
 
     public string InteractionText => "활성화";
 
@@ -86,7 +87,7 @@ public class Shrine : MonoBehaviour, IInteractable
         //체력 전체 회복
         playerHealth?.FullHeal();
 
-        SetActiveVisual();
+        SetActiveVisual(true);
         GameAudio.Play(activationSound, transform.position, transform);
         GameSession.SaveAtShrine(RespawnPosition);
 
@@ -116,8 +117,9 @@ public class Shrine : MonoBehaviour, IInteractable
         Debug.Log("Shrine Deactivated : " + gameObject.name);
     }
 
-    private void SetActiveVisual()
+    private void SetActiveVisual(bool ignite = false)
     {
+        if (shrineVisual != null) shrineVisual.SetLit(true, ignite);
         if (spriteRenderer != null)
         {
             spriteRenderer.color = activeColor;
@@ -126,6 +128,7 @@ public class Shrine : MonoBehaviour, IInteractable
 
     private void SetInactiveVisual()
     {
+        if (shrineVisual != null) shrineVisual.SetLit(false, false);
         if (spriteRenderer != null)
         {
             spriteRenderer.color = inactiveColor;

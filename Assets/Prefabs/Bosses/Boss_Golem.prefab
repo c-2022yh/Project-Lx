@@ -509,7 +509,7 @@ MonoBehaviour:
       maxDistance: 15
       useFallback: 0
       fallbackSound: 5
-  rockCount: 3
+  rockCount: 5
   rockInterval: 0.45
   rockSprite: {fileID: 0}
   rockDropHeight: 7

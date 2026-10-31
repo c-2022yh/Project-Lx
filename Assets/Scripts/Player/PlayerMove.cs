@@ -14,6 +14,10 @@ public class PlayerMove : MonoBehaviour
     [Header("Movement Settings")]
     public float moveSpeed = 10f;
 
+    [Header("Fall Settings")]
+    [Tooltip("Maximum downward speed in world units per second. Does not limit upward or horizontal movement.")]
+    [SerializeField, Min(0.1f)] private float maxFallSpeed = 25f;
+
     //점프 세팅
     [Header("Jump Settings")]
     public float jumpForce = 15f;
@@ -22,9 +26,18 @@ public class PlayerMove : MonoBehaviour
     [SerializeField] private int maxAirJumps = 1;
     private int remainingAirJumps;
 
+    [Header("Jump Apex")]
+    [Tooltip("Reduce gravity only while rising toward the apex, with upward speed at or below this threshold. Falling uses normal gravity. 0 disables the effect.")]
+    [SerializeField, Min(0f)] private float apexSpeedThreshold = 2f;
+    [Tooltip("Fraction of normal gravity while approaching the apex from below. 1 keeps normal gravity; lower values prolong the end of ascent.")]
+    [SerializeField, Range(0.05f, 1f)] private float apexGravityMultiplier = 0.3f;
+
     [Header("Drop Through")]
     [SerializeField, Min(0.1f)] private float dropSpeed = 5f;
+    [Tooltip("Minimum delay for overlap-based collision recovery. Passing fully below the departure surface restores collision immediately.")]
     [SerializeField, Min(0.02f)] private float dropMinimumDuration = 0.15f;
+    [Tooltip("Clearance below the departure surface required before restoring one-way collision.")]
+    [SerializeField, Min(0f)] private float dropClearance = 0.02f;
     private bool jumpRequestedDown;
     private float dropStartTime;
     private readonly List<Collider2D> dropPlatforms = new List<Collider2D>(4);
@@ -34,6 +47,7 @@ public class PlayerMove : MonoBehaviour
     {
         public Collider2D playerCollider;
         public Collider2D platform;
+        public float surfaceOffsetY;
     }
 
     //코요태 타임 관련 세팅
@@ -226,6 +240,27 @@ public class PlayerMove : MonoBehaviour
         return false;
     }
 
+    public void ApplyApexGravity()
+    {
+        if (player.isGrounded || !rb.simulated || rb.gravityScale <= 0f
+            || Physics2D.gravity.y >= 0f || apexSpeedThreshold <= 0f
+            || rb.linearVelocity.y <= 0f || rb.linearVelocity.y > apexSpeedThreshold) return;
+
+        // Counter part of gravity for this physics step without changing gravityScale.
+        // Dash/skill physics freezes therefore keep their original gravity restore value.
+        float multiplier = Mathf.Clamp(apexGravityMultiplier, 0.05f, 1f);
+        float compensation = -Physics2D.gravity.y * rb.gravityScale * (1f - multiplier);
+        rb.AddForce(Vector2.up * (compensation * rb.mass), ForceMode2D.Force);
+    }
+
+    public void ApplyFallSpeedLimit()
+    {
+        Vector2 velocity = rb.linearVelocity;
+        float speedLimit = Mathf.Max(0.1f, maxFallSpeed);
+        if (velocity.y < -speedLimit)
+            rb.linearVelocity = new Vector2(velocity.x, -speedLimit);
+    }
+
     private void Flip()
     {
         if (player.ActionState.isAttacking ||
@@ -282,13 +317,8 @@ public class PlayerMove : MonoBehaviour
     }
     public void ExecuteJump()
     {
+        // A pending collision restore must not discard a new jump on another floor.
         UpdateDropCollisions();
-        if (ignoredPlatformCollisions.Count > 0)
-        {
-            lastJumpRequestTime = -999f;
-            lastGroundedTime = -999f;
-            return;
-        }
 
         //액션 불가능 상태
         if (!player.ActionState.CanJump()) return;
@@ -338,6 +368,7 @@ public class PlayerMove : MonoBehaviour
     private bool TryDropThrough()
     {
         if (!player.TryGetDropPlatforms(dropPlatforms)) return false;
+        if (!player.TryGetGroundSupport(out _, out Vector2 surfacePoint)) return false;
 
         foreach (Collider2D playerCollider in GetComponentsInChildren<Collider2D>())
         {
@@ -351,7 +382,8 @@ public class PlayerMove : MonoBehaviour
                 ignoredPlatformCollisions.Add(new IgnoredPlatformCollision
                 {
                     playerCollider = playerCollider,
-                    platform = platform
+                    platform = platform,
+                    surfaceOffsetY = surfacePoint.y - platform.transform.position.y
                 });
             }
         }
@@ -375,7 +407,7 @@ public class PlayerMove : MonoBehaviour
         return false;
     }
 
-    private void UpdateDropCollisions()
+    public void UpdateDropCollisions()
     {
         for (int i = ignoredPlatformCollisions.Count - 1; i >= 0; i--)
         {
@@ -383,9 +415,16 @@ public class PlayerMove : MonoBehaviour
             if (collision.playerCollider != null && collision.platform != null &&
                 collision.playerCollider.isActiveAndEnabled && collision.platform.isActiveAndEnabled)
             {
-                if (Time.time - dropStartTime < dropMinimumDuration) continue;
-                //고정 시간만으로 복구하면 두꺼운 발판 안에서 다시 걸릴 수 있다.
-                if (collision.playerCollider.Distance(collision.platform).isOverlapped) continue;
+                // Use the departure surface, not overlap with the entire Tilemap collider.
+                // Other platform tiles may still overlap the player after this floor is cleared.
+                float surfaceY = collision.platform.transform.position.y + collision.surfaceOffsetY;
+                bool clearedSurface = collision.playerCollider.bounds.max.y < surfaceY - Mathf.Max(0f, dropClearance);
+                bool landedElsewhere = player.isGrounded;
+                if (!clearedSurface && !landedElsewhere)
+                {
+                    if (Time.time - dropStartTime < dropMinimumDuration) continue;
+                    if (collision.playerCollider.Distance(collision.platform).isOverlapped) continue;
+                }
             }
 
             RestorePlatformCollision(collision);

@@ -1,0 +1,715 @@
+fileFormatVersion: 2
+guid: 46f689b8ef3402846bf96aacad016e0e
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: -5907469696313600414
+    second: LeafSapSlime_Idle_02_0
+  - first:
+      213: -3948509805293614017
+    second: LeafSapSlime_Idle_02_1
+  - first:
+      213: -8074453954397925955
+    second: LeafSapSlime_Idle_02_2
+  - first:
+      213: 6225734166377092075
+    second: LeafSapSlime_Idle_02_3
+  - first:
+      213: 380353789154015989
+    second: LeafSapSlime_Idle_02_4
+  - first:
+      213: 1139829926772131795
+    second: LeafSapSlime_Idle_02_5
+  - first:
+      213: 1159141596166924160
+    second: LeafSapSlime_Idle_02_6
+  - first:
+      213: -8389946979062178343
+    second: LeafSapSlime_Idle_02_7
+  - first:
+      213: 4208841136266923452
+    second: LeafSapSlime_Idle_02_8
+  - first:
+      213: 6939481407986454155
+    second: LeafSapSlime_Idle_02_9
+  - first:
+      213: -4311307400796174420
+    second: LeafSapSlime_Idle_02_10
+  - first:
+      213: 2049016170586851935
+    second: LeafSapSlime_Idle_02_11
+  - first:
+      213: 718543896279684819
+    second: LeafSapSlime_Idle_02_12
+  - first:
+      213: 20230516519280153
+    second: LeafSapSlime_Idle_02_13
+  - first:
+      213: -1056595752863327380
+    second: LeafSapSlime_Idle_02_14
+  - first:
+      213: -1947316111242862864
+    second: LeafSapSlime_Idle_02_15
+  - first:
+      213: -1720613607934480656
+    second: LeafSapSlime_Idle_02_16
+  - first:
+      213: 1251632793013495005
+    second: LeafSapSlime_Idle_02_17
+  - first:
+      213: 3971170169813955891
+    second: LeafSapSlime_Idle_02_18
+  - first:
+      213: -835690744897693697
+    second: LeafSapSlime_Idle_02_19
+  - first:
+      213: 5788995410648732652
+    second: LeafSapSlime_Idle_02_20
+  - first:
+      213: 8133960288388205209
+    second: LeafSapSlime_Idle_02_21
+  - first:
+      213: 1841192290038290077
+    second: LeafSapSlime_Idle_02_22
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 1
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 1
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 240
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: LeafSapSlime_Idle_02_0
+      rect:
+        serializedVersion: 2
+        x: 145
+        y: 477
+        width: 71
+        height: 79
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 266d7dd3c93740ea0800000000000000
+      internalID: -5907469696313600414
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LeafSapSlime_Idle_02_1
+      rect:
+        serializedVersion: 2
+        x: 232
+        y: 464
+        width: 60
+        height: 46
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f3cc35f80431439c0800000000000000
+      internalID: -3948509805293614017
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LeafSapSlime_Idle_02_2
+      rect:
+        serializedVersion: 2
+        x: 294
+        y: 461
+        width: 9
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: dbd0dd4a8e6c1ff80800000000000000
+      internalID: -8074453954397925955
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LeafSapSlime_Idle_02_3
+      rect:
+        serializedVersion: 2
+        x: 322
+        y: 495
+        width: 20
+        height: 27
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: be35bec2d30466650800000000000000
+      internalID: 6225734166377092075
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LeafSapSlime_Idle_02_4
+      rect:
+        serializedVersion: 2
+        x: 341
+        y: 480
+        width: 20
+        height: 18
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5fabf7b81c9474500800000000000000
+      internalID: 380353789154015989
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LeafSapSlime_Idle_02_5
+      rect:
+        serializedVersion: 2
+        x: 367
+        y: 463
+        width: 36
+        height: 22
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3d7cc91874d71df00800000000000000
+      internalID: 1139829926772131795
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LeafSapSlime_Idle_02_6
+      rect:
+        serializedVersion: 2
+        x: 302
+        y: 461
+        width: 6
+        height: 12
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 087a8ebe329161010800000000000000
+      internalID: 1159141596166924160
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LeafSapSlime_Idle_02_7
+      rect:
+        serializedVersion: 2
+        x: 307
+        y: 449
+        width: 26
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9dd13a4acabe09b80800000000000000
+      internalID: -8389946979062178343
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LeafSapSlime_Idle_02_8
+      rect:
+        serializedVersion: 2
+        x: 63
+        y: 28
+        width: 482
+        height: 416
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: cbdcd3bc6bec86a30800000000000000
+      internalID: 4208841136266923452
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LeafSapSlime_Idle_02_9
+      rect:
+        serializedVersion: 2
+        x: 262
+        y: 434
+        width: 13
+        height: 26
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b8ec578d29dfd4060800000000000000
+      internalID: 6939481407986454155
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LeafSapSlime_Idle_02_10
+      rect:
+        serializedVersion: 2
+        x: 345
+        y: 443
+        width: 10
+        height: 15
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ca70802e2c82b24c0800000000000000
+      internalID: -4311307400796174420
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LeafSapSlime_Idle_02_11
+      rect:
+        serializedVersion: 2
+        x: 354
+        y: 437
+        width: 11
+        height: 23
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f5a4cdad9519f6c10800000000000000
+      internalID: 2049016170586851935
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LeafSapSlime_Idle_02_12
+      rect:
+        serializedVersion: 2
+        x: 456
+        y: 434
+        width: 20
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3d6964dddd7c8f900800000000000000
+      internalID: 718543896279684819
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LeafSapSlime_Idle_02_13
+      rect:
+        serializedVersion: 2
+        x: 475
+        y: 430
+        width: 12
+        height: 18
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 91e11ce2c8fd74000800000000000000
+      internalID: 20230516519280153
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LeafSapSlime_Idle_02_14
+      rect:
+        serializedVersion: 2
+        x: 490
+        y: 433
+        width: 10
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c6b1567c2c73651f0800000000000000
+      internalID: -1056595752863327380
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LeafSapSlime_Idle_02_15
+      rect:
+        serializedVersion: 2
+        x: 349
+        y: 405
+        width: 14
+        height: 21
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0fe59fb605eb9f4e0800000000000000
+      internalID: -1947316111242862864
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LeafSapSlime_Idle_02_16
+      rect:
+        serializedVersion: 2
+        x: 362
+        y: 401
+        width: 16
+        height: 25
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0feac5f2a072f18e0800000000000000
+      internalID: -1720613607934480656
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LeafSapSlime_Idle_02_17
+      rect:
+        serializedVersion: 2
+        x: 407
+        y: 364
+        width: 27
+        height: 42
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: dd4acc0d461be5110800000000000000
+      internalID: 1251632793013495005
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LeafSapSlime_Idle_02_18
+      rect:
+        serializedVersion: 2
+        x: 386
+        y: 384
+        width: 7
+        height: 20
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3357362ba3e6c1730800000000000000
+      internalID: 3971170169813955891
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LeafSapSlime_Idle_02_19
+      rect:
+        serializedVersion: 2
+        x: 392
+        y: 370
+        width: 12
+        height: 34
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ff79a48f1b70764f0800000000000000
+      internalID: -835690744897693697
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LeafSapSlime_Idle_02_20
+      rect:
+        serializedVersion: 2
+        x: 65
+        y: 256
+        width: 6
+        height: 8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ce3951297a4a65050800000000000000
+      internalID: 5788995410648732652
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LeafSapSlime_Idle_02_21
+      rect:
+        serializedVersion: 2
+        x: 535
+        y: 227
+        width: 10
+        height: 48
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 99a438669c1a1e070800000000000000
+      internalID: 8133960288388205209
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LeafSapSlime_Idle_02_22
+      rect:
+        serializedVersion: 2
+        x: 522
+        y: 206
+        width: 20
+        height: 20
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d969beaf1aa3d8910800000000000000
+      internalID: 1841192290038290077
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 5e97eb03825dee720800000000000000
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
+    nameFileIdTable:
+      LeafSapSlime_Idle_02_0: -5907469696313600414
+      LeafSapSlime_Idle_02_1: -3948509805293614017
+      LeafSapSlime_Idle_02_10: -4311307400796174420
+      LeafSapSlime_Idle_02_11: 2049016170586851935
+      LeafSapSlime_Idle_02_12: 718543896279684819
+      LeafSapSlime_Idle_02_13: 20230516519280153
+      LeafSapSlime_Idle_02_14: -1056595752863327380
+      LeafSapSlime_Idle_02_15: -1947316111242862864
+      LeafSapSlime_Idle_02_16: -1720613607934480656
+      LeafSapSlime_Idle_02_17: 1251632793013495005
+      LeafSapSlime_Idle_02_18: 3971170169813955891
+      LeafSapSlime_Idle_02_19: -835690744897693697
+      LeafSapSlime_Idle_02_2: -8074453954397925955
+      LeafSapSlime_Idle_02_20: 5788995410648732652
+      LeafSapSlime_Idle_02_21: 8133960288388205209
+      LeafSapSlime_Idle_02_22: 1841192290038290077
+      LeafSapSlime_Idle_02_3: 6225734166377092075
+      LeafSapSlime_Idle_02_4: 380353789154015989
+      LeafSapSlime_Idle_02_5: 1139829926772131795
+      LeafSapSlime_Idle_02_6: 1159141596166924160
+      LeafSapSlime_Idle_02_7: -8389946979062178343
+      LeafSapSlime_Idle_02_8: 4208841136266923452
+      LeafSapSlime_Idle_02_9: 6939481407986454155
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
