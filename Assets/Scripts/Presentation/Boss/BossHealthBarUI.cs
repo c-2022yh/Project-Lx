@@ -52,6 +52,8 @@ public class BossHealthBarUI : MonoBehaviour
     private bool visible;
     private Coroutine fade;
     private float warm, warmTarget;
+    private RectTransform barRoot;          // 바 전체 (갈라졌을 때 위아래로 두 줄)
+    private BossHealthBarUI splitBar;       // 골렘이 둘로 갈라지면 두 번째 조각 바
 
     public static void Show(EnemyHealth boss, string bossName) => Show(boss, bossName, -1f);
 
@@ -84,6 +86,7 @@ public class BossHealthBarUI : MonoBehaviour
     {
         if (instance == null) return;
         instance.warmTarget = on ? 1f : 0f;
+        if (instance.splitBar != null) instance.splitBar.warmTarget = instance.warmTarget;
     }
 
     public static void Hide()
@@ -119,6 +122,10 @@ public class BossHealthBarUI : MonoBehaviour
             splitBar.barRoot.anchoredPosition = new Vector2(0f, 132f);
             shown = lagShown = Ratio(target);
             splitBar.shown = splitBar.lagShown = Ratio(splitBar.target);
+            splitBar.mark.gameObject.SetActive(false);   // 2페이즈 표시는 갈라지기 전 바에만
+            mark.gameObject.SetActive(false);
+            splitBar.warm = warm;
+            splitBar.warmTarget = warmTarget;
             splitBar.Apply();
             splitBar.SetVisible(true);
         }
