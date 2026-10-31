@@ -72,6 +72,13 @@ public class BossRoom : MonoBehaviour
     [SerializeField] private bool stonePillarDoors = true;
     [Tooltip("바닥 안개 + 보스 등장 때 안개가 모였다 흩어짐 + 잡으면 걷힘")]
     [SerializeField] private bool fog = true;
+    [Header("Ambience (분위기·입장 예고)")]
+    [Tooltip("하늘 위에서 내려오는 옅은 빛줄기 + 천천히 떠내려오는 먼지")]
+    [SerializeField] private bool ambience = true;
+    [Tooltip("보스방에 가까이 오면 땅이 울리고 문 자리에서 빛이 새어 나온다")]
+    [SerializeField] private bool approachWarning = true;
+    [Tooltip("보스방 가장자리에서 이 거리(칸)부터 예고가 시작된다")]
+    [SerializeField, Min(1f)] private float warnDistance = 14f;
     [Header("Health Bar")]
     [Tooltip("보스 HP바를 띄운다 (지금은 끔). 끄면 골렘 머리 위 작은 HP바도 같이 숨긴다.")]
     [SerializeField] private bool showHealthBar = false;
@@ -96,6 +103,10 @@ public class BossRoom : MonoBehaviour
     private GolemBossController golem;
     private Vector3 lastFragmentCenter;
     private BossFog fogLayer;
+    private BossAmbience ambienceFx;
+    private Transform playerT;
+    private SpriteRenderer leakLeft, leakRight;
+    private float nextRumble, leakStrength;
     private bool hasFragmentCenter;
 
     public bool IsCleared => state == State.Cleared;
@@ -128,6 +139,78 @@ public class BossRoom : MonoBehaviour
         if (hideBossUntilIntro && boss != null) boss.gameObject.SetActive(false);
     }
 
+    private void Start()
+    {
+        if (ambience) ambienceFx = BossAmbience.Create(RoomBounds());
+    }
+
+    // ───────────── 입장 예고 ─────────────
+
+    private void Update()
+    {
+        if (!approachWarning) return;
+        bool idle = state == State.Idle && boss != null;
+        float near = 0f;   // 0 = 멀다, 1 = 문 바로 앞
+        int side = 0;
+        if (idle)
+        {
+            if (playerT == null)
+            {
+                Player p = FindAnyObjectByType<Player>();
+                if (p != null) playerT = p.transform;
+            }
+            if (playerT != null)
+            {
+                Bounds room = RoomBounds();
+                float px = playerT.position.x;
+                float d = px < room.min.x ? room.min.x - px : px > room.max.x ? px - room.max.x : 0f;
+                side = px < room.center.x ? -1 : 1;
+                if (d > 0f && d < warnDistance && Mathf.Abs(playerT.position.y - room.center.y) < room.size.y + 4f)
+                    near = 1f - d / warnDistance;
+            }
+        }
+
+        // 문 자리에서 새어 나오는 빛
+        leakStrength = Mathf.MoveTowards(leakStrength, near, Time.unscaledDeltaTime * 0.8f);
+        UpdateLeak(ref leakLeft, -1, side == -1 ? leakStrength : Mathf.Min(leakStrength, 0f));
+        UpdateLeak(ref leakRight, 1, side == 1 ? leakStrength : Mathf.Min(leakStrength, 0f));
+
+        // 땅이 울림: 가까울수록 자주, 세게
+        if (near > 0.05f && Time.unscaledTime >= nextRumble)
+        {
+            nextRumble = Time.unscaledTime + Mathf.Lerp(3.2f, 1.4f, near) + Random.Range(0f, 0.6f);
+            CameraShake.Shake(Mathf.Lerp(0.06f, 0.16f, near));
+            Bounds room = RoomBounds();
+            float x = side < 0 ? room.min.x : room.max.x;
+            Bounds fall = new Bounds(new Vector3(x - side * 3f, room.max.y, 0f), new Vector3(8f, room.size.y, 1f));
+            BossStageFx.RockFall(fall, Mathf.RoundToInt(Mathf.Lerp(2f, 6f, near)), 0.6f);
+            BossFog.LandingDust(new Vector3(x, room.min.y, 0f), 2.5f);
+        }
+    }
+
+    private void UpdateLeak(ref SpriteRenderer leak, int side, float strength)
+    {
+        if (strength <= 0.001f) { if (leak != null) leak.enabled = false; return; }
+        Bounds room = RoomBounds();
+        if (leak == null)
+        {
+            GameObject go = new GameObject(side < 0 ? "DoorLight_Left" : "DoorLight_Right");
+            go.transform.SetParent(transform, true);
+            leak = go.AddComponent<SpriteRenderer>();
+            leak.sprite = BossFxArt.UpFade;   // 아래가 진하고 위로 옅어짐
+            leak.sharedMaterial = BossFxArt.Unlit;
+            leak.sortingLayerName = "Default";
+            leak.sortingOrder = 46;
+            Vector2 size = leak.sprite.bounds.size;
+            float h = Mathf.Max(4f, room.size.y);
+            go.transform.localScale = new Vector3(2.4f / size.x, h / size.y, 1f);
+            go.transform.position = new Vector3(side < 0 ? room.min.x - 1f : room.max.x + 1f, room.min.y + h * 0.5f, 0f);
+        }
+        leak.enabled = true;
+        float pulse = 0.8f + 0.2f * Mathf.Sin(Time.unscaledTime * 2.2f);
+        leak.color = new Color(0.65f, 0.82f, 1f, 0.45f * strength * pulse);
+    }
+
     private void OnDisable()
     {
         UnwatchPlayer();
@@ -155,6 +238,9 @@ public class BossRoom : MonoBehaviour
         state = State.Intro;
 
         StartCoroutine(MoveDoors(true));
+        leakStrength = 0f;
+        if (leakLeft != null) leakLeft.enabled = false;
+        if (leakRight != null) leakRight.enabled = false;
         if (useRoomCamera) SetRoomCamera(true);
 
         // 방이 어두워지고 천장에서 돌가루가 떨어진다
