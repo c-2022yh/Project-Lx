@@ -63,6 +63,7 @@ public static class BossTestSceneBuilder
         BuildGround();
         MovePlayerSpawn(new Vector3(SpawnX, GroundTop + 1.5f, 0f));
         FitCameraBounds();
+        AddRuinsBackground(background);
 
         SnapToGround(InstantiatePrefab(ShrinePath, new Vector3(ShrineX, GroundTop + 2f, 0f)));
         SnapToGround(InstantiatePrefab(BrickPath, new Vector3(BrickX, GroundTop + 2f, 0f)));
@@ -201,6 +202,22 @@ public static class BossTestSceneBuilder
     }
 
     // 카메라가 테스트 바닥 밖으로 나가지 않게 경계를 새로 잡는다.
+    // 폐허 배경 (Resources/Presentation/Backgrounds/BG_Boss_Ruins). 숲 배경은 끈다.
+    // 카메라 이동 범위에 맞춰 그림 끝이 안 보이게 따라 움직인다 (FieldPanoramaBackground).
+    private const string RuinsPath = "Assets/Resources/Presentation/Backgrounds/BG_Boss_Ruins.png";
+
+    private static void AddRuinsBackground(GameObject forest)
+    {
+        Sprite ruins = AssetDatabase.LoadAssetAtPath<Sprite>(RuinsPath);
+        if (ruins == null) { Debug.LogWarning("[BossTestSceneBuilder] 폐허 배경 그림이 없어서 숲 배경을 그대로 둡니다."); return; }
+        if (forest != null) forest.SetActive(false);
+        GameObject go = new GameObject("Background_Ruins");
+        FieldPanoramaBackground bg = go.AddComponent<FieldPanoramaBackground>();
+        SerializedObject so = new SerializedObject(bg);
+        so.FindProperty("sprite").objectReferenceValue = ruins;
+        so.ApplyModifiedPropertiesWithoutUndo();
+    }
+
     private static void FitCameraBounds()
     {
         GameObject bounds = new GameObject("TestCameraBounds");
