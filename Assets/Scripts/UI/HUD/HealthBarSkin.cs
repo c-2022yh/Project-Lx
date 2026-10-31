@@ -10,6 +10,7 @@ using UnityEngine.UI;
 ///   HealthBar_Fill   현재 체력 (HealthHUD가 fillAmount를 바꿈)
 ///   HealthBar_Frame  은빛 프레임                                              ← 실행 중에 만듦
 ///
+/// 보주를 얻으면 보주 오른쪽 옆으로 옮겨가서 보주 가운데 높이에 붙는다 (왼쪽 끝은 보주 뒤로 숨음).
 /// HUD_Canvas 프리팹·HealthHUD는 고치지 않는다. HealthHUD가 붙은 오브젝트를 찾아 실행 중에만 모양을 바꾼다.
 /// 그림: Resources/Presentation/HUD/HUD_HpFrame, HUD_HpFill
 /// </summary>
@@ -28,11 +29,22 @@ public class HealthBarSkin : MonoBehaviour
 
     [SerializeField] private Color slotColor = new Color(0.04f, 0.05f, 0.09f, 0.92f);
 
+    [Header("보주가 있을 때: 보주 옆에 붙기")]
+    [Tooltip("보주 반지름 대비, 프레임 왼쪽 끝이 보주 가운데에서 오른쪽으로 떨어진 정도 (보주가 왼쪽 끝을 덮음)")]
+    [SerializeField, Range(-1f, 1.2f)] private float orbOverlap = 0.35f;
+    [SerializeField] private Vector2 orbOffset = Vector2.zero;
+    [Tooltip("자리 옮길 때 걸리는 시간 (초)")]
+    [SerializeField] private float moveTime = 0.25f;
+
     // 프레임 그림(1329×172) 안에서 채움 창의 자리
     private const float ArtW = 1329f, ArtH = 172f;
     private static readonly Rect ArtWindow = new Rect(45f, 48f, 1239f, 76f);   // x, 위에서 y, 폭, 높이
 
     private Image fill, trail, frame, slot;
+    private RectTransform parentRect, orbRoot, orbCircle;
+    private PlayerEnergy energy;
+    private Vector2 frameSize, winOffset, winSize, currentPos;
+    private bool orderedBehindOrb, placed;
     private float trailAmount = 1f, holdTimer, lastFill = 1f;
 
     private static float nextScan;
@@ -87,10 +99,13 @@ public class HealthBarSkin : MonoBehaviour
         Transform bg = parent != null ? parent.Find("HealthBar_BG") : null;
         slot = bg != null ? bg.GetComponent<Image>() : null;
 
+        parentRect = parent as RectTransform;
         float k = frameWidth / ArtW;
-        Vector2 frameSize = new Vector2(frameWidth, ArtH * k);
-        Vector2 winPos = framePosition + new Vector2(ArtWindow.x * k, -ArtWindow.y * k);
-        Vector2 winSize = new Vector2(ArtWindow.width * k, ArtWindow.height * k);
+        frameSize = new Vector2(frameWidth, ArtH * k);
+        winOffset = new Vector2(ArtWindow.x * k, -ArtWindow.y * k);
+        winSize = new Vector2(ArtWindow.width * k, ArtWindow.height * k);
+        Vector2 winPos = framePosition + winOffset;
+        currentPos = framePosition;
 
         // 바탕
         if (slot != null)
@@ -146,6 +161,82 @@ public class HealthBarSkin : MonoBehaviour
         r.sizeDelta = size;
         r.anchoredPosition = topLeft;
         r.localScale = Vector3.one;
+    }
+
+    // ── 보주 옆으로 옮기기 ───────────────────
+
+    private void LateUpdate()
+    {
+        if (frame == null || parentRect == null) return;
+        Vector2 target = framePosition;
+        if (HasOrb() && FindOrb() && OrbCenter(out Vector2 c, out float r))
+        {
+            // 프레임 세로 가운데 = 보주 가운데, 왼쪽 끝은 보주 뒤로
+            target = new Vector2(c.x + r * orbOverlap, c.y + frameSize.y * 0.5f) + orbOffset;
+            if (!orderedBehindOrb) PutBehindOrb();
+        }
+        currentPos = placed && moveTime > 0f
+            ? Vector2.Lerp(currentPos, target, 1f - Mathf.Exp(-Time.unscaledDeltaTime * 4.6f / moveTime))
+            : target;
+        placed = true;
+        Layout(currentPos);
+    }
+
+    private void Layout(Vector2 topLeft)
+    {
+        Vector2 win = topLeft + winOffset;
+        if (slot != null) slot.rectTransform.anchoredPosition = win;
+        fill.rectTransform.anchoredPosition = win;
+        trail.rectTransform.anchoredPosition = win;
+        frame.rectTransform.anchoredPosition = topLeft;
+    }
+
+    private bool HasOrb()
+    {
+        if (energy == null) energy = FindAnyObjectByType<PlayerEnergy>();
+        return energy != null && energy.HasOrb;
+    }
+
+    private bool FindOrb()
+    {
+        if (orbRoot != null) return true;
+        OrbHUD orb = FindAnyObjectByType<OrbHUD>(FindObjectsInactive.Include);
+        if (orb == null) return false;
+        orbRoot = orb.transform as RectTransform;
+        Transform circle = orb.transform.Find("OrbFrame");
+        orbCircle = circle != null ? circle as RectTransform : orbRoot;
+        return orbRoot != null;
+    }
+
+    // 보주 동그라미 가운데(체력바 기준 좌표: 부모 왼쪽 위에서)와 반지름
+    private bool OrbCenter(out Vector2 center, out float radius)
+    {
+        center = Vector2.zero;
+        radius = 0f;
+        if (orbCircle == null || !orbCircle.gameObject.activeInHierarchy) return false;
+        Vector3[] w = new Vector3[4];
+        orbCircle.GetWorldCorners(w);
+        Vector2 a = parentRect.InverseTransformPoint(w[0]);
+        Vector2 b = parentRect.InverseTransformPoint(w[2]);
+        Rect pr = parentRect.rect;
+        Vector2 mid = (a + b) * 0.5f;
+        center = new Vector2(mid.x - pr.xMin, mid.y - pr.yMax);
+        radius = Mathf.Abs(b.x - a.x) * 0.5f;
+        return radius > 1f;
+    }
+
+    // 체력바가 보주 뒤에 그려지게 (같은 부모일 때만)
+    private void PutBehindOrb()
+    {
+        orderedBehindOrb = true;
+        if (orbRoot == null || orbRoot.parent != fill.transform.parent) return;
+        Transform[] order = { slot != null ? slot.transform : null, trail.transform, fill.transform, frame.transform };
+        // 바탕 → 잔상 → 채움 → 프레임 순서를 지키면서 보주 앞(뒤에 그려지도록)으로 옮긴다
+        foreach (Transform t in order)
+        {
+            if (t == null) continue;
+            if (t.GetSiblingIndex() > orbRoot.GetSiblingIndex()) t.SetSiblingIndex(orbRoot.GetSiblingIndex());
+        }
     }
 
     // ── 잔상 ───────────────────────────────
