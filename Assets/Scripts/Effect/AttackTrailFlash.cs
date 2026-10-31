@@ -18,6 +18,7 @@ public sealed class AttackTrailFlash : MonoBehaviour
     private SpriteRenderer source;
     private SpriteRenderer overlay;
     private float elapsed;
+    private float brightnessMultiplier = 1f;
     private MaterialPropertyBlock glowProperties;
     private readonly Dictionary<Sprite, Sprite> glowSprites = new Dictionary<Sprite, Sprite>();
     private static readonly int GlowWidthId = Shader.PropertyToID("_GlowWidth");
@@ -35,6 +36,13 @@ public sealed class AttackTrailFlash : MonoBehaviour
         overlay = child.AddComponent<SpriteRenderer>();
         overlay.sharedMaterial = flashMaterial;
         glowProperties = new MaterialPropertyBlock();
+    }
+
+    // Per-instance adjustment for relic-generated trails; the shared material stays untouched.
+    public void SetBrightnessMultiplier(float multiplier)
+    {
+        brightnessMultiplier = Mathf.Max(0f, multiplier);
+        RefreshOverlay();
     }
 
     // Restart the flash when spawned or reactivated.
@@ -77,7 +85,7 @@ public sealed class AttackTrailFlash : MonoBehaviour
         glowProperties.SetTexture(MainTexId, texture);
         glowProperties.SetVector(GlowTexelSizeId,
             new Vector4(1f / texture.width, 1f / texture.height, texture.width, texture.height));
-        glowProperties.SetFloat(GlowIntensityId, Mathf.Max(0f, brightness));
+        glowProperties.SetFloat(GlowIntensityId, Mathf.Max(0f, brightness) * brightnessMultiplier);
         glowProperties.SetFloat(GlowWidthId, Mathf.Clamp(edgeWidth, 0.5f, 8f));
         overlay.SetPropertyBlock(glowProperties);
 

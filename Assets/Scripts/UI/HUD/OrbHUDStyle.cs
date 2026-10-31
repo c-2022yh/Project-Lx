@@ -50,6 +50,8 @@ public class OrbHUDStyle
     [Range(0f, 1f)] public float persistentFrameCrossFade = 1f;
     [Tooltip("Quiet interval between flashes, in seconds. Does not include the flash duration.")]
     public Vector2 persistentFlashInterval = new Vector2(0.6f, 1.8f);
+    [Tooltip("Intermittent only: hold one frame for each flash, cycling to the next shape on the next flash.")]
+    public bool persistentSingleFramePerFlash;
     [Min(0.01f)] public float persistentFlashDuration = 0.3f;
     [Tooltip("Full-energy halo fades in/out; awakening/Q effects stop immediately when their condition ends. Zero means instant.")]
     [Min(0f)] public float persistentFadeSpeed = 5f;

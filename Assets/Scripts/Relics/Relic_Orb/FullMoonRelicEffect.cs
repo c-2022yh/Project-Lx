@@ -27,6 +27,7 @@ public class FullMoonRelicEffect : RelicEffect
         private readonly float damageBonus;
         private PlayerEnergy energy;
         private PlayerAttack attack;
+        private PlayerAwakening awakening;
         private bool equipped;
         private bool damageApplied;
 
@@ -44,10 +45,14 @@ public class FullMoonRelicEffect : RelicEffect
 
             energy = player.Energy;
             attack = player.GetComponent<PlayerAttack>();
+            awakening = player.GetComponent<PlayerAwakening>();
 
-            if (energy == null || attack == null) return;
+            if (energy == null || attack == null || awakening == null) return;
 
             equipped = true;
+
+            awakening.SetAwakeningBlocked(true);
+            if (awakening.IsAwakened || awakening.IsAwakening) awakening.EndAwakening();
 
             energy.ModifyEnergyGainMultiplier(gainBonus);
             energy.OnEnergyChanged += UpdateFullEnergyBonus;
@@ -66,12 +71,15 @@ public class FullMoonRelicEffect : RelicEffect
                 energy.ModifyEnergyGainMultiplier(-gainBonus);
             }
 
+            if (awakening != null) awakening.SetAwakeningBlocked(false);
+
             if (damageApplied && attack != null) attack.ModifyBasicAttackDamageBonus(-damageBonus);
 
             damageApplied = false;
             equipped = false;
             energy = null;
             attack = null;
+            awakening = null;
 
         }
 

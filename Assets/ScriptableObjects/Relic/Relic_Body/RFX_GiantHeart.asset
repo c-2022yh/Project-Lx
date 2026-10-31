@@ -12,4 +12,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7b0a9c265f125d144950d6fc36539dc0, type: 3}
   m_Name: RFX_GiantHeart
   m_EditorClassIdentifier: Assembly-CSharp::GiantHeartRelicEffect
-  bonusMaxHealth: 2
+  bonusMaxHealth: 25

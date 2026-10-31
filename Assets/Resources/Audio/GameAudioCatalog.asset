@@ -127,12 +127,12 @@ MonoBehaviour:
       maxDistance: 0
       useFallback: 0
       fallbackSound: 0
-  - sceneName: 
+  - sceneName: Tutorial
     music:
       channel: 0
-      clip: {fileID: 0}
+      clip: {fileID: 8300000, guid: 23236551f14570a48a7374e001279eda, type: 3}
       clips: []
-      volume: 0
+      volume: 1
       minimumInterval: 0
       pitchRange: {x: 0, y: 0}
       maxSimultaneous: 0

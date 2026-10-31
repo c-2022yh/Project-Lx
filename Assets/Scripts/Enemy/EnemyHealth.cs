@@ -29,11 +29,7 @@ public class EnemyHealth : MonoBehaviour
     private int damagePopupIndex;
     private float lastDamagePopupTime;
 
-    [Header("Hit Effect")]
-    [SerializeField] private EnemyHitEffect hitEffectPrefab;
-
-    [SerializeField]
-    private Vector3 hitEffectOffset = new Vector3(0f, 0.3f, 0f);
+    [Header("Hit Blink")]
 
     [SerializeField, Min(1)]
     private int hitBlinkCount = 2;
@@ -232,15 +228,6 @@ public class EnemyHealth : MonoBehaviour
             lastDamagePopupTime = Time.time;
         }
 
-        if (hitEffectPrefab != null)
-        {
-            Instantiate(
-                hitEffectPrefab,
-                transform.position +
-                hitEffectOffset,
-                Quaternion.identity
-            );
-        }
     }
 
     //±Ù∫˝¿” ø¨√‚

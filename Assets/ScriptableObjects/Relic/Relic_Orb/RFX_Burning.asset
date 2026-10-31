@@ -14,5 +14,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::BurningRelicEffect
   durationBonus: 10
   interval: 1
-  physicalAttackPerInterval: 0.2
-  magicalAttackPerInterval: 0.2
+  physicalAttackPerInterval: 2
+  magicalAttackPerInterval: 0

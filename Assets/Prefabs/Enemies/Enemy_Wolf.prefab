@@ -94,7 +94,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: 1278559193
-  m_SortingLayer: 6
+  m_SortingLayer: 5
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_Sprite: {fileID: 21300000, guid: 3c4a7b5d0d52cd846a2638d86361115f, type: 3}
@@ -196,7 +196,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EnemyStats
   offense:
-    physicalAttack: 1
+    physicalAttack: 20
     magicalAttack: 1
     physicalPenetration: 0
     magicalPenetration: 0
@@ -287,19 +287,47 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f744d1166891d6943bd60c8634499e22, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EnemyHealth
-  maxHp: 30
+  maxHp: 1800
   healthBar: {fileID: 4980014735012934091}
   damagePopupPrefab: {fileID: 4418119550550923920, guid: f9203d53f7bdee24b9be1417d4647687, type: 3}
   damagePopupOffset: {x: 0, y: 0.5, z: 0}
   damagePopupSpacing: 0.6
   damagePopupResetTime: 0.15
-  hitEffectPrefab: {fileID: 2831077347966305720, guid: c7da690de55294d4fbd4bf51893a14e6, type: 3}
-  hitEffectOffset: {x: 0, y: -0.7, z: 0}
   hitBlinkCount: 2
   hitBlinkInterval: 0.03
   playerEnergy: {fileID: 0}
   energyReward: 20
   logEnergyReward: 0
+  hurtSound:
+    channel: 0
+    clip: {fileID: 0}
+    clips:
+    - {fileID: 0}
+    volume: 1
+    minimumInterval: 0.05
+    pitchRange: {x: 1, y: 1}
+    maxSimultaneous: 4
+    limitScope: 0
+    spatialBlend: 0
+    minDistance: 1
+    maxDistance: 15
+    useFallback: 0
+    fallbackSound: 5
+  deathSound:
+    channel: 0
+    clip: {fileID: 0}
+    clips:
+    - {fileID: 0}
+    volume: 1
+    minimumInterval: 0.05
+    pitchRange: {x: 1, y: 1}
+    maxSimultaneous: 4
+    limitScope: 0
+    spatialBlend: 0
+    minDistance: 1
+    maxDistance: 15
+    useFallback: 0
+    fallbackSound: 5
 --- !u!114 &849854591839963007
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -362,6 +390,51 @@ MonoBehaviour:
       canCritical: 0
       bonusPenetration: 0
       bonusDamageAmplification: 0
+    attackSound:
+      channel: 0
+      clip: {fileID: 0}
+      clips:
+      - {fileID: 0}
+      volume: 1
+      minimumInterval: 0.05
+      pitchRange: {x: 1, y: 1}
+      maxSimultaneous: 4
+      limitScope: 0
+      spatialBlend: 0
+      minDistance: 1
+      maxDistance: 15
+      useFallback: 0
+      fallbackSound: 5
+    impactSound:
+      channel: 0
+      clip: {fileID: 0}
+      clips:
+      - {fileID: 0}
+      volume: 1
+      minimumInterval: 0.05
+      pitchRange: {x: 1, y: 1}
+      maxSimultaneous: 4
+      limitScope: 0
+      spatialBlend: 0
+      minDistance: 1
+      maxDistance: 15
+      useFallback: 0
+      fallbackSound: 5
+    activeLoop:
+      channel: 0
+      clip: {fileID: 0}
+      clips:
+      - {fileID: 0}
+      volume: 1
+      minimumInterval: 0.05
+      pitchRange: {x: 1, y: 1}
+      maxSimultaneous: 4
+      limitScope: 0
+      spatialBlend: 0
+      minDistance: 1
+      maxDistance: 15
+      useFallback: 0
+      fallbackSound: 5
     prepareSprite: {fileID: 21300000, guid: f6545505a99466f43889a4069ab23b5a, type: 3}
     activeSprites:
     - {fileID: 21300000, guid: ca4000e930068d4498c6f5edbfba729b, type: 3}
@@ -381,6 +454,51 @@ MonoBehaviour:
       canCritical: 0
       bonusPenetration: 0
       bonusDamageAmplification: 0
+    attackSound:
+      channel: 0
+      clip: {fileID: 0}
+      clips:
+      - {fileID: 0}
+      volume: 1
+      minimumInterval: 0.05
+      pitchRange: {x: 1, y: 1}
+      maxSimultaneous: 4
+      limitScope: 0
+      spatialBlend: 0
+      minDistance: 1
+      maxDistance: 15
+      useFallback: 0
+      fallbackSound: 5
+    impactSound:
+      channel: 0
+      clip: {fileID: 0}
+      clips:
+      - {fileID: 0}
+      volume: 1
+      minimumInterval: 0.05
+      pitchRange: {x: 1, y: 1}
+      maxSimultaneous: 4
+      limitScope: 0
+      spatialBlend: 0
+      minDistance: 1
+      maxDistance: 15
+      useFallback: 0
+      fallbackSound: 5
+    activeLoop:
+      channel: 0
+      clip: {fileID: 0}
+      clips:
+      - {fileID: 0}
+      volume: 1
+      minimumInterval: 0.05
+      pitchRange: {x: 1, y: 1}
+      maxSimultaneous: 4
+      limitScope: 0
+      spatialBlend: 0
+      minDistance: 1
+      maxDistance: 15
+      useFallback: 0
+      fallbackSound: 5
     prepareSprite: {fileID: 21300000, guid: 4f94db0453665254aadd7b11c7e42a50, type: 3}
     activeSprites:
     - {fileID: 21300000, guid: e95cceb52f26a2149aa41492e260456f, type: 3}
@@ -408,6 +526,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1fd63915f7f74cb4d9a03f6c8028e706, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EnemyContactAttack
+  impactSound:
+    channel: 0
+    clip: {fileID: 0}
+    clips:
+    - {fileID: 0}
+    volume: 1
+    minimumInterval: 0.05
+    pitchRange: {x: 1, y: 1}
+    maxSimultaneous: 4
+    limitScope: 0
+    spatialBlend: 0
+    minDistance: 1
+    maxDistance: 15
+    useFallback: 0
+    fallbackSound: 5
 --- !u!1 &3095458375250088132
 GameObject:
   m_ObjectHideFlags: 0
