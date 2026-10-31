@@ -31,7 +31,7 @@ public class EnemyHealth : MonoBehaviour
 
     [Header("Hit Blink")]
 
-    [SerializeField, Min(1)]
+    [SerializeField, Min(0)]
     private int hitBlinkCount = 2;
 
     [SerializeField, Min(0.01f)]
@@ -169,7 +169,7 @@ public class EnemyHealth : MonoBehaviour
         currentHp = Mathf.Max(0f, currentHp - finalDamage);
 
 
-        if (finalDamage > 0f) damageInfo.impactAudio?.OnDamageApplied(transform);
+        if (finalDamage > 0f) damageInfo.impactAudio?.OnDamageApplied(transform, isLethal: currentHp <= 0f);
         ShowDamageFeedback(finalDamage, damageInfo.damageType, damageInfo.isCritical);
 
         if (currentHp <= 0f)
@@ -267,7 +267,7 @@ public class EnemyHealth : MonoBehaviour
         if (isDead || IsDamageSuppressed) return;
 
         currentHp = 0f;
-        damageInfo.impactAudio?.OnDamageApplied(transform);
+        damageInfo.impactAudio?.OnDamageApplied(transform, isLethal: true);
 
         Die(damageInfo);
     }

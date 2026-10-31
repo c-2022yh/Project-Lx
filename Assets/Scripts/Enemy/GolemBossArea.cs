@@ -25,7 +25,9 @@ public class GolemBossArea : MonoBehaviour
         fallingRock = GolemBossVisual.MakeRectangle("Falling Rock", transform, Color.gray, 22);
         if (sprite != null) { fallingRock.sprite = sprite; fallingRock.color = Color.white; }
         Vector2 size = fallingRock.sprite.bounds.size;
-        fallingRock.transform.localScale = new Vector3(1f / Mathf.Max(0.01f, size.x), 1f / Mathf.Max(0.01f, size.y), 1f);
+        // Keep each rock's aspect ratio. This visual never changes Center/Size or adds a collider.
+        float scale = 1f / Mathf.Max(0.01f, Mathf.Max(size.x, size.y));
+        fallingRock.transform.localScale = new Vector3(scale, scale, 1f);
         dropHeight = Mathf.Max(1f, height);
         fallingRock.enabled = false;
     }

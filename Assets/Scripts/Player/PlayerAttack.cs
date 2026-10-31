@@ -224,7 +224,7 @@ public class PlayerAttack : MonoBehaviour
         DamageInfo damageInfo = DamageInfo.Create(playerStats.Offense, spec, gameObject);
         damageInfo.damage *= Mathf.Max(0f, 1f + basicAttackDamageBonus);
         SoundCue impactSound = followUp ? pattern.followUpImpactSound : pattern.impactSound;
-        damageInfo.impactAudio = new AttackAudioContext(impactSound, pattern.impactMode, transform);
+        damageInfo.impactAudio = new AttackAudioContext(impactSound, pattern.impactMode, transform, suppressOnKill: true);
         // Keep the target in place until the second hit, then apply normal knockback.
         if (!followUp && pattern.enableFollowUpHit) damageInfo.suppressKnockback = true;
         return damageInfo;

@@ -153,7 +153,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::ScenePortal
   transitionSound:
     channel: 0
-    clip: {fileID: 0}
+    clip: {fileID: 8300000, guid: f9e328bf0e8b41588b879bf7e90f66ef, type: 3}
     clips: []
     volume: 1
     minimumInterval: 0.05

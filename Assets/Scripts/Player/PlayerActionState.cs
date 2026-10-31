@@ -43,6 +43,8 @@ public class PlayerActionState : MonoBehaviour
     //세부 플래그를 여기서 지정
     public bool CanMove() //이동 아무것도 안 하고 있어야 작동
     {
+        if (SceneFader.IsPlayerControlBlocked) return false;
+
         return currentState == PlayerActionType.Normal
             || (isSkillActive && skillMovementAllowed)
             || (isAttacking && attackRecoveryMovementAllowed);
@@ -50,16 +52,22 @@ public class PlayerActionState : MonoBehaviour
 
     public bool CanJump() //점프도 아무것도 안 하고 있어야 작동
     {
+        if (SceneFader.IsPlayerControlBlocked) return false;
+
         return currentState == PlayerActionType.Normal;
     }
 
     public bool CanAttack() //공격도 아무것도 안 하고 있어야 작동
     {
+        if (SceneFader.IsPlayerControlBlocked) return false;
+
         return currentState == PlayerActionType.Normal;
     }
 
     public bool CanDash() //대쉬는 cc기 아니면 다 발동
     {
+        if (SceneFader.IsPlayerControlBlocked) return false;
+
         return currentState != PlayerActionType.Dead
             && currentState != PlayerActionType.HitStunned
             && currentState != PlayerActionType.Dashing;
@@ -67,12 +75,16 @@ public class PlayerActionState : MonoBehaviour
 
     public bool CanSkill() //스킬은 평캔이 가능
     {
+        if (SceneFader.IsPlayerControlBlocked) return false;
+
         return currentState == PlayerActionType.Normal
             || currentState == PlayerActionType.Attacking;
     }
 
     public bool CanAwakening() //각성은 아무것도 안 하고 있어야 작동
     {
+        if (SceneFader.IsPlayerControlBlocked) return false;
+
         return currentState == PlayerActionType.Normal;
     }
 
