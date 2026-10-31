@@ -290,14 +290,17 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EnemyAnimation
   spriteFacesRight: 1
-  idleSprites: []
-  idleFrameTime: 0.12
+  idleSprites:
+  - {fileID: 21300000, guid: 3dffaeb432cce9c42846eec7695cf17f, type: 3}
+  - {fileID: 21300000, guid: f22d7f602dc417749b207814a7b52e7a, type: 3}
+  - {fileID: 21300000, guid: c700036c268026e4482972ef262b0f29, type: 3}
+  idleFrameTime: 0.31
   shootSprites: []
   shootFrameTime: 0.12
   walkSprites:
   - {fileID: 21300000, guid: 3dffaeb432cce9c42846eec7695cf17f, type: 3}
   - {fileID: 21300000, guid: f22d7f602dc417749b207814a7b52e7a, type: 3}
-  - {fileID: 21300000, guid: 4b6af08075e503e49b2813ea19739996, type: 3}
+  - {fileID: 21300000, guid: c700036c268026e4482972ef262b0f29, type: 3}
   walkFrameTime: 0.31
   prepareSprite: {fileID: 0}
   dashSprites: []

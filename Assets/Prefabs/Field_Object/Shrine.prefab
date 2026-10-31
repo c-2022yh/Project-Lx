@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 1922008627024900672}
   - component: {fileID: 7653867029461170685}
   - component: {fileID: -8353104645662142705}
+  - component: {fileID: 741950731092875102}
   m_Layer: 13
   m_Name: Shrine
   m_TagString: Untagged
@@ -183,3 +184,30 @@ MonoBehaviour:
   spriteRenderer: {fileID: 1922008627024900672}
   inactiveColor: {r: 1, g: 1, b: 1, a: 1}
   activeColor: {r: 1, g: 1, b: 1, a: 1}
+  shrineVisual: {fileID: 741950731092875102}
+--- !u!114 &741950731092875102
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 302716006854552784}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 320de92dc7624e92b98a8d928c8fe8c4, type: 3}
+  m_Name:
+  m_EditorClassIdentifier: Assembly-CSharp::ShrineVisual
+  shrineRenderer: {fileID: 1922008627024900672}
+  glowMaterial: {fileID: 2100000, guid: cd38f3e1c9b74d3788a835d2ee07d267, type: 2}
+  center: {x: 0.01, y: 0.095}
+  size: {x: 0.44, y: 0.34}
+  lightColor: {r: 1.8, g: 1.15, b: 0.35, a: 1}
+  brightness: 0.85
+  breatheAmount: 0.12
+  breathePeriod: 3.6
+  fadeDuration: 0.45
+  ignitionDuration: 0.9
+  ignitionBoost: 1.1
+  sparkleBrightness: 1
+  sparkleSize: 1
+  sparkleSpeed: 0.65
