@@ -16,6 +16,7 @@ Shader "ProjectLx/Awakening Silhouette Aura"
         _FarRadius ("Far Glow Radius", Float) = 0.45
         _Rise ("Rise Height", Float) = 1.3
         _Sparkle ("Sparkle", Range(0, 1)) = 0.6
+        _White ("White Core", Range(0, 1)) = 0.35
         [HideInInspector] _SpriteUVRect ("Sprite UV Rect", Vector) = (0, 0, 1, 1)
         [HideInInspector] _SpriteRectInQuad ("Sprite Rect In Quad", Vector) = (0, 0, 1, 1)
         [HideInInspector] _QuadSize ("Quad Size", Vector) = (1, 1, 0, 0)
@@ -50,6 +51,7 @@ Shader "ProjectLx/Awakening Silhouette Aura"
                 float _FarRadius;
                 float _Rise;
                 float _Sparkle;
+                float _White;
                 float4 _SpriteUVRect;
                 float4 _SpriteRectInQuad;   // 사각형 안에서 캐릭터 그림 자리 (왼쪽 아래 x, y, 폭, 높이 / 월드 칸)
                 float4 _QuadSize;           // 사각형 크기 (월드 칸)
@@ -148,16 +150,16 @@ Shader "ProjectLx/Awakening Silhouette Aura"
                     * (0.5 + 0.5 * sin(t * 6.0 + rnd * 40.0));
                 spark *= saturate(farGlow * 3.0 + wisp) * _Sparkle;
 
-                float density = nearGlow * 1.7 + farGlow * 0.9 + wisp * 0.8;
+                float density = nearGlow * 1.3 + farGlow * 0.9 + wisp * 0.8;
                 density *= 1.0 + _Flash * 1.5;
 
                 // 사각형 가장자리에서는 0으로
                 float edge = smoothstep(0.0, 0.1, input.uv.x) * (1.0 - smoothstep(0.9, 1.0, input.uv.x))
                     * smoothstep(0.0, 0.04, input.uv.y) * (1.0 - smoothstep(0.65, 1.0, input.uv.y));
 
-                // 몸 가까이는 흰빛, 멀어질수록 푸른빛
-                float core = saturate(nearGlow * 2.2 - 0.25);
-                half3 col = lerp(_AuraColor.rgb, half3(1.0, 1.0, 1.0), core * 0.6) * _Intensity;
+                // 몸 테두리에만 살짝 흰빛, 나머지는 푸른빛
+                float core = smoothstep(0.3, 0.6, nearGlow);
+                half3 col = lerp(_AuraColor.rgb, half3(1.0, 1.0, 1.0), core * _White) * _Intensity;
                 col += spark * 3.0;
                 float alpha = saturate((density + spark * 2.0) * edge) * _Opacity;
                 return half4(col, alpha);

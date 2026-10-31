@@ -21,7 +21,7 @@ public class AwakeningSilhouetteAura : MonoBehaviour
 {
     [Header("모양 (월드 칸, 캐릭터 키 약 2.7)")]
     [Tooltip("몸에 바짝 붙은 빛의 두께")]
-    [SerializeField, Min(0.01f)] private float nearRadius = 0.15f;
+    [SerializeField, Min(0.01f)] private float nearRadius = 0.06f;
     [Tooltip("넓게 퍼지는 빛의 두께")]
     [SerializeField, Min(0.01f)] private float farRadius = 0.45f;
     [Tooltip("위로 피어오르는 자락 높이")]
@@ -31,6 +31,8 @@ public class AwakeningSilhouetteAura : MonoBehaviour
     [SerializeField, Min(0f)] private float intensity = 2.2f;
     [SerializeField, Range(0f, 1f)] private float opacity = 0.85f;
     [SerializeField, Range(0f, 1f)] private float sparkle = 0.6f;
+    [Tooltip("몸 테두리 흰빛 정도 (0 = 흰빛 없음)")]
+    [SerializeField, Range(0f, 1f)] private float whiteCore = 0.35f;
     [Tooltip("흐르는 빠르기")]
     [SerializeField, Min(0f)] private float flowSpeed = 1f;
 
@@ -60,6 +62,7 @@ public class AwakeningSilhouetteAura : MonoBehaviour
     private static readonly int FarRadiusId = Shader.PropertyToID("_FarRadius");
     private static readonly int RiseId = Shader.PropertyToID("_Rise");
     private static readonly int SparkleId = Shader.PropertyToID("_Sparkle");
+    private static readonly int WhiteId = Shader.PropertyToID("_White");
     private static readonly int UvRectId = Shader.PropertyToID("_SpriteUVRect");
     private static readonly int SpriteRectId = Shader.PropertyToID("_SpriteRectInQuad");
     private static readonly int QuadSizeId = Shader.PropertyToID("_QuadSize");
@@ -225,6 +228,7 @@ public class AwakeningSilhouetteAura : MonoBehaviour
         props.SetFloat(FarRadiusId, farRadius);
         props.SetFloat(RiseId, riseNow);
         props.SetFloat(SparkleId, sparkle);
+        props.SetFloat(WhiteId, whiteCore);
         props.SetVector(UvRectId, uvRect);
         props.SetVector(SpriteRectId, new Vector4(mx, mb, w, h));
         props.SetVector(QuadSizeId, new Vector4(size.x, size.y, 0f, 0f));
