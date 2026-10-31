@@ -311,6 +311,53 @@ public static class BossTestSceneBuilder
         ("FG_Front_Vine_B",  -27f, 1.0f, -1f),
     };
 
+    // 유적 근경: 밝은 것 2개(땅 뒤) + 어두운 것 1개(캐릭터 앞). 기준점이 아래 가운데라 땅 위에 놓는다.
+    private static readonly (string prefab, float x, float scale, float scaleX)[] Ruins =
+    {
+        ("FG_Back_Ruin_Pillar_Blue",  -27f, 1.0f,  1f),
+        ("FG_Back_Ruin_Block_Blue",     2f, 1.0f, -1f),
+        ("FG_Front_Ruin_Rubble_Dark", -15f, 0.9f,  1f),
+    };
+
+    private const string RuinMenu = "Tools/여울잔/보스 테스트 씬에 유적 근경 추가";
+
+    [MenuItem(RuinMenu)]
+    private static void AddRuinsMenu()
+    {
+        Undo.SetCurrentGroupName("유적 근경 추가");
+        int n = AddRuins(true);
+        EditorSceneManager.MarkSceneDirty(SceneManager.GetActiveScene());
+        Debug.Log($"[BossTestSceneBuilder] 유적 근경 {n}개를 Foreground_Ruins 아래에 놓았어요. 위치를 다듬고 Ctrl+S로 저장하세요.");
+    }
+
+    [MenuItem(RuinMenu, true)]
+    private static bool CanAddRuins() => !EditorApplication.isPlaying;
+
+    private static int AddRuins(bool undo)
+    {
+        GameObject root = GameObject.Find("Foreground_Ruins");
+        if (root == null)
+        {
+            root = new GameObject("Foreground_Ruins");
+            if (undo) Undo.RegisterCreatedObjectUndo(root, "유적 근경 추가");
+        }
+        int placed = 0;
+        for (int i = 0; i < Ruins.Length; i++)
+        {
+            var r = Ruins[i];
+            string name = "Ruin_" + i + "_" + r.prefab;
+            if (root.transform.Find(name) != null) continue;
+            GameObject go = InstantiatePrefab("Assets/Prefabs/Foreground/" + r.prefab + ".prefab", new Vector3(r.x, GroundTop - 0.15f, 0f));
+            if (go == null) continue;
+            if (undo) Undo.RegisterCreatedObjectUndo(go, "유적 근경 추가");
+            go.name = name;
+            go.transform.SetParent(root.transform, true);
+            go.transform.localScale = new Vector3(r.scale * r.scaleX, r.scale, 1f);
+            placed++;
+        }
+        return placed;
+    }
+
     private const string WideMenu = "Tools/여울잔/보스 테스트 씬에 넓은 덩굴 추가";
 
     // 씬을 다시 만들지 않고, 지금 열린 테스트 씬에 넓은 덩굴만 더한다 (직접 옮긴 덩굴은 그대로)
@@ -365,6 +412,7 @@ public static class BossTestSceneBuilder
     {
         GameObject root = new GameObject("Foreground_Vines");
         AddWideVines(false);
+        AddRuins(false);
         foreach (var v in Vines)
         {
             GameObject go = InstantiatePrefab("Assets/Prefabs/Foreground/" + v.prefab + ".prefab", new Vector3(v.x, GroundTop + CeilingBottom, 0f));
