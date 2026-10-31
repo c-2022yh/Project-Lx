@@ -479,7 +479,9 @@ public static class TutorialMapBuilder
         if (bg == null) bg = Undo.AddComponent<CavePanoramaBackground>(cave.gameObject);
 
         SerializedObject so = new SerializedObject(bg);
-        // 동굴 안 → 출구가 한 장에 다 있는 그림. 끝에서 출구 구멍(그림의 77% 지점)이 화면 가운데
+        // 동굴 안 → 출구가 한 장에 다 있는 그림. 끝에서 출구 구멍(그림의 77% 지점)이 화면 가운데.
+        // 그림은 화면 높이의 65%만 차지하고 위쪽은 어두운 동굴 천장색으로 채워 두었다
+        // (그림이 너무 크게 확대되지 않게 하면서 화면 위아래가 비지 않게).
         so.FindProperty("insideSprite").objectReferenceValue = null;
         so.FindProperty("exitSprite").objectReferenceValue = LoadSprite("BG_Cave_Panorama");
         so.FindProperty("exitFocus").floatValue = 0.77f;
