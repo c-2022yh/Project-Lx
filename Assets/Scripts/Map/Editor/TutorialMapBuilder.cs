@@ -56,7 +56,10 @@ public static class TutorialMapBuilder
     private const int MinX = 0, MaxX = 149, MinY = -5, MaxY = 24;
     private const int W = MaxX - MinX + 1, H = MaxY - MinY + 1;
     private const int CeilingBottom = 21;
-    private const int CameraRight = 140;   // 카메라가 보여주는 오른쪽 끝. 출구 포탈(x 145)은 이 밖
+    // 카메라가 보여주는 범위. 원래 튜토리얼처럼 바닥 아래·천장 위는 거의 안 보이게 붙인다.
+    private const int CameraRight = 140;   // 출구 포탈(x 145)은 이 밖이라 화면에 안 나온다
+    private const int CameraBottom = 0;    // 가장 낮은 바닥(시작, 높이 1) 아래로 1칸만
+    private const int CameraTop = 22;      // 천장(21~) 1칸만
 
     private static bool[,] solid;
 
@@ -401,9 +404,9 @@ public static class TutorialMapBuilder
 
         Undo.RecordObject(confiner, "튜토리얼 맵 다시 그리기");
         Undo.RecordObject(box, "튜토리얼 맵 다시 그리기");
-        confiner.position = new Vector3((MinX + CameraRight) * 0.5f, (MinY + MaxY + 1) * 0.5f, 0f);
+        confiner.position = new Vector3((MinX + CameraRight) * 0.5f, (CameraBottom + CameraTop) * 0.5f, 0f);
         box.offset = Vector2.zero;
-        box.size = new Vector2(CameraRight - MinX, H);
+        box.size = new Vector2(CameraRight - MinX, CameraTop - CameraBottom);
     }
 
     // ── 찾기 ───────────────────────────────
