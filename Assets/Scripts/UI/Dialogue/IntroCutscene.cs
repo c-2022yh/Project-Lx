@@ -42,6 +42,7 @@ public class IntroCutscene : MonoBehaviour
     private const float BarHeight = 96f;   // 1920×1080 기준
     private const float FloorY = -300f;    // 화면 가운데 기준 바닥 높이 (시안 560/720)
     private const float ActorHeight = 270f;
+    private const float GroundGrassPx = 40f;   // Intro_Ground 그림에서 땅 윗면 위로 풀이 나온 높이
     private const float ActorYScale = 0.75f;   // 게임 속 Player 그림과 같은 비율 (세로 0.75배)
     // 320×480 판 그림(무릎·일어나기·손 뻗기): 발끝이 판 아래에서 17px 위, 몸 가운데가 대기 그림보다 14px 왼쪽에 있다
     private const float FrameFootPx = 17f;
@@ -458,6 +459,15 @@ public class IntroCutscene : MonoBehaviour
         Stretch(NewImage("Near", cave, Color.white, Load("Intro_Cave_near")).rectTransform, 0f);
         wall = NewImage("RightWall", cave, Color.white, Load("Intro_Cave_wall"));
         Stretch(wall.rectTransform, 0f);
+
+        // 바닥: 게임과 같은 땅 타일(파랑 + 풀)을 한 줄로 깐 그림. 윗면이 캐릭터 발(FloorY)에 오게.
+        // 그림 위쪽 GroundGrassPx만큼은 풀이 땅 위로 솟은 부분이다.
+        Image ground = NewImage("Ground", cave, Color.white, Load("Intro_Ground"));
+        RectTransform gr = ground.rectTransform;
+        gr.anchorMin = gr.anchorMax = new Vector2(0.5f, 0.5f);
+        gr.pivot = new Vector2(0.5f, 1f);
+        gr.sizeDelta = ground.sprite != null ? new Vector2(ground.sprite.rect.width, ground.sprite.rect.height) : new Vector2(1920f, 280f);
+        gr.anchoredPosition = new Vector2(0f, FloorY + GroundGrassPx);
         Stretch(NewImage("Vignette", cave, Color.white, Load("Intro_Cave_vignette")).rectTransform, 0f);
 
         // 보주
