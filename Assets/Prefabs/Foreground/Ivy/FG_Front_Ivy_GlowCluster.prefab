@@ -9,7 +9,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8954202461133117836}
-  - component: {fileID: 3584184979772048937}
   m_Layer: 16
   m_Name: FG_Front_Ivy_GlowCluster
   m_TagString: Untagged
@@ -38,22 +37,6 @@ Transform:
   - {fileID: 1410305972297639412}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &3584184979772048937
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2714569670799658435}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9ab083e4093640d19a69776c53f120ea, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  targetCamera: {fileID: 0}
-  speed: 1.15
-  moveY: 0
-  ySpeed: 1.1
 --- !u!1 &8084939962845313565
 GameObject:
   m_ObjectHideFlags: 0
