@@ -9,7 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1056721442930674839}
-  m_Layer: 0
+  m_Layer: 16
   m_Name: FG_Back_Vine_B
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -42,7 +42,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3133162345147277354}
   - component: {fileID: 3685074910233709810}
-  m_Layer: 0
+  m_Layer: 16
   m_Name: Art
   m_TagString: Untagged
   m_Icon: {fileID: 0}

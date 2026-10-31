@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1059064669450062994}
   - component: {fileID: 3984989091649982123}
-  m_Layer: 0
+  m_Layer: 16
   m_Name: FG_Front_Ruin_Pillar_Dark
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -59,7 +59,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7037250162770565953}
   - component: {fileID: 7347917268653313324}
-  m_Layer: 0
+  m_Layer: 16
   m_Name: Art
   m_TagString: Untagged
   m_Icon: {fileID: 0}

@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 725533506235046834}
   - component: {fileID: 1260487374214629360}
-  m_Layer: 0
+  m_Layer: 16
   m_Name: FG_Front_Ruin_Block_Blue
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -59,7 +59,7 @@ GameObject:
   m_Component:
   - component: {fileID: 936751516711044938}
   - component: {fileID: 8788701130774353823}
-  m_Layer: 0
+  m_Layer: 16
   m_Name: Art
   m_TagString: Untagged
   m_Icon: {fileID: 0}

@@ -9,7 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7693320397297071316}
-  m_Layer: 0
+  m_Layer: 16
   m_Name: FG_Back_Ruin_Block_Dark
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -42,7 +42,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5367989974804658079}
   - component: {fileID: 7604982884958295001}
-  m_Layer: 0
+  m_Layer: 16
   m_Name: Art
   m_TagString: Untagged
   m_Icon: {fileID: 0}

@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2579443798599344173}
   - component: {fileID: 2294875207923445223}
-  m_Layer: 0
+  m_Layer: 16
   m_Name: FG_Front_Ruin_Rubble_Dark
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -59,7 +59,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3806378627267937116}
   - component: {fileID: 5911141365466700942}
-  m_Layer: 0
+  m_Layer: 16
   m_Name: Art
   m_TagString: Untagged
   m_Icon: {fileID: 0}

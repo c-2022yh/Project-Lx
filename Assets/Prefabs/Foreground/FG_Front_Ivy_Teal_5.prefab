@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6685537573861760858}
   - component: {fileID: 5361548403129796569}
-  m_Layer: 0
+  m_Layer: 16
   m_Name: FG_Front_Ivy_Teal_5
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -59,7 +59,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5103142884752565967}
   - component: {fileID: 6582533547237648375}
-  m_Layer: 0
+  m_Layer: 16
   m_Name: Art
   m_TagString: Untagged
   m_Icon: {fileID: 0}

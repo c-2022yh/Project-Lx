@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2792968774280652931}
   - component: {fileID: 337375745954577079}
-  m_Layer: 0
+  m_Layer: 16
   m_Name: FG_Front_Ruin_Beam_Blue
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -59,7 +59,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1319761668994570170}
   - component: {fileID: 4204508978700121918}
-  m_Layer: 0
+  m_Layer: 16
   m_Name: Art
   m_TagString: Untagged
   m_Icon: {fileID: 0}

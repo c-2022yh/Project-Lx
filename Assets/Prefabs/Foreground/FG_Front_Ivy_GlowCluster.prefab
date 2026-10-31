@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 8954202461133117836}
   - component: {fileID: 3584184979772048937}
-  m_Layer: 0
+  m_Layer: 16
   m_Name: FG_Front_Ivy_GlowCluster
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -64,7 +64,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4971721892674245537}
   - component: {fileID: 7800660121373414342}
-  m_Layer: 0
+  m_Layer: 16
   m_Name: Art
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -155,7 +155,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4998762512487005622}
   - component: {fileID: 4496491993035482404}
-  m_Layer: 0
+  m_Layer: 16
   m_Name: Glow Light 1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -239,7 +239,7 @@ GameObject:
   m_Component:
   - component: {fileID: 8045391687418856683}
   - component: {fileID: 3480326524837752647}
-  m_Layer: 0
+  m_Layer: 16
   m_Name: Glow Light 2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -323,7 +323,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6498113425908759611}
   - component: {fileID: 1807161417776466781}
-  m_Layer: 0
+  m_Layer: 16
   m_Name: Glow Light 3
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -407,7 +407,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4042259504365985635}
   - component: {fileID: 1164125599612353902}
-  m_Layer: 0
+  m_Layer: 16
   m_Name: Glow Light 4
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -491,7 +491,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1410305972297639412}
   - component: {fileID: 2011301431604912724}
-  m_Layer: 0
+  m_Layer: 16
   m_Name: Glow Light 5
   m_TagString: Untagged
   m_Icon: {fileID: 0}

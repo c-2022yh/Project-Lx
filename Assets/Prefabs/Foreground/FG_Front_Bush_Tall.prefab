@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4537288206566149113}
   - component: {fileID: 292280490604760442}
-  m_Layer: 0
+  m_Layer: 16
   m_Name: FG_Front_Bush_Tall
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -59,7 +59,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3177599321756493777}
   - component: {fileID: 8662392176339272844}
-  m_Layer: 0
+  m_Layer: 16
   m_Name: Art
   m_TagString: Untagged
   m_Icon: {fileID: 0}

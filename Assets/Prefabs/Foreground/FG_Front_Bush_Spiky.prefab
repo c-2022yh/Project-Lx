@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3871588257795792565}
   - component: {fileID: 4265755946436972817}
-  m_Layer: 0
+  m_Layer: 16
   m_Name: FG_Front_Bush_Spiky
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -59,7 +59,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3445206567820738903}
   - component: {fileID: 3265373439465085919}
-  m_Layer: 0
+  m_Layer: 16
   m_Name: Art
   m_TagString: Untagged
   m_Icon: {fileID: 0}

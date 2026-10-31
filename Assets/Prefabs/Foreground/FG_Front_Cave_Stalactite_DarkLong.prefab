@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2550931999331468792}
   - component: {fileID: 2756987710823810975}
-  m_Layer: 0
+  m_Layer: 16
   m_Name: FG_Front_Cave_Stalactite_DarkLong
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -59,7 +59,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6810849202250165935}
   - component: {fileID: 8831376179745137393}
-  m_Layer: 0
+  m_Layer: 16
   m_Name: Art
   m_TagString: Untagged
   m_Icon: {fileID: 0}

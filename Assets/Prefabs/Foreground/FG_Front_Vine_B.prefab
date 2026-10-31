@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7561450295802462868}
   - component: {fileID: 5713896762198572503}
-  m_Layer: 0
+  m_Layer: 16
   m_Name: FG_Front_Vine_B
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -59,7 +59,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1404231811213032873}
   - component: {fileID: 384977157435173496}
-  m_Layer: 0
+  m_Layer: 16
   m_Name: Art
   m_TagString: Untagged
   m_Icon: {fileID: 0}

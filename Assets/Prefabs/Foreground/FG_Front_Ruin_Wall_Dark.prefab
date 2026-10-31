@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6224536943269239948}
   - component: {fileID: 651891991149942597}
-  m_Layer: 0
+  m_Layer: 16
   m_Name: FG_Front_Ruin_Wall_Dark
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -59,7 +59,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2084144545116809939}
   - component: {fileID: 7811740529767630222}
-  m_Layer: 0
+  m_Layer: 16
   m_Name: Art
   m_TagString: Untagged
   m_Icon: {fileID: 0}

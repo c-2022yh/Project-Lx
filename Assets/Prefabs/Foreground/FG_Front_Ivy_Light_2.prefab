@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 211753987090734567}
   - component: {fileID: 5722476748231562286}
-  m_Layer: 0
+  m_Layer: 16
   m_Name: FG_Front_Ivy_Light_2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -59,7 +59,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6673410043397760699}
   - component: {fileID: 2224890053491522818}
-  m_Layer: 0
+  m_Layer: 16
   m_Name: Art
   m_TagString: Untagged
   m_Icon: {fileID: 0}
