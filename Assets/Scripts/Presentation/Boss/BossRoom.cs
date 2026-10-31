@@ -79,6 +79,12 @@ public class BossRoom : MonoBehaviour
     [SerializeField] private bool approachWarning = true;
     [Tooltip("보스방 가장자리에서 이 거리(칸)부터 예고가 시작된다")]
     [SerializeField, Min(1f)] private float warnDistance = 14f;
+    [Tooltip("예고 구간에 들어가기 전에 천장에서 돌이 떨어진다 (맞으면 체력 감소)")]
+    [SerializeField] private bool approachRocks = true;
+    [SerializeField, Min(0)] private int approachRockCount = 3;
+    [SerializeField, Min(0f)] private float approachRockDamage = 1f;
+    [Tooltip("예고 구간 바깥 이 거리(칸) 안에 들어오면 돌이 떨어지기 시작")]
+    [SerializeField, Min(1f)] private float approachRockRange = 8f;
     [Header("Health Bar")]
     [Tooltip("보스 HP바를 띄운다 (지금은 끔). 끄면 골렘 머리 위 작은 HP바도 같이 숨긴다.")]
     [SerializeField] private bool showHealthBar = false;
@@ -108,6 +114,7 @@ public class BossRoom : MonoBehaviour
     private SpriteRenderer leakLeft, leakRight;
     private float nextRumble, leakStrength;
     private Material leakMat;
+    private bool rocksDropped;
     private bool hasFragmentCenter;
 
     public bool IsCleared => state == State.Cleared;
@@ -168,6 +175,13 @@ public class BossRoom : MonoBehaviour
                 side = px < room.center.x ? -1 : 1;
                 if (d > 0f && d < warnDistance && Mathf.Abs(playerT.position.y - room.center.y) < room.size.y + 4f)
                     near = 1f - d / warnDistance;
+                // 예고 구간에 닿기 전: 낙석 (한 번만)
+                if (approachRocks && !rocksDropped && approachRockCount > 0 && d > warnDistance && d < warnDistance + approachRockRange
+                    && Mathf.Abs(playerT.position.y - room.center.y) < room.size.y + 4f)
+                {
+                    rocksDropped = true;
+                    StartCoroutine(ApproachRocks(side));
+                }
             }
         }
 
@@ -186,6 +200,20 @@ public class BossRoom : MonoBehaviour
             Bounds fall = new Bounds(new Vector3(x - side * 3f, room.max.y, 0f), new Vector3(8f, room.size.y, 1f));
             BossStageFx.RockFall(fall, Mathf.RoundToInt(Mathf.Lerp(2f, 6f, near)), 0.6f);
             BossFog.LandingDust(new Vector3(x, room.min.y, 0f), 2.5f);
+        }
+    }
+
+    // 플레이어 앞쪽(보스방 방향)에 하나씩 떨어진다. 멈춰 있으면 머리 위로도 떨어지니 피해야 한다.
+    private IEnumerator ApproachRocks(int side)
+    {
+        float toRoom = -side;   // 플레이어가 왼쪽(side=-1)이면 오른쪽(+1)으로 가는 중
+        float[] ahead = { 2.5f, 1.2f, 0f, 1.8f, 0.6f };
+        for (int i = 0; i < approachRockCount; i++)
+        {
+            if (playerT == null || state != State.Idle) yield break;
+            Vector3 at = new Vector3(playerT.position.x + toRoom * ahead[i % ahead.Length], playerT.position.y, 0f);
+            FallingRockHazard.Drop(at, approachRockDamage, 10f);
+            yield return new WaitForSeconds(0.9f);
         }
     }
 
@@ -596,6 +624,7 @@ public class BossRoom : MonoBehaviour
         }
 
         if (useRoomCamera) SetRoomCamera(false);
+        rocksDropped = false;   // 다시 다가오면 또 떨어짐
 
         if (boss != null)
         {

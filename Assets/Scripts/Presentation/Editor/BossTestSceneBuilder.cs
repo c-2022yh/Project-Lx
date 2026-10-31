@@ -300,15 +300,15 @@ public static class BossTestSceneBuilder
         return false;
     }
 
-    // 가로로 넓은 덩굴: 넓은 덩어리 그림을 옆으로 늘려서 천장 밑에 길게 깐다 (scaleX가 가로 늘림)
+    // 가로로 넓은 덩굴: 천장에서 U자로 늘어진 넓은 덩굴(Vine_A·B)을 천장 밑에 깐다 (scaleX 음수 = 좌우 뒤집기)
     private static readonly (string prefab, float x, float scale, float scaleX)[] WideVines =
     {
-        ("FG_Back_Ivy_Cluster",      -33f, 1.0f,  1.5f),
-        ("FG_Back_Ivy_OrbCluster",   -21f, 0.9f, -1.6f),
-        ("FG_Back_Ivy_GlowCluster",   -9f, 1.0f,  1.5f),
-        ("FG_Back_Ivy_Cluster",        5f, 0.9f, -1.6f),
-        ("FG_Back_Ivy_OrbCluster",    36f, 0.9f,  1.5f),
-        ("FG_Front_Ivy_GlowCluster", -27f, 0.8f, -1.4f),
+        ("FG_Back_Vine_A",   -33f, 1.2f,  1f),
+        ("FG_Back_Vine_B",   -21f, 1.1f, -1f),
+        ("FG_Back_Vine_A",    -8f, 1.2f, -1f),
+        ("FG_Back_Vine_B",     5f, 1.1f,  1f),
+        ("FG_Back_Vine_A",    36f, 1.1f,  1f),
+        ("FG_Front_Vine_B",  -27f, 1.0f, -1f),
     };
 
     private const string WideMenu = "Tools/여울잔/보스 테스트 씬에 넓은 덩굴 추가";
@@ -334,6 +334,16 @@ public static class BossTestSceneBuilder
             root = new GameObject("Foreground_Vines");
             if (undo) Undo.RegisterCreatedObjectUndo(root, "넓은 덩굴 추가");
         }
+        // 예전 넓은 덩굴(담쟁이 덩어리)이 남아 있으면 지운다
+        System.Collections.Generic.HashSet<string> wanted = new System.Collections.Generic.HashSet<string>();
+        for (int i = 0; i < WideVines.Length; i++) wanted.Add("Wide_" + i + "_" + WideVines[i].prefab);
+        for (int c = root.transform.childCount - 1; c >= 0; c--)
+        {
+            Transform ch = root.transform.GetChild(c);
+            if (!ch.name.StartsWith("Wide_") || wanted.Contains(ch.name)) continue;
+            if (undo) Undo.DestroyObjectImmediate(ch.gameObject); else Object.DestroyImmediate(ch.gameObject);
+        }
+
         int placed = 0;
         for (int i = 0; i < WideVines.Length; i++)
         {
