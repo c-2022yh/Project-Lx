@@ -69,7 +69,9 @@ public class AwakeningSlashFx : MonoBehaviour
     {
         if (!awakening.IsAwakened || pattern == null || pattern.attackEffectPrefab == null) return;
         float life = Mathf.Max(minDuration, pattern.effectDuration);
-        Spawn(pattern, pos, rot, dir, echoScale, echoColor, life, pattern.followPlayer);
+        Color col = AwakeningColors.Main(this);   // 보주마다 원래 색 (기본 파랑)
+        col.a = echoColor.a;
+        Spawn(pattern, pos, rot, dir, echoScale, col, life, pattern.followPlayer);
     }
 
     // 베기 프리팹을 그림만 남겨 복사한다 (꺼진 상태에서 복사해서 스크립트가 한 번도 돌지 않게)
