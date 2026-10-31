@@ -15,6 +15,10 @@ using UnityEngine;
 /// 잡은 보스방은 FieldObjectState로 기억해서 다시 와도 문이 열려 있고 보스가 없다.
 /// 보스 오브젝트에 BossMarker를 붙이면 이름·칭호가 카드와 HP바에 나온다.
 ///
+/// 돌문·안개(11.01): 문은 돌기둥 그림으로 바뀌고 떨어질 때 돌가루가 퍼진다. 바닥에 안개가 깔리고,
+/// 보스 자리로 안개가 모였다가 보스가 나오는 순간 흩어진다. 잡으면 안개가 걷힌다. (BossFog)
+/// HP바는 기본으로 끔 (showHealthBar).
+///
 /// 달빛 연출(moonPresentation, 11.01): 방이 어두워지고 돌가루·달빛 → 2페이즈 충격파·붉은 빛
 /// → 격파 빛살 → 처치한 뒤에야 보주가 처음 드러나 플레이어에게 날아간다. (BossFx, BossScreenFx, BossOrbReveal)
 /// </summary>
@@ -63,6 +67,14 @@ public class BossRoom : MonoBehaviour
     [SerializeField] private bool moonPresentation = true;
     [Tooltip("격파 뒤 처음 모습을 드러내는 보주 그림. 비우면 코드로 그린 빛 구슬을 쓴다.")]
     [SerializeField] private Sprite revealOrbSprite;
+    [Header("Look (돌문·안개)")]
+    [Tooltip("문을 돌기둥 그림(Resources/Presentation/Boss/BossDoor_StonePillar)으로 바꾼다. 문 충돌 범위는 그대로.")]
+    [SerializeField] private bool stonePillarDoors = true;
+    [Tooltip("바닥 안개 + 보스 등장 때 안개가 모였다 흩어짐 + 잡으면 걷힘")]
+    [SerializeField] private bool fog = true;
+    [Header("Health Bar")]
+    [Tooltip("보스 HP바를 띄운다 (지금은 끔)")]
+    [SerializeField] private bool showHealthBar = false;
     [Tooltip("HP바에서 2페이즈가 되는 자리(체력 비율). 골렘의 Phase Two Health와 맞춰 둔다.")]
     [SerializeField, Range(0f, 1f)] private float phaseMark = 0.5f;
 
@@ -81,6 +93,7 @@ public class BossRoom : MonoBehaviour
     private BossMoonBeam beam;
     private GolemBossController golem;
     private Vector3 lastFragmentCenter;
+    private BossFog fogLayer;
     private bool hasFragmentCenter;
 
     public bool IsCleared => state == State.Cleared;
@@ -97,6 +110,7 @@ public class BossRoom : MonoBehaviour
         {
             if (doors[i] == null) continue;
             doorClosedPositions[i] = doors[i].position;
+            if (stonePillarDoors) DressDoor(doors[i]);
             doors[i].gameObject.SetActive(false);
         }
 
@@ -148,6 +162,12 @@ public class BossRoom : MonoBehaviour
             BossScreenFx.Letterbox(true, 0.6f);
             BossFx.CeilingDust(RoomBounds(), 2.2f);
         }
+        if (fog)
+        {
+            if (fogLayer == null) fogLayer = BossFog.Create(RoomBounds());
+            fogLayer.SetTint(BossFog.FogColor);
+            fogLayer.SetDensity(1f, 1.8f);
+        }
 
         yield return new WaitForSecondsRealtime(introDelay);
 
@@ -170,12 +190,22 @@ public class BossRoom : MonoBehaviour
             BossScreenFx.Darken(0.2f, 1.2f);
         }
 
+        // 보스 자리로 안개가 모인다
+        Vector3 revealAt = bossStartPosition + Vector3.up * 1.5f;
+        if (fog) BossFog.Gather(revealAt, 6f, card * 0.5f);
+
         yield return new WaitForSecondsRealtime(card * 0.5f);
 
         if (!boss.gameObject.activeSelf)
         {
             boss.transform.position = bossStartPosition;
             boss.gameObject.SetActive(true);
+        }
+        // 모인 안개가 흩어지며 보스가 드러난다
+        if (fog)
+        {
+            BossFog.Burst(BossCenter(), 7f);
+            CameraShake.Shake(CameraShake.Light);
         }
 
         golem = boss.GetComponent<GolemBossController>();
@@ -185,7 +215,7 @@ public class BossRoom : MonoBehaviour
             golem.onPhaseTwo.AddListener(HandlePhaseTwo);
         }
 
-        BossHealthBarUI.Show(boss, bossName, golem != null ? phaseMark : -1f);
+        if (showHealthBar) BossHealthBarUI.Show(boss, bossName, golem != null ? phaseMark : -1f);
         state = State.Fighting;
 
         if (moonPresentation)
@@ -219,7 +249,12 @@ public class BossRoom : MonoBehaviour
         BossScreenFx.Flash(new Color(1f, 0.75f, 0.5f, 0.55f), 0.9f);
         BossScreenFx.Tint(true, 1.2f);
         if (beam != null) beam.SetMood(BossMoonBeam.Mood.Warm, 1f);
-        BossHealthBarUI.SetPhaseTwo(true);
+        if (showHealthBar) BossHealthBarUI.SetPhaseTwo(true);
+        if (fogLayer != null)
+        {
+            fogLayer.SetTint(new Color(1f, 0.78f, 0.7f, 1f));   // 붉은 빛에 물든 안개
+            fogLayer.SetDensity(1.3f, 0.8f);
+        }
         StartCoroutine(PhaseLetterbox());
     }
 
@@ -255,12 +290,13 @@ public class BossRoom : MonoBehaviour
         HitStop.Cancel();   // 멈춤이 남아 있으면 슬로모션이 멈춤에 묻히므로 먼저 끝낸다
         HitStop.Slow(clearSlowScale, clearSlowSeconds);
 
-        BossHealthBarUI.Hide();
+        if (showHealthBar) BossHealthBarUI.Hide();
 
         // 갈라진 틈에서 빛이 터지고 빛 조각이 흩어진다. 방은 다시 차가운 달빛으로.
         if (moonPresentation)
         {
             BossFx.DefeatBurst(center);
+            if (fogLayer != null) { fogLayer.SetTint(BossFog.FogColor); fogLayer.Clear(3f); fogLayer = null; }   // 안개가 걷힌다
             BossScreenFx.Tint(false, 1.4f);
             if (beam != null) beam.SetMood(BossMoonBeam.Mood.Bright, 1.6f);
         }
@@ -366,6 +402,7 @@ public class BossRoom : MonoBehaviour
     {
         BossScreenFx.Clear();
         BossHealthBarUI.SetPhaseTwo(false);
+        if (fogLayer != null) { fogLayer.Clear(0.6f); fogLayer = null; }
         if (beam != null) beam.FadeAndDestroy(0.4f);
         beam = null;
     }
@@ -463,7 +500,45 @@ public class BossRoom : MonoBehaviour
         {
             CameraShake.Shake(CameraShake.Medium);
             GameAudio.Play(doorCloseSound, transform.position);
+            if (fog || stonePillarDoors)
+                foreach (Transform door in doors)
+                    if (door != null) BossFog.DoorDust(DoorBottom(door), 3f);   // 돌가루
         }
+    }
+
+    // 문을 돌기둥 그림으로: 원래 그림은 끄고, 같은 높이의 돌기둥을 자식으로 붙인다
+    private static void DressDoor(Transform door)
+    {
+        Sprite pillar = Resources.Load<Sprite>("Presentation/Boss/BossDoor_StonePillar");
+        if (pillar == null || door.Find("StonePillar") != null) return;
+
+        SpriteRenderer old = door.GetComponent<SpriteRenderer>();
+        BoxCollider2D col = door.GetComponent<BoxCollider2D>();
+        float h = col != null ? col.size.y * Mathf.Abs(door.lossyScale.y) : old != null ? old.bounds.size.y : 5f;
+        float w = col != null ? col.size.x * Mathf.Abs(door.lossyScale.x) : 1f;
+        Vector3 center = col != null ? (Vector3)(Vector2)col.bounds.center : door.position;
+
+        GameObject go = new GameObject("StonePillar");
+        go.transform.SetParent(door, true);
+        go.transform.position = new Vector3(center.x, center.y, door.position.z);
+        SpriteRenderer sr = go.AddComponent<SpriteRenderer>();
+        sr.sprite = pillar;
+        sr.sortingLayerName = old != null ? SortingLayer.IDToName(old.sortingLayerID) : "Ground";
+        sr.sortingOrder = old != null ? old.sortingOrder : 5;
+        if (old != null) { sr.sharedMaterial = old.sharedMaterial; old.enabled = false; }
+
+        // 높이는 문에 맞추고, 폭은 너무 넓어지지 않게 (충돌 폭의 1.8배까지)
+        float k = h / pillar.bounds.size.y;
+        float kx = Mathf.Min(k, w * 1.8f / pillar.bounds.size.x);
+        Vector3 ls = door.lossyScale;
+        go.transform.localScale = new Vector3(kx / Mathf.Max(0.0001f, Mathf.Abs(ls.x)), k / Mathf.Max(0.0001f, Mathf.Abs(ls.y)), 1f);
+    }
+
+    private static Vector3 DoorBottom(Transform door)
+    {
+        BoxCollider2D col = door.GetComponent<BoxCollider2D>();
+        if (col != null) return new Vector3(col.bounds.center.x, col.bounds.min.y, 0f);
+        return door.position;
     }
 
     // ───────────── 카메라 ─────────────
