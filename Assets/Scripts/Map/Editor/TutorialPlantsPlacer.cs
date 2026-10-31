@@ -126,6 +126,35 @@ public static class TutorialPlantsPlacer
     [MenuItem(CaveMenuPath, true)]
     private static bool CanPlaceCave() => !EditorApplication.isPlaying;
 
+    // 지우기: 메뉴로 놓은 묶음(Foreground_Plants / Foreground_CaveRocks)을 통째로 지운다. Ctrl+Z로 되돌릴 수 있다.
+    // 하나만 지우려면 하이어라키에서 그 오브젝트를 골라 Delete.
+    private const string ClearMenuPath = "Tools/Map/튜토리얼 근경 지우기/수풀·덩굴";
+    private const string ClearCaveMenuPath = "Tools/Map/튜토리얼 근경 지우기/동굴 근경 (종유석·바위)";
+
+    [MenuItem(ClearMenuPath)]
+    private static void Clear() => ClearRoot(RootName);
+
+    [MenuItem(ClearCaveMenuPath)]
+    private static void ClearCave() => ClearRoot(CaveRootName);
+
+    [MenuItem(ClearMenuPath, true)]
+    [MenuItem(ClearCaveMenuPath, true)]
+    private static bool CanClear() => !EditorApplication.isPlaying;
+
+    private static void ClearRoot(string rootName)
+    {
+        Scene scene = SceneManager.GetActiveScene();
+        foreach (GameObject go in scene.GetRootGameObjects())
+        {
+            if (go.name != rootName) continue;
+            Undo.DestroyObjectImmediate(go);
+            EditorSceneManager.MarkSceneDirty(scene);
+            Debug.Log($"[TutorialPlantsPlacer] {rootName}를 지웠어요. Ctrl+S로 저장하세요 (되돌리려면 Ctrl+Z).");
+            return;
+        }
+        Debug.Log($"[TutorialPlantsPlacer] 이 씬에 {rootName}가 없어요.");
+    }
+
     private static void PlaceAll(string rootName, (string prefab, float x)[] hanging, (string prefab, float x)[] ground, string label)
     {
         Scene scene = SceneManager.GetActiveScene();
