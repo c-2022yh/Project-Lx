@@ -13,4 +13,4 @@ MonoBehaviour:
   m_Name: RFX_BlueFan
   m_EditorClassIdentifier: Assembly-CSharp::StatRelicEffect
   statType: 0
-  amount: 1
+  amount: 20
