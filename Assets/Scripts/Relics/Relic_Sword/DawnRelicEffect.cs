@@ -35,7 +35,6 @@ public class DawnRelicEffect : RelicEffect
     //유물 장착 시 런타임 생성
     [Header("Audio")]
     [SerializeField] private SoundCue extraAttackSound = new SoundCue();
-    [SerializeField] private SoundCue extraImpactSound = new SoundCue();
 
     public override IRelicRuntime CreateRuntime(Player p)
     {
@@ -117,7 +116,8 @@ public class DawnRelicEffect : RelicEffect
             AttackPattern pattern,
             Vector3 originalSpawnPosition,
             Quaternion originalRotation,
-            float direction)
+            float direction,
+            AttackAudioContext originalImpact)
         {
             if (!isEquipped) return;
 
@@ -130,7 +130,8 @@ public class DawnRelicEffect : RelicEffect
                     pattern,
                     originalSpawnPosition,
                     originalRotation,
-                    direction
+                    direction,
+                    originalImpact?.CreateLinkedImpact(ImpactSoundMode.OncePerTarget)
                 )
             );
         }
@@ -139,7 +140,8 @@ public class DawnRelicEffect : RelicEffect
             AttackPattern pattern,
             Vector3 originalSpawnPosition,
             Quaternion originalRotation,
-            float direction)
+            float direction,
+            AttackAudioContext linkedImpact)
         {
             //추가 공격의 시간차
             if (extraAttackDelay > 0f)
@@ -203,7 +205,7 @@ public class DawnRelicEffect : RelicEffect
 
             //추가 공격에 피해 정보 전달
             damageInfo.suppressKnockback = true;
-            damageInfo.impactAudio = new AttackAudioContext(audioSettings.extraImpactSound, ImpactSoundMode.OncePerTarget, player.transform);
+            damageInfo.impactAudio = linkedImpact;
             GameAudio.Play(audioSettings.extraAttackSound, spawnPosition, player.transform);
             hitbox.SetAttackInfo(damageInfo, dir);
 

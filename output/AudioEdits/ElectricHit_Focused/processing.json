@@ -1,0 +1,32 @@
+[
+  {
+    "file": "Electric_Hit_1_S_PitchPlus5_Focused.wav",
+    "duration_seconds": 0.32,
+    "pitch_semitones": 5,
+    "high_shelf_hz": 5000,
+    "high_shelf_db": -4.5,
+    "decay_start_seconds": 0.085,
+    "decay_time_constant_seconds": 0.06,
+    "peak_dbfs": -6.69
+  },
+  {
+    "file": "Electric_Hit_2_S_PitchPlus5_Focused.wav",
+    "duration_seconds": 0.32,
+    "pitch_semitones": 5,
+    "high_shelf_hz": 5000,
+    "high_shelf_db": -4.5,
+    "decay_start_seconds": 0.085,
+    "decay_time_constant_seconds": 0.06,
+    "peak_dbfs": -5.05
+  },
+  {
+    "file": "Electric_Hit_3_S_PitchPlus5_Focused.wav",
+    "duration_seconds": 0.32,
+    "pitch_semitones": 5,
+    "high_shelf_hz": 5000,
+    "high_shelf_db": -4.5,
+    "decay_start_seconds": 0.085,
+    "decay_time_constant_seconds": 0.06,
+    "peak_dbfs": -3.04
+  }
+]

@@ -1,0 +1,24 @@
+[
+  {
+    "file": "Impact_77_Slash_Light_Plus2.wav",
+    "pitch_semitones": 2,
+    "playback_speed_factor": 1.122462048309373,
+    "duration_seconds": 0.44545833333333335,
+    "low_shelf_hz": 250,
+    "low_shelf_db": -5,
+    "source_kept_seconds": 0.5,
+    "peak_dbfs": -1.55,
+    "output_gain_db": 0.0
+  },
+  {
+    "file": "Impact_77_Slash_Swift_Plus4.wav",
+    "pitch_semitones": 4,
+    "playback_speed_factor": 1.2599210498948732,
+    "duration_seconds": 0.3968541666666667,
+    "low_shelf_hz": 250,
+    "low_shelf_db": -5,
+    "source_kept_seconds": 0.5,
+    "peak_dbfs": -1.86,
+    "output_gain_db": 0.0
+  }
+]

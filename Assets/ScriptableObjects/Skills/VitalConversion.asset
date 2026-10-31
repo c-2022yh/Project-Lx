@@ -19,7 +19,7 @@ MonoBehaviour:
   audio:
     castSound:
       channel: 0
-      clip: {fileID: 0}
+      clip: {fileID: 8300000, guid: 82e5fa989fe1217468b1a3ed6434514a, type: 3}
       clips:
       - {fileID: 0}
       volume: 1
@@ -34,7 +34,7 @@ MonoBehaviour:
       fallbackSound: 5
     releaseSound:
       channel: 0
-      clip: {fileID: 0}
+      clip: {fileID: 8300000, guid: a5bae2bc4c98acf42a1f104c3b2d7d0c, type: 3}
       clips:
       - {fileID: 0}
       volume: 1
