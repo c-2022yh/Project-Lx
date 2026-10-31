@@ -392,7 +392,7 @@ MonoBehaviour:
   bufferTime: 0.15
   dashSpeed: 70
   dashDuration: 0.1
-  dashCooldown: 0.5
+  dashCooldown: 1.2
   lastDashTime: 0
   isDashUnlocked: 0
   airControlMin: 0.8

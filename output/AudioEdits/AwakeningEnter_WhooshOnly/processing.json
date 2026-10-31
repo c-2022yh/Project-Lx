@@ -1,7 +1,0 @@
-{
-  "file": "SFX_AwakeningEnter_WhooshOnly.wav",
-  "duration_seconds": 2.25,
-  "change": "Removed added bell layer; retained previous wind envelope and gain",
-  "whoosh_gain_db": 4,
-  "peak_dbfs": -13.67
-}

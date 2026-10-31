@@ -353,7 +353,7 @@ MonoBehaviour:
     fallbackSound: 5
   deathSound:
     channel: 0
-    clip: {fileID: 0}
+    clip: {fileID: 8300000, guid: 6be4a38210c89164395b9f25d007d872, type: 3}
     clips:
     - {fileID: 0}
     volume: 1

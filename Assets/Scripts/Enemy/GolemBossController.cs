@@ -118,6 +118,7 @@ public class GolemBossController : MonoBehaviour
     [SerializeField] private Color summonWarningColor = new Color(0.65f, 0.2f, 1f, 0.3f);
 
     private readonly List<GolemBossArea> warnings = new List<GolemBossArea>();
+    private SoundHandle attackWarningVoice;
     private readonly List<float> warningDueTimes = new List<float>();
     private readonly List<GameObject> minions = new List<GameObject>();
     private readonly List<GameObject> summonChoices = new List<GameObject>();
@@ -501,7 +502,6 @@ public class GolemBossController : MonoBehaviour
         rocksMarked = 0;
         nextRockTime = 0f;
         Enter(State.Prepare);
-        GameAudio.Play(current.warningSound, transform.position, transform);
         if (next != Pattern.Rockfall)
         {
             float floorY = roomFloorY;
@@ -520,6 +520,7 @@ public class GolemBossController : MonoBehaviour
             AddWarning(new Vector2(attack.center.x, attack.yMin), attack.size, current.warningTime, attackWarningColor);
         }
         else MarkRock();
+        attackWarningVoice = GameAudio.Play(current.warningSound, transform.position, transform, true);
     }
 
     private float FeetY => bodyCollider.bounds.min.y;
@@ -535,9 +536,10 @@ public class GolemBossController : MonoBehaviour
             area.SetProgress(1f - (warningDueTimes[i] - elapsed) / Mathf.Max(0.1f, current.warningTime));
             if (elapsed >= warningDueTimes[i])
             {
+                attackWarningVoice.Stop();
                 area.Commit(DamageInfo.Create(stats.Offense, current.damage, gameObject), targetLayers,
                     current.activeTime, current.impactPrefab);
-                GameAudio.Play(current.impactSound, area.Center);
+                GameAudio.Play(current.impactSound, area.Center, transform);
             }
         }
         float finishTime = current.warningTime;
@@ -694,6 +696,7 @@ public class GolemBossController : MonoBehaviour
 
     private void CancelWarnings()
     {
+        attackWarningVoice.Stop();
         foreach (var area in warnings) if (area != null) area.CancelWarning();
         warnings.Clear();
         warningDueTimes.Clear();

@@ -152,3 +152,6 @@ crashlytics-build.properties
 
 # Claude 가 채팅으로 보낸 미리보기 파일이 저장되는 곳. 프로젝트 파일 아님
 /Claude outputs/
+
+# Local working files and previews
+/output/
