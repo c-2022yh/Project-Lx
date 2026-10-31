@@ -11,7 +11,8 @@ public static class GameFlow
     public const string TitleSceneName = "Title";
 
     /// <summary>"게임하기"로 진입할 씬. 실제 시작 씬이 정해지면 여기를 바꾼다.</summary>
-    public static string GameplaySceneName = "Test_Alpha";
+    /// 10.30: 새 게임은 시작 연출(Intro 씬)부터. 연출이 끝나면 Tutorial로 넘어간다 (IntroCutscene).
+    public static string GameplaySceneName = "Intro";
 
     public static void GoToTitle()
     {

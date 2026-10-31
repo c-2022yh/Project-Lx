@@ -77,6 +77,18 @@ public class MapPanel : MonoBehaviour
     private Vector2 fitCenter;
     private float fitScale;
 
+    // ── 방 지도 (10.29 할로우나이트식) ──
+    // Resources/MapRoomAtlas에 방 그림이 있으면 씬 밑그림·안개 대신 방 지도를 그린다.
+    // 지금 방과 가 본 방만 이어 그리고, 안 가 본 방은 그리지 않는다.
+    private static readonly Color CurrentRoomTint = new Color(0.875f, 0.918f, 0.933f, 1f);
+    private static readonly Color VisitedRoomTint = new Color(0.59f, 0.68f, 0.62f, 1f);
+    private const float RoomFitMargin = 0.86f;
+    private const float MaxRoomScale = 10f;
+
+    private bool atlasMode;
+    private RectTransform roomLayer;
+    private readonly List<GameObject> roomImages = new List<GameObject>();
+
     /// <summary>수집 결과를 잠깐 담는 상자. 이름까지 들고 있어야 라벨을 찍을 수 있다.</summary>
     private struct MarkerInfo
     {
@@ -92,6 +104,7 @@ public class MapPanel : MonoBehaviour
         if (!visible) return;
 
         ApplySceneSketch();
+        atlasMode = ApplyRoomAtlas();
 
         player = FindPlayer();
         Rebuild();
@@ -131,6 +144,209 @@ public class MapPanel : MonoBehaviour
     private void OnDisable()
     {
         ClearMarkers();
+    }
+
+    // ── 방 지도 ─────────────────────────────
+
+    /// <summary>방 지도를 그린다. 이 씬의 방 그림이 없으면 false (예전처럼 씬 밑그림을 쓴다).</summary>
+    private bool ApplyRoomAtlas()
+    {
+        ClearRooms();
+
+        MapRoomAtlas atlas = MapRoomAtlas.Load();
+        MapRoomAtlas.Room here = atlas != null ? atlas.Find(SceneManager.GetActiveScene().name) : null;
+        if (here == null || mapContent == null) return false;
+
+        // 지금 방 + 가 본 방
+        List<MapRoomAtlas.Room> shown = new List<MapRoomAtlas.Room>();
+        foreach (MapRoomAtlas.Room r in atlas.Rooms)
+        {
+            if (r == null || r.image == null) continue;
+            if (r == here || VisitedScenes.HasVisited(r.sceneName)) shown.Add(r);
+        }
+
+        // 10.30: 할로우나이트처럼 전체 지도. 안 가 본 방도 자리는 차지해서(그림은 안 그림)
+        // 지도가 늘 같은 크기·위치로 보인다. 포털로 이어진 같은 덩어리 방들만 센다 (테스트 씬 제외).
+        Vector2 min = here.atlasMin, max = here.atlasMin + here.worldSize;
+        foreach (MapRoomAtlas.Room r in atlas.Rooms)
+        {
+            if (r == null || r.image == null) continue;
+            bool sameWorld = here.group != 0 ? r.group == here.group : shown.Contains(r);
+            if (!sameWorld) continue;
+            min = Vector2.Min(min, r.atlasMin);
+            max = Vector2.Max(max, r.atlasMin + r.worldSize);
+        }
+
+        // 전체 지도가 판 안에 다 들어오게
+        Vector2 size = max - min;
+        Rect board = mapContent.rect;
+        float scale = Mathf.Min(board.width * RoomFitMargin / Mathf.Max(1f, size.x),
+                                board.height * RoomFitMargin / Mathf.Max(1f, size.y));
+        scale = Mathf.Min(scale, MaxRoomScale);
+        Vector2 center = (min + max) * 0.5f;
+
+        EnsureRoomLayer();
+        GameObject current = null;
+
+        foreach (MapRoomAtlas.Room r in shown)
+        {
+            GameObject go = new GameObject("Room_" + r.sceneName, typeof(RectTransform), typeof(Image));
+            RectTransform rt = go.GetComponent<RectTransform>();
+            rt.SetParent(roomLayer, false);
+            rt.anchorMin = rt.anchorMax = rt.pivot = new Vector2(0.5f, 0.5f);
+            rt.sizeDelta = r.worldSize * scale;
+            rt.anchoredPosition = (r.atlasMin + r.worldSize * 0.5f - center) * scale;
+
+            Image image = go.GetComponent<Image>();
+            image.sprite = r.image;
+            image.raycastTarget = false;
+            image.color = r == here ? CurrentRoomTint : VisitedRoomTint;
+            ApplyReveal(r, image);
+
+            if (r == here) current = go;
+            roomImages.Add(go);
+        }
+
+        // 지금 방을 맨 위에 (옆 방과 겹친 테두리가 지금 방 색으로 보이게)
+        if (current != null) current.transform.SetAsLastSibling();
+
+        // 마커·플레이어 점은 지금 씬의 월드 좌표로 찍으므로, 그걸 전체 지도 좌표로 옮겨 준다.
+        //   지도 = (월드 + (atlasMin - worldMin) - center) * scale
+        fitCenter = center - (here.atlasMin - here.worldMin);
+        fitScale = scale;
+        return true;
+    }
+
+    private static bool ShowInRoomMap(MapMarkerKind kind) => kind == MapMarkerKind.Shrine;
+
+    // ── 방 지도 안개 (10.30) ─────────────────
+    // 들어간 방도 통째로 보이지 않고, 걸어서 밝힌 칸(MapExploration)만 보인다.
+    // 방 그림마다 "밝힌 칸" 텍스처를 만들어 UI/MapRoomReveal 셰이더로 그 부분만 보이게 한다.
+
+    private const string RevealMaterialPath = "Map/MapRoomReveal";
+    private static readonly int RevealTexId = Shader.PropertyToID("_RevealTex");
+    private static readonly int RevealStId = Shader.PropertyToID("_RevealST");
+
+    private class RoomReveal
+    {
+        public string sceneName;
+        public Material material;
+        public Texture2D texture;
+        public int cellMinX, cellMinY;
+    }
+
+    private readonly List<RoomReveal> reveals = new List<RoomReveal>();
+    private Material revealBase;
+    private bool revealLooked;
+
+    /// <summary>방 그림에 "밝힌 칸만 보이기" 재질을 입힌다. 안개를 꺼 두었거나 재질이 없으면 통째로 보인다.</summary>
+    private void ApplyReveal(MapRoomAtlas.Room r, Image image)
+    {
+        if (!MapExploration.FogEnabled) return;
+
+        if (!revealLooked)
+        {
+            revealLooked = true;
+            revealBase = Resources.Load<Material>(RevealMaterialPath);
+        }
+        if (revealBase == null) return;
+
+        // 방 그림이 덮는 월드 영역을 칸 단위로. 텍셀 하나 = 칸 하나.
+        float cs = MapExploration.CellSize;
+        int x0 = Mathf.FloorToInt(r.worldMin.x / cs);
+        int y0 = Mathf.FloorToInt(r.worldMin.y / cs);
+        int x1 = Mathf.CeilToInt((r.worldMin.x + r.worldSize.x) / cs);
+        int y1 = Mathf.CeilToInt((r.worldMin.y + r.worldSize.y) / cs);
+        int w = Mathf.Max(1, x1 - x0), h = Mathf.Max(1, y1 - y0);
+
+        Texture2D tex = new Texture2D(w, h, TextureFormat.R8, false)
+        {
+            filterMode = FilterMode.Bilinear,
+            wrapMode = TextureWrapMode.Clamp,
+            name = "MapReveal_" + r.sceneName
+        };
+
+        Material mat = new Material(revealBase) { name = "MapReveal_" + r.sceneName };
+        mat.SetTexture(RevealTexId, tex);
+        // 방 그림 UV(0~1) -> 칸 텍스처 UV
+        mat.SetVector(RevealStId, new Vector4(
+            r.worldSize.x / cs / w, r.worldSize.y / cs / h,
+            (r.worldMin.x / cs - x0) / w, (r.worldMin.y / cs - y0) / h));
+        image.material = mat;
+
+        RoomReveal reveal = new RoomReveal
+        {
+            sceneName = r.sceneName, material = mat, texture = tex, cellMinX = x0, cellMinY = y0
+        };
+        reveals.Add(reveal);
+        FillReveal(reveal);
+    }
+
+    private static void FillReveal(RoomReveal reveal)
+    {
+        int w = reveal.texture.width, h = reveal.texture.height;
+        byte[] pixels = new byte[w * h];
+
+        for (int y = 0; y < h; y++)
+            for (int x = 0; x < w; x++)
+                if (RunState.Current.IsExplored(reveal.sceneName, MapExploration.CellKey(reveal.cellMinX + x, reveal.cellMinY + y)))
+                    pixels[y * w + x] = 255;
+
+        reveal.texture.SetPixelData(pixels, 0);
+        reveal.texture.Apply(false);
+    }
+
+    private void ClearReveals()
+    {
+        foreach (RoomReveal reveal in reveals)
+        {
+            if (reveal.material != null) Destroy(reveal.material);
+            if (reveal.texture != null) Destroy(reveal.texture);
+        }
+        reveals.Clear();
+    }
+
+    private Transform legend;
+
+    /// <summary>
+    /// 방 지도에서는 범례를 숨기고, 아니면 원래대로 보인다. 프리팹은 건드리지 않고 실행 중에만 바꾼다.
+    /// </summary>
+    private void ApplyLegend()
+    {
+        if (legend == null)
+        {
+            Transform root = transform.parent != null ? transform.parent : transform;
+            foreach (Transform t in root.GetComponentsInChildren<Transform>(true))
+                if (t.name == "Legend") { legend = t; break; }
+        }
+        if (legend == null) return;
+
+        // 방 지도에서는 범례 글자를 통째로 뺀다.
+        legend.gameObject.SetActive(!atlasMode);
+    }
+
+    /// <summary>방 그림을 담는 층. 마커·플레이어 점보다 뒤(첫 번째 자식)에 둔다.</summary>
+    private void EnsureRoomLayer()
+    {
+        if (roomLayer == null)
+        {
+            GameObject go = new GameObject("Rooms", typeof(RectTransform));
+            roomLayer = go.GetComponent<RectTransform>();
+            roomLayer.SetParent(mapContent, false);
+            roomLayer.anchorMin = roomLayer.anchorMax = roomLayer.pivot = new Vector2(0.5f, 0.5f);
+            roomLayer.anchoredPosition = Vector2.zero;
+            roomLayer.sizeDelta = Vector2.zero;
+        }
+
+        roomLayer.SetSiblingIndex(0);
+    }
+
+    private void ClearRooms()
+    {
+        foreach (GameObject go in roomImages)
+            if (go != null) Destroy(go);
+        roomImages.Clear();
+        ClearReveals();
     }
 
     private void Update()
@@ -196,6 +412,16 @@ public class MapPanel : MonoBehaviour
         List<MarkerInfo> markers = new List<MarkerInfo>();
         Collect(markers);
 
+        // 방 지도는 제단과 내 위치만 찍는다 (몬스터·상자·출구 등은 뺀다).
+        // 10.30: 아직 안 밝힌 곳의 제단도 숨긴다.
+        if (atlasMode)
+        {
+            string sceneId = SceneManager.GetActiveScene().name;
+            markers.RemoveAll(m => !ShowInRoomMap(m.Kind) ||
+                                   (MapExploration.FogEnabled && !MapExploration.IsExplored(sceneId, m.Position)));
+        }
+        ApplyLegend();
+
         UpdateAutoFit(markers);
 
         foreach (MarkerInfo info in markers) SpawnMarker(info);
@@ -224,6 +450,17 @@ public class MapPanel : MonoBehaviour
     private void RefreshFog()
     {
         nextFogAt = Time.unscaledTime + FogRefreshInterval;
+
+        // 방 지도는 판 전체를 덮는 안개 대신, 방 그림마다 밝힌 칸만 보이게 한다 (ApplyReveal).
+        // 지금 방은 지도를 연 채로 걸어도 넓어지게 계속 다시 칠한다.
+        if (atlasMode)
+        {
+            if (fogImage != null) fogImage.enabled = false;
+            string here = SceneManager.GetActiveScene().name;
+            foreach (RoomReveal reveal in reveals)
+                if (reveal.sceneName == here) FillReveal(reveal);
+            return;
+        }
 
         if (mapContent == null) return;
 
@@ -322,6 +559,7 @@ public class MapPanel : MonoBehaviour
 
     private void OnDestroy()
     {
+        ClearReveals();
         if (fogTexture != null) Destroy(fogTexture);
     }
 
@@ -390,6 +628,9 @@ public class MapPanel : MonoBehaviour
     /// </summary>
     private void UpdateAutoFit(List<MarkerInfo> markers)
     {
+        // 방 지도는 ApplyRoomAtlas가 맞춰 둔 값을 쓴다.
+        if (atlasMode) return;
+
         fitScale = 0f;
 
         if (!autoFitWhenNoImage) return;
@@ -471,7 +712,8 @@ public class MapPanel : MonoBehaviour
         if (rect != null) rect.anchoredPosition = WorldToMap(info.Position);
 
         MapMarkerView view = go.GetComponent<MapMarkerView>();
-        if (view != null) view.Bind(info.Kind, info.Label);
+        // 방 지도에서는 마커 옆 이름 글자를 뺀다.
+        if (view != null) view.Bind(info.Kind, atlasMode ? "" : info.Label);
 
         spawnedMarkers.Add(go);
     }
@@ -488,10 +730,10 @@ public class MapPanel : MonoBehaviour
 
     private void UpdateNotice()
     {
-        bool hasImage = mapImage != null && mapImage.sprite != null;
+        bool hasImage = atlasMode || (mapImage != null && mapImage.sprite != null);
 
-        // 스프라이트가 없는 Image는 흰 사각형으로 그려진다. 그럴 땐 아예 끈다.
-        if (mapImage != null) mapImage.enabled = hasImage;
+        // 스프라이트가 없는 Image는 흰 사각형으로 그려진다. 그럴 땐 아예 끈다. 방 지도일 때도 끈다.
+        if (mapImage != null) mapImage.enabled = !atlasMode && mapImage.sprite != null;
 
         if (noticeText == null) return;
 

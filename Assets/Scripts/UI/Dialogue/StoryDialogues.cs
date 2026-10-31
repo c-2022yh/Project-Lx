@@ -33,6 +33,37 @@ public class StoryDialogues : ScriptableObject
     [Tooltip("보스를 잡으면 (보스방에 따로 넣은 대사가 없을 때). {보스}는 보스 이름이 된다.")]
     [SerializeField] private DialogueData bossClear;
 
+    // ── 시작 연출 (IntroCutscene, Tutorial 씬 처음 한 번) ──
+    [Header("시작 연출 (튜토리얼 처음)")]
+    [Tooltip("까만 화면에 한 줄씩 떠오르는 글. 줄(Line)마다 하나씩. 이름·초상화는 안 쓴다.")]
+    [SerializeField] private DialogueData introNarration;
+
+    [Tooltip("동굴에서 눈뜬 캐릭터의 첫마디. 대화창 모양이면 대화창으로, 내레이션 모양이면 화면 가운데 글(첫 줄만)로 나온다.")]
+    [SerializeField] private DialogueData introWake;
+
+    [Tooltip("보주가 처음 말을 거는 대사 (대화창)")]
+    [SerializeField] private DialogueData introOrb;
+
+    [Tooltip("보주를 얻을 때 획득 알림에 나오는 이름")]
+    [SerializeField] private string introOrbName = "보주";
+
+    [Tooltip("보주를 얻을 때 획득 알림 아래 설명")]
+    [SerializeField] private string introOrbDescription = "곁을 따라다니며 함께 싸운다. 기력이 차면 각성할 수 있다.";
+
+    [Tooltip("연출이 끝나고 뜨는 지역 이름 (비우면 안 뜬다)")]
+    [SerializeField] private string introAreaName = "여울 숲";
+
+    [Tooltip("지역 이름 아래 작은 글 (비워도 된다)")]
+    [SerializeField] private string introAreaSubtitle = "";
+
+    public static DialogueData IntroNarration => Instance != null ? Instance.introNarration : null;
+    public static DialogueData IntroWake => Instance != null ? Instance.introWake : null;
+    public static DialogueData IntroOrb => Instance != null ? Instance.introOrb : null;
+    public static string IntroOrbName => Instance != null ? Instance.introOrbName : "보주";
+    public static string IntroOrbDescription => Instance != null ? Instance.introOrbDescription : "";
+    public static string IntroAreaName => Instance != null ? Instance.introAreaName : "";
+    public static string IntroAreaSubtitle => Instance != null ? Instance.introAreaSubtitle : "";
+
     /// <summary>보스방에 따로 넣은 대사가 없을 때 쓰는 기본 보스 처치 대사. 없으면 null.</summary>
     public static DialogueData BossClear => Instance != null ? Instance.bossClear : null;
 

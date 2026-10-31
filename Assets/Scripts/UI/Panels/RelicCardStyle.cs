@@ -487,7 +487,10 @@ public static class RelicSelectionStyle
 
         Transform bg = panel.Find("Background");
         if (bg != null && bg.TryGetComponent(out Image bgImage))
+        {
             bgImage.color = new Color(6f / 255f, 9f / 255f, 12f / 255f, 0.66f);
+            CoverScreen((RectTransform)bg, canvas);
+        }
 
         TMP_FontAsset font = null;
         TMP_Text any = panel.GetComponentInChildren<TMP_Text>(true);
@@ -499,6 +502,38 @@ public static class RelicSelectionStyle
         hint.characterSpacing = 6f;
         hint.color = new Color(236f / 255f, 233f / 255f, 228f / 255f, 0.7f);
         Place(hint.rectTransform, 668f * u, 28f * u);
+    }
+
+    /// <summary>
+    /// 어둡게 까는 판을 화면 전체로 넓힌다 (10.30).
+    /// Popup_Canvas 안의 선택창은 크기가 작게(514×255) 잡혀 있어서, 창 크기를 따르는 배경이 작게 나왔다.
+    /// 프리팹은 그대로 두고, 실행 중에 루트 캔버스 크기만큼 덮는다 (넉넉히 여유를 둔다).
+    /// </summary>
+    private static void CoverScreen(RectTransform bg, Canvas canvas)
+    {
+        if (bg == null || canvas == null || canvas.rootCanvas == null) return;
+
+        RectTransform parent = bg.parent as RectTransform;
+        RectTransform root = (RectTransform)canvas.rootCanvas.transform;
+        if (parent == null) return;
+
+        Vector3[] corners = new Vector3[4];
+        root.GetWorldCorners(corners);
+        Vector2 min = parent.InverseTransformPoint(corners[0]);
+        Vector2 max = parent.InverseTransformPoint(corners[2]);
+        Vector2 margin = (max - min) * 0.1f;   // 창이 커지며 열리는 동안에도 가장자리가 안 보이게
+        min -= margin;
+        max += margin;
+
+        if (bg.TryGetComponent(out LayoutElement le)) le.ignoreLayout = true;
+        else bg.gameObject.AddComponent<LayoutElement>().ignoreLayout = true;
+
+        // 부모 기준 좌표(피벗이 원점)로 직접 놓는다.
+        bg.anchorMin = bg.anchorMax = parent.pivot;
+        bg.pivot = Vector2.zero;
+        bg.anchoredPosition = min;
+        bg.sizeDelta = max - min;
+        bg.SetAsFirstSibling();
     }
 
     private static TMP_Text Ensure(Transform panel, string name, TMP_FontAsset font)

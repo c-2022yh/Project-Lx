@@ -30,6 +30,9 @@ EditorBuildSettings:
     path: Assets/Scenes/InProgress/F_02.unity
     guid: fad9c63ac4cbcea42a9967fa4e9cce2e
   - enabled: 1
+    path: Assets/Scenes/InProgress/Intro.unity
+    guid: 22cd31bcb2494a2e8a7084cd142ee41d
+  - enabled: 1
     path: Assets/Scenes/InProgress/Tutorial.unity
     guid: 87f9e6786af7d774b807aee6e15166e1
   - enabled: 1
