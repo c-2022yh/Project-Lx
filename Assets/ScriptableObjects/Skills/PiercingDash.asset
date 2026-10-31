@@ -17,17 +17,112 @@ MonoBehaviour:
   description: "\uC804\uC9C4\uD558\uBA70 \uC804\uBC29\uC744 \uAC00\uB974\uBA70 \uACF5\uACA9\uD55C\uB2E4.
     \uC801 \uCC98\uCE58\uC2DC \uCFE8\uD0C0\uC784\uC774 \uCD08\uAE30\uD654\uB41C\uB2E4."
   animationType: 7
+  audio:
+    castSound:
+      channel: 0
+      clip: {fileID: 0}
+      clips:
+      - {fileID: 0}
+      volume: 1
+      minimumInterval: 0.05
+      pitchRange: {x: 1, y: 1}
+      maxSimultaneous: 4
+      limitScope: 0
+      spatialBlend: 0
+      minDistance: 1
+      maxDistance: 15
+      useFallback: 0
+      fallbackSound: 5
+    releaseSound:
+      channel: 0
+      clip: {fileID: 8300000, guid: f577a36d71b391143bdaadd8d36b1d1a, type: 3}
+      clips:
+      - {fileID: 0}
+      volume: 1
+      minimumInterval: 0.05
+      pitchRange: {x: 1, y: 1}
+      maxSimultaneous: 4
+      limitScope: 0
+      spatialBlend: 0
+      minDistance: 1
+      maxDistance: 15
+      useFallback: 0
+      fallbackSound: 5
+    impactSound:
+      channel: 0
+      clip: {fileID: 8300000, guid: c79836683402b414ea9abd9f4c756d8a, type: 3}
+      clips:
+      - {fileID: 0}
+      volume: 1
+      minimumInterval: 0.05
+      pitchRange: {x: 1, y: 1}
+      maxSimultaneous: 4
+      limitScope: 0
+      spatialBlend: 0
+      minDistance: 1
+      maxDistance: 15
+      useFallback: 0
+      fallbackSound: 5
+    impactMode: 1
+    activeLoop:
+      channel: 0
+      clip: {fileID: 0}
+      clips:
+      - {fileID: 0}
+      volume: 1
+      minimumInterval: 0.05
+      pitchRange: {x: 1, y: 1}
+      maxSimultaneous: 4
+      limitScope: 0
+      spatialBlend: 0
+      minDistance: 1
+      maxDistance: 15
+      useFallback: 0
+      fallbackSound: 5
+    completeSound:
+      channel: 0
+      clip: {fileID: 0}
+      clips:
+      - {fileID: 0}
+      volume: 1
+      minimumInterval: 0.05
+      pitchRange: {x: 1, y: 1}
+      maxSimultaneous: 4
+      limitScope: 0
+      spatialBlend: 0
+      minDistance: 1
+      maxDistance: 15
+      useFallback: 0
+      fallbackSound: 5
+    cancelSound:
+      channel: 0
+      clip: {fileID: 0}
+      clips:
+      - {fileID: 0}
+      volume: 1
+      minimumInterval: 0.05
+      pitchRange: {x: 1, y: 1}
+      maxSimultaneous: 4
+      limitScope: 0
+      spatialBlend: 0
+      minDistance: 1
+      maxDistance: 15
+      useFallback: 0
+      fallbackSound: 5
   cooldownTime: 4
   energyCost: 0
-  windupTime: 0.083333336
+  allowUseInAir: 1
+  stopHorizontalMovementOnStart: 1
+  windupTime: 0.08
   activeTime: 0.05
-  recoveryTime: 0.083333336
+  recoveryTime: 0.08
   enemyLayer:
     serializedVersion: 2
     m_Bits: 256
   damageSpec:
     damageType: 0
     damageMultiplier: 3
+    flatDamage: 0
     canCritical: 0
     bonusPenetration: 0
     bonusDamageAmplification: 0
@@ -39,10 +134,8 @@ MonoBehaviour:
   dashEffectOffset: {x: 0, y: 0}
   dashEffectBaseScaleX: 1
   minDashEffectDistance: 0.2
+  dashFlashPrefab: {fileID: 710340003, guid: ce480276140e417e9dfef9435a8ad57e, type: 3}
   hitEffectPrefab: {fileID: 3791669258595038075, guid: 3f6554b28c7eeb14cb42e5f4336adcbf, type: 3}
   criticalHitEffectPrefab: {fileID: 3791669258595038075, guid: 3f6554b28c7eeb14cb42e5f4336adcbf, type: 3}
   hitEffectOffset: {x: 0, y: 0, z: 0}
   contactIgnoreAfterDash: 0.3
-  allowUseInAir: 1
-  stopHorizontalMovementOnStart: 1
-  dashFlashPrefab: {fileID: 710340003, guid: ce480276140e417e9dfef9435a8ad57e, type: 3}

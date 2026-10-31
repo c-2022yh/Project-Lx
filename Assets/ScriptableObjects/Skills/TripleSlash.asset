@@ -34,7 +34,7 @@ MonoBehaviour:
       fallbackSound: 5
     releaseSound:
       channel: 0
-      clip: {fileID: 0}
+      clip: {fileID: 8300000, guid: cbd1a1acf492af147b9723cb628bf462, type: 3}
       clips:
       - {fileID: 0}
       volume: 1
@@ -62,7 +62,7 @@ MonoBehaviour:
       maxDistance: 15
       useFallback: 0
       fallbackSound: 5
-    impactMode: 0
+    impactMode: 1
     activeLoop:
       channel: 0
       clip: {fileID: 0}
