@@ -27,12 +27,13 @@ public class GolemBossAttack
 public class GolemBossController : MonoBehaviour
 {
     [Header("Audio")]
-    [SerializeField] private SoundCue splitSound = new SoundCue();
+    [SerializeField, HideInInspector] private SoundCue splitSound = new SoundCue();
     [SerializeField] private SoundCue summonPrepareSound = new SoundCue();
     [SerializeField] private SoundCue summonSound = new SoundCue();
 
     private enum State { Waiting, Prepare, Active, Recovery, Summon, PhaseChange, Split }
     private enum Pattern { Slam, Crush, Rockfall }
+    private enum SummonPlacement { GroundOffsets, UpperSides }
 
     [Header("Encounter")]
     [SerializeField] private bool autoBegin = true;
@@ -44,15 +45,18 @@ public class GolemBossController : MonoBehaviour
     [SerializeField] private LayerMask groundLayers = 1 << 6;
     [SerializeField] private LayerMask targetLayers = 1 << 7;
 
-    [Header("Front slam")]
-    [SerializeField] private GolemBossAttack slam = new GolemBossAttack();
-    [SerializeField, Min(0f)] private float slamRange = 5f;
-    [SerializeField, Min(0f)] private float slamForwardOffset = 3.2f;
-    [Header("Wide ground crush")]
+    [Header("One-hand slam: left or right half of the arena")]
+    [SerializeField] private GolemBossAttack slam = new GolemBossAttack
+    {
+        warningTime = 2f, size = new Vector2(10f, 3.75f)
+    };
+    [Header("Two-hand crush: center of the arena")]
+    [Tooltip("0.8 hits the middle 80%, leaving 10% at each edge. Ground attacks use Size Y for height; Size X is calculated from the arena.")]
+    [SerializeField, Range(0.1f, 1f)] private float crushArenaCoverage = 0.8f;
     [SerializeField] private GolemBossAttack crush = new GolemBossAttack
     {
-        warningTime = 1.5f, recoveryTime = 1.8f, cooldown = 6f,
-        size = new Vector2(9f, 1.3f), damage = new AttackDamageSpec { damageMultiplier = 2.5f }
+        warningTime = 2.2f, recoveryTime = 1.8f, cooldown = 6f,
+        size = new Vector2(16f, 3.75f), damage = new AttackDamageSpec { damageMultiplier = 2.5f }
     };
     [Header("Sequential rockfall")]
     [SerializeField] private GolemBossAttack rockfall = new GolemBossAttack
@@ -63,29 +67,43 @@ public class GolemBossController : MonoBehaviour
     [SerializeField, Range(1, 6)] private int rockCount = 3;
     [SerializeField, Min(0.05f)] private float rockInterval = 0.45f;
     [SerializeField] private Sprite rockSprite;
+    [Tooltip("One sprite is chosen randomly for each rock. Empty uses Rock Sprite. Art does not change the warning or damage rectangle.")]
+    [SerializeField] private Sprite[] rockSprites;
     [SerializeField, Min(1f)] private float rockDropHeight = 7f;
 
-    [Header("Phase 2: split into two independent golems")]
-    [SerializeField] private bool splitEnabled = true;
+    [Header("Phase 2: faster attacks")]
     [SerializeField, Range(0.05f, 0.95f)] private float phaseTwoHealth = 0.5f;
     [SerializeField, Min(0.1f)] private float phaseChangeTime = 1.6f;
-    [SerializeField, Range(0.2f, 0.95f)] private float fragmentScale = 0.65f;
-    [SerializeField, Min(0.5f)] private float splitDistance = 2.5f;
-    [SerializeField, Min(0f)] private float fragmentMoveSpeed = 1f;
-    [SerializeField, Min(0.1f)] private float fragmentStopDistance = 2.2f;
+    [Tooltip("Phase-two attack speed. 1.25 means warning, recovery, cooldown and intervals take 80% as long. Damage windows stay unchanged.")]
+    [SerializeField, Min(1f)] private float phaseTwoAttackSpeed = 1.25f;
+    // Retained for serialized compatibility; the current boss prefab no longer splits.
+    [SerializeField, HideInInspector] private bool splitEnabled = false;
+    [SerializeField, HideInInspector] private float fragmentScale = 0.65f;
+    [SerializeField, HideInInspector] private float splitDistance = 2.5f;
+    [SerializeField, HideInInspector] private float fragmentMoveSpeed = 1f;
+    [SerializeField, HideInInspector] private float fragmentStopDistance = 2.2f;
     [SerializeField, HideInInspector] private bool isFragment;
-    [Tooltip("Used only when Split Enabled is off (legacy phase).")]
-    [SerializeField, Min(0.1f)] private float chainRecovery = 0.45f;
 
-    [Header("Summons: once per health threshold")]
+    [Header("Summons: repeating timer")]
     [SerializeField] private GameObject[] minionPrefabs;
-    [SerializeField] private float[] summonHealthThresholds = { 0.7f, 0.35f };
+    [SerializeField] private bool summonsEnabled = true;
+    [Tooltip("Game-time seconds from encounter start until the first summon is due. Current attacks finish first.")]
+    [SerializeField, Min(0f)] private float firstSummonDelay = 15f;
+    [Tooltip("Game-time seconds between summon starts. Capacity or blocked spawn points delay a wave without accumulating missed waves. Phase-two attack speed does not change this timer.")]
+    [SerializeField, Min(0.1f)] private float summonInterval = 20f;
     [SerializeField, Min(1)] private int minionsPerWave = 2;
     [SerializeField, Min(1)] private int maxLivingMinions = 2;
     [SerializeField, Min(0.1f)] private float summonWarningTime = 1.8f;
     [SerializeField, Min(0.1f)] private float afterSummonRest = 2f;
+    [SerializeField] private SummonPlacement summonPlacement = SummonPlacement.GroundOffsets;
+    [Tooltip("Distance inward from each arena side for airborne summons.")]
+    [SerializeField, Min(0f)] private float upperSummonSideInset = 2.5f;
+    [Tooltip("Distance below the boss room top for airborne summons (collider center).")]
+    [SerializeField, Min(0f)] private float upperSummonTopInset = 2f;
+    [Tooltip("Extra summons on each side are spaced inward by this distance.")]
+    [SerializeField, Min(0.1f)] private float upperSummonSpacing = 1.5f;
     [SerializeField] private Vector2[] summonOffsets = { new Vector2(-6f, 0f), new Vector2(6f, 0f) };
-    [Tooltip("Optional world-space anchors. Empty uses the offsets above.")]
+    [Tooltip("Optional world-space anchors. Overrides automatic upper-side positions or ground offsets. Airborne mode preserves height without projecting onto the floor.")]
     [SerializeField] private Transform[] summonPoints;
     [SerializeField, Min(0f)] private float summonLift = 0.08f;
     [SerializeField] private bool despawnMinionsOnEncounterEnd = true;
@@ -103,6 +121,7 @@ public class GolemBossController : MonoBehaviour
     private readonly List<float> warningDueTimes = new List<float>();
     private readonly List<GameObject> minions = new List<GameObject>();
     private readonly List<GameObject> summonChoices = new List<GameObject>();
+    private readonly List<Vector2> summonSpawnPositions = new List<Vector2>();
     private readonly RaycastHit2D[] groundHits = new RaycastHit2D[16];
     private readonly List<GolemBossController> fragments = new List<GolemBossController>();
     private GolemBossController fragmentOwner, attackingFragment;
@@ -118,10 +137,28 @@ public class GolemBossController : MonoBehaviour
     private GolemBossAttack current;
     private SoundHandle summonPrepareVoice;
     private bool engaged, armed, phaseTwo, hasLastPattern;
-    private bool[] usedSummons;
+    private float encounterTime, nextSummonTime;
     private float elapsed, nextActionTime, nextSearchTime, nextRockTime, spawnX;
     private readonly float[] readyTimes = new float[3];
-    private int facing = 1, rocksMarked, chainRemaining;
+    private int facing = 1, rocksMarked;
+
+    private float AttackSpeed => phaseTwo && !splitEnabled ? Mathf.Max(1f, phaseTwoAttackSpeed) : 1f;
+    private bool hasRoomArena;
+    private Vector2 roomArenaX;
+    private float roomFloorY;
+    private float roomTopY;
+    private float ArenaLeft => fragmentOwner != null ? fragmentOwner.ArenaLeft : hasRoomArena ? roomArenaX.x : spawnX + arenaX.x;
+    private float ArenaRight => fragmentOwner != null ? fragmentOwner.ArenaRight : hasRoomArena ? roomArenaX.y : spawnX + arenaX.y;
+
+    // BossRoom supplies the inner faces of its closed doors; standalone bosses use Arena X.
+    public void ConfigureArena(float left, float right, float floorY, float topY = float.NaN)
+    {
+        if (right <= left) return;
+        hasRoomArena = true;
+        roomArenaX = new Vector2(left, right);
+        roomFloorY = floorY;
+        roomTopY = float.IsNaN(topY) ? floorY + 9f : Mathf.Max(floorY + 1f, topY);
+    }
 
     public bool IsEngaged => engaged;
     public bool IsPhaseTwo => phaseTwo;
@@ -157,10 +194,10 @@ public class GolemBossController : MonoBehaviour
         IsDefeated = false;
         engaged = phaseTwo = hasLastPattern = false;
         armed = autoBegin;
-        chainRemaining = 0;
         spawnX = fragmentOwner != null ? fragmentOwner.spawnX : transform.position.x;
         nextSearchTime = 0f;
-        usedSummons = new bool[summonHealthThresholds.Length];
+        encounterTime = 0f;
+        nextSummonTime = firstSummonDelay;
         Array.Clear(readyTimes, 0, readyTimes.Length);
         visual.SetPose(GolemBossPose.Idle);
         visual.SetPresentationVisible(true);
@@ -172,6 +209,8 @@ public class GolemBossController : MonoBehaviour
     {
         if (!isActiveAndEnabled || health.IsDead || engaged) return;
         armed = engaged = true;
+        encounterTime = 0f;
+        nextSummonTime = firstSummonDelay;
         nextActionTime = Time.time + firstAttackDelay;
         onEncounterStarted.Invoke();
     }
@@ -183,8 +222,9 @@ public class GolemBossController : MonoBehaviour
         bool wasSplit = state == State.Split;
         bool wasEngaged = engaged;
         engaged = armed = false;
+        encounterTime = 0f;
+        nextSummonTime = firstSummonDelay;
         CancelWarnings();
-        chainRemaining = 0;
         state = State.Waiting;
         visual.SetPose(GolemBossPose.Idle);
         StopHorizontalMovement();
@@ -228,7 +268,6 @@ public class GolemBossController : MonoBehaviour
             {
                 CancelWarnings();
                 state = State.Waiting;
-                chainRemaining = 0;
                 nextActionTime = Time.time + firstAttackDelay;
                 visual.SetPose(GolemBossPose.Idle);
                 StopHorizontalMovement();
@@ -242,7 +281,10 @@ public class GolemBossController : MonoBehaviour
             return;
         }
 
-        elapsed += Time.fixedDeltaTime;
+        encounterTime += Time.fixedDeltaTime;
+        // Keep one attack clock for warning geometry, pose progress and rock sequencing.
+        // Damage windows, summon timing and the phase-change presentation use real game time.
+        elapsed += Time.fixedDeltaTime * (state == State.Prepare || state == State.Recovery ? AttackSpeed : 1f);
         switch (state)
         {
             case State.Waiting:
@@ -258,13 +300,13 @@ public class GolemBossController : MonoBehaviour
                 if (elapsed >= current.activeTime) Enter(State.Recovery);
                 break;
             case State.Recovery:
-                float duration = chainRemaining > 0 ? chainRecovery : current.recoveryTime;
+                float duration = current.recoveryTime;
                 visual.SetPose(GolemBossPose.Recovery, elapsed / Mathf.Max(0.1f, duration), facing, current.motion.recovery, pattern == Pattern.Slam);
                 if (elapsed >= duration)
                 {
                     ReleaseFragmentTurn();
                     Enter(State.Waiting);
-                    nextActionTime = Time.time + (chainRemaining > 0 ? 0f : patternInterval);
+                    nextActionTime = Time.time + patternInterval / AttackSpeed;
                 }
                 break;
             case State.Summon:
@@ -278,7 +320,7 @@ public class GolemBossController : MonoBehaviour
                     {
                         if (!CreateFragments()) elapsed = 0f; // No invisible spawns in walls or over gaps.
                     }
-                    else { Enter(State.Waiting); nextActionTime = Time.time + patternInterval; }
+                    else { Enter(State.Waiting); nextActionTime = Time.time + patternInterval / AttackSpeed; }
                 }
                 break;
         }
@@ -419,26 +461,25 @@ public class GolemBossController : MonoBehaviour
         if (!isFragment && !phaseTwo && hp <= phaseTwoHealth)
         {
             phaseTwo = true;
-            chainRemaining = 0;
+            for (int i = 0; i < readyTimes.Length; i++)
+                readyTimes[i] = Time.time + Mathf.Max(0f, readyTimes[i] - Time.time) / AttackSpeed;
             Enter(State.PhaseChange);
             onPhaseTwo.Invoke();
             return;
         }
-        for (int i = 0; !isFragment && i < usedSummons.Length; i++)
+        if (!isFragment && summonsEnabled && encounterTime >= nextSummonTime && LivingMinionCount < maxLivingMinions)
         {
-            if (!usedSummons[i] && hp <= summonHealthThresholds[i] && LivingMinionCount < maxLivingMinions)
+            if (StartSummon())
             {
-                if (StartSummon()) { usedSummons[i] = true; chainRemaining = 0; return; }
+                nextSummonTime = encounterTime + Mathf.Max(0.1f, summonInterval);
+                return;
             }
         }
 
-        float distance = Mathf.Abs(player.transform.position.x - transform.position.x);
         var choices = new List<Pattern>();
         for (int i = 0; i < 3; i++)
         {
             if (Time.time < readyTimes[i]) continue;
-            if (i == (int)Pattern.Slam && distance > slamRange) continue;
-            if (i == (int)Pattern.Crush && distance > crush.size.x * 0.5f + 0.5f) continue;
             choices.Add((Pattern)i);
         }
         if (choices.Count == 0) { nextActionTime = Time.time + 0.2f; return; }
@@ -446,8 +487,6 @@ public class GolemBossController : MonoBehaviour
         { nextActionTime = Time.time + 0.1f; return; }
         if (hasLastPattern && choices.Count > 1) choices.Remove(lastPattern);
         Pattern next = choices[UnityEngine.Random.Range(0, choices.Count)];
-        if (chainRemaining > 0) chainRemaining--;
-        else if (phaseTwo && !isFragment && !splitEnabled) chainRemaining = 1;
         StartPattern(next);
     }
 
@@ -457,16 +496,28 @@ public class GolemBossController : MonoBehaviour
         pattern = lastPattern = next;
         hasLastPattern = true;
         current = next == Pattern.Slam ? slam : next == Pattern.Crush ? crush : rockfall;
-        facing = player.transform.position.x >= transform.position.x ? 1 : -1;
+        // Lock the hand and arena half when the warning starts, even if the player crosses later.
+        facing = player.transform.position.x >= (ArenaLeft + ArenaRight) * 0.5f ? 1 : -1;
         rocksMarked = 0;
         nextRockTime = 0f;
         Enter(State.Prepare);
         GameAudio.Play(current.warningSound, transform.position, transform);
         if (next != Pattern.Rockfall)
         {
-            float x = transform.position.x + (next == Pattern.Slam ? facing * slamForwardOffset : 0f);
-            if (TryGround(x, FeetY + 1f, out Vector2 ground))
-                AddWarning(ground, current.size, current.warningTime, attackWarningColor);
+            float floorY = roomFloorY;
+            if (!hasRoomArena)
+            {
+                if (!TryGround((ArenaLeft + ArenaRight) * 0.5f, FeetY + 1f, out Vector2 groundPoint))
+                {
+                    Enter(State.Waiting);
+                    nextActionTime = Time.time + patternInterval / AttackSpeed;
+                    return;
+                }
+                floorY = groundPoint.y;
+            }
+            Rect attack = GolemBossArenaGeometry.GroundAttack(ArenaLeft, ArenaRight, floorY,
+                current.size.y, next == Pattern.Slam ? facing : 0, crushArenaCoverage);
+            AddWarning(new Vector2(attack.center.x, attack.yMin), attack.size, current.warningTime, attackWarningColor);
         }
         else MarkRock();
     }
@@ -493,7 +544,7 @@ public class GolemBossController : MonoBehaviour
         foreach (float due in warningDueTimes) finishTime = Mathf.Max(finishTime, due);
         if (elapsed >= finishTime && (pattern != Pattern.Rockfall || rocksMarked >= rockCount))
         {
-            readyTimes[(int)pattern] = Time.time + current.activeTime + current.recoveryTime + Mathf.Max(0f, current.cooldown);
+            readyTimes[(int)pattern] = Time.time + current.activeTime + (current.recoveryTime + Mathf.Max(0f, current.cooldown)) / AttackSpeed;
             Enter(State.Active);
             visual.SetPose(GolemBossPose.Strike, 0f, facing, current.motion.strike, pattern == Pattern.Slam);
         }
@@ -501,17 +552,28 @@ public class GolemBossController : MonoBehaviour
 
     private void MarkRock()
     {
-        float x = Mathf.Clamp(player.transform.position.x, spawnX + arenaX.x + rockfall.size.x / 2f,
-            spawnX + arenaX.y - rockfall.size.x / 2f);
+        float x = Mathf.Clamp(player.transform.position.x, ArenaLeft + rockfall.size.x / 2f,
+            ArenaRight - rockfall.size.x / 2f);
         Collider2D playerBody = player.GetComponent<Collider2D>();
         float top = playerBody != null ? playerBody.bounds.min.y + 0.25f : player.transform.position.y;
         if (TryGround(x, top, out Vector2 ground))
         {
             AddWarning(ground, current.size, elapsed + current.warningTime, attackWarningColor);
-            warnings[warnings.Count - 1].SetFallingRock(rockSprite, rockDropHeight);
+            warnings[warnings.Count - 1].SetFallingRock(ChooseRockSprite(), rockDropHeight);
         }
         rocksMarked++;
         nextRockTime = elapsed + Mathf.Max(0.05f, rockInterval);
+    }
+
+    private Sprite ChooseRockSprite()
+    {
+        // Reservoir sampling ignores empty slots without allocating a list per falling rock.
+        Sprite chosen = null;
+        int count = 0;
+        if (rockSprites != null)
+            foreach (Sprite sprite in rockSprites)
+                if (sprite != null && UnityEngine.Random.Range(0, ++count) == 0) chosen = sprite;
+        return chosen != null ? chosen : rockSprite;
     }
 
     private void AddWarning(Vector2 ground, Vector2 size, float due, Color color)
@@ -547,24 +609,53 @@ public class GolemBossController : MonoBehaviour
         CancelWarnings();
         summonChoices.Clear();
         int count = Mathf.Min(minionsPerWave, maxLivingMinions - LivingMinionCount);
-        int pointCount = summonPoints != null && summonPoints.Length > 0 ? summonPoints.Length : summonOffsets.Length;
+        bool airborne = summonPlacement == SummonPlacement.UpperSides;
+        bool customPoints = summonPoints != null && summonPoints.Length > 0;
+        int pointCount = customPoints ? summonPoints.Length : airborne ? count : summonOffsets.Length;
         for (int i = 0; i < Mathf.Min(count, pointCount); i++)
         {
+            GameObject prefab = valid[i % valid.Count];
+            Vector2 size = MinionSize(prefab);
+            Collider2D collider = prefab.GetComponent<Collider2D>();
+            Vector2 offset = collider != null ? Vector2.Scale(collider.offset, prefab.transform.localScale) : Vector2.zero;
             Vector2 position;
-            if (summonPoints != null && summonPoints.Length > 0)
+            if (customPoints)
             {
                 if (summonPoints[i] == null) continue;
                 position = summonPoints[i].position;
             }
+            else if (airborne)
+            {
+                float inset = upperSummonSideInset + (i / 2) * Mathf.Max(upperSummonSpacing, size.x + 0.25f);
+                float floor = hasRoomArena ? roomFloorY : FeetY;
+                float top = hasRoomArena ? roomTopY : floor + 9f;
+                Vector2 center = new Vector2(i % 2 == 0 ? ArenaLeft + inset : ArenaRight - inset, top - upperSummonTopInset);
+                position = center - offset;
+            }
             else position = (Vector2)transform.position + summonOffsets[i];
-            position.x = Mathf.Clamp(position.x, spawnX + arenaX.x, spawnX + arenaX.y);
+            if (airborne)
+            {
+                float floor = hasRoomArena ? roomFloorY : FeetY;
+                float top = hasRoomArena ? roomTopY : floor + 9f;
+                if (ArenaRight - ArenaLeft < size.x + 0.1f || top - floor < size.y + 0.1f) continue;
+                Vector2 center = position + offset;
+                center.x = Mathf.Clamp(center.x, ArenaLeft + size.x * 0.5f + 0.05f, ArenaRight - size.x * 0.5f - 0.05f);
+                center.y = Mathf.Clamp(center.y, floor + size.y * 0.5f + 0.05f, top - size.y * 0.5f - 0.05f);
+                // Flying enemies need empty air, not a ground raycast. Warn at the actual spawn height.
+                if (Physics2D.OverlapBox(center, size + Vector2.one * 0.1f, 0f, groundLayers)) continue;
+                warnings.Add(GolemBossArea.Create(center, size, summonWarningColor, indicatorFill, indicatorBorder));
+                warningDueTimes.Add(summonWarningTime);
+                summonChoices.Add(prefab);
+                summonSpawnPositions.Add(center - offset);
+                continue;
+            }
+            position.x = Mathf.Clamp(position.x, ArenaLeft, ArenaRight);
             if (!TryGround(position.x, position.y + 3f, out Vector2 ground)) continue;
-            GameObject prefab = valid[i % valid.Count];
-            Vector2 size = MinionSize(prefab);
             // Reject walls or low ceilings before showing a spawn marker.
             if (Physics2D.OverlapBox(ground + Vector2.up * (size.y / 2f + 0.05f), size * 0.9f, 0f, groundLayers)) continue;
             AddWarning(ground, new Vector2(size.x, 0.2f), summonWarningTime, summonWarningColor);
             summonChoices.Add(prefab);
+            summonSpawnPositions.Add(ground + Vector2.up * (size.y / 2f - offset.y + summonLift));
         }
         if (warnings.Count == 0) return false;
         Enter(State.Summon);
@@ -591,10 +682,7 @@ public class GolemBossController : MonoBehaviour
         {
             if (warnings[i] == null || summonChoices[i] == null) continue;
             GameObject prefab = summonChoices[i];
-            Collider2D collider = prefab.GetComponent<Collider2D>();
-            float offset = collider != null ? collider.offset.y * prefab.transform.localScale.y : 0f;
-            Vector2 ground = warnings[i].Center - Vector2.up * warnings[i].Size.y / 2f;
-            Vector2 position = ground + Vector2.up * (MinionSize(prefab).y / 2f - offset + summonLift);
+            Vector2 position = summonSpawnPositions[i];
             minions.Add(Instantiate(prefab, position, prefab.transform.rotation));
             spawned++;
         }
@@ -610,6 +698,7 @@ public class GolemBossController : MonoBehaviour
         warnings.Clear();
         warningDueTimes.Clear();
         summonChoices.Clear();
+        summonSpawnPositions.Clear();
     }
 
     private void Enter(State next)
@@ -622,8 +711,8 @@ public class GolemBossController : MonoBehaviour
     private void OnValidate()
     {
         arenaX.y = Mathf.Max(arenaX.x + 2f, arenaX.y);
-        if (summonHealthThresholds == null) summonHealthThresholds = Array.Empty<float>();
-        for (int i = 0; i < summonHealthThresholds.Length; i++) summonHealthThresholds[i] = Mathf.Clamp01(summonHealthThresholds[i]);
+        firstSummonDelay = Mathf.Max(0f, firstSummonDelay);
+        summonInterval = Mathf.Max(0.1f, summonInterval);
     }
 
     private void OnDrawGizmosSelected()

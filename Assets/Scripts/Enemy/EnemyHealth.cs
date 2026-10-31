@@ -31,7 +31,7 @@ public class EnemyHealth : MonoBehaviour
 
     [Header("Hit Blink")]
 
-    [SerializeField, Min(1)]
+    [SerializeField, Min(0)]
     private int hitBlinkCount = 2;
 
     [SerializeField, Min(0.01f)]

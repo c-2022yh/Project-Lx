@@ -1,5 +1,187 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!1 &810000000000000001
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 810000000000000002}
+  - component: {fileID: 810000000000000003}
+  m_Layer: 8
+  m_Name: Golem Left Arm
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &810000000000000002
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 810000000000000001}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -1.6, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 1
+  m_Children: []
+  m_Father: {fileID: 7645260495768812034}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!212 &810000000000000003
+SpriteRenderer:
+  serializedVersion: 2
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 810000000000000001}
+  m_Enabled: 1
+  m_CastShadows: 0
+  m_ReceiveShadows: 0
+  m_DynamicOccludee: 1
+  m_StaticShadowCaster: 0
+  m_MotionVectors: 1
+  m_LightProbeUsage: 1
+  m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 0
+  m_RayTraceProcedural: 0
+  m_RayTracingAccelStructBuildFlagsOverride: 0
+  m_RayTracingAccelStructBuildFlags: 1
+  m_SmallMeshCulling: 1
+  m_ForceMeshLod: -1
+  m_MeshLodSelectionBias: 0
+  m_RenderingLayerMask: 1
+  m_RendererPriority: 0
+  m_Materials:
+  - {fileID: 10754, guid: 0000000000000000f000000000000000, type: 0}
+  m_StaticBatchInfo:
+    firstSubMesh: 0
+    subMeshCount: 0
+  m_StaticBatchRoot: {fileID: 0}
+  m_ProbeAnchor: {fileID: 0}
+  m_LightProbeVolumeOverride: {fileID: 0}
+  m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
+  m_PreserveUVs: 0
+  m_IgnoreNormalsForChartDetection: 0
+  m_ImportantGI: 0
+  m_StitchLightmapSeams: 1
+  m_SelectedEditorRenderState: 0
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
+  m_AutoUVMaxAngle: 89
+  m_LightmapParameters: {fileID: 0}
+  m_GlobalIlluminationMeshLod: 0
+  m_SortingLayerID: 1278559193
+  m_SortingLayer: 5
+  m_SortingOrder: 1
+  m_MaskInteraction: 0
+  m_Sprite: {fileID: 21300000, guid: 73558e9c51f643ad86c166a81921c35d, type: 3}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_FlipX: 0
+  m_FlipY: 0
+  m_DrawMode: 0
+  m_Size: {x: 2.6, y: 3.6}
+  m_AdaptiveModeThreshold: 0.5
+  m_SpriteTileMode: 0
+  m_WasSpriteAssigned: 1
+  m_SpriteSortPoint: 0
+--- !u!1 &820000000000000001
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 820000000000000002}
+  - component: {fileID: 820000000000000003}
+  m_Layer: 8
+  m_Name: Golem Right Arm
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &820000000000000002
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 820000000000000001}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 1.6, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 1
+  m_Children: []
+  m_Father: {fileID: 7645260495768812034}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!212 &820000000000000003
+SpriteRenderer:
+  serializedVersion: 2
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 820000000000000001}
+  m_Enabled: 1
+  m_CastShadows: 0
+  m_ReceiveShadows: 0
+  m_DynamicOccludee: 1
+  m_StaticShadowCaster: 0
+  m_MotionVectors: 1
+  m_LightProbeUsage: 1
+  m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 0
+  m_RayTraceProcedural: 0
+  m_RayTracingAccelStructBuildFlagsOverride: 0
+  m_RayTracingAccelStructBuildFlags: 1
+  m_SmallMeshCulling: 1
+  m_ForceMeshLod: -1
+  m_MeshLodSelectionBias: 0
+  m_RenderingLayerMask: 1
+  m_RendererPriority: 0
+  m_Materials:
+  - {fileID: 10754, guid: 0000000000000000f000000000000000, type: 0}
+  m_StaticBatchInfo:
+    firstSubMesh: 0
+    subMeshCount: 0
+  m_StaticBatchRoot: {fileID: 0}
+  m_ProbeAnchor: {fileID: 0}
+  m_LightProbeVolumeOverride: {fileID: 0}
+  m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
+  m_PreserveUVs: 0
+  m_IgnoreNormalsForChartDetection: 0
+  m_ImportantGI: 0
+  m_StitchLightmapSeams: 1
+  m_SelectedEditorRenderState: 0
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
+  m_AutoUVMaxAngle: 89
+  m_LightmapParameters: {fileID: 0}
+  m_GlobalIlluminationMeshLod: 0
+  m_SortingLayerID: 1278559193
+  m_SortingLayer: 5
+  m_SortingOrder: 1
+  m_MaskInteraction: 0
+  m_Sprite: {fileID: 21300000, guid: fe5cfe10acd248fbab42ae2307da7acd, type: 3}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_FlipX: 0
+  m_FlipY: 0
+  m_DrawMode: 0
+  m_Size: {x: 2.6, y: 3.6}
+  m_AdaptiveModeThreshold: 0.5
+  m_SpriteTileMode: 0
+  m_WasSpriteAssigned: 1
+  m_SpriteSortPoint: 0
 --- !u!1 &7407122653327619868
 GameObject:
   m_ObjectHideFlags: 0
@@ -35,9 +217,11 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 2, y: 2, z: 1}
+  m_LocalScale: {x: 3, y: 3, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children: []
+  m_Children:
+  - {fileID: 810000000000000002}
+  - {fileID: 820000000000000002}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!212 &2071851450801838841
@@ -89,11 +273,11 @@ SpriteRenderer:
   m_SortingLayer: 5
   m_SortingOrder: 0
   m_MaskInteraction: 0
-  m_Sprite: {fileID: 6435479438531902452, guid: eff98e6934193ec47aa3a511bf790eb6, type: 2}
-  m_Color: {r: 0.48, g: 0.53, b: 0.58, a: 1}
+  m_Sprite: {fileID: 21300000, guid: 8467298b82cd4b368668f1470e2969b5, type: 3}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
-  m_DrawMode: 1
+  m_DrawMode: 0
   m_Size: {x: 2.6, y: 3.6}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
@@ -160,9 +344,9 @@ CapsuleCollider2D:
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
-  m_Offset: {x: 0, y: 0}
-  m_Size: {x: 2.6, y: 3.6}
-  m_Direction: 0
+  m_Offset: {x: 0, y: 0.4}
+  m_Size: {x: 3, y: 3}
+  m_Direction: 1
 --- !u!114 &6396179721414544444
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -211,13 +395,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f744d1166891d6943bd60c8634499e22, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EnemyHealth
-  maxHp: 90000
+  maxHp: 30000
   healthBar: {fileID: 0}
   damagePopupPrefab: {fileID: 4418119550550923920, guid: f9203d53f7bdee24b9be1417d4647687, type: 3}
   damagePopupOffset: {x: 0, y: 2.3, z: 0}
   damagePopupSpacing: 0.6
   damagePopupResetTime: 0.15
-  hitBlinkCount: 1
+  hitBlinkCount: 0
   hitBlinkInterval: 0.03
   playerEnergy: {fileID: 0}
   energyReward: 100
@@ -291,11 +475,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 81f247bc320a48678941ef6df1ca7f39, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::GolemBossVisual
-  idleSprites: []
+  idleSprites:
+  - {fileID: 21300000, guid: 8467298b82cd4b368668f1470e2969b5, type: 3}
   summonSprites: []
   phaseChangeSprites: []
   idleFrameTime: 0.2
   spritesFaceRight: 1
+  leftArmSprite: {fileID: 21300000, guid: 73558e9c51f643ad86c166a81921c35d, type: 3}
+  rightArmSprite: {fileID: 21300000, guid: fe5cfe10acd248fbab42ae2307da7acd, type: 3}
+  leftArmPosition: {x: -1.6, y: 0}
+  rightArmPosition: {x: 1.6, y: 0}
+  armScale: 1
+  armPrepareLift: 0.65
+  armStrikeDrop: 0.25
   showHealthBar: 1
   healthBarOffset: {x: 0, y: 2.6}
   healthBarSize: {x: 4, y: 0.16}
@@ -365,14 +557,15 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 128
   slam:
-    warningTime: 1.1
+    warningTime: 2
     activeTime: 0.15
     recoveryTime: 1.4
     cooldown: 3
-    size: {x: 4, y: 1.4}
+    size: {x: 10, y: 3.75}
     damage:
       damageType: 0
       damageMultiplier: 2
+      flatDamage: 0
       canCritical: 0
       bonusPenetration: 0
       bonusDamageAmplification: 0
@@ -411,17 +604,17 @@ MonoBehaviour:
       maxDistance: 15
       useFallback: 0
       fallbackSound: 5
-  slamRange: 5
-  slamForwardOffset: 3.2
+  crushArenaCoverage: 0.8
   crush:
-    warningTime: 1.5
+    warningTime: 2.2
     activeTime: 0.15
     recoveryTime: 1.8
     cooldown: 6
-    size: {x: 9, y: 1.3}
+    size: {x: 16, y: 3.75}
     damage:
       damageType: 0
       damageMultiplier: 2.5
+      flatDamage: 0
       canCritical: 0
       bonusPenetration: 0
       bonusDamageAmplification: 0
@@ -469,6 +662,7 @@ MonoBehaviour:
     damage:
       damageType: 0
       damageMultiplier: 2
+      flatDamage: 0
       canCritical: 0
       bonusPenetration: 0
       bonusDamageAmplification: 0
@@ -510,28 +704,40 @@ MonoBehaviour:
   rockCount: 5
   rockInterval: 0.45
   rockSprite: {fileID: 0}
-  rockDropHeight: 7
-  splitEnabled: 1
+  rockSprites:
+  - {fileID: 21300000, guid: c452ad5a9e404b66ba508c0568bb549c, type: 3}
+  - {fileID: 21300000, guid: 497b3a91792b4bea85a289484b6e1c0e, type: 3}
+  - {fileID: 21300000, guid: ba212720e1164961a58c719b71e715a9, type: 3}
+  - {fileID: 21300000, guid: 6cc244803169487d8c821d293bfef039, type: 3}
+  - {fileID: 21300000, guid: ce8cd25f4e764bc58c11644ad32bc5e1, type: 3}
+  rockDropHeight: 13
   phaseTwoHealth: 0.5
   phaseChangeTime: 1.6
+  phaseTwoAttackSpeed: 1.25
+  splitEnabled: 0
   fragmentScale: 0.65
   splitDistance: 2.5
   fragmentMoveSpeed: 1
   fragmentStopDistance: 2.2
   isFragment: 0
-  chainRecovery: 0.45
   minionPrefabs:
-  - {fileID: 1525100744247835566, guid: 6a1ba8e645d8e8b4eb84d002867046e8, type: 3}
-  summonHealthThresholds:
-  - 0.7
-  - 0.35
-  minionsPerWave: 2
-  maxLivingMinions: 2
+  - {fileID: 1525100744247835566, guid: 6a58422434688214292fce1f1b8d2c1f, type: 3}
+  summonsEnabled: 1
+  firstSummonDelay: 15
+  summonInterval: 20
+  minionsPerWave: 4
+  maxLivingMinions: 10
   summonWarningTime: 1.8
   afterSummonRest: 2
+  summonPlacement: 1
+  upperSummonSideInset: 2.5
+  upperSummonTopInset: 2
+  upperSummonSpacing: 1.5
   summonOffsets:
-  - {x: -6, y: 0}
-  - {x: 6, y: 0}
+  - {x: -6, y: 6}
+  - {x: 6, y: 6}
+  - {x: -8, y: 15}
+  - {x: 8, y: 15}
   summonPoints: []
   summonLift: 0.08
   despawnMinionsOnEncounterEnd: 1
@@ -546,5 +752,5 @@ MonoBehaviour:
       m_Calls: []
   indicatorFill: {fileID: 0}
   indicatorBorder: {fileID: 0}
-  attackWarningColor: {r: 1, g: 0.08, b: 0.04, a: 0.3}
-  summonWarningColor: {r: 0.65, g: 0.2, b: 1, a: 0.3}
+  attackWarningColor: {r: 1, g: 0.08, b: 0.04, a: 0.5647059}
+  summonWarningColor: {r: 0.65, g: 0.2, b: 1, a: 0.5647059}
