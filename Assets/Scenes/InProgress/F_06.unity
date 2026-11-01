@@ -289819,6 +289819,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CameraZoomZone
   zoomSize: 9
+  screenY: -0.15
   blendTime: 0.6
 --- !u!1001 &1992932914
 PrefabInstance:
