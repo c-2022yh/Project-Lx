@@ -8,7 +8,7 @@ using UnityEngine.SceneManagement;
 ///
 /// 근경 프리팹 안의 "Glow Light" 빛(Light2D)을 찾아 그 자리에 파티클을 붙인다. 색은 그 빛 색을 따른다.
 /// 프리팹·씬 파일은 고치지 않는다. 씬이 열릴 때 스스로 붙는다 (실행 중에만 보인다).
-/// 빛 하나당 1초에 1~2개 정도라 가볍다.
+/// 식물 하나에 파티클 하나만 붙이고(가장 밝은 빛 자리), 화면 밖에서는 멈춘다 (11.01 렉 줄이기).
 /// </summary>
 public class FoliageGlowMotes : MonoBehaviour
 {
@@ -31,6 +31,9 @@ public class FoliageGlowMotes : MonoBehaviour
             foreach (Light2D l in root.GetComponentsInChildren<Light2D>(true))
             {
                 if (!l.name.StartsWith("Glow Light")) continue;
+                // 식물 하나에 하나만: 형제 중 이미 붙은 게 있으면 건너뛴다
+                Transform plant = l.transform.parent;
+                if (plant != null && plant.GetComponentInChildren<FoliageGlowMotes>(true) != null) continue;
                 if (l.GetComponent<FoliageGlowMotes>() != null) continue;
                 l.gameObject.AddComponent<FoliageGlowMotes>();
             }
@@ -49,7 +52,7 @@ public class FoliageGlowMotes : MonoBehaviour
         ParticleSystem ps = go.AddComponent<ParticleSystem>();
         ps.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
 
-        float radius = Mathf.Clamp(light.pointLightOuterRadius * 0.35f, 0.3f, 1.4f);
+        float radius = Mathf.Clamp(light.pointLightOuterRadius * 0.45f, 0.4f, 1.8f);
         Color c = light.color; c.a = 1f;
 
         ParticleSystem.MainModule main = ps.main;
@@ -62,6 +65,7 @@ public class FoliageGlowMotes : MonoBehaviour
         main.startColor = new ParticleSystem.MinMaxGradient(c, Color.Lerp(c, Color.white, 0.6f));
         main.maxParticles = 24;
         main.simulationSpace = ParticleSystemSimulationSpace.World;
+        main.cullingMode = ParticleSystemCullingMode.Pause;   // 화면 밖이면 멈춤
         main.scalingMode = ParticleSystemScalingMode.Shape;
 
         ParticleSystem.EmissionModule emission = ps.emission;
