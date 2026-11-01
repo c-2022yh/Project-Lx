@@ -403,7 +403,7 @@ MonoBehaviour:
     m_Bits: 128
   attackSound:
     channel: 0
-    clip: {fileID: 0}
+    clip: {fileID: 8300000, guid: 70f6fffeb78549cd9b4a21beaa67dca4, type: 3}
     clips:
     - {fileID: 0}
     volume: 1
