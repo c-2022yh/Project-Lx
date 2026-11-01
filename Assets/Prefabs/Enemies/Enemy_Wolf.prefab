@@ -315,10 +315,10 @@ MonoBehaviour:
     fallbackSound: 5
   deathSound:
     channel: 0
-    clip: {fileID: 0}
+    clip: {fileID: 8300000, guid: f8a909ff099f4f28a419bef417cc7578, type: 3}
     clips:
     - {fileID: 0}
-    volume: 1
+    volume: 0.7
     minimumInterval: 0.05
     pitchRange: {x: 1, y: 1}
     maxSimultaneous: 4
@@ -382,17 +382,18 @@ MonoBehaviour:
     recovery: 0.55
     cooldown: 1.2
     travelDistance: 0.35
-    hitboxOffset: {x: 1.6, y: -0.6}
-    hitboxSize: {x: 0.9, y: 0.8}
+    hitboxOffset: {x: 1.8, y: -0.6}
+    hitboxSize: {x: 1.5, y: 0.8}
     damage:
       damageType: 0
       damageMultiplier: 2
+      flatDamage: 0
       canCritical: 0
       bonusPenetration: 0
       bonusDamageAmplification: 0
     attackSound:
       channel: 0
-      clip: {fileID: 0}
+      clip: {fileID: 8300000, guid: 584ea5671332436f9ce8cc716d7221c2, type: 3}
       clips:
       - {fileID: 0}
       volume: 1
@@ -451,12 +452,13 @@ MonoBehaviour:
     damage:
       damageType: 0
       damageMultiplier: 2
+      flatDamage: 0
       canCritical: 0
       bonusPenetration: 0
       bonusDamageAmplification: 0
     attackSound:
       channel: 0
-      clip: {fileID: 0}
+      clip: {fileID: 8300000, guid: 05913cd6ee5f4673a1a2861d4b4e1981, type: 3}
       clips:
       - {fileID: 0}
       volume: 1
