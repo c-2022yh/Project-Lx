@@ -37,6 +37,21 @@ MonoBehaviour:
       maxDistance: 0
       useFallback: 0
       fallbackSound: 0
+  - sceneName: Boss
+    music:
+      channel: 2
+      clip: {fileID: 8300000, guid: 341a10a9ecef4df41b15e500ad2ceedf, type: 3}
+      clips: []
+      volume: 1
+      minimumInterval: 0
+      pitchRange: {x: 0, y: 0}
+      maxSimultaneous: 1
+      limitScope: 0
+      spatialBlend: 0
+      minDistance: 0
+      maxDistance: 0
+      useFallback: 0
+      fallbackSound: 0
   - sceneName: Title
     music:
       channel: 0
@@ -46,6 +61,36 @@ MonoBehaviour:
       minimumInterval: 0
       pitchRange: {x: 0, y: 0}
       maxSimultaneous: 0
+      limitScope: 0
+      spatialBlend: 0
+      minDistance: 0
+      maxDistance: 0
+      useFallback: 0
+      fallbackSound: 0
+  - sceneName: Intro
+    music:
+      channel: 2
+      clip: {fileID: 8300000, guid: a6fddec4fa96ae849989d725126bd620, type: 3}
+      clips: []
+      volume: 0
+      minimumInterval: 0
+      pitchRange: {x: 0, y: 0}
+      maxSimultaneous: 1
+      limitScope: 0
+      spatialBlend: 0
+      minDistance: 0
+      maxDistance: 0
+      useFallback: 0
+      fallbackSound: 0
+  - sceneName: Tutorial
+    music:
+      channel: 2
+      clip: {fileID: 8300000, guid: c7d0ffc4d6fd1d049a72f6ad06241a7e, type: 3}
+      clips: []
+      volume: 1
+      minimumInterval: 0
+      pitchRange: {x: 0, y: 0}
+      maxSimultaneous: 1
       limitScope: 0
       spatialBlend: 0
       minDistance: 0
@@ -85,7 +130,7 @@ MonoBehaviour:
   - sceneName: F_03
     music:
       channel: 2
-      clip: {fileID: 8300000, guid: 80cc116bc795a5147992b342a8a98845, type: 3}
+      clip: {fileID: 8300000, guid: 3ac6769a091d1dc4697cd02f8144486a, type: 3}
       clips: []
       volume: 1
       minimumInterval: 0
@@ -100,22 +145,22 @@ MonoBehaviour:
   - sceneName: F_04
     music:
       channel: 2
-      clip: {fileID: 8300000, guid: 80cc116bc795a5147992b342a8a98845, type: 3}
+      clip: {fileID: 8300000, guid: c7d0ffc4d6fd1d049a72f6ad06241a7e, type: 3}
       clips: []
       volume: 1
       minimumInterval: 0
       pitchRange: {x: 0, y: 0}
-      maxSimultaneous: 0
+      maxSimultaneous: 1
       limitScope: 0
       spatialBlend: 0
       minDistance: 0
       maxDistance: 0
       useFallback: 0
       fallbackSound: 0
-  - sceneName: Boss
+  - sceneName: F_05
     music:
       channel: 2
-      clip: {fileID: 8300000, guid: 341a10a9ecef4df41b15e500ad2ceedf, type: 3}
+      clip: {fileID: 8300000, guid: 3ac6769a091d1dc4697cd02f8144486a, type: 3}
       clips: []
       volume: 1
       minimumInterval: 0
@@ -127,7 +172,67 @@ MonoBehaviour:
       maxDistance: 0
       useFallback: 0
       fallbackSound: 0
-  - sceneName: Tutorial
+  - sceneName: F_06
+    music:
+      channel: 2
+      clip: {fileID: 8300000, guid: 68dd301be118b7242b279621514bfe95, type: 3}
+      clips: []
+      volume: 1
+      minimumInterval: 0
+      pitchRange: {x: 0, y: 0}
+      maxSimultaneous: 0
+      limitScope: 0
+      spatialBlend: 0
+      minDistance: 0
+      maxDistance: 0
+      useFallback: 0
+      fallbackSound: 0
+  - sceneName: F_07
+    music:
+      channel: 2
+      clip: {fileID: 8300000, guid: 68dd301be118b7242b279621514bfe95, type: 3}
+      clips: []
+      volume: 1
+      minimumInterval: 0
+      pitchRange: {x: 0, y: 0}
+      maxSimultaneous: 0
+      limitScope: 0
+      spatialBlend: 0
+      minDistance: 0
+      maxDistance: 0
+      useFallback: 0
+      fallbackSound: 0
+  - sceneName: F_08
+    music:
+      channel: 2
+      clip: {fileID: 8300000, guid: 2baf9cae85bcbc04d84f108f38071765, type: 3}
+      clips: []
+      volume: 1
+      minimumInterval: 0
+      pitchRange: {x: 0, y: 0}
+      maxSimultaneous: 0
+      limitScope: 0
+      spatialBlend: 0
+      minDistance: 0
+      maxDistance: 0
+      useFallback: 0
+      fallbackSound: 0
+  - sceneName: F_09
+    music:
+      channel: 2
+      clip: {fileID: 8300000, guid: 23236551f14570a48a7374e001279eda, type: 3}
+      clips: []
+      volume: 1
+      minimumInterval: 0
+      pitchRange: {x: 0, y: 0}
+      maxSimultaneous: 0
+      limitScope: 0
+      spatialBlend: 0
+      minDistance: 0
+      maxDistance: 0
+      useFallback: 0
+      fallbackSound: 0
+  - sceneName: F_10
     music:
       channel: 0
       clip: {fileID: 8300000, guid: 23236551f14570a48a7374e001279eda, type: 3}
@@ -142,27 +247,12 @@ MonoBehaviour:
       maxDistance: 0
       useFallback: 0
       fallbackSound: 0
-  - sceneName: 
+  - sceneName: Test_BossRoom
     music:
-      channel: 0
-      clip: {fileID: 0}
+      channel: 2
+      clip: {fileID: 8300000, guid: 341a10a9ecef4df41b15e500ad2ceedf, type: 3}
       clips: []
-      volume: 0
-      minimumInterval: 0
-      pitchRange: {x: 0, y: 0}
-      maxSimultaneous: 0
-      limitScope: 0
-      spatialBlend: 0
-      minDistance: 0
-      maxDistance: 0
-      useFallback: 0
-      fallbackSound: 0
-  - sceneName: 
-    music:
-      channel: 0
-      clip: {fileID: 0}
-      clips: []
-      volume: 0
+      volume: 1
       minimumInterval: 0
       pitchRange: {x: 0, y: 0}
       maxSimultaneous: 0
