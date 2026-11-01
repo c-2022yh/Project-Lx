@@ -533,7 +533,7 @@ MonoBehaviour:
     fallbackSound: 5
   summonSound:
     channel: 0
-    clip: {fileID: 0}
+    clip: {fileID: 8300000, guid: b3d49509e6c14f01ba14c6d212026332, type: 3}
     clips: []
     volume: 1
     minimumInterval: 0.1
@@ -591,7 +591,7 @@ MonoBehaviour:
       fallbackSound: 5
     impactSound:
       channel: 0
-      clip: {fileID: 8300000, guid: 2f37e550570b4e9d89433459627cc657, type: 3}
+      clip: {fileID: 8300000, guid: b018792e9e7a46c38b5d6f050228ebd3, type: 3}
       clips:
       - {fileID: 0}
       volume: 1
@@ -640,7 +640,7 @@ MonoBehaviour:
       fallbackSound: 5
     impactSound:
       channel: 0
-      clip: {fileID: 8300000, guid: 2f37e550570b4e9d89433459627cc657, type: 3}
+      clip: {fileID: 8300000, guid: b018792e9e7a46c38b5d6f050228ebd3, type: 3}
       clips:
       - {fileID: 0}
       volume: 1
@@ -688,7 +688,7 @@ MonoBehaviour:
       fallbackSound: 5
     impactSound:
       channel: 0
-      clip: {fileID: 0}
+      clip: {fileID: 8300000, guid: f4e8adc0b76441e8a4df1ee0eda16907, type: 3}
       clips:
       - {fileID: 0}
       volume: 1
