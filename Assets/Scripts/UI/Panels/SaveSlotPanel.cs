@@ -354,8 +354,11 @@ public class SaveSlotPanel : MonoBehaviour
         bool filled = info != null && !info.isEmpty;
         filledGroup.SetActive(filled);
         emptyGroup.SetActive(!filled);
-        deleteButton.gameObject.SetActive(filled);
+        bool challenge = filled && SaveSystem.IsReadOnlySlot(info.slotIndex);
+        deleteButton.gameObject.SetActive(filled && !challenge);
         primaryLabel.text = filled ? "이어하기" : "새로 시작";
+
+        if (challenge) primaryLabel.text = "\uB3C4\uC804 \uC2DC\uC791";
 
         if (!filled) return;
 
@@ -445,6 +448,7 @@ public class SaveSlotPanel : MonoBehaviour
 
     private void OnDeleteClicked(int slotIndex)
     {
+        if (SaveSystem.IsReadOnlySlot(slotIndex)) return;
         SaveSlotInfo info = SaveSlotService.Provider.GetSlot(slotIndex);
         if (info == null || info.isEmpty) return;
 

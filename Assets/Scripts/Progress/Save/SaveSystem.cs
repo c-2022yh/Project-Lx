@@ -14,11 +14,13 @@ public static class SaveSystem
 
     public static string PathOf(int slot) => Path.Combine(Folder, $"slot_{slot}.json");
 
-    public static bool Exists(int slot) => IsValid(slot) && File.Exists(PathOf(slot));
+    public static bool IsReadOnlySlot(int slot) => BossChallengeSavePreset.ForSlot(slot) != null;
+
+    public static bool Exists(int slot) => IsValid(slot) && (IsReadOnlySlot(slot) || File.Exists(PathOf(slot)));
 
     public static void Save(int slot, SaveData data)
     {
-        if (!IsValid(slot) || data == null) return;
+        if (!IsValid(slot) || data == null || IsReadOnlySlot(slot)) return;
         try
         {
             Directory.CreateDirectory(Folder);
@@ -40,6 +42,8 @@ public static class SaveSystem
         if (!Exists(slot)) return null;
         try
         {
+            BossChallengeSavePreset preset = BossChallengeSavePreset.ForSlot(slot);
+            if (preset != null) return preset.CreateSaveData();
             SaveData data = JsonUtility.FromJson<SaveData>(File.ReadAllText(PathOf(slot)));
             return data;
         }
@@ -52,7 +56,7 @@ public static class SaveSystem
 
     public static void Delete(int slot)
     {
-        if (!IsValid(slot)) return;
+        if (!IsValid(slot) || IsReadOnlySlot(slot)) return;
         try
         {
             string path = PathOf(slot);

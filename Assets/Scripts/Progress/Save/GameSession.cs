@@ -316,7 +316,7 @@ public class GameSession : MonoBehaviour
     /// <summary>지금 상태를 data에 담아 파일로 쓴다. 위치(제단)는 건드리지 않는다.</summary>
     private void SaveProgress()
     {
-        if (!HasSlot || data == null) return;
+        if (!HasSlot || data == null || SaveSystem.IsReadOnlySlot(CurrentSlot)) return;
 
         data.version = SaveData.CurrentVersion;
         data.savedAt = System.DateTime.Now.ToString("o");
