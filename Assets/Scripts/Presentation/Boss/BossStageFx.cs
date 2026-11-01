@@ -133,6 +133,10 @@ public static class BossStageFx
     }
 
     /// <summary>바닥(groundY)에 폭 width의 푸른 균열이 퍼졌다가 life초 동안 사라진다.</summary>
+    // 균열은 땅 타일 위, 보스 아래에 그린다 (보스는 Ground 레이어 100번대로 옮겨져 있음 — BossRoom)
+    private const string CrackLayer = "Ground";
+    private const int CrackOrder = 60;
+
     public static void Crack(Vector3 center, float groundY, float width, float life = 3f, bool unscaled = false)
     {
         Load();
@@ -142,7 +146,7 @@ public static class BossStageFx
         Vector3 pos = new Vector3(center.x, groundY - crack.bounds.size.y * k * 0.3f, 0f);
 
         // 0.35초 동안 양옆으로 쫙 퍼지고
-        BossFxSprite spread = BossFxSprite.Create("BossCrack", crack, pos, "GroundCover", 8);
+        BossFxSprite spread = BossFxSprite.Create("BossCrack", crack, pos, CrackLayer, CrackOrder);
         spread.scaleFrom = new Vector3(k * 0.15f, k * 0.8f, 1f);
         spread.scaleTo = new Vector3(k, k, 1f);
         spread.life = 0.35f;
@@ -151,7 +155,7 @@ public static class BossStageFx
         spread.unscaled = unscaled;
 
         // 그대로 남았다가 서서히 사라진다
-        BossFxSprite hold = BossFxSprite.Create("BossCrackHold", crack, pos, "GroundCover", 8);
+        BossFxSprite hold = BossFxSprite.Create("BossCrackHold", crack, pos, CrackLayer, CrackOrder);
         hold.scaleFrom = hold.scaleTo = new Vector3(k, k, 1f);
         hold.delay = 0.33f;
         hold.life = life;
@@ -160,7 +164,7 @@ public static class BossStageFx
         hold.unscaled = unscaled;
 
         // 처음 순간 더 밝게 번쩍
-        BossFxSprite flash = BossFxSprite.Create("BossCrackFlash", crack, pos, "GroundCover", 9);
+        BossFxSprite flash = BossFxSprite.Create("BossCrackFlash", crack, pos, CrackLayer, CrackOrder + 1);
         flash.color = new Color(0.7f, 0.85f, 1f, 1f);
         flash.scaleFrom = new Vector3(k * 0.4f, k, 1f);
         flash.scaleTo = new Vector3(k * 1.05f, k * 1.1f, 1f);
