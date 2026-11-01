@@ -56,6 +56,8 @@ public class BossRoom : MonoBehaviour
     [SerializeField] private DialogueData clearDialogue;
     [Tooltip("대화 전에 \"격파\" 카드를 띄운다.")]
     [SerializeField] private bool showDefeatCard = true;
+    [Tooltip("다 끝나면 엔딩 화면(플레이해 주셔서 감사합니다)을 띄우고 타이틀로 돌아간다.")]
+    [SerializeField] private bool showEnding = true;
 
     [Header("Audio")]
     [SerializeField] private SoundCue introSound = new SoundCue();
@@ -88,6 +90,8 @@ public class BossRoom : MonoBehaviour
     [Header("Health Bar")]
     [Tooltip("보스 HP바를 띄운다 (지금은 끔). 끄면 골렘 머리 위 작은 HP바도 같이 숨긴다.")]
     [SerializeField] private bool showHealthBar = false;
+    [Tooltip("보스 머리 위에 한 줄짜리 체력바를 띄운다 (페이즈 표시 없음).")]
+    [SerializeField] private bool overheadHealthBar = true;
     [Tooltip("보스를 캐릭터 뒤에 그린다 (원래는 Enemy 레이어라 캐릭터 앞에 그려짐)")]
     [SerializeField] private bool bossBehindPlayer = true;
     [Tooltip("HP바에서 2페이즈가 되는 자리(체력 비율). 골렘의 Phase Two Health와 맞춰 둔다.")]
@@ -350,6 +354,7 @@ public class BossRoom : MonoBehaviour
         }
 
         if (showHealthBar) BossHealthBarUI.Show(boss, bossName, golem != null ? phaseMark : -1f);
+        if (overheadHealthBar) BossOverheadBar.Show(boss);
         TuneBossLook();
         state = State.Fighting;
 
@@ -439,6 +444,7 @@ public class BossRoom : MonoBehaviour
         HitStop.Slow(clearSlowScale, clearSlowSeconds);
 
         if (showHealthBar) BossHealthBarUI.Hide();
+        BossOverheadBar.Hide();
 
         // 갈라진 틈에서 빛이 터지고 빛 조각이 흩어진다. 방은 다시 차가운 달빛으로.
         if (moonPresentation)
@@ -485,6 +491,13 @@ public class BossRoom : MonoBehaviour
 
         // 보스 처치는 바로 저장한다(제단 위치는 그대로).
         GameSession.SaveProgressNow();
+
+        // 11.01: 엔딩 (감사 문구 → 타이틀)
+        if (showEnding)
+        {
+            yield return new WaitForSecondsRealtime(1.2f);
+            BossEnding.Play();
+        }
         routine = null;
     }
 
@@ -642,6 +655,7 @@ public class BossRoom : MonoBehaviour
     private IEnumerator ResetAfterRespawn()
     {
         BossHealthBarUI.Hide();
+        BossOverheadBar.Hide();
         BossTitleCard.Hide();
         UnhookBoss();
         ClearPresentation();
