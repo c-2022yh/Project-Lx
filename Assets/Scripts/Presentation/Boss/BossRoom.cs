@@ -56,6 +56,8 @@ public class BossRoom : MonoBehaviour
     [SerializeField] private DialogueData clearDialogue;
     [Tooltip("대화 전에 \"격파\" 카드를 띄운다.")]
     [SerializeField] private bool showDefeatCard = true;
+    [Tooltip("다 끝나면 엔딩 화면(플레이해 주셔서 감사합니다)을 띄우고 타이틀로 돌아간다.")]
+    [SerializeField] private bool showEnding = true;
 
     [Header("Audio")]
     [SerializeField] private SoundCue introSound = new SoundCue();
@@ -485,6 +487,13 @@ public class BossRoom : MonoBehaviour
 
         // 보스 처치는 바로 저장한다(제단 위치는 그대로).
         GameSession.SaveProgressNow();
+
+        // 11.01: 엔딩 (감사 문구 → 타이틀)
+        if (showEnding)
+        {
+            yield return new WaitForSecondsRealtime(1.2f);
+            BossEnding.Play();
+        }
         routine = null;
     }
 
