@@ -13,63 +13,75 @@ MonoBehaviour:
   m_Name: MapRoomAtlas
   m_EditorClassIdentifier: Assembly-CSharp::MapRoomAtlas
   rooms:
-  - sceneName: Test_Alpha
-    image: {fileID: 21300000, guid: 7e940b71463e4f141adcdb04e0522cc8, type: 3}
-    worldMin: {x: -48, y: -33}
-    worldSize: {x: 113, y: 126}
+  - sceneName: Boss
+    image: {fileID: 21300000, guid: e672ca151114f524cb56a9679b463df4, type: 3}
+    worldMin: {x: -47, y: -9}
+    worldSize: {x: 94, y: 30}
     atlasMin: {x: 0, y: 0}
     group: 1
-  - sceneName: Forest01
-    image: {fileID: 21300000, guid: 3e2a65569a734cf4ab5bc4de4bd28c0d, type: 3}
-    worldMin: {x: -53, y: -3}
-    worldSize: {x: 115, y: 66}
-    atlasMin: {x: 133, y: 0}
-    group: 2
-  - sceneName: Forest020
-    image: {fileID: 21300000, guid: a780451d03cacd74282e800473fdd5df, type: 3}
-    worldMin: {x: -48, y: -33}
-    worldSize: {x: 102, y: 126}
-    atlasMin: {x: 102, y: 60}
-    group: 2
-  - sceneName: Forest02
-    image: {fileID: 21300000, guid: 849c9029ee2fef74aac5c756aff2965c, type: 3}
-    worldMin: {x: -29, y: 15}
-    worldSize: {x: 50, y: 19}
-    atlasMin: {x: 242.3, y: 53.1}
-    group: 2
   - sceneName: F_01
     image: {fileID: 21300000, guid: d719e4994ecedf842ac812da7c9591ff, type: 3}
-    worldMin: {x: -29, y: -43}
-    worldSize: {x: 251, y: 99}
-    atlasMin: {x: 312.3, y: 0}
-    group: 3
+    worldMin: {x: -33, y: -45}
+    worldSize: {x: 230, y: 92}
+    atlasMin: {x: -225.4, y: -26.099998}
+    group: 1
   - sceneName: F_02
     image: {fileID: 21300000, guid: 2e732130eb234f647b9945f7517188ce, type: 3}
-    worldMin: {x: 79, y: 34}
-    worldSize: {x: 337, y: 149}
-    atlasMin: {x: 401.3, y: -144.5}
-    group: 3
-  - sceneName: Tutorial
-    image: {fileID: 21300000, guid: 741538eead9f926419a1e7a585360feb, type: 3}
-    worldMin: {x: -23, y: 5}
-    worldSize: {x: 54, y: 47}
-    atlasMin: {x: 263.8, y: 48.5}
-    group: 3
+    worldMin: {x: 117, y: 97}
+    worldSize: {x: 153, y: 86}
+    atlasMin: {x: -94.399994, y: -107.6}
+    group: 1
   - sceneName: F_03
     image: {fileID: 21300000, guid: d2e011fdb8a25874994602056d6c23d4, type: 3}
     worldMin: {x: -6, y: -19}
-    worldSize: {x: 106, y: 34}
-    atlasMin: {x: 301.3, y: -119.5}
-    group: 3
+    worldSize: {x: 106, y: 35}
+    atlasMin: {x: -94.7, y: -143.9}
+    group: 1
   - sceneName: F_04
     image: {fileID: 21300000, guid: 14d6eba1c2c99b149a71b5d9de3590d7, type: 3}
-    worldMin: {x: 9, y: -7}
-    worldSize: {x: 171, y: 90}
-    atlasMin: {x: 557.89996, y: 9.799999}
-    group: 3
+    worldMin: {x: 38, y: 22}
+    worldSize: {x: 143, y: 56}
+    atlasMin: {x: 89.3, y: 3.7000046}
+    group: 1
+  - sceneName: F_05
+    image: {fileID: 21300000, guid: 62250405870fdf24a964020b2816fb5f, type: 3}
+    worldMin: {x: -3, y: -22}
+    worldSize: {x: 138, y: 198}
+    atlasMin: {x: -228.2, y: -224.9}
+    group: 1
+  - sceneName: F_06
+    image: {fileID: 21300000, guid: 7178cf3feee09584cbd4cc49aae6bc5c, type: 3}
+    worldMin: {x: 254, y: 125}
+    worldSize: {x: 112, y: 51}
+    atlasMin: {x: 169.80002, y: -74.99999}
+    group: 1
   - sceneName: F_07
     image: {fileID: 21300000, guid: fbb2356a030fce741b75193c07013911, type: 3}
     worldMin: {x: 246, y: 99}
-    worldSize: {x: 118, y: 42}
-    atlasMin: {x: 587.36, y: -78.51}
-    group: 3
+    worldSize: {x: 121, y: 42}
+    atlasMin: {x: 53.660004, y: -104.61}
+    group: 1
+  - sceneName: F_08
+    image: {fileID: 21300000, guid: 128e5e6df1f26e94598a83d3409c7f95, type: 3}
+    worldMin: {x: 223, y: 66}
+    worldSize: {x: 178, y: 45}
+    atlasMin: {x: 9.5, y: -147.70999}
+    group: 1
+  - sceneName: F_09
+    image: {fileID: 21300000, guid: da9a3fad37969814aa7893fc0efe24dd, type: 3}
+    worldMin: {x: 383, y: 64}
+    worldSize: {x: 44, y: 26}
+    atlasMin: {x: 181.98999, y: -142.26}
+    group: 1
+  - sceneName: F_10
+    image: {fileID: 21300000, guid: db36a2ab62f31f14e90923f77b4fd959, type: 3}
+    worldMin: {x: 315, y: 34}
+    worldSize: {x: 86, y: 52}
+    atlasMin: {x: 227.3, y: 2.7000046}
+    group: 1
+  - sceneName: Tutorial
+    image: {fileID: 21300000, guid: 741538eead9f926419a1e7a585360feb, type: 3}
+    worldMin: {x: -3, y: -8}
+    worldSize: {x: 156, y: 36}
+    atlasMin: {x: -376.59998, y: 24.099998}
+    group: 1

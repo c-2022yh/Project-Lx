@@ -60,38 +60,29 @@ public static class MapRoomExporter
     private static readonly HashSet<string> Excluded = new HashSet<string> { "Title", "Panyong_Combat_" };
 
     /// <summary>
-    /// 뽑을 씬 목록: 빌드 목록의 켜진 씬(타이틀 제외) + InProgress 폴더의 F_ 맵.
-    /// 10.30: 새 맵(F_03, F_04)이 아직 빌드 목록에 없어서 InProgress 폴더도 같이 본다. F_base는 틀이라 뺀다.
+    /// 뽑을 씬 목록: InProgress 폴더(바로 아래)의 씬만. 타이틀·시작 연출·F_base(틀)는 뺀다.
+    /// 11.01: 빌드 목록의 옛 씬(Forest01, Test_Alpha 등)은 지도에 안 쓰므로 InProgress만 본다.
     /// </summary>
     private static List<string> ScenePaths()
     {
         List<string> paths = new List<string>();
         HashSet<string> names = new HashSet<string>();
+        if (!AssetDatabase.IsValidFolder(InProgressFolder)) return paths;
 
-        foreach (EditorBuildSettingsScene s in EditorBuildSettings.scenes)
+        foreach (string guid in AssetDatabase.FindAssets("t:Scene", new[] { InProgressFolder }))
         {
-            if (!s.enabled) continue;
-            string name = Path.GetFileNameWithoutExtension(s.path);
-            if (Excluded.Contains(name) || !names.Add(name)) continue;
-            paths.Add(s.path);
+            string path = AssetDatabase.GUIDToAssetPath(guid);
+            string name = Path.GetFileNameWithoutExtension(path);
+            if (name == "F_base" || name == "Intro" || name == GameFlow.TitleSceneName || Excluded.Contains(name)) continue;
+            if (Path.GetDirectoryName(path).Replace('\\', '/') != InProgressFolder) continue;
+            if (names.Add(name)) paths.Add(path);
         }
 
-        if (AssetDatabase.IsValidFolder(InProgressFolder))
-        {
-            foreach (string guid in AssetDatabase.FindAssets("t:Scene", new[] { InProgressFolder }))
-            {
-                string path = AssetDatabase.GUIDToAssetPath(guid);
-                string name = Path.GetFileNameWithoutExtension(path);
-                if (!name.StartsWith("F_") || name == "F_base" || Excluded.Contains(name)) continue;
-                if (Path.GetDirectoryName(path).Replace('\\', '/') != InProgressFolder) continue;
-                if (names.Add(name)) paths.Add(path);
-            }
-        }
-
+        paths.Sort();
         return paths;
     }
 
-    [MenuItem("Tools/UI/지도 방 그림 뽑기 (빌드 씬 전체)")]
+    [MenuItem("Tools/UI/지도 방 그림 뽑기 (InProgress 씬)")]
     public static void ExportAll()
     {
         if (Application.isPlaying)
