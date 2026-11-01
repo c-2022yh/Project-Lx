@@ -32,9 +32,15 @@ public class HealthBarSkin : MonoBehaviour
     [Header("보주가 있을 때: 보주 옆에 붙기")]
     [Tooltip("보주 반지름 대비, 프레임 왼쪽 끝이 보주 가운데에서 오른쪽으로 떨어진 정도 (보주가 왼쪽 끝을 덮음)")]
     [SerializeField, Range(-1f, 1.2f)] private float orbOverlap = 0.35f;
-    [SerializeField] private Vector2 orbOffset = Vector2.zero;
-    [Tooltip("자리 옮길 때 걸리는 시간 (초)")]
-    [SerializeField] private float moveTime = 0.25f;
+    [Tooltip("보주 기준 자리에서 더 옮기기 (+y = 위)")]
+    [SerializeField] private Vector2 orbOffset = new Vector2(0f, 18f);
+    [Tooltip("자리 옮길 때 걸리는 시간 (초). 0이면 바로 (맵마다 같은 자리에 고정)")]
+    [SerializeField] private float moveTime = 0f;
+
+    // 11.01: 보주 HUD가 놓이는 자리 (HUD_Canvas 프리팹의 OrbHUD: 왼쪽 위 기준 (100, -150), 동그라미 반지름 75 × 크기 1.4).
+    // 보주 그림이 켜졌는지·움직이는지와 상관없이 이 고정 자리로 계산해서, 어느 맵이든 체력바가 같은 곳에 있다.
+    private static readonly Vector2 OrbAnchorPos = new Vector2(100f, -150f);
+    private const float OrbRadius = 75f * 1.4f;
 
     // 프레임 그림(1329×172) 안에서 채움 창의 자리
     private const float ArtW = 1329f, ArtH = 172f;
@@ -170,7 +176,7 @@ public class HealthBarSkin : MonoBehaviour
         if (frame == null || parentRect == null) return;
         Vector2 target = framePosition;
         // 보주가 없어도 보주 자리 옆에 둔다 (보주를 얻어도 체력바가 움직이지 않게)
-        if (FindOrb() && OrbCenter(out Vector2 c, out float r))
+        if (FindOrb() && FixedOrbCenter(out Vector2 c, out float r))
         {
             // 프레임 세로 가운데 = 보주 가운데, 왼쪽 끝은 보주 뒤로
             target = new Vector2(c.x + r * orbOverlap, c.y + frameSize.y * 0.5f) + orbOffset;
@@ -207,6 +213,24 @@ public class HealthBarSkin : MonoBehaviour
         Transform circle = orb.transform.Find("OrbFrame");
         orbCircle = circle != null ? circle as RectTransform : orbRoot;
         return orbRoot != null;
+    }
+
+    // 보주 HUD의 고정 자리 (보주 HUD 부모의 왼쪽 위 + OrbAnchorPos)를 체력바 기준 좌표로. 애니메이션·켜짐과 무관
+    private bool FixedOrbCenter(out Vector2 center, out float radius)
+    {
+        center = Vector2.zero;
+        radius = 0f;
+        RectTransform hud = orbRoot != null ? orbRoot.parent as RectTransform : null;
+        if (hud == null) return OrbCenter(out center, out radius);
+        Rect hr = hud.rect;
+        Vector3 world = hud.TransformPoint(new Vector3(hr.xMin + OrbAnchorPos.x, hr.yMax + OrbAnchorPos.y, 0f));
+        Vector3 edge = hud.TransformPoint(new Vector3(hr.xMin + OrbAnchorPos.x + OrbRadius, hr.yMax + OrbAnchorPos.y, 0f));
+        Vector2 a = parentRect.InverseTransformPoint(world);
+        Vector2 b = parentRect.InverseTransformPoint(edge);
+        Rect pr = parentRect.rect;
+        center = new Vector2(a.x - pr.xMin, a.y - pr.yMax);
+        radius = Mathf.Abs(b.x - a.x);
+        return radius > 1f;
     }
 
     // 보주 동그라미 가운데(체력바 기준 좌표: 부모 왼쪽 위에서)와 반지름
