@@ -81,6 +81,9 @@ TagManager:
   - name: New Layer 13
     uniqueID: 1720823097
     locked: 0
+  - name: DamageText
+    uniqueID: 1987324605
+    locked: 0
   m_RenderingLayers:
   - Default
   m_MigratedRenderPipelines: []
