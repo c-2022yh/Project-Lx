@@ -8,8 +8,8 @@ Shader "ProjectLx/UI Awakening Edge Flame"
         [PerRendererData] _MainTex ("Sprite Texture", 2D) = "white" {}
         _Color ("Tint", Color) = (1, 1, 1, 1)
         _FlameColor ("Flame Color", Color) = (0.2, 0.5, 1, 1)
-        _Thickness ("Thickness (screen height)", Range(0.02, 0.4)) = 0.075
-        _Wave ("Wave", Range(0, 0.2)) = 0.08
+        _Thickness ("Thickness (screen height)", Range(0.02, 0.4)) = 0.05
+        _Wave ("Wave", Range(0, 0.2)) = 0.055
         _Intensity ("Brightness", Range(0, 2)) = 1
         _Opacity ("Opacity", Range(0, 1)) = 0.4
         _Speed ("Flow Speed", Range(0, 4)) = 1
