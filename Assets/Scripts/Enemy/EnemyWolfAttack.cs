@@ -16,6 +16,8 @@ public class WolfAttackSettings
     public Vector2 hitboxSize = new Vector2(0.9f, 0.8f);
     public AttackDamageSpec damage = new AttackDamageSpec { damageMultiplier = 2f };
     public SoundCue attackSound = new SoundCue();
+    [Tooltip("Play the attack sound when windup starts instead of when the hit becomes active.")]
+    public bool attackSoundOnPrepare;
     public SoundCue impactSound = new SoundCue();
     public SoundCue activeLoop = new SoundCue();
     public Sprite prepareSprite;
@@ -141,9 +143,11 @@ public class EnemyWolfAttack : MonoBehaviour
     private void EnterPhase(Phase next)
     {
         attackLoop.Stop();
+        if ((next == Phase.Prepare && current.attackSoundOnPrepare) ||
+            (next == Phase.Active && !current.attackSoundOnPrepare))
+            GameAudio.Play(current.attackSound, transform.position, transform);
         if (next == Phase.Active)
         {
-            GameAudio.Play(current.attackSound, transform.position, transform);
             attackLoop = GameAudio.PlayLoop(current.activeLoop, transform);
         }
         phase = next;
