@@ -467,7 +467,7 @@ public class TutorialDirector : MonoBehaviour
 
 #if UNITY_EDITOR
     private const string DisableKey = "Ludens.UI.DisableTutorial";
-    private const string DisableMenu = "Tools/UI/튜토리얼 안내 끄기 (테스트용)";
+    private const string DisableMenu = "Project Lx/UI/튜토리얼 안내 끄기 (테스트용)";
 
     private static bool IsDisabledInEditor => EditorPrefs.GetBool(DisableKey, false);
 

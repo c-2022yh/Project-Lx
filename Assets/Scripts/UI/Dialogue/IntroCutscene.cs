@@ -631,7 +631,7 @@ public class IntroCutscene : MonoBehaviour
 
 #if UNITY_EDITOR
     private const string DisableKey = "Ludens.UI.DisableIntroCutscene";
-    private const string DisableMenu = "Tools/UI/시작 연출 끄기 (테스트용)";
+    private const string DisableMenu = "Project Lx/UI/시작 연출 끄기 (테스트용)";
 
     private static bool IsDisabledInEditor => EditorPrefs.GetBool(DisableKey, false);
 

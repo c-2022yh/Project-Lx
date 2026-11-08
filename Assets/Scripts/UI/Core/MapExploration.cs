@@ -102,7 +102,7 @@ public class MapExploration : MonoBehaviour
 
 #if UNITY_EDITOR
     private const string DisableKey = "Ludens.UI.DisableMapFog";
-    private const string DisableMenu = "Tools/UI/지도 안개 끄기 (테스트용)";
+    private const string DisableMenu = "Project Lx/UI/지도 안개 끄기 (테스트용)";
 
     private static bool IsDisabledInEditor => EditorPrefs.GetBool(DisableKey, false);
 
