@@ -339,7 +339,7 @@ MonoBehaviour:
     channel: 0
     clip: {fileID: 0}
     clips:
-    - {fileID: 8300000, guid: 3e9af4cdcda3f60418a7f9e0ac1ec663, type: 3}
+    - {fileID: 8300000, guid: 0fe0a6339f2f24b4e8dd332725752535, type: 3}
     - {fileID: 8300000, guid: 9cc35a55c00f4cb4b8bb328c271461b9, type: 3}
     volume: 1
     minimumInterval: 0.05
