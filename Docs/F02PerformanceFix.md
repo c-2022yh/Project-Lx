@@ -2,7 +2,7 @@
 
 ## 적용 범위
 
-`Assets/Scenes/InProgress/F_02.unity`의 Grid 인스턴스 아래 Tilemap_Ground에만 세 가지 Override를 추가했습니다.
+`Assets/Scenes/Game/F_02.unity`의 Grid 인스턴스 아래 Tilemap_Ground에만 세 가지 Override를 추가했습니다.
 
 | 컴포넌트 | 변경 |
 |---|---|

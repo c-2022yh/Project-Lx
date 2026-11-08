@@ -22,7 +22,7 @@ public static class TutorialPlantsPlacer
     private const string MenuPath = "Tools/Map/튜토리얼 맵에 수풀·덩굴 추가";
     private const string CaveMenuPath = "Tools/Map/튜토리얼 맵에 동굴 근경 추가 (종유석·바위)";
     private const string CaveRootName = "Foreground_CaveRocks";
-    private const string ScenePath = "Assets/Scenes/InProgress/Tutorial.unity";
+    private const string ScenePath = "Assets/Scenes/Game/Tutorial.unity";
     private const string Folder = "Assets/Prefabs/Foreground/";
     private const string RootName = "Foreground_Plants";
 
@@ -160,7 +160,7 @@ public static class TutorialPlantsPlacer
         Scene scene = SceneManager.GetActiveScene();
         if (scene.path != ScenePath)
         {
-            EditorUtility.DisplayDialog("튜토리얼 근경", "Tutorial 씬(InProgress/Tutorial)을 열고 눌러 주세요.", "확인");
+            EditorUtility.DisplayDialog("튜토리얼 근경", "Tutorial 씬(Game/Tutorial)을 열고 눌러 주세요.", "확인");
             return;
         }
 

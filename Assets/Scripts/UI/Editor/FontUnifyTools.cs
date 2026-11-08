@@ -18,7 +18,7 @@ using K = UIBuildKit;
 public static class FontUnifyTools
 {
     private const string PrefabFolder = "Assets/Prefabs/UI";
-    private static readonly string[] Scenes = { "Assets/Scenes/Title.unity" };
+    private static readonly string[] Scenes = { "Assets/Scenes/Game/Title.unity" };
 
     [MenuItem("Tools/UI/글꼴 통일 (제주명조)")]
     public static void Run()

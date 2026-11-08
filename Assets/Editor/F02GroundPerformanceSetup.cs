@@ -9,7 +9,7 @@ using UnityEngine.Tilemaps;
 [InitializeOnLoad]
 public static class F02GroundPerformanceSetup
 {
-    private const string ScenePath = "Assets/Scenes/InProgress/F_02.unity";
+    private const string ScenePath = "Assets/Scenes/Game/F_02.unity";
     private static bool pending = true;
 
     static F02GroundPerformanceSetup()

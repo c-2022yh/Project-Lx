@@ -47,7 +47,7 @@ using UnityEngine.Tilemaps;
 /// </summary>
 public static class TutorialMapBuilder
 {
-    private const string ScenePath = "Assets/Scenes/InProgress/Tutorial.unity";
+    private const string ScenePath = "Assets/Scenes/Game/Tutorial.unity";
 
     private const string GroundDir = "Assets/Tiles/Ground_Rock/";
     private const string GrassDir = "Assets/Tiles/Grass/";

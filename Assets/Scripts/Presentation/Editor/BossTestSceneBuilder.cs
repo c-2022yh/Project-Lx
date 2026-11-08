@@ -22,7 +22,7 @@ public static class BossTestSceneBuilder
     private const string SceneFolder = "Assets/Scenes/Test";
     private const string ScenePath = SceneFolder + "/Test_BossRoom.unity";
 
-    private const string AlphaScenePath = "Assets/Scenes/Test_Alpha.unity";
+    private const string AlphaScenePath = "Assets/Scenes/Test/Test_Alpha.unity";
     private const string GameplayRootPath = "Assets/Prefabs/Maps/GamePlay_Root.prefab";
     private const string UiRootPath = "Assets/Prefabs/UI/Core/UI_Root.prefab";
     private const string BackgroundPath = "Assets/Prefabs/Background/Background_Forest.prefab";

@@ -9,7 +9,7 @@ using UnityEngine.Tilemaps;
 /// <summary>
 /// Tools/UI > 지도 방 그림 뽑기 (빌드 씬 전체)
 ///
-/// 빌드 목록의 씬(타이틀 제외)과 Scenes/InProgress의 F_ 맵(F_base 제외)을 하나씩 열어서:
+/// 빌드 목록의 씬(타이틀 제외)과 Scenes/Game의 F_ 맵(F_base 제외)을 하나씩 열어서:
 ///   1. 벽·땅 타일맵(충돌이 있고 한쪽 발판이 아닌 것)을 "막힌 칸"으로 본다. 발판은 무시한다.
 ///   2. 스폰 위치·포털·제단에서 시작해 막히지 않은 칸을 채워 나간다 → 플레이어가 다닐 수 있는 굴 모양.
 ///   3. 그 모양을 손으로 판 땅굴처럼 울퉁불퉁하게, 천장에 가끔 종유석을 달아 그림으로 굽는다.
@@ -54,27 +54,27 @@ public static class MapRoomExporter
         public bool HasDefaultSpawn;
     }
 
-    private const string InProgressFolder = "Assets/Scenes/InProgress";
+    private const string GameFolder = "Assets/Scenes/Game";
 
     /// <summary>지도에 넣지 않는 씬 (전투 테스트 씬 등). 이름만 적으면 된다.</summary>
     private static readonly HashSet<string> Excluded = new HashSet<string> { "Title", "Panyong_Combat_" };
 
     /// <summary>
-    /// 뽑을 씬 목록: InProgress 폴더(바로 아래)의 씬만. 타이틀·시작 연출·F_base(틀)는 뺀다.
-    /// 11.01: 빌드 목록의 옛 씬(Forest01, Test_Alpha 등)은 지도에 안 쓰므로 InProgress만 본다.
+    /// 뽑을 씬 목록: Game 폴더(바로 아래)의 씬만. 타이틀·시작 연출·F_base(틀)는 뺀다.
+    /// 11.01: 빌드 목록의 옛 씬(Forest01, Test_Alpha 등)은 지도에 안 쓰므로 Game만 본다.
     /// </summary>
     private static List<string> ScenePaths()
     {
         List<string> paths = new List<string>();
         HashSet<string> names = new HashSet<string>();
-        if (!AssetDatabase.IsValidFolder(InProgressFolder)) return paths;
+        if (!AssetDatabase.IsValidFolder(GameFolder)) return paths;
 
-        foreach (string guid in AssetDatabase.FindAssets("t:Scene", new[] { InProgressFolder }))
+        foreach (string guid in AssetDatabase.FindAssets("t:Scene", new[] { GameFolder }))
         {
             string path = AssetDatabase.GUIDToAssetPath(guid);
             string name = Path.GetFileNameWithoutExtension(path);
             if (name == "F_base" || name == "Intro" || name == GameFlow.TitleSceneName || Excluded.Contains(name)) continue;
-            if (Path.GetDirectoryName(path).Replace('\\', '/') != InProgressFolder) continue;
+            if (Path.GetDirectoryName(path).Replace('\\', '/') != GameFolder) continue;
             if (names.Add(name)) paths.Add(path);
         }
 
@@ -82,7 +82,7 @@ public static class MapRoomExporter
         return paths;
     }
 
-    [MenuItem("Tools/UI/지도 방 그림 뽑기 (InProgress 씬)")]
+    [MenuItem("Tools/UI/지도 방 그림 뽑기 (Game 씬)")]
     public static void ExportAll()
     {
         if (Application.isPlaying)
