@@ -4,7 +4,7 @@ using UnityEngine.Rendering.Universal;
 
 // Borrows the existing orb during the visual intro; normal following resumes afterward.
 [DisallowMultipleComponent, DefaultExecutionOrder(-15)]
-[RequireComponent(typeof(PlayerEnergy), typeof(PlayerAwakeningVisual))]
+[RequireComponent(typeof(global::ProjectLx.PlayerRuntime.PlayerEnergyComponent), typeof(PlayerAwakeningVisual))]
 public sealed class PlayerAwakeningOrb : MonoBehaviour
 {
     [Header("References")]
@@ -30,7 +30,7 @@ public sealed class PlayerAwakeningOrb : MonoBehaviour
     [SerializeField, Min(0f)] private float flashLightIntensity = 1.5f;
     [SerializeField, Min(0.1f)] private float flashLightRadius = 1.2f;
 
-    private PlayerEnergy energy;
+    private global::ProjectLx.PlayerRuntime.PlayerEnergyComponent energy;
     private PlayerAwakeningVisual visual;
     private EnergyOrb controlledOrb;
     private OrbFollower follower;
@@ -51,7 +51,7 @@ public sealed class PlayerAwakeningOrb : MonoBehaviour
 
     private void Awake()
     {
-        energy = GetComponent<PlayerEnergy>();
+        energy = GetComponent<global::ProjectLx.PlayerRuntime.PlayerEnergyComponent>();
         visual = GetComponent<PlayerAwakeningVisual>();
         if (playerSprite == null) playerSprite = GetComponentInChildren<SpriteRenderer>();
         CreateFlash();

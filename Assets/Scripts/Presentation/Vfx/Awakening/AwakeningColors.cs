@@ -19,7 +19,7 @@ public static class AwakeningColors
         {
             if (cached == null)
             {
-                Player p = Object.FindAnyObjectByType<Player>();
+                global::ProjectLx.PlayerRuntime.PlayerActor p = Object.FindAnyObjectByType<global::ProjectLx.PlayerRuntime.PlayerActor>();
                 if (p != null) cached = p.GetComponent<PlayerRelicManager>();
             }
             rm = cached;

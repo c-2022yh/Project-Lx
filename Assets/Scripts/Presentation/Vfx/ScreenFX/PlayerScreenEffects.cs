@@ -4,7 +4,7 @@ using UnityEngine.Rendering.Universal;
 
 //플레이어의 체력과 각성 상태에 맞춰 화면 비네팅과 가장자리 왜곡을 관리하는 스크립트
 [DisallowMultipleComponent]
-[RequireComponent(typeof(PlayerHealth), typeof(PlayerAwakening))]
+[RequireComponent(typeof(global::ProjectLx.PlayerRuntime.PlayerHealthComponent), typeof(global::ProjectLx.PlayerRuntime.PlayerAwakeningComponent))]
 public sealed class PlayerScreenEffects : MonoBehaviour
 {
     //비네팅 초기 설정을 가져올 프로필
@@ -36,8 +36,8 @@ public sealed class PlayerScreenEffects : MonoBehaviour
 
     //화면 효과를 제어하는 단일 플레이어와 참조 컴포넌트
     private static PlayerScreenEffects owner;
-    private PlayerHealth health;
-    private PlayerAwakening awakening;
+    private global::ProjectLx.PlayerRuntime.PlayerHealthComponent health;
+    private global::ProjectLx.PlayerRuntime.PlayerAwakeningComponent awakening;
     private PlayerAwakeningVisual awakeningVisual;
     private Volume volume;
     private VolumeProfile runtimeProfile;
@@ -61,8 +61,8 @@ public sealed class PlayerScreenEffects : MonoBehaviour
     //플레이어 참조와 실행 중 사용할 비네팅 Volume 생성
     private void Awake()
     {
-        health = GetComponent<PlayerHealth>();
-        awakening = GetComponent<PlayerAwakening>();
+        health = GetComponent<global::ProjectLx.PlayerRuntime.PlayerHealthComponent>();
+        awakening = GetComponent<global::ProjectLx.PlayerRuntime.PlayerAwakeningComponent>();
         awakeningVisual = GetComponent<PlayerAwakeningVisual>();
         //플레이어와 함께 유지되고 제거되는 자식 오브젝트 생성
         var holder = new GameObject("Player Screen Vignette (Runtime)");

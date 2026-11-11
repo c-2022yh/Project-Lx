@@ -4,13 +4,13 @@ using UnityEngine.UI;
 
 public class HealthHUD : MonoBehaviour
 {
-    private PlayerHealth playerHealth;
+    private global::ProjectLx.PlayerRuntime.PlayerHealthComponent playerHealth;
 
     [SerializeField] private Image healthFill;
 
     private void Start()
     {
-        playerHealth = FindAnyObjectByType<PlayerHealth>();
+        playerHealth = FindAnyObjectByType<global::ProjectLx.PlayerRuntime.PlayerHealthComponent>();
 
         if (playerHealth == null)
         {

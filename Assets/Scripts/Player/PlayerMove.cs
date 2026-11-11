@@ -1,3 +1,4 @@
+#pragma warning disable CS0108 // Concrete API intentionally hides the shared compatibility view.
 using System.Collections;
 using UnityEngine;
 using System.Collections.Generic;
@@ -5,7 +6,7 @@ using UnityEngine.Tilemaps;
 using UnityEngine.SceneManagement;
 
 //플레이어 움직임 (이동, 점프, 대쉬) 구현한 스크립트
-public class PlayerMove : MonoBehaviour
+public partial class PlayerMove : global::ProjectLx.PlayerRuntime.PlayerMoveComponent
 {
     private Player player;
     private Rigidbody2D rb;
@@ -544,18 +545,6 @@ public class PlayerMove : MonoBehaviour
 
 }
 
-[System.Serializable]
-public sealed class MovementSurfaceSounds
-{
-    public string surfaceName;
-    [Tooltip("Exact GameObject names on the supporting collider or its parents. Case insensitive.")]
-    public string[] colliderObjectNames = new string[0];
-    [Tooltip("Visual-only Tilemaps sampled at the player's supporting foot position.")]
-    public string[] overlayTilemapNames = new string[0];
-    public SoundCue footstepSound = new SoundCue();
-    public SoundCue landingSound = new SoundCue();
-}
-
 // Pure timing state: no additional MonoBehaviour/script import is needed.
 internal sealed class PlayerMovementAudioState
 {
@@ -605,3 +594,5 @@ internal sealed class PlayerMovementAudioState
         lastStepTime = time;
     }
 }
+
+#pragma warning restore CS0108

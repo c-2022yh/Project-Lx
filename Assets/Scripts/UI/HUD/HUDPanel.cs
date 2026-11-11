@@ -20,7 +20,7 @@ public class HUDPanel : MonoBehaviour
     [Header("Skill Slots")]
     [SerializeField] private SkillSlotUI[] skillSlots;
 
-    private PlayerSkill playerSkill;
+    private global::ProjectLx.PlayerRuntime.PlayerSkillComponent playerSkill;
 
     void OnEnable()
     {
@@ -83,7 +83,7 @@ public class HUDPanel : MonoBehaviour
     private void ConnectPlayerSkills()
     {
         UnsubscribeSkills();
-        playerSkill = FindAnyObjectByType<PlayerSkill>();
+        playerSkill = FindAnyObjectByType<global::ProjectLx.PlayerRuntime.PlayerSkillComponent>();
         if (playerSkill != null) playerSkill.OnSkillsChanged += RefreshSkills;
         RefreshSkills();
     }

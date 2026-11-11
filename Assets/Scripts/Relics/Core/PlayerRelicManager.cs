@@ -5,7 +5,7 @@ using UnityEngine;
 public class PlayerRelicManager : MonoBehaviour
 {
     [Header("References")]
-    [SerializeField] private Player player;
+    [SerializeField] private global::ProjectLx.PlayerRuntime.PlayerActor player;
 
     [Header("Starting Owned Relics - Test")]
     [SerializeField] private List<RelicData> startingOwnedRelics = new();
@@ -20,7 +20,7 @@ public class PlayerRelicManager : MonoBehaviour
     private readonly List<RelicData> equippedRelics = new();
     private readonly Dictionary<RelicData, List<IRelicRuntime>> runtimesByRelic = new();
 
-    private PlayerSkill playerSkill;
+    private global::ProjectLx.PlayerRuntime.PlayerSkillComponent playerSkill;
     private bool isChangingRelic;
     private bool isInitializing;
     private bool isDestroying;
@@ -39,8 +39,8 @@ public class PlayerRelicManager : MonoBehaviour
     //초기 데이터와 필요한 컴포넌트 연결
     private void Awake()
     {
-        if (player == null) player = GetComponent<Player>();
-        if (player != null) playerSkill = player.GetComponent<PlayerSkill>();
+        if (player == null) player = GetComponent<global::ProjectLx.PlayerRuntime.PlayerActor>();
+        if (player != null) playerSkill = player.GetComponent<global::ProjectLx.PlayerRuntime.PlayerSkillComponent>();
         else Debug.LogError("[PlayerRelicManager] Player를 찾을 수 없습니다.", this);
     }
 

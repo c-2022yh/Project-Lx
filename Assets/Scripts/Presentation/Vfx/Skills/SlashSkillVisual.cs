@@ -47,7 +47,7 @@ public sealed class SlashSkillVisual : MonoBehaviour
     public TripleSlashData PreparingSkill { get; private set; }
     private enum VisualMode { None, Preparation, Slash, Impact, PlayerPulse }
     private VisualMode mode;
-    private Player owner;
+    private global::ProjectLx.PlayerRuntime.PlayerActor owner;
     private float direction;
     private float age;
     private float lifetime;
@@ -65,7 +65,7 @@ public sealed class SlashSkillVisual : MonoBehaviour
     private MaterialPropertyBlock properties;
     private readonly ParticleSystem.Particle[] particles = new ParticleSystem.Particle[64];
 
-    public void BeginPreparation(Player player, TripleSlashData skill)
+    public void BeginPreparation(global::ProjectLx.PlayerRuntime.PlayerActor player, TripleSlashData skill)
     {
         if (!IsConfigured || player == null) { Destroy(gameObject); return; }
         mode = VisualMode.Preparation;
@@ -134,7 +134,7 @@ public sealed class SlashSkillVisual : MonoBehaviour
         Draw();
     }
 
-    public void PlayPlayerPulse(Player player, bool isFinisher)
+    public void PlayPlayerPulse(global::ProjectLx.PlayerRuntime.PlayerActor player, bool isFinisher)
     {
         if (!IsConfigured || player == null || player.sr == null ||
             (!enablePlayerPulse && !(isFinisher && enableFinisherAfterimage)))

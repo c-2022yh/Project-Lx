@@ -23,7 +23,7 @@ public class ProjectileShotSkillData : AttackSkillData
     public LayerMask terrainLayers;
 
 
-    public override IEnumerator ProcessSkill(Player p)
+    public override IEnumerator ProcessSkill(global::ProjectLx.PlayerRuntime.PlayerActor p)
     {
         if (p == null) yield break;
         if (projectilePrefab == null) yield break;

@@ -106,7 +106,7 @@ public class FallingRockHazard : MonoBehaviour
     {
         foreach (Collider2D c in Physics2D.OverlapCircleAll(p, HitRadius))
         {
-            PlayerHealth player = c.GetComponentInParent<PlayerHealth>();
+            global::ProjectLx.PlayerRuntime.PlayerHealthComponent player = c.GetComponentInParent<global::ProjectLx.PlayerRuntime.PlayerHealthComponent>();
             if (player == null || player.IsDead) continue;
             hitDone = true;
             player.TakeDamage(damage, (Vector2)p);

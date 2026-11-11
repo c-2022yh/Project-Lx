@@ -68,8 +68,8 @@ public sealed class VitalConversionVisual : MonoBehaviour
 
     public VitalConversionSkillData Skill { get; private set; }
     public bool IsFinishing { get; private set; }
-    private Player owner;
-    private PlayerHealth health;
+    private global::ProjectLx.PlayerRuntime.PlayerActor owner;
+    private global::ProjectLx.PlayerRuntime.PlayerHealthComponent health;
     private LineRenderer[] ribbons;
     private LineRenderer footRing;
     private LineRenderer healPulse;
@@ -99,7 +99,7 @@ public sealed class VitalConversionVisual : MonoBehaviour
         properties = new MaterialPropertyBlock();
     }
 
-    public void Begin(Player player, VitalConversionSkillData skill)
+    public void Begin(global::ProjectLx.PlayerRuntime.PlayerActor player, VitalConversionSkillData skill)
     {
         owner = player;
         Skill = skill;
@@ -116,7 +116,7 @@ public sealed class VitalConversionVisual : MonoBehaviour
             ? owner.sr.bounds.min.y - owner.transform.position.y : 0f;
         preparationDuration = Mathf.Max(0.01f, skill.windupTime + skill.activeTime);
         FollowOwner();
-        health = owner.GetComponent<PlayerHealth>();
+        health = owner.GetComponent<global::ProjectLx.PlayerRuntime.PlayerHealthComponent>();
         if (health != null) health.OnDied += Cancel;
         ribbons = new LineRenderer[Mathf.Clamp(ribbonCount, 1, 4)];
         for (int i = 0; i < ribbons.Length; i++) ribbons[i] = CreateLine("Rising Ribbon " + i, ribbonWidth);

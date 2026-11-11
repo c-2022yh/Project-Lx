@@ -6,7 +6,7 @@ using UnityEngine.Rendering.Universal;
 // Adds glow and a flowing aura without replacing the animated sprite's material or tint.
 [DisallowMultipleComponent]
 [DefaultExecutionOrder(-25)]
-[RequireComponent(typeof(PlayerAwakening), typeof(PlayerHealth))]
+[RequireComponent(typeof(global::ProjectLx.PlayerRuntime.PlayerAwakeningComponent), typeof(global::ProjectLx.PlayerRuntime.PlayerHealthComponent))]
 public sealed class PlayerAwakeningVisual : MonoBehaviour
 {
     [Header("Orb Relic Colors")]
@@ -78,8 +78,8 @@ public sealed class PlayerAwakeningVisual : MonoBehaviour
     [SerializeField, Min(0f)] private float bloomThreshold = 1.1f;
     [SerializeField, Range(0f, 1f)] private float bloomScatter = 0.65f;
 
-    private PlayerAwakening awakening;
-    private PlayerHealth health;
+    private global::ProjectLx.PlayerRuntime.PlayerAwakeningComponent awakening;
+    private global::ProjectLx.PlayerRuntime.PlayerHealthComponent health;
     private PlayerRelicManager relicManager;
     private Color resolvedGlowColor, resolvedAuraColor, resolvedLightColor;
     private SpriteRenderer overlay;
@@ -211,8 +211,8 @@ public sealed class PlayerAwakeningVisual : MonoBehaviour
 
     private void Awake()
     {
-        awakening = GetComponent<PlayerAwakening>();
-        health = GetComponent<PlayerHealth>();
+        awakening = GetComponent<global::ProjectLx.PlayerRuntime.PlayerAwakeningComponent>();
+        health = GetComponent<global::ProjectLx.PlayerRuntime.PlayerHealthComponent>();
         relicManager = GetComponent<PlayerRelicManager>();
         if (source == null) source = GetComponentInChildren<SpriteRenderer>();
         if (source == null || glowMaterial == null)

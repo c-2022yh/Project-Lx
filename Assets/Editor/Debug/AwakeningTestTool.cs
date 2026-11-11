@@ -12,8 +12,8 @@ public static class AwakeningTestTool
     [MenuItem(MenuPath)]
     private static void Prepare()
     {
-        Player p = Object.FindAnyObjectByType<Player>();
-        PlayerEnergy energy = p != null ? p.GetComponent<PlayerEnergy>() : null;
+        global::ProjectLx.PlayerRuntime.PlayerActor p = Object.FindAnyObjectByType<global::ProjectLx.PlayerRuntime.PlayerActor>();
+        global::ProjectLx.PlayerRuntime.PlayerEnergyComponent energy = p != null ? p.GetComponent<global::ProjectLx.PlayerRuntime.PlayerEnergyComponent>() : null;
         if (energy == null)
         {
             Debug.LogWarning("[각성 시험] 플레이어(PlayerEnergy)를 못 찾았습니다.");

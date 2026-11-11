@@ -29,7 +29,7 @@ public static class SkillDebugTools
     [MenuItem("Project Lx/Debug/Skills/테스트 스킬 지급")]
     public static void GrantTestSkills()
     {
-        if (!TryGetPlayerSkill(out PlayerSkill playerSkill)) return;
+        if (!TryGetPlayerSkill(out global::ProjectLx.PlayerRuntime.PlayerSkillComponent playerSkill)) return;
 
         HashSet<SkillData> reserved = CollectRelicReservedSkills();
 
@@ -64,7 +64,7 @@ public static class SkillDebugTools
     [MenuItem("Project Lx/Debug/Skills/테스트 스킬 회수")]
     public static void RevokeTestSkills()
     {
-        if (!TryGetPlayerSkill(out PlayerSkill playerSkill)) return;
+        if (!TryGetPlayerSkill(out global::ProjectLx.PlayerRuntime.PlayerSkillComponent playerSkill)) return;
 
         int count = 0;
 
@@ -78,7 +78,7 @@ public static class SkillDebugTools
                   "유물이 준 스킬은 그대로 남습니다.");
     }
 
-    private static bool TryGetPlayerSkill(out PlayerSkill playerSkill)
+    private static bool TryGetPlayerSkill(out global::ProjectLx.PlayerRuntime.PlayerSkillComponent playerSkill)
     {
         playerSkill = null;
 
@@ -89,7 +89,7 @@ public static class SkillDebugTools
             return false;
         }
 
-        playerSkill = Object.FindAnyObjectByType<PlayerSkill>();
+        playerSkill = Object.FindAnyObjectByType<global::ProjectLx.PlayerRuntime.PlayerSkillComponent>();
 
         if (playerSkill == null)
         {

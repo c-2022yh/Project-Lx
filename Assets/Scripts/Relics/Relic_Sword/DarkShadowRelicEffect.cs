@@ -25,7 +25,7 @@ public class DarkShadowRelicEffect : RelicEffect
     [Header("Audio")]
     [SerializeField] private SoundCue executeSound = new SoundCue();
 
-    public override IRelicRuntime CreateRuntime(Player p)
+    public override IRelicRuntime CreateRuntime(global::ProjectLx.PlayerRuntime.PlayerActor p)
     {
         return new DarkShadowRelicRuntime(
             p,
@@ -40,19 +40,19 @@ public class DarkShadowRelicEffect : RelicEffect
     private sealed class DarkShadowRelicRuntime : IRelicRuntime
     {
         private readonly DarkShadowRelicEffect audioSettings;
-        private readonly Player player;
+        private readonly global::ProjectLx.PlayerRuntime.PlayerActor player;
 
         private readonly float executeHealthRatio;
         private readonly GameObject executeEffectPrefab;
         private readonly Vector3 executeEffectOffset;
 
-        private PlayerAttack playerAttack;
+        private global::ProjectLx.PlayerRuntime.PlayerAttackComponent playerAttack;
 
         private bool isEquipped;
 
 
         public DarkShadowRelicRuntime(
-            Player player,
+            global::ProjectLx.PlayerRuntime.PlayerActor player,
             float executeHealthRatio,
             GameObject executeEffectPrefab,
             Vector3 executeEffectOffset, DarkShadowRelicEffect audioSettings)
@@ -71,7 +71,7 @@ public class DarkShadowRelicEffect : RelicEffect
         {
             if (player == null) return;
 
-            playerAttack = player.GetComponent<PlayerAttack>();
+            playerAttack = player.GetComponent<global::ProjectLx.PlayerRuntime.PlayerAttackComponent>();
 
             if (playerAttack == null)
             {

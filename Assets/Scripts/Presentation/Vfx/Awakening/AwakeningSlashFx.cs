@@ -22,9 +22,9 @@ public class AwakeningSlashFx : MonoBehaviour
     [Tooltip("잔상이 사라지는 시간 (초). 원래 베기 시간보다 짧으면 원래 시간을 따른다")]
     [SerializeField] private float minDuration = 0.3f;
 
-    private Player player;
-    private PlayerAwakening awakening;
-    private PlayerAttack attack;
+    private global::ProjectLx.PlayerRuntime.PlayerActor player;
+    private global::ProjectLx.PlayerRuntime.PlayerAwakeningComponent awakening;
+    private global::ProjectLx.PlayerRuntime.PlayerAttackComponent attack;
     private GameObject inactiveHolder;
     private Material flameMat;
     private const string ShaderPath = "Presentation/Awakening/AwakeningSlashFlame";
@@ -43,15 +43,15 @@ public class AwakeningSlashFx : MonoBehaviour
 
     private static void TryAttach()
     {
-        Player p = FindAnyObjectByType<Player>();
+        global::ProjectLx.PlayerRuntime.PlayerActor p = FindAnyObjectByType<global::ProjectLx.PlayerRuntime.PlayerActor>();
         if (p != null && p.GetComponent<AwakeningSlashFx>() == null) p.gameObject.AddComponent<AwakeningSlashFx>();
     }
 
     private void Start()
     {
-        player = GetComponent<Player>();
-        awakening = GetComponent<PlayerAwakening>();
-        attack = GetComponent<PlayerAttack>();
+        player = GetComponent<global::ProjectLx.PlayerRuntime.PlayerActor>();
+        awakening = GetComponent<global::ProjectLx.PlayerRuntime.PlayerAwakeningComponent>();
+        attack = GetComponent<global::ProjectLx.PlayerRuntime.PlayerAttackComponent>();
         if (awakening == null || attack == null) { enabled = false; return; }
         attack.AttackEffectCreated += OnAttackEffect;
         Shader sh = Resources.Load<Shader>(ShaderPath);

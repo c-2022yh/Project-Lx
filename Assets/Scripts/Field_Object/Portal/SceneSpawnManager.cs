@@ -4,7 +4,7 @@ using UnityEngine;
 public class SceneSpawnManager : MonoBehaviour
 {
     [Header("Player")]
-    [SerializeField] private Player playerPrefab;
+    [SerializeField] private global::ProjectLx.PlayerRuntime.PlayerActor playerPrefab;
 
     [Header("Default Spawn")]
     [SerializeField] private Transform defaultSpawnPoint;
@@ -12,7 +12,7 @@ public class SceneSpawnManager : MonoBehaviour
     private void Awake()
     {
         //플레이어 찾기
-        Player player = FindFirstObjectByType<Player>();
+        global::ProjectLx.PlayerRuntime.PlayerActor player = FindFirstObjectByType<global::ProjectLx.PlayerRuntime.PlayerActor>();
 
         //Player가 없으면 최초 생성
         if (player == null)

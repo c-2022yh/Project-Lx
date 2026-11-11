@@ -56,7 +56,7 @@ public class MapExploration : MonoBehaviour
 
         if (player == null)
         {
-            Player found = FindAnyObjectByType<Player>();
+            global::ProjectLx.PlayerRuntime.PlayerActor found = FindAnyObjectByType<global::ProjectLx.PlayerRuntime.PlayerActor>();
             if (found == null) return;   // 타이틀처럼 플레이어가 없는 씬
 
             player = found.transform;

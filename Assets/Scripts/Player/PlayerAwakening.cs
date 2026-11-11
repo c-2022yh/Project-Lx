@@ -1,9 +1,10 @@
+#pragma warning disable CS0108 // Concrete API intentionally hides the shared compatibility view.
 using System;
 using System.Collections;
 using UnityEngine;
 
 //플레이어 각성 상태를 관리하는 스크립트
-public class PlayerAwakening : MonoBehaviour
+public partial class PlayerAwakening : global::ProjectLx.PlayerRuntime.PlayerAwakeningComponent
 {
     [System.Serializable]
     private class CombatBonus
@@ -395,3 +396,5 @@ internal sealed class AwakeningReadyAudioState
         return play;
     }
 }
+
+#pragma warning restore CS0108

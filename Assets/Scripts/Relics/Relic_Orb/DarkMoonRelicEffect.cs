@@ -13,22 +13,22 @@ public class DarkMoonRelicEffect : RelicEffect
     [SerializeField, Min(0f), Tooltip("OffensiveStats.damageAmplification에 더할 값. 0.25는 25% 보너스")]
     private float damageAmplificationBonus = 0.25f;
 
-    public override IRelicRuntime CreateRuntime(Player player)
+    public override IRelicRuntime CreateRuntime(global::ProjectLx.PlayerRuntime.PlayerActor player)
     {
         return new DarkMoonRuntime(player, maxEnergyCap, damageAmplificationBonus);
     }
 
     private sealed class DarkMoonRuntime : IRelicRuntime
     {
-        private readonly Player player;
+        private readonly global::ProjectLx.PlayerRuntime.PlayerActor player;
         private readonly float cap;
         private readonly float damageBonus;
-        private PlayerEnergy energy;
-        private PlayerAwakening awakening;
+        private global::ProjectLx.PlayerRuntime.PlayerEnergyComponent energy;
+        private global::ProjectLx.PlayerRuntime.PlayerAwakeningComponent awakening;
         private OffensiveStats offense;
         private bool equipped;
 
-        public DarkMoonRuntime(Player player, float cap, float damageBonus)
+        public DarkMoonRuntime(global::ProjectLx.PlayerRuntime.PlayerActor player, float cap, float damageBonus)
         {
             this.player = player;
             this.cap = cap;

@@ -34,8 +34,8 @@ public class AwakeningBurstFx : MonoBehaviour
     private const string SpritePath = "Presentation/Awakening/AwakeningFx_Burst";
     private const float Release = 0.15f, Settle = 0.45f, FadeOut = 0.3f;
 
-    private Player player;
-    private PlayerAwakening awakening;
+    private global::ProjectLx.PlayerRuntime.PlayerActor player;
+    private global::ProjectLx.PlayerRuntime.PlayerAwakeningComponent awakening;
     private Collider2D body;
     private Sprite sprite;
     private SpriteRenderer burst;
@@ -61,7 +61,7 @@ public class AwakeningBurstFx : MonoBehaviour
 
     private static void TryAttach()
     {
-        Player p = FindAnyObjectByType<Player>();
+        global::ProjectLx.PlayerRuntime.PlayerActor p = FindAnyObjectByType<global::ProjectLx.PlayerRuntime.PlayerActor>();
         if (p != null && p.GetComponent<AwakeningBurstFx>() == null) p.gameObject.AddComponent<AwakeningBurstFx>();
     }
 
@@ -69,8 +69,8 @@ public class AwakeningBurstFx : MonoBehaviour
 
     private void Start()
     {
-        player = GetComponent<Player>();
-        awakening = GetComponent<PlayerAwakening>();
+        player = GetComponent<global::ProjectLx.PlayerRuntime.PlayerActor>();
+        awakening = GetComponent<global::ProjectLx.PlayerRuntime.PlayerAwakeningComponent>();
         foreach (Collider2D c in GetComponents<Collider2D>())
             if (!c.isTrigger) { body = c; break; }   // 몸 충돌 범위 (감지용 트리거 말고)
         sprite = Resources.Load<Sprite>(SpritePath);

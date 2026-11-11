@@ -12,7 +12,7 @@ public abstract class AttackSkillData : SkillData
     public Vector2 knockbackDirection = new Vector2(1f, 0f);
 
     //현재 시전자의 스탯 + 스킬 고유 설정으로 DamageInfo 생성
-    protected DamageInfo CreateDamageInfo(Player p)
+    protected DamageInfo CreateDamageInfo(global::ProjectLx.PlayerRuntime.PlayerActor p)
     {
         return AttachImpactAudio(p, DamageInfo.Create(p.Stats.Offense, damageSpec, p.gameObject));
     }

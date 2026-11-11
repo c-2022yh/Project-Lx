@@ -5,7 +5,7 @@ using UnityEngine;
 // Owns only waiting shards. Launched projectiles are independent of this runner.
 public sealed class ScorchedEarthBarrage : MonoBehaviour
 {
-    private Player owner;
+    private global::ProjectLx.PlayerRuntime.PlayerActor owner;
     private SkillAudioSession audioSession;
     private ScorchedEarthSkillData.BarrageSettings settings;
     private ScorchedEarthSkillData.PreparedDamage damage;
@@ -17,7 +17,7 @@ public sealed class ScorchedEarthBarrage : MonoBehaviour
     private bool completed;
     private float activeDuration;
 
-    public void Initialize(Player player, ScorchedEarthSkillData.BarrageSettings config,
+    public void Initialize(global::ProjectLx.PlayerRuntime.PlayerActor player, ScorchedEarthSkillData.BarrageSettings config,
         LayerMask enemies, ScorchedEarthSkillData.PreparedDamage preparedDamage,
         SkillAudioSession soundSession = null, float duration = 0f)
     {

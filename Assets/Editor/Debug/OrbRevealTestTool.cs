@@ -13,7 +13,7 @@ public static class OrbRevealTestTool
     [MenuItem(MenuPath)]
     private static void Play()
     {
-        Player p = Object.FindAnyObjectByType<Player>();
+        global::ProjectLx.PlayerRuntime.PlayerActor p = Object.FindAnyObjectByType<global::ProjectLx.PlayerRuntime.PlayerActor>();
         if (p == null) { Debug.LogWarning("[보주 등장] 플레이어를 못 찾았습니다."); return; }
         float dir = p.sr != null && p.sr.flipX ? -1f : 1f;
         Vector3 at = p.transform.position + new Vector3(4f * dir, 2.5f, 0f);

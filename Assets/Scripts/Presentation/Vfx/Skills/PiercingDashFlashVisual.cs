@@ -49,7 +49,7 @@ public sealed class PiercingDashFlashVisual : MonoBehaviour
 
     public PiercingDashSkillData Skill { get; private set; }
     public float RevealedDistance { get; private set; }
-    private Player owner;
+    private global::ProjectLx.PlayerRuntime.PlayerActor owner;
     private SpriteRenderer trail;
     private SpriteRenderer outline;
     private LineRenderer[] rays;
@@ -69,7 +69,7 @@ public sealed class PiercingDashFlashVisual : MonoBehaviour
     private bool completed;
     private float finishedAt = -1f;
 
-    public void Begin(Player player, PiercingDashSkillData skill, SpriteRenderer originalTrail, Vector3 pathStart, float facing, float actualDistance, float duration)
+    public void Begin(global::ProjectLx.PlayerRuntime.PlayerActor player, PiercingDashSkillData skill, SpriteRenderer originalTrail, Vector3 pathStart, float facing, float actualDistance, float duration)
     {
         owner = player;
         Skill = skill;

@@ -1,9 +1,10 @@
-﻿using System.Collections;
+﻿#pragma warning disable CS0108 // Concrete API intentionally hides the shared compatibility view.
+using System.Collections;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
 //플레이어 리스폰 처리 스크립트
-public class PlayerRespawn : MonoBehaviour
+public partial class PlayerRespawn : global::ProjectLx.PlayerRuntime.PlayerRespawnComponent
 {
     [Header("Respawn")]
     [SerializeField] private float respawnDelay = 0.7f;
@@ -197,3 +198,5 @@ public class PlayerRespawn : MonoBehaviour
         sr.color = color;
     }
 }
+
+#pragma warning restore CS0108

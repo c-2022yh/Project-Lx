@@ -12,11 +12,11 @@ public class ScenePortal : MonoBehaviour, IInteractable
     [Tooltip("Plays once when scene travel starts. The shared audio service keeps its tail across scene loads.")]
     [SerializeField] private SoundCue transitionSound = new SoundCue();
 
-    private Player player;
+    private global::ProjectLx.PlayerRuntime.PlayerActor player;
 
     public string InteractionText => "¿Ãµø";
 
-    public void Interact(Player player)
+    public void Interact(global::ProjectLx.PlayerRuntime.PlayerActor player)
     {
         if (SceneFader.IsTransitioning) return;
         if (string.IsNullOrEmpty(targetSceneName))
@@ -33,7 +33,7 @@ public class ScenePortal : MonoBehaviour, IInteractable
 
     private void OnTriggerEnter2D(Collider2D other)
     {
-        Player foundPlayer = other.GetComponentInParent<Player>();
+        global::ProjectLx.PlayerRuntime.PlayerActor foundPlayer = other.GetComponentInParent<global::ProjectLx.PlayerRuntime.PlayerActor>();
 
         if (foundPlayer == null) return;
 
@@ -43,7 +43,7 @@ public class ScenePortal : MonoBehaviour, IInteractable
 
     private void OnTriggerExit2D(Collider2D other)
     {
-        Player foundPlayer = other.GetComponentInParent<Player>();
+        global::ProjectLx.PlayerRuntime.PlayerActor foundPlayer = other.GetComponentInParent<global::ProjectLx.PlayerRuntime.PlayerActor>();
 
         if (foundPlayer == null || foundPlayer != player) return;
 

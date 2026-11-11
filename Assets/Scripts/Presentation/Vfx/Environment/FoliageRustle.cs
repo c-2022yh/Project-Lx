@@ -30,7 +30,7 @@ public class FoliageRustle : MonoBehaviour
     {
         if (Time.time < nextTime) return;
 
-        Player player = other.GetComponentInParent<Player>();
+        global::ProjectLx.PlayerRuntime.PlayerActor player = other.GetComponentInParent<global::ProjectLx.PlayerRuntime.PlayerActor>();
         if (player == null) return;
 
         Rigidbody2D rb = player.GetComponent<Rigidbody2D>();

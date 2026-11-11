@@ -15,7 +15,7 @@ public class BurningRelicEffect : RelicEffect
     [SerializeField, Min(0f)] private float physicalAttackPerInterval = 0.2f;
     [SerializeField, Min(0f)] private float magicalAttackPerInterval = 0.2f;
 
-    public override IRelicRuntime CreateRuntime(Player player)
+    public override IRelicRuntime CreateRuntime(global::ProjectLx.PlayerRuntime.PlayerActor player)
     {
         return new BurningRuntime(player, durationBonus, interval,
             physicalAttackPerInterval, magicalAttackPerInterval);
@@ -23,19 +23,19 @@ public class BurningRelicEffect : RelicEffect
 
     private sealed class BurningRuntime : IRelicRuntime
     {
-        private readonly Player player;
+        private readonly global::ProjectLx.PlayerRuntime.PlayerActor player;
         private readonly float durationBonus;
         private readonly float interval;
         private readonly float physicalStep;
         private readonly float magicalStep;
-        private PlayerAwakening awakening;
+        private global::ProjectLx.PlayerRuntime.PlayerAwakeningComponent awakening;
         private OffensiveStats offense;
         private Coroutine gainRoutine;
         private float appliedPhysical;
         private float appliedMagical;
         private bool equipped;
 
-        public BurningRuntime(Player player, float durationBonus, float interval, float physicalStep, float magicalStep)
+        public BurningRuntime(global::ProjectLx.PlayerRuntime.PlayerActor player, float durationBonus, float interval, float physicalStep, float magicalStep)
         {
             this.player = player;
             this.durationBonus = durationBonus;

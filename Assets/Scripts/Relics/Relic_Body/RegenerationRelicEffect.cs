@@ -23,7 +23,7 @@ public class RegenerationRelicEffect : RelicEffect
     [Header("Audio")]
     [SerializeField] private SoundCue healSound = new SoundCue();
 
-    public override IRelicRuntime CreateRuntime(Player player)
+    public override IRelicRuntime CreateRuntime(global::ProjectLx.PlayerRuntime.PlayerActor player)
     {
         return new RegenerationRelicRuntime(
             player,
@@ -35,17 +35,17 @@ public class RegenerationRelicEffect : RelicEffect
     private sealed class RegenerationRelicRuntime : IRelicRuntime
     {
         private readonly RegenerationRelicEffect audioSettings;
-        private readonly Player player;
+        private readonly global::ProjectLx.PlayerRuntime.PlayerActor player;
         private readonly float healInterval;
         private readonly float healAmount;
 
-        private PlayerHealth playerHealth;
+        private global::ProjectLx.PlayerRuntime.PlayerHealthComponent playerHealth;
         private Coroutine regenerationCoroutine;
         private bool isEquipped;
 
         // 회복 유물에 필요한 플레이어와 회복 설정 보관
         public RegenerationRelicRuntime(
-            Player player,
+            global::ProjectLx.PlayerRuntime.PlayerActor player,
             float healInterval,
             float healAmount, RegenerationRelicEffect audioSettings)
         {
@@ -62,7 +62,7 @@ public class RegenerationRelicEffect : RelicEffect
             if (player == null)
                 throw new InvalidOperationException("[Regeneration] Player가 없습니다.");
 
-            playerHealth = player.GetComponent<PlayerHealth>();
+            playerHealth = player.GetComponent<global::ProjectLx.PlayerRuntime.PlayerHealthComponent>();
 
             if (playerHealth == null)
                 throw new InvalidOperationException("[Regeneration] PlayerHealth가 없습니다.");

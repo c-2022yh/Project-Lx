@@ -12,15 +12,15 @@ public sealed class ShadowSwapRuntime : MonoBehaviour
     }
 
     private readonly Dictionary<ShadowSwapSkillData, Anchor> anchors = new();
-    private PlayerHealth health;
-    private PlayerSkill skills;
+    private global::ProjectLx.PlayerRuntime.PlayerHealthComponent health;
+    private global::ProjectLx.PlayerRuntime.PlayerSkillComponent skills;
     private readonly List<ShadowSwapSkillData> removedSkills = new();
 
     private void OnEnable()
     {
-        health = GetComponent<PlayerHealth>();
+        health = GetComponent<global::ProjectLx.PlayerRuntime.PlayerHealthComponent>();
         if (health != null) health.OnDied += ClearAnchors;
-        skills = GetComponent<PlayerSkill>();
+        skills = GetComponent<global::ProjectLx.PlayerRuntime.PlayerSkillComponent>();
         if (skills != null) skills.OnSkillsChanged += ClearUnequippedAnchors;
     }
 

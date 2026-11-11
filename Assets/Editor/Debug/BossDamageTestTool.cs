@@ -12,7 +12,7 @@ public static class BossDamageTestTool
     [MenuItem(MenuPath)]
     private static void Hit()
     {
-        Player p = Object.FindAnyObjectByType<Player>();
+        global::ProjectLx.PlayerRuntime.PlayerActor p = Object.FindAnyObjectByType<global::ProjectLx.PlayerRuntime.PlayerActor>();
         int count = 0;
         foreach (EnemyHealth e in Object.FindObjectsByType<EnemyHealth>())
         {

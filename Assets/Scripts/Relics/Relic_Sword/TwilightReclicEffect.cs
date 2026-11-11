@@ -13,7 +13,7 @@ public class TwilightRelicEffect : RelicEffect
     private AttackPattern thirdAttackPattern;
 
     //유물 장착 시 런타임 생성
-    public override IRelicRuntime CreateRuntime(Player p)
+    public override IRelicRuntime CreateRuntime(global::ProjectLx.PlayerRuntime.PlayerActor p)
     {
         return new TwilightRelicRuntime(p, thirdAttackPattern );
     }
@@ -21,15 +21,15 @@ public class TwilightRelicEffect : RelicEffect
     //유물 장착 시 런타임에서 패턴 추가
     private sealed class TwilightRelicRuntime : IRelicRuntime
     {
-        private readonly Player player;
+        private readonly global::ProjectLx.PlayerRuntime.PlayerActor player;
         private readonly AttackPattern thirdAttackPattern;
 
-        private PlayerAttack playerAttack;
+        private global::ProjectLx.PlayerRuntime.PlayerAttackComponent playerAttack;
 
         //실제로 패턴 추가에 성공했는지 기록
         private bool patternAdded;
 
-        public TwilightRelicRuntime(Player player, AttackPattern thirdAttackPattern)
+        public TwilightRelicRuntime(global::ProjectLx.PlayerRuntime.PlayerActor player, AttackPattern thirdAttackPattern)
         {
             this.player = player;
             this.thirdAttackPattern = thirdAttackPattern;
@@ -39,7 +39,7 @@ public class TwilightRelicEffect : RelicEffect
         {
             if (player == null) return;
 
-            playerAttack = player.GetComponent<PlayerAttack>();
+            playerAttack = player.GetComponent<global::ProjectLx.PlayerRuntime.PlayerAttackComponent>();
 
             patternAdded = playerAttack.AddGroundAttackPattern(thirdAttackPattern);
 

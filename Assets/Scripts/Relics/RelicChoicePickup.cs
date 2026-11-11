@@ -35,7 +35,7 @@ public class RelicChest : MonoBehaviour, IInteractable
     [SerializeField] private SoundCue fixedOpenSound = new SoundCue();
 
     private bool isOpened;
-    private Player nearbyPlayer;
+    private global::ProjectLx.PlayerRuntime.PlayerActor nearbyPlayer;
 
     public string InteractionText => "¿­±â";
 
@@ -58,7 +58,7 @@ public class RelicChest : MonoBehaviour, IInteractable
         }
     }
 
-    public void Interact(Player player)
+    public void Interact(global::ProjectLx.PlayerRuntime.PlayerActor player)
     {
         if (!isActiveAndEnabled || isOpened || player == null) return;
         if (rewardMode == RewardMode.FixedRelic)
@@ -83,7 +83,7 @@ public class RelicChest : MonoBehaviour, IInteractable
         Debug.Log("Relic Chest Opened : " + gameObject.name);
     }
 
-    private void AcquireFixedRelic(Player player)
+    private void AcquireFixedRelic(global::ProjectLx.PlayerRuntime.PlayerActor player)
     {
         if (fixedRelic == null)
         {
@@ -129,7 +129,7 @@ public class RelicChest : MonoBehaviour, IInteractable
 
     private void OnTriggerEnter2D(Collider2D other)
     {
-        Player player = other.GetComponentInParent<Player>();
+        global::ProjectLx.PlayerRuntime.PlayerActor player = other.GetComponentInParent<global::ProjectLx.PlayerRuntime.PlayerActor>();
         if (player == null || isOpened || !isActiveAndEnabled) return;
 
         nearbyPlayer = player;
@@ -138,7 +138,7 @@ public class RelicChest : MonoBehaviour, IInteractable
 
     private void OnTriggerExit2D(Collider2D other)
     {
-        Player player = other.GetComponentInParent<Player>();
+        global::ProjectLx.PlayerRuntime.PlayerActor player = other.GetComponentInParent<global::ProjectLx.PlayerRuntime.PlayerActor>();
         if (player == null) return;
 
         player.ClearInteractable(this);

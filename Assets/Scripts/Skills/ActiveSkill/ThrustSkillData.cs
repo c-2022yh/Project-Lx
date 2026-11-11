@@ -16,7 +16,7 @@ public class ThrustSkillData : AttackSkillData
 
 
     // Preserve the thrust's physics freeze throughout all three phases.
-    protected override IEnumerator WaitForWindup(Player p)
+    protected override IEnumerator WaitForWindup(global::ProjectLx.PlayerRuntime.PlayerActor p)
     {
         p.SetPhysicsFreeze(true);
         float windupTimer = 0f;
@@ -29,7 +29,7 @@ public class ThrustSkillData : AttackSkillData
         }
     }
 
-    protected override IEnumerator WaitForRecovery(Player p)
+    protected override IEnumerator WaitForRecovery(global::ProjectLx.PlayerRuntime.PlayerActor p)
     {
         float recoveryTimer = 0f;
         while (recoveryTimer < recoveryTime)
@@ -42,7 +42,7 @@ public class ThrustSkillData : AttackSkillData
         p.SetPhysicsFreeze(false);
     }
 
-    public override IEnumerator ProcessSkill(Player p)
+    public override IEnumerator ProcessSkill(global::ProjectLx.PlayerRuntime.PlayerActor p)
     {
         //공격 방향 설정
         float dir = p.isFacingRight ? 1f : -1f;
@@ -69,7 +69,7 @@ public class ThrustSkillData : AttackSkillData
     
 
     //찌르기 이펙트 소환하기
-    private void SpawnThrustEffect(Player p, float dir, DamageInfo damageInfo)
+    private void SpawnThrustEffect(global::ProjectLx.PlayerRuntime.PlayerActor p, float dir, DamageInfo damageInfo)
     {
         if (thrustEffectPrefab == null) return;
 

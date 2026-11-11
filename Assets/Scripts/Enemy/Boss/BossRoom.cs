@@ -105,7 +105,7 @@ public class BossRoom : MonoBehaviour
     private Vector3[] doorClosedPositions;
     private Vector3 bossStartPosition;
     private CinemachineCamera roomCamera;
-    private PlayerHealth playerHealth;
+    private global::ProjectLx.PlayerRuntime.PlayerHealthComponent playerHealth;
     private Coroutine routine;
     private bool shownCardOnce;
     private string bossDisplayName;
@@ -173,7 +173,7 @@ public class BossRoom : MonoBehaviour
         {
             if (playerT == null)
             {
-                Player p = FindAnyObjectByType<Player>();
+                global::ProjectLx.PlayerRuntime.PlayerActor p = FindAnyObjectByType<global::ProjectLx.PlayerRuntime.PlayerActor>();
                 if (p != null) playerT = p.transform;
             }
             if (playerT != null)
@@ -269,10 +269,10 @@ public class BossRoom : MonoBehaviour
     {
         if (state != State.Idle || boss == null) return;
 
-        Player player = other.GetComponentInParent<Player>();
+        global::ProjectLx.PlayerRuntime.PlayerActor player = other.GetComponentInParent<global::ProjectLx.PlayerRuntime.PlayerActor>();
         if (player == null) return;
 
-        PlayerHealth health = player.GetComponent<PlayerHealth>();
+        global::ProjectLx.PlayerRuntime.PlayerHealthComponent health = player.GetComponent<global::ProjectLx.PlayerRuntime.PlayerHealthComponent>();
         if (health == null || health.IsDead) return;
 
         WatchPlayer(health);
@@ -816,7 +816,7 @@ public class BossRoom : MonoBehaviour
 
     // ───────────── 플레이어 ─────────────
 
-    private void WatchPlayer(PlayerHealth health)
+    private void WatchPlayer(global::ProjectLx.PlayerRuntime.PlayerHealthComponent health)
     {
         UnwatchPlayer();
         playerHealth = health;

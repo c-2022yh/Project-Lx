@@ -31,7 +31,7 @@ public class CombatFeedback : MonoBehaviour
 
     private static CombatFeedback instance;
 
-    private PlayerHealth watchedHealth;
+    private global::ProjectLx.PlayerRuntime.PlayerHealthComponent watchedHealth;
     private float nextSearchTime;
 
 #if UNITY_EDITOR
@@ -98,7 +98,7 @@ public class CombatFeedback : MonoBehaviour
         if (watchedHealth != null || Time.unscaledTime < nextSearchTime) return;
         nextSearchTime = Time.unscaledTime + 0.5f;
 
-        PlayerHealth health = FindFirstObjectByType<PlayerHealth>();
+        global::ProjectLx.PlayerRuntime.PlayerHealthComponent health = FindFirstObjectByType<global::ProjectLx.PlayerRuntime.PlayerHealthComponent>();
         if (health == null) return;
 
         watchedHealth = health;

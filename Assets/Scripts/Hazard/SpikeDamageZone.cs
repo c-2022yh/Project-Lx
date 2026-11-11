@@ -21,7 +21,7 @@ public class SpikeDamageZone : MonoBehaviour
 
     private void DamagePlayer(Collider2D other)
     {
-        PlayerHealth playerHealth = other.GetComponentInParent<PlayerHealth>();
+        global::ProjectLx.PlayerRuntime.PlayerHealthComponent playerHealth = other.GetComponentInParent<global::ProjectLx.PlayerRuntime.PlayerHealthComponent>();
 
         if (playerHealth == null) return;
 

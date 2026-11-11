@@ -672,8 +672,8 @@ public class IntroCutscene : MonoBehaviour
                 Destroy(pickup.gameObject);
             }
 
-            Player player = FindAnyObjectByType<Player>();
-            PlayerEnergy energy = player != null ? player.GetComponent<PlayerEnergy>() : null;
+            global::ProjectLx.PlayerRuntime.PlayerActor player = FindAnyObjectByType<global::ProjectLx.PlayerRuntime.PlayerActor>();
+            global::ProjectLx.PlayerRuntime.PlayerEnergyComponent energy = player != null ? player.GetComponent<global::ProjectLx.PlayerRuntime.PlayerEnergyComponent>() : null;
             if (energy != null && !energy.HasOrb) energy.AcquireOrb();
 
             RunState.Current.SetFlag(ArrivedFlag);

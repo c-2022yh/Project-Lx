@@ -1,8 +1,9 @@
+#pragma warning disable CS0108 // Concrete API intentionally hides the shared compatibility view.
 
 using UnityEngine;
 
 //플레이어 스탯 관리 스크립트
-public class PlayerStats : MonoBehaviour
+public partial class PlayerStats : global::ProjectLx.PlayerRuntime.PlayerStatsComponent
 {
     //공격 관련 스탯 
     [Header("Offensive Stats")]
@@ -30,3 +31,4 @@ public class PlayerStats : MonoBehaviour
     public DefensiveStats Defense => defense;
 
 }
+#pragma warning restore CS0108

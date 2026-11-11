@@ -14,7 +14,7 @@ public class RefluxRelicEffect : RelicEffect
     [Header("Audio")]
     [SerializeField] private SoundCue recoverySound = new SoundCue();
 
-    public override IRelicRuntime CreateRuntime(Player player)
+    public override IRelicRuntime CreateRuntime(global::ProjectLx.PlayerRuntime.PlayerActor player)
     {
         return new RefluxRuntime(
             player,
@@ -26,17 +26,17 @@ public class RefluxRelicEffect : RelicEffect
     private sealed class RefluxRuntime : IRelicRuntime
     {
         private readonly RefluxRelicEffect audioSettings;
-        private readonly Player player;
+        private readonly global::ProjectLx.PlayerRuntime.PlayerActor player;
         private readonly float recoveryEnergy;
 
-        private PlayerEnergy playerEnergy;
-        private PlayerAwakening playerAwakening;
+        private global::ProjectLx.PlayerRuntime.PlayerEnergyComponent playerEnergy;
+        private global::ProjectLx.PlayerRuntime.PlayerAwakeningComponent playerAwakening;
 
         private bool isEquipped;
 
 
         public RefluxRuntime(
-            Player player,
+            global::ProjectLx.PlayerRuntime.PlayerActor player,
             float recoveryEnergy, RefluxRelicEffect audioSettings)
         {
             this.player = player;
@@ -51,8 +51,8 @@ public class RefluxRelicEffect : RelicEffect
 
             if (player == null) return;
             
-            playerEnergy = player.GetComponent<PlayerEnergy>();
-            playerAwakening = player.GetComponent<PlayerAwakening>();
+            playerEnergy = player.GetComponent<global::ProjectLx.PlayerRuntime.PlayerEnergyComponent>();
+            playerAwakening = player.GetComponent<global::ProjectLx.PlayerRuntime.PlayerAwakeningComponent>();
 
 
             if (playerEnergy == null) return;

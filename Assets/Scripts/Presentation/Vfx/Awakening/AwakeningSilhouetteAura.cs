@@ -53,8 +53,8 @@ public class AwakeningSilhouetteAura : MonoBehaviour
 
     private const string ShaderPath = "Presentation/Awakening/AwakeningSilhouetteAura";
 
-    private Player player;
-    private PlayerAwakening awakening;
+    private global::ProjectLx.PlayerRuntime.PlayerActor player;
+    private global::ProjectLx.PlayerRuntime.PlayerAwakeningComponent awakening;
     private PlayerAwakeningVisual visual;
     private MeshRenderer quad;
     private Mesh mesh;
@@ -95,7 +95,7 @@ public class AwakeningSilhouetteAura : MonoBehaviour
 
     private static void TryAttach()
     {
-        Player p = FindAnyObjectByType<Player>();
+        global::ProjectLx.PlayerRuntime.PlayerActor p = FindAnyObjectByType<global::ProjectLx.PlayerRuntime.PlayerActor>();
         if (p != null && p.GetComponent<AwakeningSilhouetteAura>() == null) p.gameObject.AddComponent<AwakeningSilhouetteAura>();
     }
 
@@ -103,8 +103,8 @@ public class AwakeningSilhouetteAura : MonoBehaviour
 
     private void Start()
     {
-        player = GetComponent<Player>();
-        awakening = GetComponent<PlayerAwakening>();
+        player = GetComponent<global::ProjectLx.PlayerRuntime.PlayerActor>();
+        awakening = GetComponent<global::ProjectLx.PlayerRuntime.PlayerAwakeningComponent>();
         visual = GetComponent<PlayerAwakeningVisual>();
         Shader shader = Resources.Load<Shader>(ShaderPath);
         if (player == null || awakening == null || shader == null || !shader.isSupported)

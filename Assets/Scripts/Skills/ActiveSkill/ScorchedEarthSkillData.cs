@@ -62,7 +62,7 @@ public class ScorchedEarthSkillData : SkillData
     }
 
     //각성 상태와 스킬 시전 가능 상태를 함께 확인한다.
-    public override bool CanUse(Player p)
+    public override bool CanUse(global::ProjectLx.PlayerRuntime.PlayerActor p)
     {
         return base.CanUse(p) && p.Awakening != null && p.Awakening.IsAwakened
             && p.ActionState != null && p.ActionState.CanSkill()
@@ -73,7 +73,7 @@ public class ScorchedEarthSkillData : SkillData
     }
 
     //버프가 해제되기 전에 기존 공격 스탯과 AttackDamageSpec으로 피해 정보를 만든다.
-    public PreparedDamage PrepareDamage(Player p)
+    public PreparedDamage PrepareDamage(global::ProjectLx.PlayerRuntime.PlayerActor p)
     {
         DamageInfo regular = DamageInfo.Create(p.Stats.Offense, barrage.regularDamage, p.gameObject);
         // Small repeated hits must not push the target out of the barrage.
@@ -85,14 +85,14 @@ public class ScorchedEarthSkillData : SkillData
     }
 
     //일반 스킬 호출 경로에서도 기존 SkillData 계약을 충족한다.
-    public override IEnumerator ProcessSkill(Player p)
+    public override IEnumerator ProcessSkill(global::ProjectLx.PlayerRuntime.PlayerActor p)
     {
         if (p == null) yield break;
         PreparedDamage preparedDamage = PrepareDamage(p);
         yield return ProcessPreparedSkill(p, preparedDamage);
     }
 
-    public ScorchedEarthBarrage CreateBarrage(Player p, PreparedDamage damage)
+    public ScorchedEarthBarrage CreateBarrage(global::ProjectLx.PlayerRuntime.PlayerActor p, PreparedDamage damage)
     {
         var runner = new GameObject("ScorchedEarth_Barrage").AddComponent<ScorchedEarthBarrage>();
         damage.regular = AttachImpactAudio(p, damage.regular);
@@ -101,7 +101,7 @@ public class ScorchedEarthSkillData : SkillData
         return runner;
     }
 
-    public IEnumerator ProcessPreparedSkill(Player p, PreparedDamage damage)
+    public IEnumerator ProcessPreparedSkill(global::ProjectLx.PlayerRuntime.PlayerActor p, PreparedDamage damage)
     {
         if (p == null) yield break;
         ScorchedEarthBarrage runner = CreateBarrage(p, damage);
@@ -109,7 +109,7 @@ public class ScorchedEarthSkillData : SkillData
         finally { if (runner != null) runner.Cancel(); }
     }
 
-    public override void OnCastCancelled(Player p)
+    public override void OnCastCancelled(global::ProjectLx.PlayerRuntime.PlayerActor p)
     {
         base.OnCastCancelled(p);
         if (p != null) p.Awakening?.EndAwakening();

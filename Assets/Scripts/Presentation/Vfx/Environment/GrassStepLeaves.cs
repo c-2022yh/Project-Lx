@@ -44,7 +44,7 @@ public class GrassStepLeaves : MonoBehaviour
     private ParticleSystem stepFront;
     private ParticleSystem stepBack;
 
-    private Player player;
+    private global::ProjectLx.PlayerRuntime.PlayerActor player;
     private Rigidbody2D rb;
     private Collider2D body;
     private float nextSearchTime;
@@ -143,7 +143,7 @@ public class GrassStepLeaves : MonoBehaviour
         if (Time.unscaledTime < nextSearchTime) return false;
         nextSearchTime = Time.unscaledTime + 0.5f;
 
-        player = FindFirstObjectByType<Player>();
+        player = FindFirstObjectByType<global::ProjectLx.PlayerRuntime.PlayerActor>();
         if (player == null) return false;
 
         rb = player.GetComponent<Rigidbody2D>();

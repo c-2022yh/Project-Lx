@@ -26,7 +26,7 @@ public class EnemyContactHitbox : MonoBehaviour
     private void TryContactDamage(Collider2D other)
     {
         //플레이어 확인
-        PlayerHealth playerHealth = other.GetComponent<PlayerHealth>();
+        global::ProjectLx.PlayerRuntime.PlayerHealthComponent playerHealth = other.GetComponent<global::ProjectLx.PlayerRuntime.PlayerHealthComponent>();
 
         if (playerHealth == null)
         {
@@ -34,7 +34,7 @@ public class EnemyContactHitbox : MonoBehaviour
         }
 
         //대쉬 중 접촉 데미지 무시
-        PlayerHitReaction playerHitReaction = other.GetComponent<PlayerHitReaction>();
+        global::ProjectLx.PlayerRuntime.PlayerHitReactionComponent playerHitReaction = other.GetComponent<global::ProjectLx.PlayerRuntime.PlayerHitReactionComponent>();
 
         if (playerHitReaction != null && playerHitReaction.IsIgnoringEnemyContact)
         {

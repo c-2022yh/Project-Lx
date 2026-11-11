@@ -4,16 +4,16 @@ public class ScreenFXController : MonoBehaviour
 {
     [SerializeField] private GameObject awakeningEdgeFX;
 
-    private PlayerAwakening playerAwakening;
+    private global::ProjectLx.PlayerRuntime.PlayerAwakeningComponent playerAwakening;
     private PlayerAwakeningVisual awakeningVisual;
-    private PlayerHealth health;
+    private global::ProjectLx.PlayerRuntime.PlayerHealthComponent health;
 
     private void Start()
     {
         if (awakeningEdgeFX != null)
             awakeningEdgeFX.SetActive(false);
 
-        playerAwakening = FindAnyObjectByType<PlayerAwakening>();
+        playerAwakening = FindAnyObjectByType<global::ProjectLx.PlayerRuntime.PlayerAwakeningComponent>();
 
         if (playerAwakening == null)
         {
@@ -22,7 +22,7 @@ public class ScreenFXController : MonoBehaviour
         }
 
         awakeningVisual = playerAwakening.GetComponent<PlayerAwakeningVisual>();
-        health = playerAwakening.GetComponent<PlayerHealth>();
+        health = playerAwakening.GetComponent<global::ProjectLx.PlayerRuntime.PlayerHealthComponent>();
 
         playerAwakening.OnAwakeningStarted += ShowAwakening;
         playerAwakening.OnAwakeningEnded += HideAwakening;

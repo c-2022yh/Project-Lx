@@ -18,7 +18,7 @@ public class AutoScenePortal : MonoBehaviour
     {
         if (isTriggered || SceneFader.IsTransitioning) return;
 
-        Player player = other.GetComponentInParent<Player>();
+        global::ProjectLx.PlayerRuntime.PlayerActor player = other.GetComponentInParent<global::ProjectLx.PlayerRuntime.PlayerActor>();
 
         if (player == null) return;
 
