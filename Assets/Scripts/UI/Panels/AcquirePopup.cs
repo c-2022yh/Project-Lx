@@ -603,7 +603,7 @@ public class AcquirePopup : MonoBehaviour
     // ── 에디터 테스트 ────────────────────────
 
 #if UNITY_EDITOR
-    [MenuItem("Tools/UI/획득 팝업 테스트")]
+    [MenuItem("Project Lx/Debug/UI/획득 팝업 테스트")]
     private static void TestPopup()
     {
         if (!Application.isPlaying)

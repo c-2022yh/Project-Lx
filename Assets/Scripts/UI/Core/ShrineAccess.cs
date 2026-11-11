@@ -11,7 +11,7 @@ using UnityEditor;
 /// Shrine은 관용님 파일이라 읽기만 하고 고치지 않는다.
 ///
 /// 팀원이 제단 없는 씬에서 테스트할 수 있게 에디터에서만 끄는 스위치를 둔다.
-/// 메뉴: Tools/UI/제단 제한 무시 (테스트용). 기본은 꺼져 있어서 제한이 걸린 상태다.
+/// 메뉴: Project Lx/UI/제단 제한 무시 (테스트용). 기본은 꺼져 있어서 제한이 걸린 상태다.
 /// </summary>
 public static class ShrineAccess
 {
@@ -49,7 +49,7 @@ public static class ShrineAccess
 
 #if UNITY_EDITOR
     private const string IgnoreKey = "Ludens.UI.IgnoreShrineLock";
-    private const string MenuPath = "Tools/UI/제단 제한 무시 (테스트용)";
+    private const string MenuPath = "Project Lx/UI/제단 제한 무시 (테스트용)";
 
     public static bool IgnoreInEditor => EditorPrefs.GetBool(IgnoreKey, false);
 

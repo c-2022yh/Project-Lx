@@ -14,7 +14,7 @@ public class ResidualMoonRelicEffect : RelicEffect
     [Header("Audio")]
     [SerializeField] private SoundCue cooldownResetSound = new SoundCue();
 
-    public override IRelicRuntime CreateRuntime(Player p)
+    public override IRelicRuntime CreateRuntime(global::ProjectLx.PlayerRuntime.PlayerActor p)
     {
         return new ResidualMoonRelicRuntime(p, dashSkill, this);
     }
@@ -24,18 +24,18 @@ public class ResidualMoonRelicEffect : RelicEffect
         private const int XSkillSlot = 0;
 
         private readonly ResidualMoonRelicEffect audioSettings;
-        private readonly Player player;
+        private readonly global::ProjectLx.PlayerRuntime.PlayerActor player;
         private readonly SkillData dashSkill;
 
-        private PlayerSkill playerSkill;
+        private global::ProjectLx.PlayerRuntime.PlayerSkillComponent playerSkill;
 
-        private PlayerKillTracker playerKillTracker;
+        private global::ProjectLx.PlayerRuntime.PlayerKillTrackerComponent playerKillTracker;
         private Coroutine resetCooldownCoroutine;
 
         private bool isEquipped;
 
         //잔월 효과에 필요한 플레이어와 스킬 보관
-        public ResidualMoonRelicRuntime(Player player, SkillData dashSkill, ResidualMoonRelicEffect audioSettings)
+        public ResidualMoonRelicRuntime(global::ProjectLx.PlayerRuntime.PlayerActor player, SkillData dashSkill, ResidualMoonRelicEffect audioSettings)
         {
             this.player = player;
             this.audioSettings = audioSettings;
@@ -48,8 +48,8 @@ public class ResidualMoonRelicEffect : RelicEffect
             if (isEquipped) return;
             if (player == null) throw new System.InvalidOperationException("[ResidualMoon] Player가 없습니다.");
 
-            playerSkill = player.GetComponent<PlayerSkill>();
-            playerKillTracker = player.GetComponent<PlayerKillTracker>();
+            playerSkill = player.GetComponent<global::ProjectLx.PlayerRuntime.PlayerSkillComponent>();
+            playerKillTracker = player.GetComponent<global::ProjectLx.PlayerRuntime.PlayerKillTrackerComponent>();
 
             if (playerSkill == null || playerKillTracker == null || dashSkill == null)
                 throw new System.InvalidOperationException("[ResidualMoon] 스킬 또는 필수 컴포넌트가 없습니다.");

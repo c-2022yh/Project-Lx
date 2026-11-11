@@ -36,7 +36,7 @@ public class DawnRelicEffect : RelicEffect
     [Header("Audio")]
     [SerializeField] private SoundCue extraAttackSound = new SoundCue();
 
-    public override IRelicRuntime CreateRuntime(Player p)
+    public override IRelicRuntime CreateRuntime(global::ProjectLx.PlayerRuntime.PlayerActor p)
     {
         return new DawnRelicRuntime(
             p,
@@ -52,7 +52,7 @@ public class DawnRelicEffect : RelicEffect
     private sealed class DawnRelicRuntime : IRelicRuntime
     {
         private readonly DawnRelicEffect audioSettings;
-        private readonly Player player;
+        private readonly global::ProjectLx.PlayerRuntime.PlayerActor player;
         private readonly AttackDamageSpec extraAttackDamageSpec;
 
         private readonly float extraAttackDelay;
@@ -60,14 +60,14 @@ public class DawnRelicEffect : RelicEffect
         private readonly Color extraAttackColor;
         private readonly float destroyAfter;
 
-        private PlayerAttack playerAttack;
-        private PlayerStats playerStats;
+        private global::ProjectLx.PlayerRuntime.PlayerAttackComponent playerAttack;
+        private global::ProjectLx.PlayerRuntime.PlayerStatsComponent playerStats;
 
         private bool isEquipped;
 
         //»ý¼ºÀÚ
         public DawnRelicRuntime(
-        Player player,
+        global::ProjectLx.PlayerRuntime.PlayerActor player,
         AttackDamageSpec extraAttackDamageSpec,
         float extraAttackDelay,
         Vector2 extraAttackOffset,
@@ -88,8 +88,8 @@ public class DawnRelicEffect : RelicEffect
         {
             if (player == null) return;
 
-            playerAttack = player.GetComponent<PlayerAttack>();
-            playerStats = player.GetComponent<PlayerStats>();
+            playerAttack = player.GetComponent<global::ProjectLx.PlayerRuntime.PlayerAttackComponent>();
+            playerStats = player.GetComponent<global::ProjectLx.PlayerRuntime.PlayerStatsComponent>();
 
             isEquipped = true;
             playerAttack.AttackEffectCreated += HandleGroundAttackCreated;

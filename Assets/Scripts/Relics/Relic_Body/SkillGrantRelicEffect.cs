@@ -7,21 +7,21 @@ public abstract class SkillGrantRelicEffectBase : RelicEffect
     protected virtual string LogTag => "SkillGrant";
 
     //플레이어별 스킬 지급 Runtime 생성
-    public sealed override IRelicRuntime CreateRuntime(Player player)
+    public sealed override IRelicRuntime CreateRuntime(global::ProjectLx.PlayerRuntime.PlayerActor player)
     {
         return new SkillGrantRelicRuntime(player, Skill, LogTag);
     }
 
     private sealed class SkillGrantRelicRuntime : IRelicRuntime
     {
-        private readonly Player player;
+        private readonly global::ProjectLx.PlayerRuntime.PlayerActor player;
         private readonly SkillData skill;
         private readonly string logTag;
 
-        private PlayerSkill playerSkill;
+        private global::ProjectLx.PlayerRuntime.PlayerSkillComponent playerSkill;
         private bool isEquipped;
 
-        public SkillGrantRelicRuntime(Player player, SkillData skill, string logTag)
+        public SkillGrantRelicRuntime(global::ProjectLx.PlayerRuntime.PlayerActor player, SkillData skill, string logTag)
         {
             this.player = player;
             this.skill = skill;
@@ -34,7 +34,7 @@ public abstract class SkillGrantRelicEffectBase : RelicEffect
             if (isEquipped) return;
             if (player == null) throw new System.InvalidOperationException($"[{logTag}] Player가 없습니다.");
 
-            playerSkill = player.GetComponent<PlayerSkill>();
+            playerSkill = player.GetComponent<global::ProjectLx.PlayerRuntime.PlayerSkillComponent>();
 
             if (playerSkill == null || skill == null)
                 throw new System.InvalidOperationException($"[{logTag}] 스킬 또는 PlayerSkill이 없습니다.");

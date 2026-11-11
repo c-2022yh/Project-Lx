@@ -1,10 +1,11 @@
-﻿using System.Collections;
+﻿#pragma warning disable CS0108 // Concrete API intentionally hides the shared compatibility view.
+using System.Collections;
 using UnityEngine;
 using System.Collections.Generic;
 using UnityEngine.InputSystem;
 
 //플레이어 전체 통제하는 스크립트
-public class Player : MonoBehaviour
+public partial class Player : global::ProjectLx.PlayerRuntime.PlayerActor
 {
     //컴포넌트
     [Header("Components")]
@@ -384,3 +385,5 @@ public class Player : MonoBehaviour
     }
 
 }
+
+#pragma warning restore CS0108

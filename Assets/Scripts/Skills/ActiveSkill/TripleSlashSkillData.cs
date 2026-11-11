@@ -19,14 +19,14 @@ public class TripleSlashData : AttackSkillData
     [Header("Starlight Presentation")]
     public SlashSkillVisual starlightPrefab;
 
-    protected override IEnumerator WaitForWindup(Player p)
+    protected override IEnumerator WaitForWindup(global::ProjectLx.PlayerRuntime.PlayerActor p)
     {
         if (p != null && starlightPrefab != null && starlightPrefab.IsConfigured)
             Instantiate(starlightPrefab).BeginPreparation(p, this);
         yield return base.WaitForWindup(p);
     }
 
-    public override void OnCastCancelled(Player p)
+    public override void OnCastCancelled(global::ProjectLx.PlayerRuntime.PlayerActor p)
     {
         base.OnCastCancelled(p);
         if (p == null) return;
@@ -35,7 +35,7 @@ public class TripleSlashData : AttackSkillData
     }
 
 
-    public override IEnumerator ProcessSkill(Player p)
+    public override IEnumerator ProcessSkill(global::ProjectLx.PlayerRuntime.PlayerActor p)
     {
         if (p == null) yield break;
 
@@ -67,7 +67,7 @@ public class TripleSlashData : AttackSkillData
     }
 
     //베기 이펙트 소환하기
-    private void SpawnSlashEffect(Player p, float dir, float rotationZ, DamageInfo damageInfo, bool isFinisher)
+    private void SpawnSlashEffect(global::ProjectLx.PlayerRuntime.PlayerActor p, float dir, float rotationZ, DamageInfo damageInfo, bool isFinisher)
     {
         if (slashEffectPrefab == null) return;
 
@@ -95,7 +95,7 @@ public class TripleSlashData : AttackSkillData
 
         if (hitbox != null)
         {
-            PlayerAttack playerAttack = p.GetComponent<PlayerAttack>();
+            global::ProjectLx.PlayerRuntime.PlayerAttackComponent playerAttack = p.GetComponent<global::ProjectLx.PlayerRuntime.PlayerAttackComponent>();
             hitbox.SetAttackInfo(damageInfo, dir, (target, info) =>
             {
                 playerAttack?.NotifyAttackHit(target, info);

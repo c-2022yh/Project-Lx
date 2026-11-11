@@ -37,7 +37,7 @@ public class BossHitFx : MonoBehaviour
             flash.sharedMaterial = flashMat;
             flash.enabled = false;
         }
-        Player p = FindAnyObjectByType<Player>();
+        global::ProjectLx.PlayerRuntime.PlayerActor p = FindAnyObjectByType<global::ProjectLx.PlayerRuntime.PlayerActor>();
         if (p != null) player = p.transform;
     }
 

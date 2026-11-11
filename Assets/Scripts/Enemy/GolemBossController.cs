@@ -132,7 +132,7 @@ public class GolemBossController : MonoBehaviour
     private Collider2D bodyCollider;
     private EnemyStats stats;
     private GolemBossVisual visual;
-    private PlayerHealth player;
+    private global::ProjectLx.PlayerRuntime.PlayerHealthComponent player;
     private State state;
     private Pattern pattern, lastPattern;
     private GolemBossAttack current;
@@ -332,7 +332,7 @@ public class GolemBossController : MonoBehaviour
         if (player != null && player.isActiveAndEnabled && !player.IsDead) return;
         if (Time.time < nextSearchTime) return;
         nextSearchTime = Time.time + 0.5f;
-        player = FindAnyObjectByType<PlayerHealth>();
+        player = FindAnyObjectByType<global::ProjectLx.PlayerRuntime.PlayerHealthComponent>();
     }
 
     private bool CreateFragments()

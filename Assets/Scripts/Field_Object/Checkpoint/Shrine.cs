@@ -24,9 +24,9 @@ public class Shrine : MonoBehaviour, IInteractable
 
     public string InteractionText => "활성화";
 
-    private Player player;
-    private PlayerRespawn playerRespawn;
-    private PlayerHealth playerHealth;
+    private global::ProjectLx.PlayerRuntime.PlayerActor player;
+    private global::ProjectLx.PlayerRuntime.PlayerRespawnComponent playerRespawn;
+    private global::ProjectLx.PlayerRuntime.PlayerHealthComponent playerHealth;
 
     public bool IsPlayerInRange { get; private set; }
     public bool IsActive { get; private set; }
@@ -45,7 +45,7 @@ public class Shrine : MonoBehaviour, IInteractable
     }
 
     //플레이어가 제단과 상호작용 시 호출되는 함수
-    public void Interact(Player player)
+    public void Interact(global::ProjectLx.PlayerRuntime.PlayerActor player)
     {
         Activate();
     }
@@ -138,15 +138,15 @@ public class Shrine : MonoBehaviour, IInteractable
     //플레이어가 제단 범위에 들어옴
     private void OnTriggerEnter2D(Collider2D other)
     {
-        Player foundPlayer =  other.GetComponentInParent<Player>();
+        global::ProjectLx.PlayerRuntime.PlayerActor foundPlayer =  other.GetComponentInParent<global::ProjectLx.PlayerRuntime.PlayerActor>();
 
         if (foundPlayer == null) return;
 
         player = foundPlayer;
 
-        playerRespawn = foundPlayer.GetComponent<PlayerRespawn>();
+        playerRespawn = foundPlayer.GetComponent<global::ProjectLx.PlayerRuntime.PlayerRespawnComponent>();
 
-        playerHealth = foundPlayer.GetComponent<PlayerHealth>();
+        playerHealth = foundPlayer.GetComponent<global::ProjectLx.PlayerRuntime.PlayerHealthComponent>();
 
         IsPlayerInRange = true;
 
@@ -156,7 +156,7 @@ public class Shrine : MonoBehaviour, IInteractable
     //플레이어가 제단 범위에서 나감
     private void OnTriggerExit2D(Collider2D other)
     {
-        Player foundPlayer =  other.GetComponentInParent<Player>();
+        global::ProjectLx.PlayerRuntime.PlayerActor foundPlayer =  other.GetComponentInParent<global::ProjectLx.PlayerRuntime.PlayerActor>();
 
         if (foundPlayer == null || foundPlayer != player)  return;
 

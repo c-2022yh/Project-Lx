@@ -134,7 +134,7 @@ Animator:
   m_GameObject: {fileID: 2056732829808191594}
   m_Enabled: 1
   m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: f9e8e09a113ab314ea1e488c0cbc12a7, type: 2}
+  m_Controller: {fileID: 9100000, guid: 9392585a92d64d8f83aa401cedc00385, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
   m_ApplyRootMotion: 0
@@ -218,7 +218,7 @@ Rigidbody2D:
   m_LinearDamping: 0
   m_AngularDamping: 0.05
   m_GravityScale: 5
-  m_Material: {fileID: 6200000, guid: 0591758bb78d2db41a5f64a9342e6a8b, type: 2}
+  m_Material: {fileID: 6200000, guid: 34fce551919740609b5fc2914f839f74, type: 2}
   m_IncludeLayers:
     serializedVersion: 2
     m_Bits: 0
@@ -239,7 +239,7 @@ CapsuleCollider2D:
   m_Enabled: 1
   serializedVersion: 3
   m_Density: 1
-  m_Material: {fileID: 6200000, guid: 0591758bb78d2db41a5f64a9342e6a8b, type: 2}
+  m_Material: {fileID: 6200000, guid: 34fce551919740609b5fc2914f839f74, type: 2}
   m_IncludeLayers:
     serializedVersion: 2
     m_Bits: 0
@@ -275,7 +275,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 3993503971577391545}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6e5c063169e1f474f9563a73bd3ce282, type: 3}
+  m_Script: {fileID: 11500000, guid: 0863b4d9e81247dcb009be78e5cee1f4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Player
   spriteRenderer: {fileID: 7915228961384660491}
@@ -303,7 +303,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 62899f850307741f2a39c98a8b639597, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Unity.InputSystem::UnityEngine.InputSystem.PlayerInput
-  m_Actions: {fileID: -944628639613478452, guid: 2bcd2660ca9b64942af0de543d8d7100, type: 3}
+  m_Actions: {fileID: -944628639613478452, guid: 794ffd3c4c2846f1af7cf18390177a5f, type: 3}
   m_NotificationBehavior: 0
   m_UIInputModule: {fileID: 0}
   m_DeviceLostEvent:
@@ -330,7 +330,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 3993503971577391545}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8d795e9348e5706499cde7a4d8c4319b, type: 3}
+  m_Script: {fileID: 11500000, guid: ff17b74a2a084832b2f940ccf9bf6779, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerHealth
   maxHealth: 100
@@ -339,7 +339,7 @@ MonoBehaviour:
     channel: 0
     clip: {fileID: 0}
     clips:
-    - {fileID: 8300000, guid: 3e9af4cdcda3f60418a7f9e0ac1ec663, type: 3}
+    - {fileID: 8300000, guid: 0fe0a6339f2f24b4e8dd332725752535, type: 3}
     - {fileID: 8300000, guid: 9cc35a55c00f4cb4b8bb328c271461b9, type: 3}
     volume: 1
     minimumInterval: 0.05
@@ -375,7 +375,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 3993503971577391545}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: cd50175fd4cb20a4abae1a12963df7ea, type: 3}
+  m_Script: {fileID: 11500000, guid: eeee81d6d24a4b938b062942c60c71a2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerMove
   moveSpeed: 10
@@ -550,7 +550,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 3993503971577391545}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 781156de7e9b09749bf4c441c0b64a4d, type: 3}
+  m_Script: {fileID: 11500000, guid: 87c1250d4350457fb119af76e891781d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerStats
   offense:
@@ -576,7 +576,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 3993503971577391545}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8def16102bf09594bb614bd9d75654a1, type: 3}
+  m_Script: {fileID: 11500000, guid: bc728aab0c3a42f8bc1276dcb86c3900, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerAttack
   groundPatterns:
@@ -825,7 +825,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 3993503971577391545}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ee194745dbaaa9f4586bebeff30783e6, type: 3}
+  m_Script: {fileID: 11500000, guid: a696111a38cd46868d54e387d30eb6ae, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerSkill
   equippedSkills:
@@ -844,7 +844,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 3993503971577391545}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c885f00a6c847764db692f9fe3b8cd2f, type: 3}
+  m_Script: {fileID: 11500000, guid: 006a73f24f0243ea8ab2c7bd8558de7c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerActionState
   currentState: 0
@@ -857,9 +857,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 3993503971577391545}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5022f0a8db8969a40947240637c09c42, type: 3}
+  m_Script: {fileID: 11500000, guid: 3a21a6112ff2429e92dcd07dc7ba659f, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::playerEnergy
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerEnergy
   currentEnergy: 0
   maxEnergy: 100
   orbPrefab: {fileID: 1398017312291189154, guid: 1e46b67fbb54b8141ac54cc7a030d053, type: 3}
@@ -874,7 +874,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 3993503971577391545}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0903e508fb6b6604cb02da1a4d98f63e, type: 3}
+  m_Script: {fileID: 11500000, guid: 5ff8e463021d444da7f34b7d54ad5bf9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerAwakening
   awakeningFreezeTime: 0.8
@@ -961,7 +961,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 3993503971577391545}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 382b0b4b35cffc644bb7ee9727496b73, type: 3}
+  m_Script: {fileID: 11500000, guid: 2d318b5e451545789426e463868d13b7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerAnimation
   respawnStateName: Base Layer.Player_Idle
@@ -976,7 +976,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 3993503971577391545}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ec3abcd78f7203749a62506920abdea7, type: 3}
+  m_Script: {fileID: 11500000, guid: 58e0f6ab6661483b940ac1b54ea60656, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerKillTracker
 --- !u!114 &1598087884320357999
@@ -988,7 +988,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 3993503971577391545}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 67f5484ee39fd4a4aaf7c2dcd8d92fb2, type: 3}
+  m_Script: {fileID: 11500000, guid: 341e8efbe3744d2a8c82d53584d4590d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerHitReaction
   invincibleTime: 1
@@ -1006,7 +1006,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 3993503971577391545}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1e1a2a98a45561f488ffaade76951e86, type: 3}
+  m_Script: {fileID: 11500000, guid: 57a5920abcf347e2ab48b69dc80e9d37, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerRespawn
   respawnDelay: 0.7
@@ -1021,7 +1021,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 3993503971577391545}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a081b54126eefb54dbda65c5148b2dec, type: 3}
+  m_Script: {fileID: 11500000, guid: 3cf27028d3d241d6ac4ad013039e4dec, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerPersistence
 --- !u!114 &327711697826805450

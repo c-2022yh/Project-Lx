@@ -7,19 +7,19 @@ using UnityEngine;
 //장착 시 Shift 대쉬를 사용할 수 있게 한다.
 public class WindShoesRelicEffect : RelicEffect
 {
-    public override IRelicRuntime CreateRuntime(Player player)
+    public override IRelicRuntime CreateRuntime(global::ProjectLx.PlayerRuntime.PlayerActor player)
     {
         return new WindShoesRuntime(player);
     }
 
     private sealed class WindShoesRuntime : IRelicRuntime
     {
-        private readonly Player player;
+        private readonly global::ProjectLx.PlayerRuntime.PlayerActor player;
 
-        private PlayerMove playerMove;
+        private global::ProjectLx.PlayerRuntime.PlayerMoveComponent playerMove;
         private bool isEquipped;
 
-        public WindShoesRuntime(Player player)
+        public WindShoesRuntime(global::ProjectLx.PlayerRuntime.PlayerActor player)
         {
             this.player = player;
         }
@@ -30,7 +30,7 @@ public class WindShoesRelicEffect : RelicEffect
             if (player == null) return;
             
 
-            playerMove = player.GetComponent<PlayerMove>();
+            playerMove = player.GetComponent<global::ProjectLx.PlayerRuntime.PlayerMoveComponent>();
 
             if (playerMove == null) return;
             

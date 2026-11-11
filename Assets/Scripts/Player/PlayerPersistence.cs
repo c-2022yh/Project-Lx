@@ -1,7 +1,8 @@
+#pragma warning disable CS0108 // Concrete API intentionally hides the shared compatibility view.
 using UnityEngine;
 
 //플레이어 생성, 유지 스크립트
-public class PlayerPersistence : MonoBehaviour
+public partial class PlayerPersistence : global::ProjectLx.PlayerRuntime.PlayerPersistenceComponent
 {
     private static PlayerPersistence instance;
 
@@ -20,3 +21,4 @@ public class PlayerPersistence : MonoBehaviour
         DontDestroyOnLoad(gameObject);
     }
 }
+#pragma warning restore CS0108

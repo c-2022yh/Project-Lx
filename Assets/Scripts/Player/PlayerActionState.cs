@@ -1,20 +1,9 @@
+#pragma warning disable CS0108 // Concrete API intentionally hides the shared compatibility view.
 using System.Collections;
 using UnityEngine;
 
-//플레이어 액션 형태를 enum으로 지정
-public enum PlayerActionType
-{
-    Normal,         //일반 아무것도 안하고 있는 상태
-    Attacking,      //공격 중
-    Dashing,        //대쉬 중
-    Skill,          //스킬 사용 중
-    Awakening,      //각성 변신 중
-    HitStunned,     //피격 경직 중
-    Dead            //사망 상태
-}
 
-
-public class PlayerActionState : MonoBehaviour
+public partial class PlayerActionState : global::ProjectLx.PlayerRuntime.PlayerActionStateComponent
 {
     //현재 상태
     [Header("Current Action State")]
@@ -169,3 +158,4 @@ public class PlayerActionState : MonoBehaviour
         ChangeState(PlayerActionType.Normal);
     }
 }
+#pragma warning restore CS0108

@@ -1,10 +1,11 @@
+#pragma warning disable CS0108 // Concrete API intentionally hides the shared compatibility view.
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 //플레이어의 기력과 보주 표시를 관리하는 스크립트
-public class PlayerEnergy : MonoBehaviour
+public partial class PlayerEnergy : global::ProjectLx.PlayerRuntime.PlayerEnergyComponent
 {
     [Header("Energy")]
     [SerializeField, Min(0f)] private float currentEnergy;
@@ -191,3 +192,5 @@ public class PlayerEnergy : MonoBehaviour
         OnEnergyChanged?.Invoke();
     }
 }
+
+#pragma warning restore CS0108

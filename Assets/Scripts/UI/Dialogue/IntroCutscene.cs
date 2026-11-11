@@ -631,7 +631,7 @@ public class IntroCutscene : MonoBehaviour
 
 #if UNITY_EDITOR
     private const string DisableKey = "Ludens.UI.DisableIntroCutscene";
-    private const string DisableMenu = "Tools/UI/시작 연출 끄기 (테스트용)";
+    private const string DisableMenu = "Project Lx/UI/시작 연출 끄기 (테스트용)";
 
     private static bool IsDisabledInEditor => EditorPrefs.GetBool(DisableKey, false);
 
@@ -672,8 +672,8 @@ public class IntroCutscene : MonoBehaviour
                 Destroy(pickup.gameObject);
             }
 
-            Player player = FindAnyObjectByType<Player>();
-            PlayerEnergy energy = player != null ? player.GetComponent<PlayerEnergy>() : null;
+            global::ProjectLx.PlayerRuntime.PlayerActor player = FindAnyObjectByType<global::ProjectLx.PlayerRuntime.PlayerActor>();
+            global::ProjectLx.PlayerRuntime.PlayerEnergyComponent energy = player != null ? player.GetComponent<global::ProjectLx.PlayerRuntime.PlayerEnergyComponent>() : null;
             if (energy != null && !energy.HasOrb) energy.AcquireOrb();
 
             RunState.Current.SetFlag(ArrivedFlag);

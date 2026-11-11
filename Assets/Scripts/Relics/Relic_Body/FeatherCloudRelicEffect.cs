@@ -14,7 +14,7 @@ public class FeatherCloudRelicEffect : RelicEffect
     private int bonusAirJumps = 1;
 
 
-    public override IRelicRuntime CreateRuntime(Player player)
+    public override IRelicRuntime CreateRuntime(global::ProjectLx.PlayerRuntime.PlayerActor player)
     {
         return new FeatherCloudRuntime(player, bonusAirJumps);
     }
@@ -22,14 +22,14 @@ public class FeatherCloudRelicEffect : RelicEffect
 
     private sealed class FeatherCloudRuntime : IRelicRuntime
     {
-        private readonly Player player;
+        private readonly global::ProjectLx.PlayerRuntime.PlayerActor player;
         private readonly int bonusAirJumps;
 
-        private PlayerMove playerMove;
+        private global::ProjectLx.PlayerRuntime.PlayerMoveComponent playerMove;
         private bool isEquipped;
 
 
-        public FeatherCloudRuntime(Player player, int bonusAirJumps)
+        public FeatherCloudRuntime(global::ProjectLx.PlayerRuntime.PlayerActor player, int bonusAirJumps)
         {
             this.player = player;
             this.bonusAirJumps = bonusAirJumps;
@@ -40,7 +40,7 @@ public class FeatherCloudRelicEffect : RelicEffect
         {
             if (isEquipped) return;
 
-            playerMove = player.GetComponent<PlayerMove>();
+            playerMove = player.GetComponent<global::ProjectLx.PlayerRuntime.PlayerMoveComponent>();
 
             //공중 점프 횟수 증가
             playerMove.ModifyMaxAirJumps(bonusAirJumps);

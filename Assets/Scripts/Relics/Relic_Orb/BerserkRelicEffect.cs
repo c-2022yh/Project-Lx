@@ -10,20 +10,20 @@ public class BerserkRelicEffect : RelicEffect
     [SerializeField, Tooltip("각성 중 Q에 연결할 초토화 SkillData SO")]
     private ScorchedEarthSkillData scorchedEarth;
 
-    public override IRelicRuntime CreateRuntime(Player player)
+    public override IRelicRuntime CreateRuntime(global::ProjectLx.PlayerRuntime.PlayerActor player)
     {
         return new BerserkRuntime(player, scorchedEarth);
     }
 
     private sealed class BerserkRuntime : IRelicRuntime
     {
-        private readonly Player player;
+        private readonly global::ProjectLx.PlayerRuntime.PlayerActor player;
         private readonly ScorchedEarthSkillData skillData;
-        private PlayerAwakening awakening;
-        private PlayerSkill skills;
+        private global::ProjectLx.PlayerRuntime.PlayerAwakeningComponent awakening;
+        private global::ProjectLx.PlayerRuntime.PlayerSkillComponent skills;
         private bool equipped;
 
-        public BerserkRuntime(Player player, ScorchedEarthSkillData skillData)
+        public BerserkRuntime(global::ProjectLx.PlayerRuntime.PlayerActor player, ScorchedEarthSkillData skillData)
         {
             this.player = player;
             this.skillData = skillData;
