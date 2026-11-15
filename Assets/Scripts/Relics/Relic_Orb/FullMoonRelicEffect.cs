@@ -15,23 +15,23 @@ public class FullMoonRelicEffect : RelicEffect
     [SerializeField, Min(0f), Tooltip("기력이 최대일 때 기본 공격 피해 증가 비율. 0.2는 20% 증가. 지상/공중 기본 공격에만 적용")]
     private float fullEnergyBasicAttackBonus = 0.2f;
 
-    public override IRelicRuntime CreateRuntime(Player player)
+    public override IRelicRuntime CreateRuntime(global::ProjectLx.PlayerRuntime.PlayerActor player)
     {
         return new FullMoonRuntime(player, energyGainBonus, fullEnergyBasicAttackBonus);
     }
 
     private sealed class FullMoonRuntime : IRelicRuntime
     {
-        private readonly Player player;
+        private readonly global::ProjectLx.PlayerRuntime.PlayerActor player;
         private readonly float gainBonus;
         private readonly float damageBonus;
-        private PlayerEnergy energy;
-        private PlayerAttack attack;
-        private PlayerAwakening awakening;
+        private global::ProjectLx.PlayerRuntime.PlayerEnergyComponent energy;
+        private global::ProjectLx.PlayerRuntime.PlayerAttackComponent attack;
+        private global::ProjectLx.PlayerRuntime.PlayerAwakeningComponent awakening;
         private bool equipped;
         private bool damageApplied;
 
-        public FullMoonRuntime(Player player, float gainBonus, float damageBonus)
+        public FullMoonRuntime(global::ProjectLx.PlayerRuntime.PlayerActor player, float gainBonus, float damageBonus)
         {
             this.player = player;
             this.gainBonus = gainBonus;
@@ -44,8 +44,8 @@ public class FullMoonRelicEffect : RelicEffect
             if (equipped || player == null) return;
 
             energy = player.Energy;
-            attack = player.GetComponent<PlayerAttack>();
-            awakening = player.GetComponent<PlayerAwakening>();
+            attack = player.GetComponent<global::ProjectLx.PlayerRuntime.PlayerAttackComponent>();
+            awakening = player.GetComponent<global::ProjectLx.PlayerRuntime.PlayerAwakeningComponent>();
 
             if (energy == null || attack == null || awakening == null) return;
 

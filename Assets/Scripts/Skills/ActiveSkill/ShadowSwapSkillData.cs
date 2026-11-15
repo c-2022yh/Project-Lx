@@ -16,15 +16,15 @@ public class ShadowSwapSkillData : UtilitySkillData
     [SerializeField] private SoundCue placeSound = new SoundCue();
     [SerializeField] private SoundCue teleportSound = new SoundCue();
 
-    private ShadowSwapRuntime GetRuntime(Player p) => p != null ? p.GetComponent<ShadowSwapRuntime>() : null;
+    private ShadowSwapRuntime GetRuntime(global::ProjectLx.PlayerRuntime.PlayerActor p) => p != null ? p.GetComponent<ShadowSwapRuntime>() : null;
 
-    public override float GetEnergyCost(Player p)
+    public override float GetEnergyCost(global::ProjectLx.PlayerRuntime.PlayerActor p)
     {
         var runtime = GetRuntime(p);
         return runtime != null && runtime.GetShadow(this) != null ? 0f : base.GetEnergyCost(p);
     }
 
-    public override bool CanUse(Player p)
+    public override bool CanUse(global::ProjectLx.PlayerRuntime.PlayerActor p)
     {
         if (p == null || !base.CanUse(p)) return false;
         var runtime = GetRuntime(p);
@@ -33,14 +33,14 @@ public class ShadowSwapSkillData : UtilitySkillData
         return shadowPrefab != null;
     }
 
-    public override float GetCooldownAfterCast(Player p)
+    public override float GetCooldownAfterCast(global::ProjectLx.PlayerRuntime.PlayerActor p)
     {
         var runtime = GetRuntime(p);
         return runtime != null && runtime.GetShadow(this) != null
             ? runtime.GetRecastRemaining(this) : cooldownTime;
     }
 
-    public override IEnumerator ProcessSkill(Player p)
+    public override IEnumerator ProcessSkill(global::ProjectLx.PlayerRuntime.PlayerActor p)
     {
         if (p == null) yield break;
         var runtime = GetRuntime(p);

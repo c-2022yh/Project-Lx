@@ -1,8 +1,9 @@
-﻿using System.Collections;
+﻿#pragma warning disable CS0108 // Concrete API intentionally hides the shared compatibility view.
+using System.Collections;
 using UnityEngine;
 
 //플레이어 피격 경직, 넉백, 무적, 대쉬 중 접촉 무시 등을 처리하는 스크립트
-public class PlayerHitReaction : MonoBehaviour
+public partial class PlayerHitReaction : global::ProjectLx.PlayerRuntime.PlayerHitReactionComponent
 {
     [Header("Invincible")]
     [SerializeField] private float invincibleTime = 1.0f;
@@ -177,3 +178,4 @@ public class PlayerHitReaction : MonoBehaviour
         isInvincible = false;
     }
 }
+#pragma warning restore CS0108

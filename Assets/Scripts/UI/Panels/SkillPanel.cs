@@ -54,7 +54,7 @@ public class SkillPanel : MonoBehaviour, ISkillSlotHost
 
     private readonly List<SkillPanelSlot> spawnedSlots = new List<SkillPanelSlot>();
 
-    private PlayerSkill playerSkill;
+    private global::ProjectLx.PlayerRuntime.PlayerSkillComponent playerSkill;
     private SkillData selected;
 
     public void SetVisible(bool visible)
@@ -63,7 +63,7 @@ public class SkillPanel : MonoBehaviour, ISkillSlotHost
 
         if (!visible) return;
 
-        playerSkill = FindAnyObjectByType<PlayerSkill>();
+        playerSkill = FindAnyObjectByType<global::ProjectLx.PlayerRuntime.PlayerSkillComponent>();
 
         if (playerSkill == null)
         {
@@ -123,11 +123,11 @@ public class SkillPanel : MonoBehaviour, ISkillSlotHost
     {
         if (equipSlotContainer == null) return;
 
-        int first = showExclusiveSlot ? 0 : PlayerSkill.FirstNormalSlot;
+        int first = showExclusiveSlot ? 0 : global::ProjectLx.PlayerRuntime.PlayerSkillComponent.FirstNormalSlot;
 
-        for (int i = first; i < PlayerSkill.SlotCount; i++)
+        for (int i = first; i < global::ProjectLx.PlayerRuntime.PlayerSkillComponent.SlotCount; i++)
         {
-            bool locked = i == PlayerSkill.ExclusiveSlot;
+            bool locked = i == global::ProjectLx.PlayerRuntime.PlayerSkillComponent.ExclusiveSlot;
 
             SpawnSlot(equipSlotContainer, EquippedAt(i), SkillSlotArea.Equip,
                       i, SlotKeyLabels[i], locked);
@@ -430,7 +430,7 @@ public class SkillPanel : MonoBehaviour, ISkillSlotHost
     /// <summary>X칸을 뺀 A/S/D/F 중 첫 빈 칸.</summary>
     private int FirstEmptyNormalSlot()
     {
-        for (int i = PlayerSkill.FirstNormalSlot; i < PlayerSkill.SlotCount; i++)
+        for (int i = global::ProjectLx.PlayerRuntime.PlayerSkillComponent.FirstNormalSlot; i < global::ProjectLx.PlayerRuntime.PlayerSkillComponent.SlotCount; i++)
         {
             if (EquippedAt(i) == null) return i;
         }

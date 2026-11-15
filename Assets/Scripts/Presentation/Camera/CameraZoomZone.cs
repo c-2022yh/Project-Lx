@@ -43,13 +43,13 @@ public class CameraZoomZone : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D other)
     {
-        if (other.GetComponentInParent<Player>() == null) return;
+        if (other.GetComponentInParent<global::ProjectLx.PlayerRuntime.PlayerActor>() == null) return;
         inside++;
     }
 
     private void OnTriggerExit2D(Collider2D other)
     {
-        if (other.GetComponentInParent<Player>() == null) return;
+        if (other.GetComponentInParent<global::ProjectLx.PlayerRuntime.PlayerActor>() == null) return;
         inside = Mathf.Max(0, inside - 1);
     }
 

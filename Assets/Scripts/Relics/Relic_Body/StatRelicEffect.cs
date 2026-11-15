@@ -31,22 +31,22 @@ public class StatRelicEffect : RelicEffect
     private float amount = 1f;
 
     //플레이어별 스탯 유물 Runtime 생성
-    public override IRelicRuntime CreateRuntime(Player player)
+    public override IRelicRuntime CreateRuntime(global::ProjectLx.PlayerRuntime.PlayerActor player)
     {
         return new StatRelicRuntime(player, statType, amount);
     }
 
     private sealed class StatRelicRuntime : IRelicRuntime
     {
-        private readonly Player player;
+        private readonly global::ProjectLx.PlayerRuntime.PlayerActor player;
         private readonly RelicStatType statType;
         private readonly float amount;
 
-        private PlayerStats playerStats;
+        private global::ProjectLx.PlayerRuntime.PlayerStatsComponent playerStats;
         private bool isEquipped;
 
         //스탯 효과에 필요한 플레이어와 증가 수치 보관
-        public StatRelicRuntime(Player player, RelicStatType statType, float amount)
+        public StatRelicRuntime(global::ProjectLx.PlayerRuntime.PlayerActor player, RelicStatType statType, float amount)
         {
             this.player = player;
             this.statType = statType;
@@ -61,7 +61,7 @@ public class StatRelicEffect : RelicEffect
 
             playerStats = player.Stats != null
                 ? player.Stats
-                : player.GetComponent<PlayerStats>();
+                : player.GetComponent<global::ProjectLx.PlayerRuntime.PlayerStatsComponent>();
 
             if (playerStats == null)
                 throw new InvalidOperationException("[StatRelic] PlayerStats가 없습니다.");

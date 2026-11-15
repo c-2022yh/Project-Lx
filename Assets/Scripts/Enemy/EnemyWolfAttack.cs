@@ -66,7 +66,7 @@ public class EnemyWolfAttack : MonoBehaviour
     private float chargeReadyTime;
     private SoundHandle attackLoop;
     private DamageInfo damageInfo;
-    private readonly HashSet<PlayerHealth> hitTargets = new HashSet<PlayerHealth>();
+    private readonly HashSet<global::ProjectLx.PlayerRuntime.PlayerHealthComponent> hitTargets = new HashSet<global::ProjectLx.PlayerRuntime.PlayerHealthComponent>();
     private readonly List<Collider2D> overlaps = new List<Collider2D>();
     private readonly RaycastHit2D[] castHits = new RaycastHit2D[16];
     public bool IsAttacking => phase != Phase.None;
@@ -211,9 +211,9 @@ public class EnemyWolfAttack : MonoBehaviour
         Physics2D.OverlapBox(HitboxCenter(current, direction), HitboxSize(current), 0f, filter, overlaps);
         foreach (Collider2D other in overlaps)
         {
-            PlayerHealth target = other.GetComponentInParent<PlayerHealth>();
+            global::ProjectLx.PlayerRuntime.PlayerHealthComponent target = other.GetComponentInParent<global::ProjectLx.PlayerRuntime.PlayerHealthComponent>();
             if (target == null || target.IsDead || hitTargets.Contains(target)) continue;
-            PlayerHitReaction reaction = target.GetComponent<PlayerHitReaction>();
+            global::ProjectLx.PlayerRuntime.PlayerHitReactionComponent reaction = target.GetComponent<global::ProjectLx.PlayerRuntime.PlayerHitReactionComponent>();
             if (reaction != null && !reaction.CanTakeDamage()) continue;
             hitTargets.Add(target);
             target.TakeDamage(damageInfo, Vector2.right * direction);

@@ -1,9 +1,10 @@
+#pragma warning disable CS0108 // Concrete API intentionally hides the shared compatibility view.
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PlayerSkill : MonoBehaviour
+public partial class PlayerSkill : global::ProjectLx.PlayerRuntime.PlayerSkillComponent
 {
     [Header("Equipped Skills - 0:X, 1:A, 2:S, 3:D, 4:F")]
     public SkillData[] equippedSkills = new SkillData[5];
@@ -528,3 +529,5 @@ public class PlayerSkill : MonoBehaviour
     private void OnDisable() { CancelCurrentSkill(); }
 
 }
+
+#pragma warning restore CS0108

@@ -20,7 +20,7 @@ public class DevourRelicEffect : RelicEffect
     [Header("Audio")]
     [SerializeField] private SoundCue healSound = new SoundCue();
 
-    public override IRelicRuntime CreateRuntime(Player p)
+    public override IRelicRuntime CreateRuntime(global::ProjectLx.PlayerRuntime.PlayerActor p)
     {
         return new DevourRelicRuntime(p, devourSkill, healPerHit, this);
     }
@@ -28,18 +28,18 @@ public class DevourRelicEffect : RelicEffect
     private sealed class DevourRelicRuntime : IRelicRuntime
     {
         private readonly DevourRelicEffect audioSettings;
-        private readonly Player player;
+        private readonly global::ProjectLx.PlayerRuntime.PlayerActor player;
         private readonly SkillData devourSkill;
         private readonly float healPerHit;
 
-        private PlayerSkill playerSkill;
-        private PlayerAttack playerAttack;
-        private PlayerHealth playerHealth;
+        private global::ProjectLx.PlayerRuntime.PlayerSkillComponent playerSkill;
+        private global::ProjectLx.PlayerRuntime.PlayerAttackComponent playerAttack;
+        private global::ProjectLx.PlayerRuntime.PlayerHealthComponent playerHealth;
 
         private bool isEquipped;
 
         //포식 효과에 필요한 플레이어·스킬·회복량 보관
-        public DevourRelicRuntime(Player player, SkillData devourSkill, float healPerHit, DevourRelicEffect audioSettings)
+        public DevourRelicRuntime(global::ProjectLx.PlayerRuntime.PlayerActor player, SkillData devourSkill, float healPerHit, DevourRelicEffect audioSettings)
         {
             this.player = player;
             this.audioSettings = audioSettings;
@@ -53,9 +53,9 @@ public class DevourRelicEffect : RelicEffect
             if (isEquipped) return;
             if (player == null) throw new System.InvalidOperationException("[Devour] Player가 없습니다.");
 
-            playerSkill = player.GetComponent<PlayerSkill>();
-            playerAttack = player.GetComponent<PlayerAttack>();
-            playerHealth = player.GetComponent<PlayerHealth>();
+            playerSkill = player.GetComponent<global::ProjectLx.PlayerRuntime.PlayerSkillComponent>();
+            playerAttack = player.GetComponent<global::ProjectLx.PlayerRuntime.PlayerAttackComponent>();
+            playerHealth = player.GetComponent<global::ProjectLx.PlayerRuntime.PlayerHealthComponent>();
 
             if (playerSkill == null || playerAttack == null || playerHealth == null || devourSkill == null)
                 throw new System.InvalidOperationException("[Devour] 스킬 또는 필수 컴포넌트가 없습니다.");

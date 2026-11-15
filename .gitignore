@@ -155,3 +155,6 @@ crashlytics-build.properties
 
 # Local working files and previews
 /output/
+
+# Local project documentation
+/Docs/

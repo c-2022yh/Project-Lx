@@ -1,8 +1,9 @@
+#pragma warning disable CS0108 // Concrete API intentionally hides the shared compatibility view.
 using System;
 using UnityEngine;
 
 //플레이어 체력을 관리하는 스크립트
-public class PlayerHealth : MonoBehaviour, IDamageable
+public partial class PlayerHealth : global::ProjectLx.PlayerRuntime.PlayerHealthComponent, IDamageable
 {
     //체력 변화와 사망 이벤트
     public event Action<float, float> OnHealthChanged;
@@ -170,3 +171,5 @@ public class PlayerHealth : MonoBehaviour, IDamageable
         OnHealthChanged?.Invoke(currentHealth, maxHealth);
     }
 }
+
+#pragma warning restore CS0108

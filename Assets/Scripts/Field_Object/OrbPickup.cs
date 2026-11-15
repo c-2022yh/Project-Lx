@@ -15,7 +15,7 @@ public class OrbPickup : MonoBehaviour, IInteractable
     [SerializeField] private SoundCue acquireSound = new SoundCue();
 
     private readonly HashSet<Collider2D> playerContacts = new HashSet<Collider2D>();
-    private Player nearbyPlayer;
+    private global::ProjectLx.PlayerRuntime.PlayerActor nearbyPlayer;
     private bool isAcquired;
 
     public string InteractionText => interactionText;
@@ -33,11 +33,11 @@ public class OrbPickup : MonoBehaviour, IInteractable
         GetComponent<CircleCollider2D>().isTrigger = true;
     }
 
-    public void Interact(Player player)
+    public void Interact(global::ProjectLx.PlayerRuntime.PlayerActor player)
     {
         if (!isActiveAndEnabled || isAcquired || player == null || player != nearbyPlayer) return;
 
-        PlayerEnergy energy = player.GetComponent<PlayerEnergy>();
+        global::ProjectLx.PlayerRuntime.PlayerEnergyComponent energy = player.GetComponent<global::ProjectLx.PlayerRuntime.PlayerEnergyComponent>();
         if (energy == null) return;
         if (energy.HasOrb)
         {
@@ -65,10 +65,10 @@ public class OrbPickup : MonoBehaviour, IInteractable
     {
         if (isAcquired || !isActiveAndEnabled) return;
 
-        Player player = other.GetComponentInParent<Player>();
+        global::ProjectLx.PlayerRuntime.PlayerActor player = other.GetComponentInParent<global::ProjectLx.PlayerRuntime.PlayerActor>();
         if (player == null || (nearbyPlayer != null && nearbyPlayer != player)) return;
 
-        PlayerEnergy energy = player.GetComponent<PlayerEnergy>();
+        global::ProjectLx.PlayerRuntime.PlayerEnergyComponent energy = player.GetComponent<global::ProjectLx.PlayerRuntime.PlayerEnergyComponent>();
         if (energy == null || energy.HasOrb) return;
 
         nearbyPlayer = player;

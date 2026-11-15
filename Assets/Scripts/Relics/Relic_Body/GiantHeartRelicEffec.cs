@@ -14,7 +14,7 @@ public class GiantHeartRelicEffect : RelicEffect
     private int bonusMaxHealth = 1;
 
 
-    public override IRelicRuntime CreateRuntime(Player player)
+    public override IRelicRuntime CreateRuntime(global::ProjectLx.PlayerRuntime.PlayerActor player)
     {
         return new GiantHeartRuntime(player, bonusMaxHealth);
     }
@@ -22,14 +22,14 @@ public class GiantHeartRelicEffect : RelicEffect
 
     private sealed class GiantHeartRuntime : IRelicRuntime
     {
-        private readonly Player player;
+        private readonly global::ProjectLx.PlayerRuntime.PlayerActor player;
         private readonly int bonusMaxHealth;
 
-        private PlayerHealth playerHealth;
+        private global::ProjectLx.PlayerRuntime.PlayerHealthComponent playerHealth;
         private bool isEquipped;
 
 
-        public GiantHeartRuntime(Player player, int bonusMaxHealth)
+        public GiantHeartRuntime(global::ProjectLx.PlayerRuntime.PlayerActor player, int bonusMaxHealth)
         {
             this.player = player;
             this.bonusMaxHealth = bonusMaxHealth;
@@ -40,7 +40,7 @@ public class GiantHeartRelicEffect : RelicEffect
         {
             if (isEquipped) return;
 
-            playerHealth = player.GetComponent<PlayerHealth>();
+            playerHealth = player.GetComponent<global::ProjectLx.PlayerRuntime.PlayerHealthComponent>();
 
             //최대 체력 증가 및 증가량만큼 현재 체력 회복
             playerHealth.AddMaxHealth(bonusMaxHealth, true);

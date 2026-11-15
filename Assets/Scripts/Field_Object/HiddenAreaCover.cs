@@ -70,7 +70,7 @@ public class HiddenAreaCover : MonoBehaviour
 
     private void TrackPlayer(Collider2D other)
     {
-        if (other.GetComponentInParent<Player>() != null)
+        if (other.GetComponentInParent<global::ProjectLx.PlayerRuntime.PlayerActor>() != null)
         {
             playerContacts.Add(other);
         }

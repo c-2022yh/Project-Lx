@@ -1,0 +1,56 @@
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+using UnityEngine.InputSystem;
+
+public partial class PlayerSkill
+{
+    protected override SkillData[] Read_equippedSkills_Core() => equippedSkills;
+    protected override void Write_equippedSkills_Core(SkillData[] value) => equippedSkills = value;
+    protected override SkillAudioSession Invoke_GetAudioSession_1_Core(SkillData skill) => GetAudioSession(skill);
+    protected override IReadOnlyList<SkillData> Read_OwnedSkills_Core() => OwnedSkills;
+    protected override IReadOnlyList<SkillData> Read_EquippedSkills_Core() => EquippedSkills;
+    protected override SkillData Read_ExclusiveSkill_Core() => ExclusiveSkill;
+    protected override bool Read_IsUsingSkill_Core() => IsUsingSkill;
+    protected override bool Read_HasAwakeningSkillCharge_Core() => HasAwakeningSkillCharge;
+    protected override void Add_OnSkillsChanged_Core(Action handler) => OnSkillsChanged += handler;
+    protected override void Remove_OnSkillsChanged_Core(Action handler) => OnSkillsChanged -= handler;
+    protected override void Add_OnSkillUsed_Core(Action<SkillData> handler) => OnSkillUsed += handler;
+    protected override void Remove_OnSkillUsed_Core(Action<SkillData> handler) => OnSkillUsed -= handler;
+    protected override void Add_OnSkillCooldownChanged_Core(Action<int, float, float> handler) => OnSkillCooldownChanged += handler;
+    protected override void Remove_OnSkillCooldownChanged_Core(Action<int, float, float> handler) => OnSkillCooldownChanged -= handler;
+    protected override bool Invoke_HasSkill_13_Core(SkillData skill) => HasSkill(skill);
+    protected override SkillData Invoke_GetEquippedSkill_14_Core(int slotIndex) => GetEquippedSkill(slotIndex);
+    protected override int Invoke_GetEquippedSlot_15_Core(SkillData skill) => GetEquippedSlot(skill);
+    protected override bool Invoke_IsSkillEquipped_16_Core(SkillData skill) => IsSkillEquipped(skill);
+    protected override bool Invoke_GrantSkill_17_Core(SkillData skill, object source) => GrantSkill(skill, source);
+    protected override bool Invoke_RevokeSkill_18_Core(SkillData skill, object source) => RevokeSkill(skill, source);
+    protected override bool Invoke_SetExclusiveSkill_19_Core(SkillData skill, object source) => SetExclusiveSkill(skill, source);
+    protected override bool Invoke_ClearExclusiveSkill_20_Core(object source) => ClearExclusiveSkill(source);
+    protected override bool Invoke_CanEquipSkill_21_Core(int slotIndex, SkillData skill, out string reason) => CanEquipSkill(slotIndex, skill, out reason);
+    protected override bool Invoke_EquipSkill_22_Core(int slotIndex, SkillData skill) => EquipSkill(slotIndex, skill);
+    protected override bool Invoke_UnequipSkill_23_Core(int slotIndex) => UnequipSkill(slotIndex);
+    protected override bool Invoke_UnequipSkill_24_Core(int slotIndex, SkillData expectedSkill) => UnequipSkill(slotIndex, expectedSkill);
+    protected override float Invoke_GetCooldownRemaining_25_Core(SkillData skill) => GetCooldownRemaining(skill);
+    protected override float Invoke_GetCooldownRemaining_26_Core(int slotIndex) => GetCooldownRemaining(slotIndex);
+    protected override float Invoke_GetCooldownDuration_27_Core(SkillData skill) => GetCooldownDuration(skill);
+    protected override bool Invoke_IsOnCooldown_28_Core(int slotIndex) => IsOnCooldown(slotIndex);
+    protected override void Invoke_ResetCooldown_29_Core(int slotIndex) => ResetCooldown(slotIndex);
+    protected override void Invoke_ExecuteSkillX_30_Core(global::ProjectLx.PlayerRuntime.PlayerActor p) => ExecuteSkillX((Player)p);
+    protected override void Invoke_ExecuteSkillA_31_Core(global::ProjectLx.PlayerRuntime.PlayerActor p) => ExecuteSkillA((Player)p);
+    protected override void Invoke_ExecuteSkillS_32_Core(global::ProjectLx.PlayerRuntime.PlayerActor p) => ExecuteSkillS((Player)p);
+    protected override void Invoke_ExecuteSkillD_33_Core(global::ProjectLx.PlayerRuntime.PlayerActor p) => ExecuteSkillD((Player)p);
+    protected override void Invoke_ExecuteSkillF_34_Core(global::ProjectLx.PlayerRuntime.PlayerActor p) => ExecuteSkillF((Player)p);
+    protected override void Invoke_UseSkill_35_Core(global::ProjectLx.PlayerRuntime.PlayerActor p, int slotIndex) => UseSkill((Player)p, slotIndex);
+    protected override void Invoke_CancelCurrentSkill_36_Core() => CancelCurrentSkill();
+    protected override bool Invoke_RegisterAwakeningSkill_37_Core(ScorchedEarthSkillData skill) => RegisterAwakeningSkill(skill);
+    protected override void Invoke_UnregisterAwakeningSkill_38_Core(ScorchedEarthSkillData expectedSkill) => UnregisterAwakeningSkill(expectedSkill);
+    protected override void Invoke_SetAwakeningSkillAvailable_39_Core(bool available) => SetAwakeningSkillAvailable(available);
+    protected override bool Invoke_TryUseAwakeningSkill_40_Core(global::ProjectLx.PlayerRuntime.PlayerActor p) => TryUseAwakeningSkill((Player)p);
+    protected override void Invoke_Internal_BeginEquipmentChange_Core() => BeginEquipmentChange();
+    protected override void Invoke_Internal_EndEquipmentChange_Core() => EndEquipmentChange();
+    protected override void Invoke_Internal_RevokeSource_Core(object source) => RevokeSource(source);
+    protected override SkillData[] Invoke_Internal_CaptureSlots_Core() => CaptureSlots();
+    protected override void Invoke_Internal_RestoreSlots_Core(SkillData[] snapshot) => RestoreSlots(snapshot);
+}

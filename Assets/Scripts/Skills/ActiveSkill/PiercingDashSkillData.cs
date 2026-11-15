@@ -35,18 +35,18 @@ public class PiercingDashSkillData : AttackSkillData
     [SerializeField] private float contactIgnoreAfterDash = 0.2f;
 
 
-    public override void OnCastCancelled(Player p)
+    public override void OnCastCancelled(global::ProjectLx.PlayerRuntime.PlayerActor p)
     {
         base.OnCastCancelled(p);
         if (p == null) return;
         foreach (var flash in p.GetComponentsInChildren<PiercingDashFlashVisual>())
             if (flash.Skill == this) flash.CancelTravel();
-        PlayerHitReaction hitReaction = p.GetComponent<PlayerHitReaction>();
+        global::ProjectLx.PlayerRuntime.PlayerHitReactionComponent hitReaction = p.GetComponent<global::ProjectLx.PlayerRuntime.PlayerHitReactionComponent>();
         if (hitReaction != null && hitReaction.IsIgnoringEnemyContact)
             hitReaction.EndEnemyContactIgnoreAfterDelay(contactIgnoreAfterDash);
     }
 
-    public override IEnumerator ProcessSkill(Player p)
+    public override IEnumerator ProcessSkill(global::ProjectLx.PlayerRuntime.PlayerActor p)
     {
         if (p == null) yield break;
 
@@ -62,7 +62,7 @@ public class PiercingDashSkillData : AttackSkillData
 
         float actualDist = hit.collider ? hit.distance : dashDistance;
 
-        PlayerHitReaction hitReaction = p.GetComponent<PlayerHitReaction>();
+        global::ProjectLx.PlayerRuntime.PlayerHitReactionComponent hitReaction = p.GetComponent<global::ProjectLx.PlayerRuntime.PlayerHitReactionComponent>();
         hitReaction?.BeginEnemyContactIgnore();
 
         //해시셋 (한번 충돌한 적은 다시 판정하면 안되므로 해시셋으로 관리)
@@ -137,7 +137,7 @@ public class PiercingDashSkillData : AttackSkillData
 
 
     //실제 쇄도 이동거리에 맞춰 메인 궤적 이펙트 생성
-    private SpriteRenderer SpawnDashEffect(Player p, float dir, float actualDist)
+    private SpriteRenderer SpawnDashEffect(global::ProjectLx.PlayerRuntime.PlayerActor p, float dir, float actualDist)
     {
         if (dashEffectPrefab == null) return null;
         if (actualDist < minDashEffectDistance) return null;
@@ -191,7 +191,7 @@ public class PiercingDashSkillData : AttackSkillData
 
     //대쉬 중 적 피격 판정
     private void DamageEnemiesDuringDash(
-        Player p,
+        global::ProjectLx.PlayerRuntime.PlayerActor p,
         float dir,
         HashSet<Enemy> hitEnemies,
         DamageInfo damageInfo)

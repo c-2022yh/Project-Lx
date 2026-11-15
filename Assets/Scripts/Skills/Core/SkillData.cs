@@ -40,17 +40,17 @@ public abstract class SkillData : ScriptableObject
     public float energyCost = 0f;
 
     // Multi-stage skills can price each activation without changing shared asset values.
-    public virtual float GetEnergyCost(Player p) => energyCost;
-    public virtual float GetCooldownAfterCast(Player p) => cooldownTime;
+    public virtual float GetEnergyCost(global::ProjectLx.PlayerRuntime.PlayerActor p) => energyCost;
+    public virtual float GetCooldownAfterCast(global::ProjectLx.PlayerRuntime.PlayerActor p) => cooldownTime;
 
-    public bool CanPayCost(Player p)
+    public bool CanPayCost(global::ProjectLx.PlayerRuntime.PlayerActor p)
     {
         if (p == null) return false;
         float cost = GetEnergyCost(p);
         return cost <= 0f || (p.Energy != null && p.Energy.CanSpendEnergy(cost));
     }
 
-    public bool TryPayCost(Player p)
+    public bool TryPayCost(global::ProjectLx.PlayerRuntime.PlayerActor p)
     {
         if (p == null) return false;
         float cost = GetEnergyCost(p);
@@ -66,7 +66,7 @@ public abstract class SkillData : ScriptableObject
     [Tooltip("Stop existing horizontal velocity when a normal skill starts. Keeps vertical velocity and held movement input. Does not affect the movable awakening Q cast.")]
     public bool stopHorizontalMovementOnStart = true;
 
-    public void ApplyStartMovement(Player p)
+    public void ApplyStartMovement(global::ProjectLx.PlayerRuntime.PlayerActor p)
     {
         if (!stopHorizontalMovementOnStart || p == null || p.rb == null) return;
         p.rb.linearVelocity = new Vector2(0f, p.rb.linearVelocity.y);
@@ -85,7 +85,7 @@ public abstract class SkillData : ScriptableObject
     public float recoveryTime = 0f;
 
     // Shared timing for both normal skills and prepared awakening skills.
-    public IEnumerator ExecuteWithTiming(Player p, IEnumerator effect)
+    public IEnumerator ExecuteWithTiming(global::ProjectLx.PlayerRuntime.PlayerActor p, IEnumerator effect)
     {
         if (p == null) yield break;
         SkillAudioSession session = p.Skill != null ? p.Skill.GetAudioSession(this) : null;
@@ -100,17 +100,17 @@ public abstract class SkillData : ScriptableObject
     }
 
     // Playback state stays on the player; SOs only supply cue settings.
-    protected void BeginEffectAudio(Player p)
+    protected void BeginEffectAudio(global::ProjectLx.PlayerRuntime.PlayerActor p)
     {
         if (p != null && p.Skill != null) p.Skill.GetAudioSession(this)?.BeginActive();
     }
 
-    protected void PlayReleaseSound(Player p, Vector3 position)
+    protected void PlayReleaseSound(global::ProjectLx.PlayerRuntime.PlayerActor p, Vector3 position)
     {
         if (p != null && p.Skill != null) p.Skill.GetAudioSession(this)?.Release(position);
     }
 
-    protected DamageInfo AttachImpactAudio(Player p, DamageInfo damage)
+    protected DamageInfo AttachImpactAudio(global::ProjectLx.PlayerRuntime.PlayerActor p, DamageInfo damage)
     {
         SkillAudioSession session = p != null && p.Skill != null ? p.Skill.GetAudioSession(this) : null;
         damage.impactAudio = session != null ? session.Impact
@@ -119,24 +119,24 @@ public abstract class SkillData : ScriptableObject
     }
 
     // Called before a replacement action starts, so a cancelled cast cannot retain its physics freeze.
-    public virtual void OnCastCancelled(Player p)
+    public virtual void OnCastCancelled(global::ProjectLx.PlayerRuntime.PlayerActor p)
     {
         if (p != null) p.SetPhysicsFreeze(false);
     }
 
-    protected virtual IEnumerator WaitForWindup(Player p)
+    protected virtual IEnumerator WaitForWindup(global::ProjectLx.PlayerRuntime.PlayerActor p)
     {
         if (windupTime > 0f) yield return new WaitForSeconds(windupTime);
     }
 
-    protected virtual IEnumerator WaitForRecovery(Player p)
+    protected virtual IEnumerator WaitForRecovery(global::ProjectLx.PlayerRuntime.PlayerActor p)
     {
         if (recoveryTime > 0f) yield return new WaitForSeconds(recoveryTime);
     }
 
     //현재 상태에서 스킬을 사용할 수 있는지 확인
-    public virtual bool CanUse(Player p) => p != null && (allowUseInAir || p.isGrounded) && CanPayCost(p);
+    public virtual bool CanUse(global::ProjectLx.PlayerRuntime.PlayerActor p) => p != null && (allowUseInAir || p.isGrounded) && CanPayCost(p);
     
     //스킬 실행하는 가상 함수
-    public abstract IEnumerator ProcessSkill(Player p);
+    public abstract IEnumerator ProcessSkill(global::ProjectLx.PlayerRuntime.PlayerActor p);
 }

@@ -5,10 +5,10 @@ using UnityEngine.Serialization;
 //플레이어의 현재 기력에 따라 보주 HUD를 갱신하는 스크립트
 public partial class OrbHUD : MonoBehaviour
 {
-    private PlayerEnergy playerEnergy;
+    private global::ProjectLx.PlayerRuntime.PlayerEnergyComponent playerEnergy;
     private PlayerRelicManager relicManager;
-    private PlayerAwakening playerAwakening;
-    private PlayerSkill playerSkill;
+    private global::ProjectLx.PlayerRuntime.PlayerAwakeningComponent playerAwakening;
+    private global::ProjectLx.PlayerRuntime.PlayerSkillComponent playerSkill;
 
     [Header("Orb Design")]
     [SerializeField] private Image emptyImage;
@@ -63,7 +63,7 @@ public partial class OrbHUD : MonoBehaviour
         InitializeWaveFillMaterial();
         Canvas.willRenderCanvases += UpdateEnergyFill;
 
-        playerEnergy = FindAnyObjectByType<PlayerEnergy>();
+        playerEnergy = FindAnyObjectByType<global::ProjectLx.PlayerRuntime.PlayerEnergyComponent>();
 
         if (playerEnergy == null)
         {
@@ -82,8 +82,8 @@ public partial class OrbHUD : MonoBehaviour
         playerEnergy.OnEnergyChanged += UpdateEnergyTarget;
 
         relicManager = playerEnergy.GetComponent<PlayerRelicManager>();
-        playerAwakening = playerEnergy.GetComponent<PlayerAwakening>();
-        playerSkill = playerEnergy.GetComponent<PlayerSkill>();
+        playerAwakening = playerEnergy.GetComponent<global::ProjectLx.PlayerRuntime.PlayerAwakeningComponent>();
+        playerSkill = playerEnergy.GetComponent<global::ProjectLx.PlayerRuntime.PlayerSkillComponent>();
         SubscribeAwakeningEvents();
         if (relicManager != null)
         {

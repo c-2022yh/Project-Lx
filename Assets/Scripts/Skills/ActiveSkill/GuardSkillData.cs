@@ -6,7 +6,7 @@ using System.Collections;
 //보스 전용 스킬 가드
 public class GuardSkillData : UtilitySkillData
 {
-    public override IEnumerator ProcessSkill(Player p)
+    public override IEnumerator ProcessSkill(global::ProjectLx.PlayerRuntime.PlayerActor p)
     {
         if (!p.isGrounded) yield break;
         PlayReleaseSound(p, p.transform.position);

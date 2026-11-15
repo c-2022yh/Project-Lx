@@ -14,7 +14,7 @@ public class VitalConversionSkillData : UtilitySkillData
     [Header("Healing Effect")]
     [SerializeField] private VitalConversionVisual healingEffectPrefab;
 
-    protected override IEnumerator WaitForWindup(Player p)
+    protected override IEnumerator WaitForWindup(global::ProjectLx.PlayerRuntime.PlayerActor p)
     {
         if (p != null && healingEffectPrefab != null)
         {
@@ -24,7 +24,7 @@ public class VitalConversionSkillData : UtilitySkillData
         yield return base.WaitForWindup(p);
     }
 
-    private VitalConversionVisual FindPreparingEffect(Player p)
+    private VitalConversionVisual FindPreparingEffect(global::ProjectLx.PlayerRuntime.PlayerActor p)
     {
         if (p == null) return null;
         foreach (var effect in p.GetComponentsInChildren<VitalConversionVisual>())
@@ -32,7 +32,7 @@ public class VitalConversionSkillData : UtilitySkillData
         return null;
     }
 
-    public override void OnCastCancelled(Player p)
+    public override void OnCastCancelled(global::ProjectLx.PlayerRuntime.PlayerActor p)
     {
         base.OnCastCancelled(p);
         FindPreparingEffect(p)?.Cancel();
@@ -40,11 +40,11 @@ public class VitalConversionSkillData : UtilitySkillData
 
 
     //스킬 사용 가능 여부
-    public override bool CanUse(Player p)
+    public override bool CanUse(global::ProjectLx.PlayerRuntime.PlayerActor p)
     {
         if (!base.CanUse(p)) return false;
 
-        PlayerHealth playerHealth = p.GetComponent<PlayerHealth>();
+        global::ProjectLx.PlayerRuntime.PlayerHealthComponent playerHealth = p.GetComponent<global::ProjectLx.PlayerRuntime.PlayerHealthComponent>();
 
         if (playerHealth == null)
         {
@@ -68,12 +68,12 @@ public class VitalConversionSkillData : UtilitySkillData
     }
 
 
-    public override IEnumerator ProcessSkill(Player p)
+    public override IEnumerator ProcessSkill(global::ProjectLx.PlayerRuntime.PlayerActor p)
     {
         if (p == null) yield break;
 
 
-        PlayerHealth playerHealth = p.GetComponent<PlayerHealth>();
+        global::ProjectLx.PlayerRuntime.PlayerHealthComponent playerHealth = p.GetComponent<global::ProjectLx.PlayerRuntime.PlayerHealthComponent>();
 
         if (playerHealth == null)
         {

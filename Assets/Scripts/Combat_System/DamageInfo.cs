@@ -27,7 +27,7 @@ public struct DamageInfo
     {
         // Roll once per attack payload; struct copies retain the same damage for all targets.
         // All mitigation is multiplicative, so this also scales the final damage by the rolled amount.
-        PlayerStats playerStats = attacker != null ? attacker.GetComponent<PlayerStats>() : null;
+        global::ProjectLx.PlayerRuntime.PlayerStatsComponent playerStats = attacker != null ? attacker.GetComponent<global::ProjectLx.PlayerRuntime.PlayerStatsComponent>() : null;
         this.damage = damage * (playerStats != null ? playerStats.RollDamageMultiplier() : 1f);
         this.damageType = damageType;
 

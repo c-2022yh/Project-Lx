@@ -85,9 +85,9 @@ public class TutorialDirector : MonoBehaviour
     private PlayerInput playerInput;
     private Collider2D[] playerColliders;
     private PlayerRelicManager relicManager;
-    private PlayerEnergy energy;
-    private PlayerAwakening awakening;
-    private PlayerSkill playerSkill;
+    private global::ProjectLx.PlayerRuntime.PlayerEnergyComponent energy;
+    private global::ProjectLx.PlayerRuntime.PlayerAwakeningComponent awakening;
+    private global::ProjectLx.PlayerRuntime.PlayerSkillComponent playerSkill;
 
     private void Awake()
     {
@@ -131,13 +131,13 @@ public class TutorialDirector : MonoBehaviour
         playerInput = FindAnyObjectByType<PlayerInput>();
         if (playerInput == null) yield break;   // 타이틀처럼 플레이어가 없는 씬
 
-        Player player = FindAnyObjectByType<Player>();
+        global::ProjectLx.PlayerRuntime.PlayerActor player = FindAnyObjectByType<global::ProjectLx.PlayerRuntime.PlayerActor>();
         playerColliders = player != null ? player.GetComponentsInChildren<Collider2D>() : null;
 
         relicManager = FindAnyObjectByType<PlayerRelicManager>();
-        energy = FindAnyObjectByType<PlayerEnergy>();
-        awakening = FindAnyObjectByType<PlayerAwakening>();
-        playerSkill = FindAnyObjectByType<PlayerSkill>();
+        energy = FindAnyObjectByType<global::ProjectLx.PlayerRuntime.PlayerEnergyComponent>();
+        awakening = FindAnyObjectByType<global::ProjectLx.PlayerRuntime.PlayerAwakeningComponent>();
+        playerSkill = FindAnyObjectByType<global::ProjectLx.PlayerRuntime.PlayerSkillComponent>();
 
         if (relicManager != null)
         {
@@ -207,7 +207,7 @@ public class TutorialDirector : MonoBehaviour
     {
         if (playerSkill == null) return;
 
-        for (int i = PlayerSkill.FirstNormalSlot; i < PlayerSkill.SlotCount; i++)
+        for (int i = global::ProjectLx.PlayerRuntime.PlayerSkillComponent.FirstNormalSlot; i < global::ProjectLx.PlayerRuntime.PlayerSkillComponent.SlotCount; i++)
         {
             if (playerSkill.GetEquippedSkill(i) != null)
             {
@@ -467,7 +467,7 @@ public class TutorialDirector : MonoBehaviour
 
 #if UNITY_EDITOR
     private const string DisableKey = "Ludens.UI.DisableTutorial";
-    private const string DisableMenu = "Tools/UI/튜토리얼 안내 끄기 (테스트용)";
+    private const string DisableMenu = "Project Lx/UI/튜토리얼 안내 끄기 (테스트용)";
 
     private static bool IsDisabledInEditor => EditorPrefs.GetBool(DisableKey, false);
 

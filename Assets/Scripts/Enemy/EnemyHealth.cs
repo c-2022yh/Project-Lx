@@ -38,7 +38,7 @@ public class EnemyHealth : MonoBehaviour
     private float hitBlinkInterval = 0.03f;
 
     [Header("Reward")]
-    [SerializeField] private PlayerEnergy playerEnergy;
+    [SerializeField] private global::ProjectLx.PlayerRuntime.PlayerEnergyComponent playerEnergy;
     [SerializeField] private float energyReward = 20f;
     [SerializeField] private bool logEnergyReward = false;
 
@@ -136,7 +136,7 @@ public class EnemyHealth : MonoBehaviour
 
         if (playerEnergy == null)
         {
-            playerEnergy = FindAnyObjectByType<PlayerEnergy>();
+            playerEnergy = FindAnyObjectByType<global::ProjectLx.PlayerRuntime.PlayerEnergyComponent>();
         }
 
         if (healthBar != null)
@@ -313,8 +313,8 @@ public class EnemyHealth : MonoBehaviour
     {
         if (lastDamageInfo.attacker == null) return;
 
-        PlayerKillTracker killTracker = 
-            lastDamageInfo.attacker.GetComponentInParent<PlayerKillTracker>();
+        global::ProjectLx.PlayerRuntime.PlayerKillTrackerComponent killTracker =
+            lastDamageInfo.attacker.GetComponentInParent<global::ProjectLx.PlayerRuntime.PlayerKillTrackerComponent>();
 
         if (killTracker != null)
         {
@@ -326,8 +326,8 @@ public class EnemyHealth : MonoBehaviour
     private void GiveReward(DamageInfo lastDamageInfo)
     {
         // Prefer the actual attacker, including attacks originating from a player child.
-        PlayerEnergy attackerEnergy = lastDamageInfo.attacker != null
-            ? lastDamageInfo.attacker.GetComponentInParent<PlayerEnergy>()
+        global::ProjectLx.PlayerRuntime.PlayerEnergyComponent attackerEnergy = lastDamageInfo.attacker != null
+            ? lastDamageInfo.attacker.GetComponentInParent<global::ProjectLx.PlayerRuntime.PlayerEnergyComponent>()
             : null;
         if (attackerEnergy != null && attackerEnergy.isActiveAndEnabled)
         {
@@ -337,7 +337,7 @@ public class EnemyHealth : MonoBehaviour
         // The player may have spawned after this enemy was enabled, or been replaced.
         if (playerEnergy == null || !playerEnergy.isActiveAndEnabled)
         {
-            playerEnergy = FindAnyObjectByType<PlayerEnergy>();
+            playerEnergy = FindAnyObjectByType<global::ProjectLx.PlayerRuntime.PlayerEnergyComponent>();
         }
 
         if (playerEnergy == null || !playerEnergy.isActiveAndEnabled)

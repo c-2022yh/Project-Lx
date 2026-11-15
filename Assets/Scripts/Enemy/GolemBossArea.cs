@@ -11,7 +11,7 @@ public class GolemBossArea : MonoBehaviour
     private SpriteRenderer fill;
     private readonly List<SpriteRenderer> borders = new List<SpriteRenderer>();
     private readonly List<Collider2D> overlaps = new List<Collider2D>();
-    private readonly HashSet<PlayerHealth> victims = new HashSet<PlayerHealth>();
+    private readonly HashSet<global::ProjectLx.PlayerRuntime.PlayerHealthComponent> victims = new HashSet<global::ProjectLx.PlayerRuntime.PlayerHealthComponent>();
     private Color warningColor;
     private DamageInfo damage;
     private LayerMask targets;
@@ -120,9 +120,9 @@ public class GolemBossArea : MonoBehaviour
         Physics2D.OverlapBox(Center, Size, 0f, filter, overlaps);
         foreach (Collider2D other in overlaps)
         {
-            PlayerHealth player = other.GetComponentInParent<PlayerHealth>();
+            global::ProjectLx.PlayerRuntime.PlayerHealthComponent player = other.GetComponentInParent<global::ProjectLx.PlayerRuntime.PlayerHealthComponent>();
             if (player == null || !player.isActiveAndEnabled || player.IsDead || victims.Contains(player)) continue;
-            PlayerHitReaction reaction = player.GetComponent<PlayerHitReaction>();
+            global::ProjectLx.PlayerRuntime.PlayerHitReactionComponent reaction = player.GetComponent<global::ProjectLx.PlayerRuntime.PlayerHitReactionComponent>();
             if (reaction != null && !reaction.CanTakeDamage()) continue;
             victims.Add(player);
             player.TakeDamage(damage, ((Vector2)player.transform.position - Center).normalized);

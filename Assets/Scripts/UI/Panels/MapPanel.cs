@@ -764,7 +764,7 @@ public class MapPanel : MonoBehaviour
 
     private static Transform FindPlayer()
     {
-        Player found = FindAnyObjectByType<Player>();
+        global::ProjectLx.PlayerRuntime.PlayerActor found = FindAnyObjectByType<global::ProjectLx.PlayerRuntime.PlayerActor>();
         return found != null ? found.transform : null;
     }
 }

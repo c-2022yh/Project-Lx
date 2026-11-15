@@ -231,7 +231,7 @@ public class EnemyAI : MonoBehaviour
 
         nextPlayerSearchTime = Time.time + playerSearchInterval;
 
-        Player foundPlayer = FindFirstObjectByType<Player>();
+        global::ProjectLx.PlayerRuntime.PlayerActor foundPlayer = FindFirstObjectByType<global::ProjectLx.PlayerRuntime.PlayerActor>();
 
         if (foundPlayer != null)
         {

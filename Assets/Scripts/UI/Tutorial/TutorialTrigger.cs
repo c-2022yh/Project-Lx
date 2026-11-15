@@ -45,7 +45,7 @@ public class TutorialTrigger : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D other)
     {
-        if (other.GetComponentInParent<Player>() == null) return;
+        if (other.GetComponentInParent<global::ProjectLx.PlayerRuntime.PlayerActor>() == null) return;
 
         TutorialDirector.Request(BuildStep());
     }

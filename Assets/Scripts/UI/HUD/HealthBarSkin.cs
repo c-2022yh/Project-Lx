@@ -48,7 +48,7 @@ public class HealthBarSkin : MonoBehaviour
 
     private Image fill, trail, frame, slot;
     private RectTransform parentRect, orbRoot, orbCircle;
-    private PlayerEnergy energy;
+    private global::ProjectLx.PlayerRuntime.PlayerEnergyComponent energy;
     private Vector2 frameSize, winOffset, winSize, currentPos;
     private bool orderedBehindOrb, placed;
     private float trailAmount = 1f, holdTimer, lastFill = 1f;
@@ -200,7 +200,7 @@ public class HealthBarSkin : MonoBehaviour
 
     private bool HasOrb()
     {
-        if (energy == null) energy = FindAnyObjectByType<PlayerEnergy>();
+        if (energy == null) energy = FindAnyObjectByType<global::ProjectLx.PlayerRuntime.PlayerEnergyComponent>();
         return energy != null && energy.HasOrb;
     }
 

@@ -1,7 +1,8 @@
+#pragma warning disable CS0108 // Concrete API intentionally hides the shared compatibility view.
 using UnityEngine;
 
 //발도 납도 관련 스크립트. 현재는 미구현
-public class PlayerWeaponVisualState : MonoBehaviour
+public partial class PlayerWeaponVisualState : global::ProjectLx.PlayerRuntime.PlayerWeaponVisualStateComponent
 {
     [SerializeField] private Animator animator;
     [SerializeField] private float drawnKeepTime = 1.2f;
@@ -33,3 +34,4 @@ public class PlayerWeaponVisualState : MonoBehaviour
         }
     }
 }
+#pragma warning restore CS0108

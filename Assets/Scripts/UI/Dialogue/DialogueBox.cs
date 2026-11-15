@@ -613,7 +613,7 @@ public class DialogueBox : MonoBehaviour
     // ── 에디터 테스트 ────────────────────────
 
 #if UNITY_EDITOR
-    [MenuItem("Tools/UI/대화창 테스트")]
+    [MenuItem("Project Lx/Debug/UI/대화창 테스트")]
     private static void TestBox()
     {
         if (!Application.isPlaying)
@@ -634,7 +634,7 @@ public class DialogueBox : MonoBehaviour
         Play(d);
     }
 
-    [MenuItem("Tools/UI/내레이션 테스트")]
+    [MenuItem("Project Lx/Debug/UI/내레이션 테스트")]
     private static void TestNarration()
     {
         if (!Application.isPlaying)

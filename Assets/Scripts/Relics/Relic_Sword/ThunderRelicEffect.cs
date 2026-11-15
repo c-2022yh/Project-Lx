@@ -60,7 +60,7 @@ public class ThunderRelicEffect : RelicEffect
     [SerializeField] private SoundCue procSound = new SoundCue();
     [SerializeField] private SoundCue impactSound = new SoundCue();
 
-    public override IRelicRuntime CreateRuntime(Player p)
+    public override IRelicRuntime CreateRuntime(global::ProjectLx.PlayerRuntime.PlayerActor p)
     {
         return new ThunderRelicRuntime(
             p,
@@ -81,7 +81,7 @@ public class ThunderRelicEffect : RelicEffect
     private sealed class ThunderRelicRuntime : IRelicRuntime
     {
         private readonly ThunderRelicEffect audioSettings;
-        private readonly Player player;
+        private readonly global::ProjectLx.PlayerRuntime.PlayerActor player;
 
         private readonly ChainLightningEffect chainLightningPrefab;
         private readonly GameObject thunderHitEffectPrefab;
@@ -97,13 +97,13 @@ public class ThunderRelicEffect : RelicEffect
         private readonly float chainDelay;
         private readonly LayerMask targetLayer;
 
-        private PlayerAttack playerAttack;
-        private PlayerStats playerStats;
+        private global::ProjectLx.PlayerRuntime.PlayerAttackComponent playerAttack;
+        private global::ProjectLx.PlayerRuntime.PlayerStatsComponent playerStats;
 
         private bool isEquipped;
 
         public ThunderRelicRuntime(
-             Player player,
+             global::ProjectLx.PlayerRuntime.PlayerActor player,
              DamageType damageType,
              float damageMultiplier,
              float bonusPenetration,
@@ -138,9 +138,9 @@ public class ThunderRelicEffect : RelicEffect
         {
             if (player == null) return;
 
-            playerAttack = player.GetComponent<PlayerAttack>();
+            playerAttack = player.GetComponent<global::ProjectLx.PlayerRuntime.PlayerAttackComponent>();
 
-            playerStats = player.GetComponent<PlayerStats>();
+            playerStats = player.GetComponent<global::ProjectLx.PlayerRuntime.PlayerStatsComponent>();
 
             if (playerAttack == null || playerStats == null)
             {

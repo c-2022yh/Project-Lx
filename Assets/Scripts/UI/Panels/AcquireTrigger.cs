@@ -85,7 +85,7 @@ public class AcquireTrigger : MonoBehaviour
     private void TryTouch(Collider2D other)
     {
         if (when != When.OnTouch) return;
-        if (other == null || other.GetComponentInParent<Player>() == null) return;
+        if (other == null || other.GetComponentInParent<global::ProjectLx.PlayerRuntime.PlayerActor>() == null) return;
 
         Show();
     }
@@ -98,7 +98,7 @@ public class AcquireTrigger : MonoBehaviour
         // 씬을 내리는 중이면 모든 오브젝트가 꺼진다. 주운 게 아니다.
         if (!gameObject.scene.isLoaded) return;
 
-        Player player = FindAnyObjectByType<Player>();
+        global::ProjectLx.PlayerRuntime.PlayerActor player = FindAnyObjectByType<global::ProjectLx.PlayerRuntime.PlayerActor>();
         if (player == null) return;
 
         float distance = Vector2.Distance(player.transform.position, transform.position);

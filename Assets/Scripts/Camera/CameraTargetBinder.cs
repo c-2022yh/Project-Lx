@@ -7,7 +7,7 @@ public class CameraTargetBinder : MonoBehaviour
 
     private void Start()
     {
-        Player player = FindFirstObjectByType<Player>();
+        global::ProjectLx.PlayerRuntime.PlayerActor player = FindFirstObjectByType<global::ProjectLx.PlayerRuntime.PlayerActor>();
 
         if (player == null)
         {

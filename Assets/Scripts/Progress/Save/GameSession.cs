@@ -178,7 +178,7 @@ public class GameSession : MonoBehaviour
         if (IsTitle(scene.name))
         {
             // 플레이어는 DontDestroyOnLoad라 타이틀까지 따라온다. 다음 게임을 깨끗하게 시작하려고 지운다.
-            Player leftover = FindFirstObjectByType<Player>();
+            global::ProjectLx.PlayerRuntime.PlayerActor leftover = FindFirstObjectByType<global::ProjectLx.PlayerRuntime.PlayerActor>();
             if (leftover != null) Destroy(leftover.gameObject);
             CurrentSlot = -1;
             data = null;
@@ -209,7 +209,7 @@ public class GameSession : MonoBehaviour
         // 아직 제단을 안 썼으면 처음 들어온 씬의 시작 위치로 돌아오게 한다.
         if (!HasRespawn)
         {
-            Player player = FindFirstObjectByType<Player>();
+            global::ProjectLx.PlayerRuntime.PlayerActor player = FindFirstObjectByType<global::ProjectLx.PlayerRuntime.PlayerActor>();
             if (player != null) SetRespawn(scene.name, player.transform.position);
         }
 
@@ -246,7 +246,7 @@ public class GameSession : MonoBehaviour
 
     private static void PlacePlayer(Vector2 pos)
     {
-        Player player = FindFirstObjectByType<Player>();
+        global::ProjectLx.PlayerRuntime.PlayerActor player = FindFirstObjectByType<global::ProjectLx.PlayerRuntime.PlayerActor>();
         if (player == null) return;
 
         player.transform.position = pos;
@@ -256,7 +256,7 @@ public class GameSession : MonoBehaviour
             rb.position = pos;
             rb.linearVelocity = Vector2.zero;
         }
-        PlayerRespawn respawn = player.GetComponent<PlayerRespawn>();
+        global::ProjectLx.PlayerRuntime.PlayerRespawnComponent respawn = player.GetComponent<global::ProjectLx.PlayerRuntime.PlayerRespawnComponent>();
         if (respawn != null) respawn.SetRespawnPoint(pos);
     }
 
@@ -269,28 +269,28 @@ public class GameSession : MonoBehaviour
         yield return null;
         yield return null;
 
-        Player player = FindFirstObjectByType<Player>();
+        global::ProjectLx.PlayerRuntime.PlayerActor player = FindFirstObjectByType<global::ProjectLx.PlayerRuntime.PlayerActor>();
         if (player == null || d == null) yield break;
 
-        PlayerEnergy energy = player.GetComponent<PlayerEnergy>();
+        global::ProjectLx.PlayerRuntime.PlayerEnergyComponent energy = player.GetComponent<global::ProjectLx.PlayerRuntime.PlayerEnergyComponent>();
         if (d.hasOrb && energy != null && !energy.HasOrb) energy.AcquireOrb();
 
         yield return null;
 
-        PlayerSkill skills = player.GetComponent<PlayerSkill>();
+        global::ProjectLx.PlayerRuntime.PlayerSkillComponent skills = player.GetComponent<global::ProjectLx.PlayerRuntime.PlayerSkillComponent>();
         if (skills != null && d.equippedSkills != null && d.equippedSkills.Count > 0)
             RestoreSkillSlots(skills, d.equippedSkills);
     }
 
-    private static void RestoreSkillSlots(PlayerSkill skills, List<string> names)
+    private static void RestoreSkillSlots(global::ProjectLx.PlayerRuntime.PlayerSkillComponent skills, List<string> names)
     {
-        for (int i = PlayerSkill.FirstNormalSlot; i < PlayerSkill.SlotCount; i++)
+        for (int i = global::ProjectLx.PlayerRuntime.PlayerSkillComponent.FirstNormalSlot; i < global::ProjectLx.PlayerRuntime.PlayerSkillComponent.SlotCount; i++)
             skills.UnequipSkill(i);
 
         for (int i = 0; i < names.Count; i++)
         {
-            int slot = PlayerSkill.FirstNormalSlot + i;
-            if (slot >= PlayerSkill.SlotCount) break;
+            int slot = global::ProjectLx.PlayerRuntime.PlayerSkillComponent.FirstNormalSlot + i;
+            if (slot >= global::ProjectLx.PlayerRuntime.PlayerSkillComponent.SlotCount) break;
             if (string.IsNullOrEmpty(names[i])) continue;
             foreach (SkillData owned in skills.OwnedSkills)
             {
@@ -304,7 +304,7 @@ public class GameSession : MonoBehaviour
         foreach (SkillData owned in skills.OwnedSkills)
         {
             if (owned == null || skills.IsSkillEquipped(owned)) continue;
-            for (int slot = PlayerSkill.FirstNormalSlot; slot < PlayerSkill.SlotCount; slot++)
+            for (int slot = global::ProjectLx.PlayerRuntime.PlayerSkillComponent.FirstNormalSlot; slot < global::ProjectLx.PlayerRuntime.PlayerSkillComponent.SlotCount; slot++)
             {
                 if (skills.GetEquippedSkill(slot) != null) continue;
                 skills.EquipSkill(slot, owned);
@@ -346,17 +346,17 @@ public class GameSession : MonoBehaviour
 
     private static void CapturePlayer(SaveData d)
     {
-        Player player = FindFirstObjectByType<Player>();
+        global::ProjectLx.PlayerRuntime.PlayerActor player = FindFirstObjectByType<global::ProjectLx.PlayerRuntime.PlayerActor>();
         if (player == null) return;   // 플레이어가 없으면 이전 값 유지
 
-        PlayerEnergy energy = player.GetComponent<PlayerEnergy>();
+        global::ProjectLx.PlayerRuntime.PlayerEnergyComponent energy = player.GetComponent<global::ProjectLx.PlayerRuntime.PlayerEnergyComponent>();
         if (energy != null) d.hasOrb = energy.HasOrb;
 
-        PlayerSkill skills = player.GetComponent<PlayerSkill>();
+        global::ProjectLx.PlayerRuntime.PlayerSkillComponent skills = player.GetComponent<global::ProjectLx.PlayerRuntime.PlayerSkillComponent>();
         if (skills != null)
         {
             d.equippedSkills = new List<string>();
-            for (int i = PlayerSkill.FirstNormalSlot; i < PlayerSkill.SlotCount; i++)
+            for (int i = global::ProjectLx.PlayerRuntime.PlayerSkillComponent.FirstNormalSlot; i < global::ProjectLx.PlayerRuntime.PlayerSkillComponent.SlotCount; i++)
             {
                 SkillData s = skills.GetEquippedSkill(i);
                 d.equippedSkills.Add(s != null ? s.name : "");
